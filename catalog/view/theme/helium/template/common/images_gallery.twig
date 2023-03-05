@@ -1,0 +1,38 @@
+<div id="photos" class="{{ class }}">
+  {% if thumb %}
+    <link rel="preload" as="image" href="{{ thumb }}">
+    <figure class="image">
+      <a class="thumbnail" href="{{ popup }}" title="{{ heading_title }}">
+        <img 
+          loading="lazy" 
+          src="{{ thumb }}" 
+          title="{{ heading_title }}" 
+          alt="{{ heading_title }}" 
+        />
+      </a>
+    <figcaption>{{ heading_title }}</figcaption>
+    </figure>
+  {% endif %}
+  {% if images %}
+    <div class="scroll-x">
+      {% for image in images %}
+        <a class="thumbnail" href="{{ image.popup }}" title="{{ heading_title }}"> 
+          <img 
+            loading="lazy" 
+            data-large-img="{{ image.thumb }}" 
+            src="{{ image.thumb }}" 
+            title="{{ heading_title }}" 
+            alt="{{ heading_title }}" 
+          />
+        </a>
+      {% endfor %}
+    </div>
+  {% endif %}
+  {% if product_flags %}
+    <div class="flags">
+      {% for type, flag in product_flags %}
+      <span class="product-flag {{ type }}"> {{ flag }} </span>
+      {% endfor %}
+    </div>
+    {% endif %}
+</div>

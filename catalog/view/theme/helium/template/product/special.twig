@@ -1,0 +1,42 @@
+{{ header }}
+{% include 'helium/template/common/breadcrumbs.twig' %}
+{{ content_top }}
+<main id="special-products" class="container">
+  <h1>{{ heading_title }}</h1>
+      {% if products %}
+        <div class="row category-sort">
+          <div class="input-group">
+            <label class="input-group-addon" for="input-sort">{{ text_sort }}</label>
+            <select id="input-sort" class="form-control" onchange="location = this.value;">
+            {% for sorts in sorts %}
+              {% if sorts.value == '%s-%s'|format(sort, order) %}
+                <option value="{{ sorts.href }}" selected="selected">{{ sorts.text }}</option>
+              {% else %}
+                  <option value="{{ sorts.href }}">{{ sorts.text }}</option>
+              {% endif %}
+            {% endfor %}
+            </select>
+          </div>
+        </div>
+        {# Список товаров #}
+        <div class="product grid"> 
+          {% for product in products %}
+            {% include 'helium/template/product/product_miniature.twig' with {product: product} %}
+          {% endfor %} 
+        </div>
+        {# pagination #}
+        <div class="row pagination">
+          <div class="scroll-x">{{ pagination }}</div>
+          <span>{{ results }}</span>
+        </div>
+      {% else %}
+        <p>{{ text_empty }}</p>
+        <div class="buttons">
+          <div class="pull-right"><a href="{{ continue }}" class="btn btn-primary">{{ button_continue }}</a></div>
+        </div>
+      {% endif %}
+</main>
+{{ column_left }}
+{{ column_right }}
+{{ content_bottom }}
+{{ footer }}

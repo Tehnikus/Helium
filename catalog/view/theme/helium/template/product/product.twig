@@ -1,0 +1,288 @@
+{{ header }}
+{% include 'helium/template/common/breadcrumbs.twig' %}
+<main id="product">
+  {{ content_top }}
+  <hgroup>
+    {# Заголовок #}
+    <h1 class="product-name">{{ heading_title }}</h1>
+    {# Содержание #}
+    <ul class="contents scroll-x">
+      {% if description %}
+        <li><a href="{{ share }}#description" title="{{ tab_description }}">{{ tab_description }}</a></li>
+      {% endif %}
+      {% if thumb %}
+        <li><a href="{{ share }}#photos" title="{{ tab_photos }}">{{ tab_photos }}</a></li>
+      {% endif %}
+      {% if attribute_groups %}
+        <li><a href="{{ share }}#specification" title="{{ tab_attribute }}">{{ tab_attribute }}</a></li>
+      {% endif %}
+      {% if review_status %}
+        <li><a href="{{ share }}#reviews" title="{{ tab_review }}">{{ tab_review }}</a></li>
+      {% endif %}
+      {% if products %}
+        <li><a href="{{ share }}#related" title="{{ text_related }}">{{ text_related }} ({{products|length}})</a></li>
+      {% endif %}
+    </ul>
+  </hgroup>
+
+  <div class="flex justify-between">
+    {# Картинки #}
+    {% if thumb or images %}
+      {% include 'helium/template/common/images_gallery.twig' with {thumb:thumb, images:images, class:'product-image'} %}
+    {% endif %}
+    {# Теги #}
+    {% if tags %}
+    <p>
+      {{ text_tags }}
+      {% for i in 0..tags|length - 1 %}
+        {% if i < (tags|length - 1) %} 
+          <a href="{{ tags[i].href }}">{{ tags[i].tag }}</a>,
+        {% else %} 
+          <a href="{{ tags[i].href }}">{{ tags[i].tag }}</a> 
+        {% endif %}
+      {% endfor %} 
+    </p>
+    {% endif %}
+
+    {# Краткая информация #}
+    <div class="infos">
+      {% if manufacturer %}
+        <div class="manufacturer-info"><span>{{ text_manufacturer }}</span> <a href="{{ manufacturers }}">{{ manufacturer }}</a></div>
+      {% endif %}
+      {% if model %}
+        <div class="model-info"><span>{{ text_model }} {{ model }}</span></div>
+      {% endif %}
+      {% if reward %}
+        <div class="reward-info"><span>{{ text_reward }} {{ reward }}</span></div>
+      {% endif %}
+      {% if stock %}
+        <div class="stock-info"><span>{{ text_stock }} {{ stock }}</span></div>
+      {% endif %}
+    
+
+      {# Цены #}
+      {% if price %}
+        <div class="prices-block">
+          <p class="prices h1">
+            {% if not special %}
+              <span class="price-regular">{{ text_price }} {{ price }}</span>
+            {% else %}
+              <span class="price-old">{{ price }}</span>
+              <span class="price-new" data-special-date-end="{{ special_date_end }}">{{ special }}</span>
+            {% endif %}
+          </p>
+
+          {% if tax %}
+          <span class="tax">{{ text_tax }} {{ tax }}</span>
+          {% endif %}
+
+          {% if points %}
+            <span class="bonus-points">{{ text_points }} {{ points }}</span>
+          {% endif %}
+
+          {% if discounts %}
+            {% for discount in discounts %}
+              <span class="discount" data-discount-date-end="{{ discount.discount_date_end }}">{{ discount.quantity }}{{ text_discount }}{{ discount.price }}</span>
+            {% endfor %}
+          {% endif %}
+        </div>
+      {% endif %}
+
+    <div>
+      {# Опции товара #}
+      {% if options %}
+        {% include 'helium/template/product/product_page_options.twig' with {options: options} %}
+      {% endif %}
+
+      {# Регулярные платежи #}
+      {% if recurrings %}
+        <span class="h3">{{ text_payment_recurring }}</span>
+        <div class="form-group required">
+          <select name="recurring_id" class="form-control">
+            <option value="">{{ text_select }}</option>
+            {% for recurring in recurrings %}
+            <option value="{{ recurring.recurring_id }}">{{ recurring.name }}</option>
+            {% endfor %}
+          </select>
+          <div class="help-block" id="recurring-description"></div>
+        </div>
+      {% endif %}
+
+      {# Кнопки купить #}
+      <div class="form-group">
+        <label class="control-label" for="input-quantity">{{ entry_qty }}</label>
+        <input type="text" name="quantity" value="{{ minimum }}" size="2" id="input-quantity" class="form-control" />
+        <input type="hidden" name="product_id" value="{{ product_id }}" />
+      </div>
+      <div class="btn-group">
+        <button type="button" id="button-cart" onclick="cart.add({{product_id}})" title="{{ button_cart }}" class="add-to-cart primary">{{ button_cart }}</button>
+      </div>
+      <div class="btn-group">
+        <button type="button" class="wishlist" title="{{ button_wishlist }}" onclick="wishlist.add('{{ product_id }}');"><i class="icon-heart"></i></button>
+        <button type="button" class="compare" title="{{ button_compare }}" onclick="compare.add('{{ product_id }}');"><i class="icon-compare"></i></button>
+        {% if review_guest %}
+          <button type="button" data-id="{{ product_id }}" data-type="product/product" id="write-review"><i class="icon-edit"></i>{{ text_write }}</button>
+        {% else %}
+          {{ text_login }}
+        {% endif %}
+        
+      </div>
+      {% if minimum > 1 %}
+        <div class="alert alert-info"><i class="icon-info"></i> 
+          {{ text_minimum }}
+        </div>
+      {% endif %}
+    </div>
+
+    {# Отзывы #}
+    {% if review_status %}
+      {% include 'helium/template/common/rating_stars.twig' with {rating: rating, count:reviews} %}
+    {% endif %}
+    </div>
+  </div>
+
+
+
+
+
+  <article class="content">
+    {# Описание товара #}
+    {% if description %}
+      <span class="h1">{{ tab_description }}</span>
+      <div id="description">
+        {{ description }}
+      </div>
+    {% endif %}
+
+    {# Таблица характеристик #}
+    {% if attribute_groups %}
+      <span class="h1">{{ tab_attribute }}</span>
+      <div id="specification">
+        <table class="table table-bordered">
+          <caption>{{ tab_product_attribute }} {{ product.name }}</caption>
+          <thead>
+            <tr>
+              <td><span class="bold">{{tab_attribute}}</span></td>
+            </tr>
+          </thead>
+          <tbody>
+          {% for attribute_group in attribute_groups %}
+          <tr>
+            <td colspan="2" class="group-name">
+              {{ attribute_group.name }}
+            </td>
+            <td colspan="4" class="group-value">
+              {% for attribute in attribute_group.attribute %}{{ attribute.name }}{% if attribute.text %} - {{ attribute.text }}{% endif %}{% if not loop.last %}, {% endif %}{% endfor %}
+            </td>
+          </tr> 
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% endif %}
+
+    {# Отзывы #}
+    {% if review_status %}
+      <span class="h1">{{ tab_review }}</span>
+      <div id="reviews">
+        
+          {# Подключаем файл с обработкой отзывов для статичного отображения #}
+          {% include 'helium/template/product/review.twig' %}
+      </div>
+    {% endif %}
+  </article>
+  {# Сопутствующие товары #}
+  {% if products %}
+    <span class="h1">{{ text_related }}</span>
+    <div id="related" class="module-product-list">
+      {% for product in products %}
+        {% include 'helium/template/product/product_miniature.twig' with {product: product} %}
+      {% endfor %} 
+    </div>
+  {% endif %}
+</main>
+{{ content_bottom }}
+{# <script type="text/javascript"><!--
+$('select[name=\'recurring_id\'], input[name="quantity"]').change(function(){
+	$.ajax({
+		url: 'index.php?route=product/product/getRecurringDescription',
+		type: 'post',
+		data: $('input[name=\'product_id\'], input[name=\'quantity\'], select[name=\'recurring_id\']'),
+		dataType: 'json',
+		beforeSend: function() {
+			$('#recurring-description').html('');
+		},
+		success: function(json) {
+			$('.alert-dismissible, .text-danger').remove();
+
+			if (json['success']) {
+				$('#recurring-description').html(json['success']);
+			}
+		}
+	});
+});
+//--></script>  #}
+
+
+
+{# <script type="text/javascript">
+
+
+$('button[id^=\'button-upload\']').on('click', function() {
+	var node = this;
+
+	$('#form-upload').remove();
+
+	$('body').prepend('<form enctype="multipart/form-data" id="form-upload" style="display: none;"><input type="file" name="file" /></form>');
+
+	$('#form-upload input[name=\'file\']').trigger('click');
+
+	if (typeof timer != 'undefined') {
+    	clearInterval(timer);
+	}
+
+	timer = setInterval(function() {
+		if ($('#form-upload input[name=\'file\']').val() != '') {
+			clearInterval(timer);
+
+			$.ajax({
+				url: 'index.php?route=tool/upload',
+				type: 'post',
+				dataType: 'json',
+				data: new FormData($('#form-upload')[0]),
+				cache: false,
+				contentType: false,
+				processData: false,
+				beforeSend: function() {
+					$(node).button('loading');
+				},
+				complete: function() {
+					$(node).button('reset');
+				},
+				success: function(json) {
+					$('.text-danger').remove();
+
+					if (json['error']) {
+						$(node).parent().find('input').after('<div class="text-danger">' + json['error'] + '</div>');
+					}
+
+					if (json['success']) {
+						alert(json['success']);
+
+						$(node).parent().find('input').val(json['code']);
+					}
+				},
+				error: function(xhr, ajaxOptions, thrownError) {
+					alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+				}
+			});
+		}
+	}, 500);
+});
+</script>  #}
+{# <script type="text/javascript">
+
+</script>  #}
+{{ column_left }}
+{{ column_right }}
+{{ footer }} 

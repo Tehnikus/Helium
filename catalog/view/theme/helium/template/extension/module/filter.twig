@@ -1,0 +1,30 @@
+<div class="module filter mobile_menu" data-block-name="{{ heading_title }}" data-icon="icon-filter" data-order="1">
+  <span class="h3">{{ heading_title }}</span>
+  <div class="list-group"> 
+    {% for filter_group in filter_groups %} 
+    <span class="h4">{{ filter_group.name }}</span>
+    <div class="list-group-item">
+      <div id="filter-group{{ filter_group.filter_group_id }}">
+      {# Пустое значение для радиокнопок #}
+      {% if filter_group.filter_type == 'radio' %}
+        <div class="radio">
+          <input id="filter_{{ filter.filter_id }}" type="{{ filter_group.filter_type }}" name="filter[]" value="0" checked="checked"/>
+          <label for="filter_{{ filter.filter_id }}">{{ all }}</label>
+        </div>
+      {% endif %}
+      {% for filter in filter_group.filter %}
+        <div class="checkbox">
+          <input id="filter_{{ filter.filter_id }}" type="{{ filter_group.filter_type }}" name="filter[]" value="{{ filter.filter_id }}" {% if filter.filter_id in filter_category %}checked="checked"{% endif %}/>
+          <label for="filter_{{ filter.filter_id }}">{{ filter.name }}</label>
+        </div>
+      {% endfor %}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  <button type="button" id="button-filter" class="primary">{{ button_filter }}</button>
+</div>
+{# TODO здесь сделать форму, чтобы можно было пользоваться фильтром без JS - это для гугла #}
+<script type="text/javascript">
+ let filter_action = '{{ action }}';
+</script> 

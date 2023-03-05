@@ -1,0 +1,42 @@
+{% if categories %}
+<button type="button" id="main-menu-trigger" class="primary dropdown-toggle main-menu-trigger" aria-label="{{ text_category }}">
+  <div class="icon nav-icon-1">
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+  <span class="hidden-md">
+    {{ text_category }}
+  </span>
+</button>
+<div id="main-menu" class="dropdown-menu collapse">
+  <div class="menu-inner">
+    <div class="menu">
+      <ul class="top-level">
+        {% for category_set in categories %}
+          {{ _self.recursiveCategory(category_set) }}
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+</div>
+{% endif %}
+
+{# Build categories list recursively #}
+{% macro recursiveCategory(category) %}
+  <li><a class="mcn" href="{{ category.href }}">{{ category.name }}</a>&nbsp;<span class="product_count">{{category.product_count}}</span>
+    {% if category.children|length %}
+      <ul class="inner-level">
+        {% for child in category.children %}
+          {{ _self.recursiveCategory(child) }}
+        {% endfor %}
+      </ul>
+    {% endif %}
+  </li>
+{% endmacro %}

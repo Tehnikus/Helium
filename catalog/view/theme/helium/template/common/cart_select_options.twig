@@ -1,0 +1,52 @@
+<h1 class="product-name">{{ name }}</h1>
+<div class="row">
+  <div class="left-side">
+  {% if image %}
+    <figure class="main-image">
+      <img loading="lazy" src="{{ image }}" title="{{ name }}" alt="{{ name }}" />
+    </figure>
+  {% endif %}
+  </div>
+  <div class="right-side">
+      {% if options %}
+        {% include 'helium/template/product/product_page_options.twig' with {options: options} %}
+      {% endif %}
+      <div class="form-group">
+        <label class="control-label" for="input-quantity">{{ entry_qty }}</label>
+        <input type="text" name="quantity" value="{{ minimum }}" size="2" id="input-quantity" class="form-control" />
+        <input type="hidden" name="product_id" value="{{ product_id }}" />
+      </div>
+      {% if price %}
+      <div class="prices">
+        {% if not special %}
+          <span class="price-regular">{{ text_price }} {{ price }}</span>
+        {% else %}
+          <span class="price-old">{{ price }}</span>
+          <span class="price-special">{{ special }}</span>
+        {% endif %}
+
+        {% if tax %}
+        <span class="tax">{{ text_tax }} {{ tax }}</span>
+        {% endif %}
+
+        {% if points %}
+          <span class="bonus-points">{{ text_points }} {{ points }}</span>
+        {% endif %}
+
+        {% if discounts %}
+          {% for discount in discounts %}
+            <span class="discount">{{ discount.quantity }}{{ text_discount }}{{ discount.price }}</span>
+          {% endfor %}
+        {% endif %}
+      </div>
+    {% endif %}
+      <div class="btn-group">
+        <button type="button" id="button-cart" onclick="cart.add({{product_id}})" title="{{ button_cart }}" class="add-to-cart primary">{{ button_cart }}</button>
+      </div>
+      {% if minimum > 1 %}
+        <div class="alert alert-info"><i class="icon-info"></i> 
+          {{ text_minimum }}
+        </div>
+      {% endif %}
+  </div>
+</div>

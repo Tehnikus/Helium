@@ -1,0 +1,10 @@
+{% if products %}
+  <div class="module bestseller-products">
+    <span class="h3">{{ heading_title }}</span>
+    <div class="module-product-list">
+    {% for product in products %}
+      {% include 'helium/template/product/product_miniature.twig' with {product: product} %}
+    {% endfor %}   
+    </div>
+  </div>
+ {% endif %}

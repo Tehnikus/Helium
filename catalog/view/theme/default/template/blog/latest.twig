@@ -1,0 +1,58 @@
+{{ header }}
+<div class="container">
+  <ul class="breadcrumb">
+    {% for breadcrumb in breadcrumbs %}
+    <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+    {% endfor %}
+  </ul>
+  <div class="row">{{ column_left }}
+    {% if column_left and column_right %}
+    {% set class = 'col-sm-6' %}
+    {% elseif column_left or column_right %}
+    {% set class = 'col-sm-9' %}
+    {% else %}
+    {% set class = 'col-sm-12' %}
+    {% endif %}
+    <div id="content" class="{{ class }} showcase-list">{{ content_top }}
+      <h1>{{ heading_title }}</h1>
+      {% if articles %}
+      <div class="row">  
+        {% for article in articles %} 
+        <div class="product-layout product-list col-xs-12">
+          <div class="product-thumb">
+            <div class="image"><a href="{{ article['href'] }}"><img src="{{ article.thumb }}" alt="{{ article['name'] }}" title="{{ article['name'] }}" class="img-responsive" /></a></div>
+            <div class="caption">
+              <h4><a href="{{ article.href }}">{{ article.name }}</a></h4>
+              <p class="description">{{ article['description'] }}</p>
+              {% if configblog_review_status %}
+                {% if article.rating %}
+                  <div class="rating"> 
+                    {% for i in 1..5 %}
+                      {% if article.rating < i %} <span class="fa fa-stack"><i class="fa fa-star-o fa-stack-2x"></i></span> {% else %} <span class="fa fa-stack"><i class="fa fa-star fa-stack-2x"></i><i class="fa fa-star-o fa-stack-2x"></i></span>{% endif %}
+                    {% endfor %} 
+                  </div>
+                {% endif %}
+			        {% endif %}
+            </div>
+            <div class="button-group">
+            <a title="{{ button_more }} {{ article.name }}" href="{{ article.href }}" class="button primary">{{ button_more }}</a>
+				    <span class="button secondary" title="{{ article.date_added }}" "><i class="eye"></i></span>
+				    <button type="button" data-toggle="tooltip" title="{{ text_views }} {{ article.viewed }}" "><i class="fa fa-eye"></i></button>
+			</div>
+          </div>
+        </div>
+       {% endfor %}
+      </div>
+      <div class="row">
+        <div class="col-sm-6 text-left">{{ pagination }}</div>
+      </div>
+      {% else %}
+      <p>{{ text_empty }}</p>
+      <div class="buttons">
+        <div class="pull-right"><a href="{{ continue }}" class="btn btn-primary">{{ button_continue }}</a></div>
+      </div>
+      {% endif %}
+      {{ content_bottom }}</div>
+    {{ column_right }}</div>
+</div>
+{{ footer }}

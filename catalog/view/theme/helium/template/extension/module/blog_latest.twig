@@ -1,0 +1,10 @@
+{% if articles %}
+<div class="module latest-articles">
+  <span class="h3">{{ heading_title }}</span>
+  <div class="module-product-list">
+    {% for article in articles %} 
+      {% include 'helium/template/blog/article_miniature.twig' with {article: article} %}
+    {% endfor %}
+  </div>
+</div>
+{% endif %}

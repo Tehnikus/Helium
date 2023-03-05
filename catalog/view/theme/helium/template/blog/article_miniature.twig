@@ -1,0 +1,31 @@
+<article class="miniature">
+  <figure class="image">
+    <a href="{{ article.href }}" title="{{ article.name }}">
+      <img loading="lazy" width="{{ article.width }}" height="{{ article.height }}" src="{{ article.thumb }}" alt="{{ article.name }}" title="{{ article.name }}" class="img-responsive" />
+    </a>
+  </figure>
+    <div class="infos">
+  <div class="caption">
+      <h3>
+        <a href="{{ article.href }}">
+          {{ article.name }}
+        </a>
+      </h3>
+      <p class="short-description">
+        {{ article.description }}
+      </p>
+      {% if review_status %}
+        {% if article.rating %}
+          {% include 'helium/template/common/rating_stars.twig' with {rating:article.rating, count:article.reviews} %}
+        {% endif %}
+      {% endif %}
+    </div>
+    <div class="article-infos">
+      <span title="{{ date_added }}"><i class="icon-calendar"></i>{{ article.date_added }}</span>
+      {% if article.viewed > 100 %}
+      <span title="{{ text_views }}"><i class="icon-eye"></i>{{ article.viewed }}</span>
+      {% endif %}
+    </div>
+    <a class="button primary" href="{{ article.href }}" title="{{ button_more }} {{ article.name }}">{{ button_more }}</a>
+  </div>
+</article>

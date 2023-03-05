@@ -1,0 +1,84 @@
+{% if categories %}
+<button type="button" id="main-menu-trigger" class="dropdown-toggle main-menu-trigger">
+    {# <i class="fa fa-bars"></i> #}
+    <div class="icon nav-icon-1">
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
+    <span class="hidden-md">
+        {{ text_category }}
+    </span>
+</button>
+<div id="main-menu" class="dropdown-menu collapse">
+    <div class="menu-inner">
+    <ul>
+    {% for category in categories %}
+        {{ _self.recursiveCategory(category) }}
+    {% endfor %}
+    </ul>
+    </div>
+</div>
+{% endif %}
+
+{# {% macro recursiveCategory(category) %}
+    <a href="{{ category.href }}" title="{{ category.name }}">{{ category.name }}</a>
+
+    {% if category.children|length %}
+    <button class="dropdown-toggle" data-target="submenu-{{category.category_id}}"></button>
+    <div class="dropdown-menu" data-openedby="submenu-{{category.category_id}}">
+        {% for child in category.children %}
+            {{ _self.recursiveCategory(child) }}
+        {% endfor %}
+    </div>
+    {% endif %}
+{% endmacro %} #}
+
+{% macro recursiveCategory(category) %}
+    <li>
+        <a href="{{ category.href }}">{{ category.name }}</a>
+        {% if category.children|length %}
+        <button class="dropdown-toggle main-menu-trigger" data-target="submenu-{{category.category_id}}"></button>
+            <ul data-openedby="submenu-{{category.category_id}}" class="collapse">
+                {% for child in category.children %}
+                    {{ _self.recursiveCategory(child) }}
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </li>
+{% endmacro %}
+
+  {# <div id="main-menu" class="dropdown-menu collapse">
+    <div class="menu-inner">
+     <div class="first-level">
+      {% for category in categories %}
+      {% if category.children %}
+      <div class="dropdown">
+        <a href="{{ category.href }}">{{ category.name }}</a><button class="dropdown-toggle"></button>
+        <div class="dropdown-menu">
+          {% for children in category.children|batch(category.children|length / category.column|round(1, 'ceil')) %}
+          <div class="">
+            {% for child in children %}
+              <div>
+                <a href="{{ child.href }}">{{ child.name }}</a>
+              </div>
+            {% endfor %}
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+      {% else %}
+      <div class="dropdown">
+      <a href="{{ category.href }}">{{ category.name }}</a>
+      </div>
+      {% endif %}
+      {% endfor %}
+      </div>
+    </div>
+  </div> #}

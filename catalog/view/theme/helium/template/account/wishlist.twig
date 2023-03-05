@@ -1,0 +1,14 @@
+{{ header }}
+{% include 'helium/template/common/breadcrumbs.twig' %}
+<main id="account-wishlist" class="container">
+  {{ content_top }}
+      <h2>{{ heading_title }}</h2>
+      {% include 'helium/template/account/wishlist_table.twig' with {products: products, success:success} %}
+      <div class="buttons clearfix">
+        <div class="pull-right"><a href="{{ continue }}" class="primary">{{ button_continue }}</a></div>
+      </div>
+  {{ content_bottom }}
+</main>
+{{ column_left }}
+{{ column_right }}
+{{ footer }}

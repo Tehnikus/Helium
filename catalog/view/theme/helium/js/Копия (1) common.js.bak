@@ -1,0 +1,1083 @@
+const d = document;
+const w = document.window;
+
+function getURLVar(key) {
+	var value = [];
+
+	var query = String(document.location).split('?');
+
+	if (query[1]) {
+		var part = query[1].split('&');
+
+		for (i = 0; i < part.length; i++) {
+			var data = part[i].split('=');
+
+			if (data[0] && data[1]) {
+				value[data[0]] = data[1];
+			}
+		}
+
+		if (value[key]) {
+			return value[key];
+		} else {
+			return '';
+		}
+	} else { 			// Изменения для seo_url от Русской сборки OpenCart 3x
+		var query = String(document.location.pathname).split('/');
+		if (query[query.length - 1] == 'cart') value['route'] = 'checkout/cart';
+		if (query[query.length - 1] == 'checkout') value['route'] = 'checkout/checkout';
+		
+		if (value[key]) {
+			return value[key];
+		} else {
+			return '';
+		}
+	}
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+
+	let pagination = document.querySelector('#product-category ul.pagination');
+	if (!!pagination) {
+		var button_load_more = createEl('button', {'class':['primary']},'Load more');
+		button_load_more.addEventListener('click', function() {
+			loadMore();
+		});
+		pagination.appendChild(button_load_more);
+	}
+	// Highlight any found errors
+	// let category_description = document.querySelector('.category-description');
+	// if (!!category_description && category_description.scrollHeight > 200) {
+	// 	let expand_btn = createEl('button', {'class':['expand_button']}, 'expand');
+	// 	expand_btn.addEventListener('click', function(){
+	// 		console.log(typeof(category_description.style.maxHeight));
+	// 		if(category_description.style.height !== '200px') {
+	// 			category_description.style.height = '200px'
+	// 		} else {
+	// 			category_description.style.height = category_description.scrollHeight+'px'
+	// 		}
+	// 		// window.getComputedStyle(document.querySelector('.category-description')).maxHeight
+	// 	});
+	// 	category_description.appendChild(expand_btn);
+	// } 
+		
+
+	// Highlight any found errors
+	var error_inputs = document.getElementsByClassName('.text-danger');
+    for (let i = 0; i < error_inputs.length; i++) {
+        const e = error_inputs[i];
+        var p = e.parentElement.parentElement;
+        if (!!p && p.classList.contains('form-group')) {
+            p.classList.add('has-error');
+        }
+    }
+
+
+	// Currency
+	currency_selector = document.querySelectorAll('#form-currency .currency-select');
+    if (currency_selector.length > 0) {
+        currency_selector.forEach(function (elm) {
+            elm.addEventListener('click', function(evt){
+                evt.preventDefault();
+                input_currency = document.querySelector('#form-currency input[name=\'code\']');
+                input_currency.value = elm.name;
+                document.getElementById('form-currency').submit();
+            });
+        });
+    }
+
+	// Language
+	lang_selector = document.querySelectorAll('#form-language .language-select');
+    if (lang_selector.length > 0) {
+        lang_selector.forEach(function (elm) {
+            elm.addEventListener('click', function(evt){
+                evt.preventDefault();
+                input_lang = document.querySelector('#form-language input[name=\'code\']');
+                input_lang.value = elm.name;
+                document.getElementById('form-language').submit();
+            });
+        });
+    }
+
+	/* Search */
+	// $('#search input[name=\'search\']').parent().find('button').on('click', function() {
+	// 	var url = $('base').attr('href') + 'index.php?route=product/search';
+
+	// 	var value = $('header #search input[name=\'search\']').val();
+
+	// 	if (value) {
+	// 		url += '&search=' + encodeURIComponent(value);
+	// 	}
+
+	// 	location = url;
+	// });
+
+	// $('#search input[name=\'search\']').on('keydown', function(e) {
+	// 	if (e.keyCode == 13) {
+	// 		$('header #search input[name=\'search\']').parent().find('button').trigger('click');
+	// 	}
+	// });
+
+	// // Menu
+	// $('#menu .dropdown-menu').each(function() {
+	// 	var menu = $('#menu').offset();
+	// 	var dropdown = $(this).parent().offset();
+
+	// 	var i = (dropdown.left + $(this).outerWidth()) - (menu.left + $('#menu').outerWidth());
+
+	// 	if (i > 0) {
+	// 		$(this).css('margin-left', '-' + (i + 10) + 'px');
+	// 	}
+	// });
+
+	// // Product List
+	// $('#list-view').click(function() {
+	// 	$('#content .product-grid > .clearfix').remove();
+
+	// 	$('#content .row > .product-grid').attr('class', 'product-layout product-list col-xs-12');
+	// 	$('#grid-view').removeClass('active');
+	// 	$('#list-view').addClass('active');
+
+	// 	localStorage.setItem('display', 'list');
+	// });
+
+	// // Product Grid
+	// $('#grid-view').click(function() {
+	// 	// What a shame bootstrap does not take into account dynamically loaded columns
+	// 	var cols = $('#column-right, #column-left').length;
+
+	// 	if (cols == 2) {
+	// 		$('#content .product-list').attr('class', 'product-layout product-grid col-lg-6 col-md-6 col-sm-12 col-xs-12');
+	// 	} else if (cols == 1) {
+	// 		$('#content .product-list').attr('class', 'product-layout product-grid col-lg-4 col-md-4 col-sm-6 col-xs-12');
+	// 	} else {
+	// 		$('#content .product-list').attr('class', 'product-layout product-grid col-lg-3 col-md-3 col-sm-6 col-xs-12');
+	// 	}
+
+	// 	$('#list-view').removeClass('active');
+	// 	$('#grid-view').addClass('active');
+
+	// 	localStorage.setItem('display', 'grid');
+	// });
+
+	// if (localStorage.getItem('display') == 'list') {
+	// 	$('#list-view').trigger('click');
+	// 	$('#list-view').addClass('active');
+	// } else {
+	// 	$('#grid-view').trigger('click');
+	// 	$('#grid-view').addClass('active');
+	// }
+
+	// // Checkout
+	// $(document).on('keydown', '#collapse-checkout-option input[name=\'email\'], #collapse-checkout-option input[name=\'password\']', function(e) {
+	// 	if (e.keyCode == 13) {
+	// 		$('#collapse-checkout-option #button-login').trigger('click');
+	// 	}
+	// });
+
+});
+
+
+
+
+// Cart add remove functions
+var cart = {
+	'add': function(product_id, quantity = null) {
+
+		var url = 'index.php?route=checkout/cart/add';
+		if (quantity == null) {
+			qty_input = document.getElementById('input-quantity');
+			if (!!qty_input) {
+				quantity = qty_input.value;
+			}
+		}
+		var data = 'product_id=' + product_id + '&quantity=' + (typeof(quantity) != 'undefined' ? quantity : 1);
+		
+		// Product options
+		var options_inputs = document.querySelectorAll('[name^="option"]:checked');
+		var options_string = '';
+		for (var i = 0; i < options_inputs.length; i++) {
+			options_string += '&' + options_inputs[i].name + '=' + options_inputs[i].value;
+		}
+		data += options_string;
+		
+		// var data = new FormData();
+		// data.append( "json", JSON.stringify( p ) );
+		
+		// fetch(url,
+		// {
+		// 	method: "POST",
+		// 	body: data
+		// })
+		// .then(function(res){ return res.json(); })
+		// .then(function(data){ alert( JSON.stringify( data ) ) })
+
+		// Add to cart request
+		ajax(url, data, 
+			function(r) {
+				console.log(r);
+				if (r.success) {
+					// Запрос на обновление внешнего вида корзины
+					ajax('index.php?route=common/cart/info',null,function(n) {
+						var cart;
+						// Clear header cart element
+						header_cart = document.getElementById('header-cart');
+						header_cart.innerHTML = '';
+						// XHR response
+						var cart = document.createElement('div');
+						cart.innerHTML = n;
+
+						var cart_header_button = cart.getElementsByClassName('cart-header-button');
+						header_cart.appendChild(cart_header_button[0]);
+						var modal = cart.getElementsByClassName('modal-cart');
+						modalToast.create('dialog',modal[0]);
+
+					}, null,null,null,"GET","text",true);
+				}
+			},
+			function beforeSend(){
+				// document.querySelector('#cart > button').disabled = true;
+			},
+			function complete() {
+				// document.querySelector('#cart > button').disabled = false;
+			}, 
+			function error(r) {
+				console.log("error: ", r);
+			},'POST','JSON',true
+		);
+	},
+	'update': function(key, quantity) {
+		// Эта функция нигде не используется
+		var url = 'index.php?route=checkout/cart/edit';
+		var data = 'key=' + key + '&quantity=' + (typeof(quantity) != 'undefined' ? quantity : 1);
+		ajax(url, data, function(r){
+			console.log(r);
+		},null,null,null,"POST","JSON",true);
+		// 	$.ajax({
+		// 		url: 'index.php?route=checkout/cart/edit',
+		// 		type: 'post',
+		// 		data: 'key=' + key + '&quantity=' + (typeof(quantity) != 'undefined' ? quantity : 1),
+		// 		dataType: 'json',
+		// 		beforeSend: function() {
+		// 			$('#cart > button').button('loading');
+		// 		},
+		// 		complete: function() {
+		// 			$('#cart > button').button('reset');
+		// 		},
+		// 		success: function(json) {
+		// 			// Need to set timeout otherwise it wont update the total
+		// 			setTimeout(function () {
+		// 				$('#cart > button').html('<span id="cart-total"><i class="fa fa-shopping-cart"></i> ' + json['total'] + '</span>');
+		// 			}, 100);
+
+		// 			if (getURLVar('route') == 'checkout/cart' || getURLVar('route') == 'checkout/checkout') {
+		// 				location = 'index.php?route=checkout/cart';
+		// 			} else {
+		// 				$('#cart > ul').load('index.php?route=common/cart/info ul li');
+		// 			}
+		// 		},
+		// 		error: function(xhr, ajaxOptions, thrownError) {
+		// 			alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+		// 		}
+		// 	});
+	},
+	'remove': function(key) {
+		var url = 'index.php?route=checkout/cart/remove';
+		var data = 'key=' + key;
+		ajax(url, data, function(r) {
+			ajax('index.php?route=common/cart/info', null, function(n) {
+				document.getElementById('cart').innerHTML = n;
+			},null,null,null,"GET","text",true);
+			// console.log(r);
+		})
+		// $.ajax({
+		// 	url: 'index.php?route=checkout/cart/remove',
+		// 	type: 'post',
+		// 	data: 'key=' + key,
+		// 	dataType: 'json',
+		// 	beforeSend: function() {
+		// 		$('#cart > button').button('loading');
+		// 	},
+		// 	complete: function() {
+		// 		$('#cart > button').button('reset');
+		// 	},
+		// 	success: function(json) {
+		// 		// Need to set timeout otherwise it wont update the total
+		// 		setTimeout(function () {
+		// 			$('#cart > button').html('<span id="cart-total"><i class="fa fa-shopping-cart"></i> ' + json['total'] + '</span>');
+		// 		}, 100);
+
+		// 		if (getURLVar('route') == 'checkout/cart' || getURLVar('route') == 'checkout/checkout') {
+		// 			location = 'index.php?route=checkout/cart';
+		// 		} else {
+		// 			$('#cart > ul').load('index.php?route=common/cart/info ul li');
+		// 		}
+		// 	},
+		// 	error: function(xhr, ajaxOptions, thrownError) {
+		// 		alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+		// 	}
+		// });
+	}
+}
+
+var voucher = {
+	'add': function() {
+
+	},
+	'remove': function(key) {
+
+		var url = 'index.php?route=checkout/cart/remove';
+		var data = 'key=' + key;
+		ajax(url, data, function(r) {
+			ajax('index.php?route=common/cart/info', null, function(n) {
+				document.getElementById('cart').innerHTML = n;
+			},null,null,null,"GET","text",true);
+		});
+
+
+		// $.ajax({
+		// 	url: 'index.php?route=checkout/cart/remove',
+		// 	type: 'post',
+		// 	data: 'key=' + key,
+		// 	dataType: 'json',
+		// 	beforeSend: function() {
+		// 		$('#cart > button').button('loading');
+		// 	},
+		// 	complete: function() {
+		// 		$('#cart > button').button('reset');
+		// 	},
+		// 	success: function(json) {
+		// 		// Need to set timeout otherwise it wont update the total
+		// 		setTimeout(function () {
+		// 			$('#cart > button').html('<span id="cart-total"><i class="fa fa-shopping-cart"></i> ' + json['total'] + '</span>');
+		// 		}, 100);
+
+		// 		if (getURLVar('route') == 'checkout/cart' || getURLVar('route') == 'checkout/checkout') {
+		// 			location = 'index.php?route=checkout/cart';
+		// 		} else {
+		// 			$('#cart > ul').load('index.php?route=common/cart/info ul li');
+		// 		}
+		// 	},
+		// 	error: function(xhr, ajaxOptions, thrownError) {
+		// 		alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+		// 	}
+		// });
+	}
+}
+
+var wishlist = {
+	'add': function(product_id) {
+		var url = 'index.php?route=account/wishlist/add';
+		var data = 'product_id=' + product_id;
+		ajax(url, data, function(r) {
+			modalToast.create('dialog', r['success']);
+			if (r['redirect']) {
+				location = json['redirect'];
+			}
+			document.querySelector('#wishlist-total span').innerText = r['total'];
+			document.querySelector('#wishlist-total span').title = r['total'];
+		},null,null,null,"POST","json",true);
+	},
+	'remove': function() {
+
+	}
+}
+
+var compare = {
+	'add': function(product_id) {
+		var url = 'index.php?route=product/compare/add';
+		var data = 'product_id=' + product_id;
+		ajax(url, data, function(r) {
+			modalToast.create('dialog', r['success']);
+			document.querySelector('#compare-total').innerHTML = r['total'];
+		},null,null,null,"POST","json",true);
+	},
+	'remove': function() {
+
+	}
+}
+
+// Сериализация форм для отправки аяксом
+function serialize (data) {
+	let obj = {};
+	for (let [key, value] of data) {
+		if (obj[key] !== undefined) {
+			if (!Array.isArray(obj[key])) {
+				obj[key] = [obj[key]];
+			}
+			obj[key].push(value);
+		} else {
+			obj[key] = value;
+		}
+	}
+	return obj;
+}
+
+// Clicks handling
+document.addEventListener('click', function(e){
+	/* Agree to Terms */
+	// Кто блядь завернул ссылку с классом в отдельный тег <b>? Рукожопы ебаные.
+	agree_links = document.querySelectorAll('.agree');
+	if (!!agree_links) {
+		for (let i = 0; i < agree_links.length; i++) {
+			const agree_link = agree_links[i];
+			if (agree_link.contains(e.target) && agree_link.href !== null) {
+				e.preventDefault();
+				ajax(agree_link.href, null, function(r){
+					modalToast.create('dialog', r, 'warning');
+				},null,null,null,'GET','html',true);
+			}
+		}
+	}
+
+	// Аякс загрузка отзывов на странице товара
+	// TODO исправить, добавить нужные классы к HTML
+	if (e.target.tagName.toLowerCase() === 'a' && e.target.href.indexOf('review&product') != '-1') {
+		e.preventDefault();
+		ajax(e.target.href, null, function(resp){
+			document.getElementById('js-reviews').innerHTML = resp;
+		}, null, null, null, 'GET', 'text', true);
+	}
+
+	// Добавление товара в корзину
+	if (e.target.id == 'button-cart') {
+		// var product_add_to_cart_url = 'index.php?route=checkout/cart/add';
+		// document.querySelectorAll
+		var array = [];
+		var checkboxes = document.querySelectorAll('input:checked');
+
+		for (var i = 0; i < checkboxes.length; i++) {
+			array.push(checkboxes[i].value);
+		}
+		// console.log(array);
+	}
+
+	// Отзывы
+	if (e.target.id == 'button-review') {
+		e.preventDefault();
+		sendReview(e.target);
+	}
+
+	if (e.target.id == 'button-login') {
+		login();
+	}
+
+	// $('#button-cart').on('click', function() {
+	// 	$.ajax({
+	// 		url: 'index.php?route=checkout/cart/add',
+	// 		type: 'post',
+	// 		data: $('#product input[type=\'text\'], #product input[type=\'hidden\'], #product input[type=\'radio\']:checked, #product input[type=\'checkbox\']:checked, #product select, #product textarea'),
+	// 		dataType: 'json',
+	// 		beforeSend: function() {
+	// 			$('#button-cart').button('loading');
+	// 		},
+	// 		complete: function() {
+	// 			$('#button-cart').button('reset');
+	// 		},
+	// 		success: function(json) {
+	// 			$('.alert-dismissible, .text-danger').remove();
+	// 			$('.form-group').removeClass('has-error');
+	
+	// 			if (json['error']) {
+	// 				if (json['error']['option']) {
+	// 					for (i in json['error']['option']) {
+	// 						var element = $('#input-option' + i.replace('_', '-'));
+	
+	// 						if (element.parent().hasClass('input-group')) {
+	// 							element.parent().after('<div class="text-danger">' + json['error']['option'][i] + '</div>');
+	// 						} else {
+	// 							element.after('<div class="text-danger">' + json['error']['option'][i] + '</div>');
+	// 						}
+	// 					}
+	// 				}
+	
+	// 				if (json['error']['recurring']) {
+	// 					$('select[name=\'recurring_id\']').after('<div class="text-danger">' + json['error']['recurring'] + '</div>');
+	// 				}
+	
+	// 				// Highlight any found errors
+	// 				$('.text-danger').parent().addClass('has-error');
+	// 			}
+	
+	// 			if (json['success']) {
+	// 				$('.breadcrumb').after('<div class="alert alert-success alert-dismissible">' + json['success'] + '<button type="button" class="close" data-dismiss="alert">&times;</button></div>');
+	
+	// 				$('#cart > button').html('<span id="cart-total"><i class="fa fa-shopping-cart"></i> ' + json['total'] + '</span>');
+	
+	// 				$('html, body').animate({ scrollTop: 0 }, 'slow');
+	
+	// 				$('#cart > ul').load('index.php?route=common/cart/info ul li');
+	// 			}
+	// 		},
+	// 		error: function(xhr, ajaxOptions, thrownError) {
+	// 			alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+	// 		}
+	// 	});
+	// });
+
+	// var all_dropdowns_togglers = document.getElementsByClassName('dropdown-toggle');
+	// if (!!all_dropdowns_togglers && all_dropdowns_togglers.length > 0) {
+	// 	for (let i = 0, l = all_dropdowns_togglers.length; i < l; i++) {
+	// 		var dropdown_toggle = all_dropdowns_togglers[i];
+	// 		var dropdown_menu = dropdown_toggle.parentElement.querySelector('.dropdown-menu');
+	// 		if (dropdown_toggle.contains(e.target)) {
+	// 			if (dropdown_menu.style.display === '' || dropdown_menu.style.display === 'none') {
+	// 				dropdown_menu.style.display = 'block';
+	// 			} else {
+	// 				dropdown_menu.style.display = 'none';
+	// 			}
+	// 		} else {
+	// 			// Only affect those dropdowns that are not links (skip menus, navigations, etc.)
+	// 			if(typeof(dropdown_toggle.href) == 'undefined') {
+	// 				dropdown_menu.style.display = 'none';
+	// 			} 
+	// 		}
+	// 	}
+	// }
+
+
+
+	// Accordions
+	// Очень сильное колдунство
+	// if ((e.target.classList.contains('accordion-toggle') || e.target.dataset.target) && e.target.href !== null) {
+	// 	e.preventDefault();
+	// 	['collapse', 'collapse-in'].forEach(function(i) {
+	// 		document.getElementById(e.target.href.split('#')[1]).classList.toggle(i);
+	// 	});
+	// }
+	// ['dropdown-toggle', 'accordion-toggle'].forEach(function(toggler_class) {
+	// 	[].forEach.call(document.getElementsByClassName(toggler_class), function(el) {
+	// 		if (toggler_class == 'accordion-toggle') {
+	// 			if (el.contains(e.target)) {
+	// 				if (el.dataset.target) {
+	// 					toggleAccordion(document.querySelector(`[data-opened-by="]${el.dataset.target}"`));
+	// 				}
+	// 				if (el.href) {
+	// 					e.preventDefault();
+	// 					toggleAccordion(document.getElementById(el.href.split('#')[1]));
+	// 				}
+	// 			}
+	// 		}
+	// 		if (toggler_class == 'dropdown-toggle') {
+
+	// 		}
+	// 	})
+	// })
+	// function toggleAccordion(element) {
+	// 	['collapse', 'collapse-in'].forEach(function(i) {
+	// 		element.classList.toggle(i);
+	// 	});
+	// }
+
+	// Dropdowns
+	// Очень-очень сильное колдунство
+	[].forEach.call(document.getElementsByClassName('dropdown-toggle'), function(el) {
+		// var menu = el.parentNode.querySelector('.dropdown-menu');
+		if (el.contains(e.target) || el == e.target) {
+			// t = el;
+			// console.log(e.target);
+			console.log(el);
+			if (el.classList.contains('main-menu-trigger')) {
+				accordion(el, false)
+				// console.log(el);
+			} else {
+				accordion(el, true);
+			}
+		// 	(menu.style.display === '' || menu.style.display == 'none') ? menu.style.display = 'block' : menu.style.display = 'none';
+		// } else {
+		// 	(typeof(el.href) == 'undefined') ? menu.style.display = 'none' : void(0);
+			animated_icon = el.querySelector('.nav-icon-1');
+			if(!!animated_icon) {
+				animated_icon.classList.toggle('open');
+			}
+		}
+	})
+});
+
+// АЯКС отправка отзыва о товаре
+function sendReview(t) {
+	
+	// Получаем форму, превращаем данные в строку вида:
+	// &name='Вася'&review='ололо'
+	let review_form = document.getElementById('form-review');
+	let review = new URLSearchParams(new FormData(review_form)).toString();
+	let review_url = 'index.php?route=product/product/write&product_id=' + t.dataset.productId;
+	ajax(review_url, review, 
+		function(r) {
+			if (r.error) {
+				modalToast.create('toast', r.error, 'error');
+			}
+			if (r.success) {
+				modalToast.create('toast', r.success, 'success');
+				// Убираем форму
+				review_form.parentElement.removeChild(review_form);
+			}
+		}, 
+		null, null, null, 
+		'POST', 'JSON', true
+	);
+}
+
+function accordion(toggler = null, close_all = false) {
+	let target = toggler.parentElement.querySelector('.dropdown-menu') || document.querySelector('[data-openedby="'+toggler.dataset.target+'"]') || toggler.href.split('#')[1];
+	if (close_all == true || toggler == null) {
+		[].forEach.call(document.getElementsByClassName('collapse-in'), function(e) {
+			if(e !== target) {
+				toggle_menu(e);
+			}
+		})
+	}
+	if (!!target) {
+		toggle_menu(target);
+	} else {
+		console.log('Target menu not found in element', toggler);
+	}
+	function toggle_menu(el) {
+		['collapse', 'collapse-in'].forEach(function(c) {
+			el.classList.toggle(c)
+		});
+	}
+	if (typeof(toggler) == 'undefined') {
+
+	}
+}
+
+
+
+// Загрузить еще
+function loadMore() {
+	let pagination = document.querySelector('#product-category ul.pagination');
+	if (!!pagination) {
+		active_pages = pagination.querySelectorAll('.active');
+		var last = active_pages[active_pages.length - 1];
+		next_page = last.nextElementSibling;
+		if (!!next_page) {
+			next_href = next_page.getElementsByTagName('a')[0];
+			if (!!next_href && typeof(next_href.href) !== 'undefined' && (typeof(next_href.attributes.rel) == 'undefined' || next_href.attributes.rel.value !== ('next' || 'last'))) {
+				ajax(next_href.href, null, function(resp){
+					var div = document.createElement('div');
+					div.innerHTML = resp;
+					var products = div.querySelectorAll('.product-layout');
+					for (let index = 0; index < products.length; index++) {
+						const product = products[index];
+						document.querySelector('.row.product-list-grid').insertAdjacentElement('beforeend', product);
+					}
+					var next_text = next_href.innerText;
+					next_page.innerHTML = '<span>'+next_text+'</span>';
+					next_page.classList.add('active');
+				}, null, null, null, 'GET', 'text', true);
+			} else {
+				document.querySelectorAll('[rel="next"], [rel="last"]').forEach(function (e) {
+					e.classList.add('hidden');
+				});
+			}
+		}
+	}
+}
+
+
+
+
+
+// Таймер
+var countdown_el = document.getElementsByClassName('price-new');
+if (!!countdown_el && countdown_el.length > 0) {
+	for (let index = 0; index < countdown_el.length; index++) {
+		const element = countdown_el[index];
+		if ('specialDateEnd' in element.dataset) {
+
+			let finaleDate = new Date(element.dataset.specialDateEnd).getTime();
+
+			// timer(finaleDate);
+			// setInterval(
+			// 	timer(finaleDate),
+			//  1000);
+		}
+	}
+}
+
+
+function timer(finaleDate) {
+	// setInterval(function () {
+		const now = new Date().getTime();
+		let diff = finaleDate - now;
+
+		let days = Math.floor(diff / (1000*60*60*24));
+		let hours = Math.floor(diff % (1000*60*60*24) / (1000*60*60));
+		let minutes = Math.floor(diff % (1000*60*60)/ (1000*60));
+		let seconds = Math.floor(diff % (1000*60) / 1000);
+	
+		days <= 9 ? days = '0'+days : days;
+		hours <= 9 ? hours = '0'+hours : hours;
+		minutes <= 9 ? minutes = '0'+minutes : minutes;
+		seconds <= 9 ? seconds = '0'+seconds : seconds;
+
+		console.log(days, hours, minutes ,seconds);
+
+		if (--timer < 0) {
+			timer = finaleDate;
+		}
+	}
+	// 1000);
+
+// }
+
+
+
+// ** FADE OUT FUNCTION **
+function fadeOut(el, callback) {
+    el.style.opacity = 1;
+    (function fade() {
+        if ((el.style.opacity -= .1) < 0) {
+			el.style.display = "none";
+			document.body.removeChild(el);
+			callback;
+        } else {
+			requestAnimationFrame(fade);
+        }
+	})();
+};
+
+// ** FADE IN FUNCTION **
+function fadeIn(el, display) {
+    el.style.opacity = 0;
+    el.style.display = display || "block";
+    (function fade() {
+        var val = parseFloat(el.style.opacity);
+        if (!((val += .1) > 1)) {
+            el.style.opacity = val;
+            requestAnimationFrame(fade);
+        }
+	})();
+};
+
+// Modal window and toast notifications
+// param 'type' = 'toast' || 'dialog', type of modal or notification created
+// param html = string, contains html markup of modal window or message
+// Uses functions
+// createEl()
+// fadeIn()
+// fadeOut()
+var modalToast = {
+	'window':'',
+	'create': function(type = 'toast' || 'dialog', html = null, reason = null || 'success' || 'warning' || 'error') {
+		var modal_settings = {   
+			'class': ['modal_window', type, reason]
+		}
+		var close_btn_settings = {
+			'class': ['close_modal']
+		}
+		
+		var modal = createEl('div', modal_settings, null);
+		var close_button = createEl('button', close_btn_settings, null);
+		// close_button.style.cssText = 'position:absolute;top:10px;right:10px;font-size:32px;z-index:101; background:none; border: none;'
+		// If @param html is dom element, then parse string from it. Else use inner html
+		var modal_content = createEl('div',{'class': ['modal_content']}, (typeof(html) == 'object' ? html.outerHTML : html));
+		modal_content.style.cssText = 'position:relative;width:100%;height: 100%;';
+		close_button.addEventListener('click', function(e) {
+			modalToast.close(e);
+		});
+		modal.appendChild(close_button);
+		modal.appendChild(modal_content);
+		modalToast.window = modal;
+		if (type == 'toast') {
+			modal.style.cssText = 'position:fixed;top:20px;right:20px;z-index:100';
+			var alltoasts = document.getElementsByClassName('toast');
+			// Find last toast and set top position underneath previous
+			if (typeof(alltoasts[alltoasts.length - 1]) !== 'undefined') {
+				modal.style.top = alltoasts[alltoasts.length - 1].offsetHeight + alltoasts[alltoasts.length - 1].offsetTop + 10 + 'px';
+			}
+		}
+		if (type == 'dialog') {
+			// modal.style.cssText = '';
+			var backdrop = createEl('div', {'class':['modal_backdrop']});
+			backdrop.style.cssText = 'position:fixed;zindex:99;top:0;bottom:0;right:0;left:0;width:100%;height:100%;background:rgb(51 51 51 / 52%);backdrop-filter:blur(3px)';
+			backdrop.addEventListener('click', function(e){
+				modalToast.close(e);
+			})
+			document.body.appendChild(backdrop);
+			fadeIn(backdrop);
+		}
+		document.body.appendChild(modalToast.window);
+		fadeIn(modalToast.window);
+	},
+	'close': function(e) {
+		if (e.target === undefined) {return}
+		var modal = e.target.closest('.modal_window');
+		if (!!modal) {
+			document.body.removeChild(modal);
+			recalcPositions();
+		} else {
+			fadeOut(document.querySelector('.dialog'));
+		}
+		// Remove backdrop if exists
+		var backdrop = document.querySelector('.modal_backdrop');
+		if (!!backdrop) {
+			fadeOut(backdrop);
+		}
+		// Recalculate toasts position, so they stacked pretty one under another
+		function recalcPositions() {
+			var alltoasts = document.getElementsByClassName('toast');
+			if (typeof(alltoasts) !== 'undefined') {
+				Array.prototype.forEach.call(alltoasts, function(el, key) {
+					if (key > 0) {
+						el.style.top = alltoasts[key - 1].offsetHeight + alltoasts[key - 1].offsetTop + 10 + 'px';
+					} else {
+						el.style.top = '20px';
+					}
+				});
+			}
+		}
+	}
+}
+
+// Create HTML Element from object
+// @param type - string, i.e. div, span, button
+// @param attributes - object, i.e. id, type, textContent, innerHTML, class, data
+// attributes.class must be an array of strings, i.e. ["class1", "class2"]
+// attributes.data must be an object, i.e. {"id-state":"1"}, which will create data-idState="1"
+// Example
+// var checkbox = createEl(
+//     "input", {
+//         "id": state.id_order_state+"_state",
+//         "type": "checkbox",
+//         "name": "status_checkbox",
+//         "value": state.id_order_state,
+//         "data": {"idstate" : state.id_order_state},
+//         "class": ["status_checkbox", "other_class"]
+//     }
+// );
+// TODO Rename this function
+function createEl(type, attributes, inner_html = null) {
+    var element = document.createElement(type);
+    for (var key in attributes) {
+        if (key == "class") {
+            element.classList.add.apply(element.classList, attributes[key]);
+        } else if (key == "data") {
+            for (var data_attr in attributes[key]) {
+
+                element.dataset[data_attr] = attributes[key][data_attr];
+            }
+        } else if (key == "for") {
+            element.setAttribute("for", attributes[key]);
+        } else if (key == "style") {
+            element.setAttribute("style", attributes[key]);
+        } else if (key == "options") {
+            for (var option_name in attributes[key]) {
+                // Create list of select options
+                var option = document.createElement("option");
+                option.textContent = option_name;
+                option.value = attributes[key][option_name];
+                if (option_name == "") {
+                    option.selected = true;
+                }
+                element.insertAdjacentElement('beforeend', option);
+            }
+        }
+        else {
+            element[key] = attributes[key];
+        }
+	}
+	if (typeof(inner_html) != "undefined" && inner_html != null) {
+		element.innerHTML = inner_html;
+	}
+    return element;
+}
+
+// Маска номера телефона
+// ID инпутов, куда может вводиться номер телефона
+// TODO Объединить все в одну функцию
+let masked_inputs = ['InputPhone', 'one_click_input', 'user_telephone', 'input-payment-telephone'];
+document.addEventListener('input', function(e) {
+    if (masked_inputs.indexOf(e.target.id) != -1) {
+        e.target.addEventListener('input', handleInput, false);
+    }
+});
+
+
+function handleInput (e) {
+  e.target.value = phoneMask(e.target.value)
+}
+
+function phoneMask (phone) {
+  return phone.replace(/\D/g, '')
+    .replace(/^(38)/, '')
+    .replace(/^(\d)/, '($1')
+    .replace(/^(\(\d{3})(\d)/, '$1) $2')
+    .replace(/(\d{3})(\d{1,5})/, '$1-$2')
+    .replace(/(-\d{4})\d+?$/, '$1');
+}
+
+
+
+// AJAX function
+function ajax(url, data, success=null, beforesend=null,  complete=null, error=null, method, respType="json", async = true) {
+    method = typeof method !== "undefined" ? method : "POST";
+    async = typeof async !== 'undefined' ? async : true;
+    respType = typeof respType !== 'undefined' ? respType : "json";
+
+    if (window.XMLHttpRequest) {
+        var xhr = new XMLHttpRequest();
+    } else {
+        var xhr = new ActiveXObject("Microsoft.XMLHTTP");
+	}
+	xhr.responseType = respType.toLowerCase();
+	// Function before sending request
+	if (beforesend !== null) {
+		beforesend();
+	}
+    if (method == "POST") {
+        xhr.open(method, url, async);
+		xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+		xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
+        xhr.send(data);
+    } else {
+        if(typeof data !== 'undefined' && data !== null) {
+            url = url+'?'+data;
+        }
+        xhr.open(method, url, async);
+		xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+		xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
+        xhr.send(null);
+	}
+	// Function on success
+	// xhr.onload = function () {
+		xhr.onreadystatechange = function() {
+			if(xhr.readyState == 4 && xhr.status == 200) {
+				if (success !== null) {
+					success(xhr.response);
+				}
+			} 
+			if (xhr.readyState !== 4 && xhr.status !== 200) {
+				if (error !== null) {
+					error(xhr.response);
+				}
+			}
+		}
+	// }
+	xhr.onerror = function() {
+		// Ошибка сервера
+	}
+	xhr.ontimeout = function () {
+		// Сервер не отвечает или нет сети
+	}
+	xhr.onabort = function () {
+
+	}
+	if (complete !== null) {
+		complete();
+	}
+
+}
+
+function sajax(args = {}) {
+	if (typeof(args) !== "object") {
+		console.log("ajax function requires object argument!");
+		return false;
+	}
+	if (window.XMLHttpRequest) {
+        var xhr = new XMLHttpRequest();
+    } else {
+        var xhr = new ActiveXObject("Microsoft.XMLHTTP");
+	}
+	xhr.responseType = args.responseType.toLowerCase();
+	// Function before sending request
+	if (args.beforesend !== null) {
+		args.beforesend();
+	}
+	xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+	xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
+    if (args.method == "POST") {
+        xhr.open(args.method, args.url, args.async == true);
+        xhr.send(args.data);
+    } else {
+        if(typeof args.data !== 'undefined' && args.data !== null) {
+            url = url+'?'+data;
+        }
+        xhr.open(args.method, args.url, args.async == true);
+        xhr.send(null);
+	}
+	xhr.onreadystatechange = function() {
+		if(xhr.readyState == 4 && xhr.status == 200) {
+			if (success !== null) {
+				args.success(xhr.response);
+			}
+		} 
+		if (xhr.readyState !== 4 && xhr.status !== 200) {
+			if (error !== null) {
+				args.error(xhr.response);
+			}
+		}
+	}
+
+}
+
+// // var restURL = "index.php?route=checkout/cart/add" + encodeURIComponent(document.getElementById('email').value)
+// var url = "index.php?route=checkout/cart/add&" + 'product_id=' + product_id + '&quantity=' + (typeof(quantity) != 'undefined' ? quantity : 1)
+// var opts = {
+// 	method: 'POST',      
+// 	headers: {
+// 		'Content-Type': 'application/json',
+// 		'Accept': 'application/json'
+// 	}
+// };
+// fetch(url, opts).then(function (response) {
+// 	console.log(response);
+// 	// return response.json();
+// });
+// // e.preventDefault();
+
+function login() {
+	email = document.querySelector('[name="email"]');
+	password = document.querySelector('[name="password"]');
+	ajax(
+		'index.php?route=checkout/login/save', 
+		'password='+password+'&email='+email, 
+		// Если запрос отправлен успешно и получен какой-то ответ...
+		(success) => {
+			// Закрываем предыдущие сообщения об ошибках
+			let error_windows = document.querySelectorAll('.modal_window');
+			if (!!error_windows) {
+				error_windows.forEach(e => {
+					document.body.removeChild(e);
+				});
+				email.classList.remove('has-error');
+				email.parentElement.classList.remove('has-error');
+				password.classList.remove('has-error');
+				password.parentElement.classList.remove('has-error');
+			}
+			// Выводим окошки с ошибками и предупреждениями
+			if (success.error) {
+				for (const error_type in success.error) {
+					if (success.error.hasOwnProperty(error_type)) {
+						modalToast.create('toast', success.error[error_type], error_type);
+					}
+				}
+				email.classList.add('has-error');
+				email.parentElement.classList.add('has-error');
+				password.classList.add('has-error');
+				password.parentElement.classList.add('has-error');
+				// Highlight any found errors
+				//	$('input[name=\'email\']').parent().addClass('has-error');
+				// $('input[name=\'password\']').parent().addClass('has-error');
+
+			}
+			// Переадресация, если вход успешный
+			if (success.redirect) {
+				window.location = success.redirect;
+			}
+
+		},
+		null,
+		(comlpete) => {
+			console.log(comlpete);
+		},
+		(error) => {
+			console.log(error);
+		},
+		'POST',
+		'JSON',
+		true
+	);
+}
+

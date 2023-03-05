@@ -1,0 +1,87 @@
+
+<div id="modal-cart">
+  {% if products or vouchers %}
+    <table class="table table-striped">
+      {% for product in products %}
+      <tr id="product_id_{{product.product_id}}">
+        <td class="text-center">{% if product.thumb %} <a href="{{ product.href }}"><img loading="lazy" src="{{ product.thumb }}" alt="{{ product.name }}" title="{{ product.name }}" class="img-thumbnail" /></a> {% endif %}</td>
+        <td class="text-left cart-name"><a href="{{ product.href }}">{{ product.name }}</a> {% if product.option %}
+          {% for option in product.option %} <br />
+          - <small>{{ option.name }} {{ option.value }}</small> {% endfor %}
+          {% endif %}
+          {% if product.recurring %} 
+          <br />
+          - <small>{{ text_recurring }} {{ product.recurring }}</small> 
+          {% endif %}
+        </td>
+        <td class="text-right cart-qty">x {{ product.quantity }}</td>
+        <td class="text-right">{{ product.total }}</td>
+        <td class="text-center cart-remove">
+          <button type="button" onclick="cart.remove('{{ product.cart_id }}');" title="{{ button_remove }}" class="danger btn-cart-remove"></button>
+        </td>
+      </tr>
+      {% endfor %}
+      {% for voucher in vouchers %}
+      <tr>
+        <td class="text-center"></td>
+        <td class="text-left">{{ voucher.description }}</td>
+        <td class="text-right">x&nbsp;1</td>
+        <td class="text-right">{{ voucher.amount }}</td>
+        <td class="text-center text-danger">
+          <button type="button" onclick="voucher.remove('{{ voucher.key }}');" title="{{ button_remove }}" class="danger btn-cart-remove"></button>
+        </td>
+      </tr>
+      {% endfor %}
+    </table>
+    <div>
+      <table class="table table-bordered">
+        {% for total in totals %}
+        <tr>
+          <td class="text-right"><strong>{{ total.title }}</strong></td>
+          <td class="text-right">{{ total.text }}</td>
+        </tr>
+        {% endfor %}
+      </table>
+
+      <p class="text-right">
+        <a href="{{ cart }}">
+          <strong>
+            <i class="fa fa-shopping-cart"></i> 
+            {{ text_cart }}
+          </strong>
+        </a>
+        <a href="{{ checkout }}">
+          <strong>
+            <i class="icon-share"></i> 
+            {{ text_checkout }}
+          </strong>
+        </a>
+      </p>
+    </div>
+  {% else %}
+    <p class="text-center">{{ text_empty }}</p>
+  {% endif %}
+  {# {% set 'quickcheckout' = 1 %}
+  {% if quickcheckout %} #}
+    <form>
+      <fieldset>
+        <legend>Quick order</legend>
+        <div class="input-group">
+          <input placeholder="First name" autocapitalize="words" autocomplete="on" type="text" name="firstname">
+          <input placeholder="Last name" autocapitalize="words" autocomplete="on" type="text" name="lastname">
+        </div>
+        <input placeholder="Phone" autocapitalize="words" autocomplete="on" type="tel" name="phone">
+        <input placeholder="Address" autocapitalize="words" autocomplete="on" type="text" name="address">
+        <select name="delivery">
+          <option value="1">delivery 1</option>
+          <option value="2">delivery 2</option>
+        </select>
+        <select name="payment">
+          <option value="1">payment 1</option>
+          <option value="2">payment 2</option>
+        </select>
+        <button type="submit" id="quick_order">Order</button>
+      </fieldset>
+    </form>
+  {# {% endif %} #}
+</div>

@@ -1,0 +1,30 @@
+<ol class="scroll-x breadcrumbs">
+  {% for breadcrumb in breadcrumbs %}
+  <li>
+    {% if loop.last == false  %}
+    <a title="{{ breadcrumb.text }}" href="{{ breadcrumb.href }}">
+      {{ breadcrumb.text }}
+    </a>
+    {% else %}
+    <span>{{ breadcrumb.text }}</span>
+    {% endif %}
+  </li>
+  {% endfor %}
+</ol>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {% for breadcrumb in breadcrumbs %}
+    {
+    "@type": "ListItem",
+    "position": 1,
+    "name": "{{ breadcrumb.text }}"{% if loop.last == false  %},
+    "item": "{{ breadcrumb.href }}"{% endif %}
+    }{% if loop.last == false  %},{% endif%}
+    {% endfor %}
+  ]
+}
+</script>

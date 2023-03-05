@@ -1,0 +1,18 @@
+{{ header }}
+{% include 'helium/template/common/breadcrumbs.twig' %}
+{{ content_top }}
+<main id="product-compare" class="container">
+ 
+  {% if success %}
+    <div class="success">
+      <i class="icon-info"></i> 
+      {{ success }}
+    </div>
+  {% endif %}
+  {% include 'helium/template/product/compare_table.twig' with {products:products, attribute_groups:attribute_groups, review_status:review_status} %}
+
+</main>
+{{ column_left }}
+{{ content_bottom }}
+{{ column_right }}
+{{ footer }} 

@@ -1,0 +1,134 @@
+
+
+header .logo a {
+    display: flex;
+}
+
+
+
+
+
+
+
+
+#column-right .miniature,
+#column-left .miniature {
+    width: 100%;
+    max-width: 100%;
+    flex: 1 0 100%;
+}
+
+
+/* Category */
+
+main .category-description {
+    overflow-y: auto;
+    max-height: 200px;
+    position: relative;
+}
+
+div#product-category .category-description .expand_button {
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* Main menu */
+/* .menu-inner [data-openedby] {
+    position: relative;
+    
+    top: 0;
+    left: 100%;
+}
+
+.menu {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    flex: 1 0 100%;
+}
+
+.submenu {
+    display: flex;
+    flex-direction: column;
+    width: 25%;
+    max-height: 70vh;
+    overflow-y: auto;
+}
+.menu-item {
+    display: flex;
+    align-items: center;
+}
+
+#main-menu.dropdown-menu  {
+    width: 100%;
+    margin: 0;
+    padding-top: 10px;
+}
+#main-menu a {
+    flex: 1 1 auto;
+    padding: 11px 0;
+    max-width: calc(100% - 60px);
+}
+
+#main-menu .menu-inner {
+    display: flex;
+    flex-direction: row;
+    background-color: #fff;
+    box-shadow: 0 0 3px 3px #dddd;
+    padding: 10px;
+    margin-left: 0;
+    border-radius: var(--radius);
+}
+
+ */
+
+
+ /* -------- Grid  Layout --------- */
+
+/* header {grid-area: header;}
+aside  {grid-area: aside; max-width: max(20%, 360px); min-width: 0;}
+main   {grid-area: main; min-width: 100%;}
+footer {grid-area: footer;}
+ul.breadcrumb {grid-area: breadcrumb;} */
+
+
+/* body {
+	display: grid;
+	grid-template-areas:
+	'header header header header header header'
+	'breadcrumb breadcrumb breadcrumb breadcrumb breadcrumb breadcrumb'
+	'aside  main   main   main   main   main'
+	'footer footer footer footer footer footer';
+	gap: 1rem;
+	padding: 1rem;
+	// grid-template-columns: min-content;
+	grid-template-columns: auto;
+	grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+	
+	background:var(--background-body);
+} */
