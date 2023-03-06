@@ -171,11 +171,17 @@ class ControllerLocalisationLocation extends Controller {
 
 		$results = $this->model_localisation_location->getLocations($filter_data);
 
+		print_r($results);
+
 		foreach ($results as $result) {
 			$data['locations'][] =   array(
 				'location_id' => $result['location_id'],
-				// 'name'        => $result['name'],
-				// 'address'     => $result['address'],
+				'image'       => $result['image'],
+				'name'        => $result['name'],
+				'address'     => $result['address'],
+				'telephone'   => $result['telephone'],
+				'sort_order'  => $result['sort_order'],
+				'map'  		  => $result['map'],
 				'edit'        => $this->url->link('localisation/location/edit', 'user_token=' . $this->session->data['user_token'] . '&location_id=' . $result['location_id'] . $url, true)
 			);
 		}
@@ -212,8 +218,9 @@ class ControllerLocalisationLocation extends Controller {
 			$url .= '&page=' . $this->request->get['page'];
 		}
 
-		$data['sort_name'] = $this->url->link('localisation/location', 'user_token=' . $this->session->data['user_token'] . '&sort=name' . $url, true);
+		$data['sort_name'] = $this->url->link('localisation/location', 'user_token=' . $this->session->data['user_token'] . '&sort=ld.name' . $url, true);
 		$data['sort_address'] = $this->url->link('localisation/location', 'user_token=' . $this->session->data['user_token'] . '&sort=address' . $url, true);
+		$data['sort_order'] = $this->url->link('localisation/location', 'user_token=' . $this->session->data['user_token'] . '&sort=sort_order' . $url, true);
 
 		$url = '';
 
@@ -333,17 +340,21 @@ class ControllerLocalisationLocation extends Controller {
 
 		// DONE Fix this, get language fields from DB
 		if (isset($this->request->get['location_id']) && ($this->request->server['REQUEST_METHOD'] != 'POST')) {
-			$location_info = $this->model_localisation_location->getLocation($this->request->get['location_id']);
+			$data['location_info'] = $this->model_localisation_location->getLocation($this->request->get['location_id']);
 		}
 
-		print_r($location_info);
-
-		if (isset($this->request->post['location_description'])) {
+		// print_r($location_info);
+		if (isset($this->request->post['location_description']) || isset($this->request->post['location'])) {
+			// Pass form data to POST
+			$data['location'] = $this->request->post['location'];
 			$data['location_description'] = $this->request->post['location_description'];
 		} elseif (isset($this->request->get['location_id'])) {
+			// Fill form fields with data
+			$data['location'] = $this->model_localisation_location->getLocation($this->request->get['location_id']);
 			$data['location_description'] = $this->model_localisation_location->getLocationDescriptions($this->request->get['location_id']);
-			// print_r($data['location_description']);
 		} else {
+			// Leave blank
+			$data['location'] = array();
 			$data['location_description'] = array();
 		}
 
@@ -394,8 +405,8 @@ class ControllerLocalisationLocation extends Controller {
 		
 		if (isset($this->request->post['image'])) {
 			$data['image'] = $this->request->post['image'];
-		} elseif (!empty($location_info)) {
-			$data['image'] = $location_info['image'];
+		} elseif (!empty($data['location_info'])) {
+			$data['image'] = $data['location_info']['image'];
 		} else {
 			$data['image'] = '';
 		}
@@ -403,8 +414,8 @@ class ControllerLocalisationLocation extends Controller {
 		// TODO make separate config for image sizes
 		if (isset($this->request->post['image']) && is_file(DIR_IMAGE . $this->request->post['image'])) {
 			$data['thumb'] = $this->model_tool_image->resize($this->request->post['image'], 400, 400);
-		} elseif (!empty($location_info) && is_file(DIR_IMAGE . $location_info['image'])) {
-			$data['thumb'] = $this->model_tool_image->resize($location_info['image'], 400, 400);
+		} elseif (!empty($data['location_info']) && is_file(DIR_IMAGE . $data['location_info']['image'])) {
+			$data['thumb'] = $this->model_tool_image->resize($data['location_info']['image'], 400, 400);
 		} else {
 			$data['thumb'] = $this->model_tool_image->resize('no_image.webp', 400, 400);
 		}
@@ -446,6 +457,7 @@ class ControllerLocalisationLocation extends Controller {
 		if (!$this->user->hasPermission('modify', 'localisation/location')) {
 			$this->error['warning'] = $this->language->get('error_permission');
 		}
+		// print_r($this->request->post);
 
 		// if ((utf8_strlen($this->request->post['name']) < 3) || (utf8_strlen($this->request->post['name']) > 32)) {
 		// 	$this->error['name'] = $this->language->get('error_name');

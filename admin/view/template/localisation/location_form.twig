@@ -29,8 +29,8 @@
           <label class="col-sm-2 control-label" for="input-status">{{ entry_status }}</label>
             {# Status #}
             <div class="col-sm-10">
-              <select name="status" id="input-status" class="form-control">
-                {% if status %}
+              <select name="location[status]" id="input-status" class="form-control">
+                {% if location.status %}
                 <option value="1" selected="selected">{{ text_enabled }}</option>
                 <option value="0">{{ text_disabled }}</option>
                 {% else %}
@@ -45,7 +45,7 @@
           <div class="form-group">
             <label class="col-sm-2 control-label">{{ entry_store }}</label>
             <div class="col-sm-10">
-              <select name="status" id="input-status" class="form-control">
+              <select name="location[store_id]" id="input-status" class="form-control">
                 {% for store in stores %}
                   <option value="{{ store.store_id }}" selected="selected">{{ store.name }}</option>
                 {% endfor %}
@@ -57,7 +57,25 @@
           <div class="form-group">
             <label class="col-sm-2 control-label" for="input-image">{{ entry_image }}</label>
             <div class="col-sm-10"><a href="" id="thumb-image" data-toggle="image" class="img-thumbnail"><img src="{{ thumb }}" alt="" title="" data-placeholder="{{ placeholder }}" /></a>
-              <input type="hidden" name="image" value="{{ image }}" id="input-image" />
+              <input type="hidden" name="location[image]" value="{{ image }}" id="input-image" />
+            </div>
+          </div>
+
+          {# Sort order #}
+          <div class="form-group required">
+            <label class="col-sm-2 control-label" for="sort_order">{{ entry_sort_order }}</label>
+            <div class="col-sm-10">
+              <input 
+                type="text" 
+                name="location[sort_order]" 
+                value="{{ sort_order }}" 
+                placeholder="{{ entry_sort_order }}" 
+                id="sort_order" 
+                class="form-control" 
+              />
+              {% if error_name %}
+                <div class="text-danger">{{ error_sort_order }}</div>
+              {% endif %}
             </div>
           </div>
           
