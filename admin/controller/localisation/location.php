@@ -70,7 +70,7 @@ class ControllerLocalisationLocation extends Controller {
 				$url .= '&page=' . $this->request->get['page'];
 			}
 
-			$this->response->redirect($this->url->link('localisation/location', 'user_token=' . $this->session->data['user_token'] . $url, true));
+			// $this->response->redirect($this->url->link('localisation/location', 'user_token=' . $this->session->data['user_token'] . $url, true));
 		}
 
 		$this->getForm();
@@ -341,7 +341,7 @@ class ControllerLocalisationLocation extends Controller {
 			$data['location_description'] = $this->request->post['location_description'];
 		} elseif (isset($this->request->get['location_id'])) {
 			$data['location_description'] = $this->model_localisation_location->getLocationDescriptions($this->request->get['location_id']);
-			print_r($data['location_description']);
+			// print_r($data['location_description']);
 		} else {
 			$data['location_description'] = array();
 		}

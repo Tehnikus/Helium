@@ -84,6 +84,83 @@
                       </div>
                     </div>
 
+                    <div class="form-group required">
+                      <label class="col-sm-2 control-label" for="input-telephone_{{ language.language_id }}">{{ entry_telephone }}</label>
+                      <div class="col-sm-10">
+                        <input 
+                          type="text" 
+                          name="location_description[{{ language.language_id }}][telephone]" 
+                          value="{{ location_description[language.language_id] ? location_description[language.language_id].telephone }}" 
+                          value="{{ telephone }}" 
+                          placeholder="{{ entry_telephone }}" 
+                          id="input-telephone_{{ language.language_id }}" 
+                          class="form-control" 
+                        />
+                        {% if error_telephone %}
+                          <div class="text-danger">{{ error_telephone }}</div>
+                        {% endif %}
+                      </div>
+                    </div>
+
+                    {# Fax! :))) #}
+                    <div class="form-group ">
+                      <label class="col-sm-2 control-label" for="input-fax_{{ language.language_id }}">{{ entry_fax }}</label>
+                      <div class="col-sm-10">
+                        <input 
+                          type="text" 
+                          name="location_description[{{ language.language_id }}][fax]" 
+                          value="{{ location_description[language.language_id] ? location_description[language.language_id].fax }}" 
+                          value="{{ fax }}" 
+                          placeholder="{{ entry_fax }}" 
+                          id="input-fax_{{ language.language_id }}" 
+                          class="form-control" 
+                        />
+                        {% if error_fax %}
+                          <div class="text-danger">{{ error_telephone }}</div>
+                        {% endif %}
+                      </div>
+                    </div>
+
+                    <div class="form-group">
+                      <label class="col-sm-2 control-label" for="input-map_{{ language.language_id }}">
+                        <span data-toggle="tooltip" data-container="#content" title="{{ help_map }}">{{ entry_map }}</span>
+                      </label>
+                      <div class="col-sm-10">
+                        <textarea 
+                          type="text"
+                          name="location_description[{{ language.language_id }}][map]" 
+                          rows="5" 
+                          placeholder="{{ entry_map }}" 
+                          id="input-map_{{ language.language_id }}" 
+                          class="form-control">{{ map }}</textarea>
+                      </div>
+                    </div>
+
+                    <div class="form-group">
+                      <label class="col-sm-2 control-label" for="input-open_{{ language.language_id }}">
+                        <span data-toggle="tooltip" data-container="#content" title="{{ help_open }}">{{ entry_open }}</span>
+                      </label>
+                      <div class="col-sm-10">
+                        <textarea 
+                          name="location_description[{{ language.language_id }}][open]" 
+                          rows="5" 
+                          placeholder="{{ entry_open }}" 
+                          id="input-open_{{ language.language_id }}" 
+                          class="form-control">{{ open }}</textarea>
+                      </div>
+                    </div>
+
+                    <div class="form-group">
+                      <label class="col-sm-2 control-label" for="input-comment_{{ language.language_id }}"><span data-toggle="tooltip" data-container="#content" title="{{ help_comment }}">{{ entry_comment }}</span></label>
+                      <div class="col-sm-10">
+                        <textarea 
+                          name="location_description[{{ language.language_id }}][comment]" 
+                          rows="5" 
+                          placeholder="{{ entry_comment }}" 
+                          id="input-comment_{{ language.language_id }}" 
+                          class="form-control">{{ comment }}</textarea>
+                      </div>
+                    </div>
 
                     <div class="form-group">
                       <label class="col-sm-2 control-label" for="input-geocode_{{ language.language_id }}">
@@ -102,43 +179,6 @@
                         />
                       </div>
                     </div>
-
-
-                    {# <div class="form-group required">
-                      <label class="col-sm-2 control-label" for="input-telephone">{{ entry_telephone }}</label>
-                      <div class="col-sm-10">
-                        <input type="text" name="telephone" value="{{ telephone }}" placeholder="{{ entry_telephone }}" id="input-telephone" class="form-control" />
-                        {% if error_telephone %}
-                        <div class="text-danger">{{ error_telephone }}</div>
-                        {% endif %}
-                      </div>
-                    </div>
-                    <div class="form-group">
-                      <label class="col-sm-2 control-label" for="input-fax">{{ entry_fax }}</label>
-                      <div class="col-sm-10">
-                        <input type="text" name="fax" value="{{ fax }}" placeholder="{{ entry_fax }}" id="input-fax" class="form-control" />
-                      </div>
-                    </div>          
-
-                    <div class="form-group">
-                      <label class="col-sm-2 control-label" for="input-open"><span data-toggle="tooltip" data-container="#content" title="{{ help_open }}">{{ entry_open }}</span></label>
-                      <div class="col-sm-10">
-                        <textarea name="open" rows="5" placeholder="{{ entry_open }}" id="input-open" class="form-control">{{ open }}</textarea>
-                      </div>
-                    </div>
-                    <div class="form-group">
-                      <label class="col-sm-2 control-label" for="input-map"><span data-toggle="tooltip" data-container="#content" title="{{ help_map }}">{{ entry_map }}</span></label>
-                      <div class="col-sm-10">
-                        <textarea name="map" rows="5" placeholder="{{ entry_map }}" id="input-map" class="form-control">{{ map }}</textarea>
-                      </div>
-                    </div>
-                    <div class="form-group">
-                      <label class="col-sm-2 control-label" for="input-comment"><span data-toggle="tooltip" data-container="#content" title="{{ help_comment }}">{{ entry_comment }}</span></label>
-                      <div class="col-sm-10">
-                        <textarea name="comment" rows="5" placeholder="{{ entry_comment }}" id="input-comment" class="form-control">{{ comment }}</textarea>
-                      </div>
-                    </div> #}
-
 
                   </div>
                 {% endfor %}

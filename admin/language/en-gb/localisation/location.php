@@ -24,6 +24,8 @@ $_['entry_fax']        = 'Fax';
 $_['entry_image']      = 'Image';
 $_['entry_open']       = 'Opening Times';
 $_['entry_comment']    = 'Comment';
+$_['entry_map']        = '&lt;iframe&gt; maps code';
+$_['help_map']         = 'Go to Google Maps, find your address, click share and then find HTML-code entry. Paste that code here';
 
 // Help
 $_['help_geocode']     = 'Please enter your store location geocode manually.';
