@@ -331,11 +331,12 @@ class ControllerLocalisationLocation extends Controller {
 
 		$data['cancel'] = $this->url->link('localisation/location', 'user_token=' . $this->session->data['user_token'] . $url, true);
 
-		// if (isset($this->request->get['location_id']) && ($this->request->server['REQUEST_METHOD'] != 'POST')) {
-		// 	$location_info = $this->model_localisation_location->getLocation($this->request->get['location_id']);
-		// }
+		// DONE Fix this, get language fields from DB
+		if (isset($this->request->get['location_id']) && ($this->request->server['REQUEST_METHOD'] != 'POST')) {
+			$location_info = $this->model_localisation_location->getLocation($this->request->get['location_id']);
+		}
 
-		
+		print_r($location_info);
 
 		if (isset($this->request->post['location_description'])) {
 			$data['location_description'] = $this->request->post['location_description'];
@@ -410,29 +411,29 @@ class ControllerLocalisationLocation extends Controller {
 
 		$data['placeholder'] = $this->model_tool_image->resize('no_image.webp', 400, 400);
 
-		if (isset($this->request->post['open'])) {
-			$data['open'] = $this->request->post['open'];
-		} elseif (!empty($location_info)) {
-			$data['open'] = $location_info['open'];
-		} else {
-			$data['open'] = '';
-		}
+		// if (isset($this->request->post['open'])) {
+		// 	$data['open'] = $this->request->post['open'];
+		// } elseif (!empty($location_info)) {
+		// 	$data['open'] = $location_info['open'];
+		// } else {
+		// 	$data['open'] = '';
+		// }
 
-		if (isset($this->request->post['comment'])) {
-			$data['comment'] = $this->request->post['comment'];
-		} elseif (!empty($location_info)) {
-			$data['comment'] = $location_info['comment'];
-		} else {
-			$data['comment'] = '';
-		}
+		// if (isset($this->request->post['comment'])) {
+		// 	$data['comment'] = $this->request->post['comment'];
+		// } elseif (!empty($location_info)) {
+		// 	$data['comment'] = $location_info['comment'];
+		// } else {
+		// 	$data['comment'] = '';
+		// }
 
-		if (isset($this->request->post['map'])) {
-			$data['map'] = $this->request->post['map'];
-		} elseif (!empty($location_info)) {
-			$data['map'] = $location_info['map'];
-		} else {
-			$data['map'] = '';
-		}
+		// if (isset($this->request->post['map'])) {
+		// 	$data['map'] = $this->request->post['map'];
+		// } elseif (!empty($location_info)) {
+		// 	$data['map'] = $location_info['map'];
+		// } else {
+		// 	$data['map'] = '';
+		// }
 
 		$data['header'] = $this->load->controller('common/header');
 		$data['column_left'] = $this->load->controller('common/column_left');

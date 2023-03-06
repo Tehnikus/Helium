@@ -25,6 +25,34 @@
       </div>
       <div class="panel-body">
         <form action="{{ action }}" method="post" enctype="multipart/form-data" id="form-location" class="form-horizontal">
+        <div class="form-group">
+          <label class="col-sm-2 control-label" for="input-status">{{ entry_status }}</label>
+            {# Status #}
+            <div class="col-sm-10">
+              <select name="status" id="input-status" class="form-control">
+                {% if status %}
+                <option value="1" selected="selected">{{ text_enabled }}</option>
+                <option value="0">{{ text_disabled }}</option>
+                {% else %}
+                <option value="1">{{ text_enabled }}</option>
+                <option value="0" selected="selected">{{ text_disabled }}</option>
+                {% endif %}
+              </select>
+            </div>
+          </div>
+          
+          {# Stores #}
+          <div class="form-group">
+            <label class="col-sm-2 control-label">{{ entry_store }}</label>
+            <div class="col-sm-10">
+              <select name="status" id="input-status" class="form-control">
+                {% for store in stores %}
+                  <option value="{{ store.store_id }}" selected="selected">{{ store.name }}</option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+
           {# Image #}
           <div class="form-group">
             <label class="col-sm-2 control-label" for="input-image">{{ entry_image }}</label>
