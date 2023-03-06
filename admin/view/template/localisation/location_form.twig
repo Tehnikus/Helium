@@ -25,7 +25,14 @@
       </div>
       <div class="panel-body">
         <form action="{{ action }}" method="post" enctype="multipart/form-data" id="form-location" class="form-horizontal">
-
+          {# Image #}
+          <div class="form-group">
+            <label class="col-sm-2 control-label" for="input-image">{{ entry_image }}</label>
+            <div class="col-sm-10"><a href="" id="thumb-image" data-toggle="image" class="img-thumbnail"><img src="{{ thumb }}" alt="" title="" data-placeholder="{{ placeholder }}" /></a>
+              <input type="hidden" name="image" value="{{ image }}" id="input-image" />
+            </div>
+          </div>
+          
           {# Language tabs #}
           <div class="tab-content">
             <div class="tab-pane active" id="tab-general">
@@ -40,33 +47,64 @@
               </ul>
               <div class="tab-content">
 
+
+
                 {% for language in languages %}
                   <div class="tab-pane {% if loop.first %} active {% endif %}" id="language{{ language.language_id }}">
                     <div class="form-group required">
-                      <label class="col-sm-2 control-label" for="input-name">{{ entry_name }}</label>
+                      <label class="col-sm-2 control-label" for="input-name_{{ language.language_id }}">{{ entry_name }}</label>
                       <div class="col-sm-10">
-                        <input type="text" name="name" value="{{ name }}" placeholder="{{ entry_name }}" id="input-name" class="form-control" />
+                        <input 
+                          type="text" 
+                          name="location_description[{{ language.language_id }}][name]" 
+                          value="{{ location_description[language.language_id] ? location_description[language.language_id].name }}" 
+                          placeholder="{{ entry_name }}" 
+                          id="input-name_{{ language.language_id }}" 
+                          class="form-control" 
+                        />
                         {% if error_name %}
-                        <div class="text-danger">{{ error_name }}</div>
+                          <div class="text-danger">{{ error_name }}</div>
                         {% endif %}
                       </div>
                     </div>
+
                     <div class="form-group required">
-                      <label class="col-sm-2 control-label" for="input-address">{{ entry_address }}</label>
+                      <label class="col-sm-2 control-label" for="input-address_{{ language.language_id }}">{{ entry_address }}</label>
                       <div class="col-sm-10">
-                        <textarea type="text" name="address" placeholder="{{ entry_address }}" rows="5" id="input-address" class="form-control">{{ address }}</textarea>
+                        <textarea 
+                          type="text" 
+                          name="location_description[{{ language.language_id }}][address]" 
+                          placeholder="{{ entry_address }}" 
+                          rows="5" 
+                          id="input-address_{{ language.language_id }}" 
+                          class="form-control">{{ location_description[language.language_id] ? location_description[language.language_id].address }}</textarea>
                         {% if error_address %}
-                        <div class="text-danger">{{ error_address }}</div>
-                      {% endif %}
+                          <div class="text-danger">{{ error_address }}</div>
+                        {% endif %}
                       </div>
                     </div>
+
+
                     <div class="form-group">
-                      <label class="col-sm-2 control-label" for="input-geocode"><span data-toggle="tooltip" data-container="#content" title="{{ help_geocode }}">{{ entry_geocode }}</span></label>
+                      <label class="col-sm-2 control-label" for="input-geocode_{{ language.language_id }}">
+                        <span data-toggle="tooltip" data-container="#content" title="{{ help_geocode }}">
+                          {{ entry_geocode }}
+                        </span>
+                      </label>
                       <div class="col-sm-10">
-                        <input type="text" name="geocode" value="{{ geocode }}" placeholder="{{ entry_geocode }}" id="input-geocode" class="form-control" />
+                        <input 
+                          type="text" 
+                          name="location_description[{{ language.language_id }}][geocode]" 
+                          value="{{ location_description[language.language_id] ? location_description[language.language_id].geocode }}" 
+                          placeholder="{{ entry_geocode }}" 
+                          id="input-geocode_{{ language.language_id }}" 
+                          class="form-control" 
+                        />
                       </div>
                     </div>
-                    <div class="form-group required">
+
+
+                    {# <div class="form-group required">
                       <label class="col-sm-2 control-label" for="input-telephone">{{ entry_telephone }}</label>
                       <div class="col-sm-10">
                         <input type="text" name="telephone" value="{{ telephone }}" placeholder="{{ entry_telephone }}" id="input-telephone" class="form-control" />
@@ -81,12 +119,7 @@
                         <input type="text" name="fax" value="{{ fax }}" placeholder="{{ entry_fax }}" id="input-fax" class="form-control" />
                       </div>
                     </div>          
-                    <div class="form-group">
-                      <label class="col-sm-2 control-label" for="input-image">{{ entry_image }}</label>
-                      <div class="col-sm-10"><a href="" id="thumb-image" data-toggle="image" class="img-thumbnail"><img src="{{ thumb }}" alt="" title="" data-placeholder="{{ placeholder }}" /></a>
-                        <input type="hidden" name="image" value="{{ image }}" id="input-image" />
-                      </div>
-                    </div>
+
                     <div class="form-group">
                       <label class="col-sm-2 control-label" for="input-open"><span data-toggle="tooltip" data-container="#content" title="{{ help_open }}">{{ entry_open }}</span></label>
                       <div class="col-sm-10">
@@ -104,7 +137,9 @@
                       <div class="col-sm-10">
                         <textarea name="comment" rows="5" placeholder="{{ entry_comment }}" id="input-comment" class="form-control">{{ comment }}</textarea>
                       </div>
-                    </div>
+                    </div> #}
+
+
                   </div>
                 {% endfor %}
 

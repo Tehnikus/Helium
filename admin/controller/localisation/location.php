@@ -174,8 +174,8 @@ class ControllerLocalisationLocation extends Controller {
 		foreach ($results as $result) {
 			$data['locations'][] =   array(
 				'location_id' => $result['location_id'],
-				'name'        => $result['name'],
-				'address'     => $result['address'],
+				// 'name'        => $result['name'],
+				// 'address'     => $result['address'],
 				'edit'        => $this->url->link('localisation/location/edit', 'user_token=' . $this->session->data['user_token'] . '&location_id=' . $result['location_id'] . $url, true)
 			);
 		}
@@ -246,12 +246,14 @@ class ControllerLocalisationLocation extends Controller {
 	}
 
 	protected function getForm() {
-		// Get store languages
+		$this->load->model('localisation/location');
 		$this->load->model('localisation/language');
+		$this->load->model('setting/store');
+		$this->load->model('tool/image');
+		// Get store languages
 		$data['languages'] = $this->model_localisation_language->getLanguages();
 		// Stores list
 		// Default store (stored in config)
-		$this->load->model('setting/store');
 		$stores = array();
 		$stores[0] = array(
 			'store_id' => '0',
@@ -329,53 +331,65 @@ class ControllerLocalisationLocation extends Controller {
 
 		$data['cancel'] = $this->url->link('localisation/location', 'user_token=' . $this->session->data['user_token'] . $url, true);
 
-		if (isset($this->request->get['location_id']) && ($this->request->server['REQUEST_METHOD'] != 'POST')) {
-			$location_info = $this->model_localisation_location->getLocation($this->request->get['location_id']);
+		// if (isset($this->request->get['location_id']) && ($this->request->server['REQUEST_METHOD'] != 'POST')) {
+		// 	$location_info = $this->model_localisation_location->getLocation($this->request->get['location_id']);
+		// }
+
+		
+
+		if (isset($this->request->post['location_description'])) {
+			$data['location_description'] = $this->request->post['location_description'];
+		} elseif (isset($this->request->get['location_id'])) {
+			$data['location_description'] = $this->model_localisation_location->getLocationDescriptions($this->request->get['location_id']);
+			print_r($data['location_description']);
+		} else {
+			$data['location_description'] = array();
 		}
 
 		$data['user_token'] = $this->session->data['user_token'];
 
-		$this->load->model('setting/store');
-
-		if (isset($this->request->post['name'])) {
-			$data['name'] = $this->request->post['name'];
-		} elseif (!empty($location_info)) {
-			$data['name'] = $location_info['name'];
-		} else {
-			$data['name'] =   '';
-		}
-
-		if (isset($this->request->post['address'])) {
-			$data['address'] = $this->request->post['address'];
-		} elseif (!empty($location_info)) {
-			$data['address'] = $location_info['address'];
-		} else {
-			$data['address'] = '';
-		}
-
-		if (isset($this->request->post['geocode'])) {
-			$data['geocode'] = $this->request->post['geocode'];
-		} elseif (!empty($location_info)) {
-			$data['geocode'] = $location_info['geocode'];
-		} else {
-			$data['geocode'] = '';
-		}
-
-		if (isset($this->request->post['telephone'])) {
-			$data['telephone'] = $this->request->post['telephone'];
-		} elseif (!empty($location_info)) {
-			$data['telephone'] = $location_info['telephone'];
-		} else {
-			$data['telephone'] = '';
-		}
 		
-		if (isset($this->request->post['fax'])) {
-			$data['fax'] = $this->request->post['fax'];
-		} elseif (!empty($location_info)) {
-			$data['fax'] = $location_info['fax'];
-		} else {
-			$data['fax'] = '';
-		}
+
+		// Это по всей видимости не нужно
+		// if (isset($this->request->post['name'])) {
+		// 	$data['name'] = $this->request->post['name'];
+		// } elseif (!empty($location_info)) {
+		// 	$data['name'] = $location_info['name'];
+		// } else {
+		// 	$data['name'] =   '';
+		// }
+
+		// if (isset($this->request->post['address'])) {
+		// 	$data['address'] = $this->request->post['address'];
+		// } elseif (!empty($location_info)) {
+		// 	$data['address'] = $location_info['address'];
+		// } else {
+		// 	$data['address'] = '';
+		// }
+
+		// if (isset($this->request->post['geocode'])) {
+		// 	$data['geocode'] = $this->request->post['geocode'];
+		// } elseif (!empty($location_info)) {
+		// 	$data['geocode'] = $location_info['geocode'];
+		// } else {
+		// 	$data['geocode'] = '';
+		// }
+
+		// if (isset($this->request->post['telephone'])) {
+		// 	$data['telephone'] = $this->request->post['telephone'];
+		// } elseif (!empty($location_info)) {
+		// 	$data['telephone'] = $location_info['telephone'];
+		// } else {
+		// 	$data['telephone'] = '';
+		// }
+		
+		// if (isset($this->request->post['fax'])) {
+		// 	$data['fax'] = $this->request->post['fax'];
+		// } elseif (!empty($location_info)) {
+		// 	$data['fax'] = $location_info['fax'];
+		// } else {
+		// 	$data['fax'] = '';
+		// }
 		
 		if (isset($this->request->post['image'])) {
 			$data['image'] = $this->request->post['image'];
@@ -385,17 +399,16 @@ class ControllerLocalisationLocation extends Controller {
 			$data['image'] = '';
 		}
 
-		$this->load->model('tool/image');
-
+		// TODO make separate config for image sizes
 		if (isset($this->request->post['image']) && is_file(DIR_IMAGE . $this->request->post['image'])) {
-			$data['thumb'] = $this->model_tool_image->resize($this->request->post['image'], 100, 100);
+			$data['thumb'] = $this->model_tool_image->resize($this->request->post['image'], 400, 400);
 		} elseif (!empty($location_info) && is_file(DIR_IMAGE . $location_info['image'])) {
-			$data['thumb'] = $this->model_tool_image->resize($location_info['image'], 100, 100);
+			$data['thumb'] = $this->model_tool_image->resize($location_info['image'], 400, 400);
 		} else {
-			$data['thumb'] = $this->model_tool_image->resize('no_image.png', 100, 100);
+			$data['thumb'] = $this->model_tool_image->resize('no_image.webp', 400, 400);
 		}
 
-		$data['placeholder'] = $this->model_tool_image->resize('no_image.png', 100, 100);
+		$data['placeholder'] = $this->model_tool_image->resize('no_image.webp', 400, 400);
 
 		if (isset($this->request->post['open'])) {
 			$data['open'] = $this->request->post['open'];
@@ -433,17 +446,17 @@ class ControllerLocalisationLocation extends Controller {
 			$this->error['warning'] = $this->language->get('error_permission');
 		}
 
-		if ((utf8_strlen($this->request->post['name']) < 3) || (utf8_strlen($this->request->post['name']) > 32)) {
-			$this->error['name'] = $this->language->get('error_name');
-		}
+		// if ((utf8_strlen($this->request->post['name']) < 3) || (utf8_strlen($this->request->post['name']) > 32)) {
+		// 	$this->error['name'] = $this->language->get('error_name');
+		// }
 
-		if ((utf8_strlen($this->request->post['address']) < 3) || (utf8_strlen($this->request->post['address']) > 128)) {
-			$this->error['address'] = $this->language->get('error_address');
-		}
+		// if ((utf8_strlen($this->request->post['address']) < 3) || (utf8_strlen($this->request->post['address']) > 128)) {
+		// 	$this->error['address'] = $this->language->get('error_address');
+		// }
 
-		if ((utf8_strlen($this->request->post['telephone']) < 3) || (utf8_strlen($this->request->post['telephone']) > 32)) {
-			$this->error['telephone'] = $this->language->get('error_telephone');
-		}
+		// if ((utf8_strlen($this->request->post['telephone']) < 3) || (utf8_strlen($this->request->post['telephone']) > 32)) {
+		// 	$this->error['telephone'] = $this->language->get('error_telephone');
+		// }
 
 		return !$this->error;
 	}
