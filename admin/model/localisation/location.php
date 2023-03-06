@@ -35,6 +35,8 @@ class ModelLocalisationLocation extends Model {
 	}
 
 	public function editLocation($location_id, $data) {
+		// print_r($data['location_description']);
+		// return;
 		$this->db->query("
 			UPDATE " . DB_PREFIX . "location 
 			SET 
@@ -46,19 +48,22 @@ class ModelLocalisationLocation extends Model {
 			WHERE location_id = '" . (int)$location_id . "'
 		");
 	
-		foreach ($data['language_id'] as $language_id => $value) {
+		foreach ($data['location_description'] as $language_id => $value) {
+			print_r($value);
 			$this->db->query("
-				INSERT INTO ".DB_PREFIX."location_description 
+				UPDATE ".DB_PREFIX."location_description 
 					SET
-					location_id = '".(int)$location_id."',
-					language_id = '" . (int)$language_id . "', 
-					address = '" . $this->db->escape($value['address']) . "', 
-					geocode = '" . $this->db->escape($value['geocode']) . "', 
-					telephone = '" . $this->db->escape($value['telephone']) . "', 
-					fax = '" . $this->db->escape($value['fax']) . "', 
-					open = '" . $this->db->escape($value['open']) . "', 
-					map = '" . $this->db->escape($value['map']) . "',
-					comment = '" . $this->db->escape($value['comment']) . "'
+						name = '" . $this->db->escape($value['name']) . "', 
+						address = '" . $this->db->escape($value['address']) . "', 
+						geocode = '" . $this->db->escape($value['geocode']) . "', 
+						telephone = '" . $this->db->escape($value['telephone']) . "', 
+						fax = '" . $this->db->escape($value['fax']) . "', 
+						open = '" . $this->db->escape($value['open']) . "', 
+						map = '" . $this->db->escape($value['map']) . "',
+						comment = '" . $this->db->escape($value['comment']) . "'
+					WHERE 
+						location_id = '".(int)$location_id."' 
+						AND language_id = '" . (int)$language_id . "'
 			");
 		}
 	
