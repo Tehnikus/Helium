@@ -41,15 +41,15 @@ class ModelCatalogFilterPages extends Model {
 		foreach ($data['filter_page_description']['lang'] as $language_id => $lang_value) {
 			foreach ($data['filter_page_seo_url'] as $store_id => $store_value) {
 				$filters = explode(",", $data['filter_page_description']['filters']);
-				// Удаляем пустые значения
+				// Remove empty values
 				$filters = array_filter($filters, 'strlen');
 				$filters = array_unique($filters);
-				// Сортируем фильтры, чтобы ID  всегда шли в порядке возрастания
+				// Sort filter ids ascending
 				asort($filters);
 
 				$data['filter_page_description']['filters'] = implode(",", $filters);
 				
-				// Создаем SEO URL
+				// Create SEO URL entry
 				$this->db->query("
 					INSERT INTO " . DB_PREFIX . "seo_url 
 					SET 

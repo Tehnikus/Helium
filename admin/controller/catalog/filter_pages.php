@@ -118,15 +118,15 @@ class ControllerCatalogFilterPages extends Controller {
 		$this->getList();
 	}
 
-	// Готово
+	// DONE
 	protected function getList() {
-		// Сортировка страниц по умолчанию
+		// Default sorting of listing
 		if (isset($this->request->get['sort'])) {
 			$sort = $this->request->get['sort'];
 		} else {
 			$sort = 'fpd.date_modified';
 		}
-		// Сверху самые новые страницы
+		// Order by date created, new pages above
 		if (isset($this->request->get['order'])) {
 			$order = $this->request->get['order'];
 		} else {
@@ -152,7 +152,7 @@ class ControllerCatalogFilterPages extends Controller {
 		if (isset($this->request->get['page'])) {
 			$url .= '&page=' . $this->request->get['page'];
 		}
-		// Хлебные крошки
+		// Breadcrumbs
 		$data['breadcrumbs'] = array();
 		$data['breadcrumbs'][] = array(
 			'text' => $this->language->get('text_home'),
@@ -162,7 +162,7 @@ class ControllerCatalogFilterPages extends Controller {
 			'text' => $this->language->get('heading_title'),
 			'href' => $this->url->link('catalog/filter_pages', 'user_token=' . $this->session->data['user_token'] . $url, true)
 		);
-		// Кнопки сверху
+		// Action buttons
 		$data['add'] = $this->url->link('catalog/filter_pages/add', 'user_token=' . $this->session->data['user_token'] . $url, true);
 		$data['delete'] = $this->url->link('catalog/filter_pages/delete', 'user_token=' . $this->session->data['user_token'] . $url, true);
 
@@ -175,29 +175,14 @@ class ControllerCatalogFilterPages extends Controller {
 			'limit' => $this->config->get('config_limit_admin')
 		);
 
-		// Это нужно для пагинации
+		// Total filter pages
 		$filter_total = $this->model_catalog_filter_pages->getTotalFilterPages();
 		
-		// Здесь пошло получение данных из БД
+		// Get data from DB
 		$results = $this->model_catalog_filter_pages->getFilterPages($filter_data);
 
-		// // Список названий фильтров
-		// $q = $this->db->query("
-		// 	SELECT
-		// 		f.filter_id,
-		// 		f.name
-		// 	FROM ".DB_PREFIX."filter_description f
-		// 	WHERE f.language_id = '".(int)$this->config->get('config_language_id')."'
-		// ");
-		// if ($q->num_rows) {
-		// 	$filter_names_raw = $q->rows;
-		// 	foreach ($filter_names_raw as $filter_name) {
-		// 		$filter_names[$filter_name['filter_id']] = $filter_name['name'];
-		// 	}
-		// }
-
-		// Список магазинов
-		// Магазин по умолчанию
+		// Stores
+		// Default store
 		$this->load->model('setting/store');
 		$stores = array();
 		$stores[0] = array(
@@ -205,7 +190,7 @@ class ControllerCatalogFilterPages extends Controller {
 			'name'     => $this->config->get('config_name'),
 			'url'      => $this->config->get('config_secure') ? HTTPS_CATALOG : HTTP_CATALOG,
 		);
-		// Остальные магазины
+		// Oyher stores if exist
 		$stores_raw = $this->model_setting_store->getStores();
 		foreach ($stores_raw as $store) {
 			$stores[$store['store_id']] = array(
@@ -215,28 +200,13 @@ class ControllerCatalogFilterPages extends Controller {
 			);
 		}
 		$data['stores'] = $stores;
-		// print_r($data['stores']);
 
 
-		// Это отображаемые данные
+		// Display data
 		foreach ($results as $result) {
-
-			// $filter_ids = explode(",", $result['filters']);
-			// foreach ($filter_ids as $id) {
-			// 	$filter_names_list[] = $filter_names[$id];
-			// }
-
-			// Подсчет количества товаров для каждой страницы фильтра
-			// $product_count = $this->db->query("
-			// 	SELECT COUNT(DISTINCT product_id) as product_count FROM ".DB_PREFIX."product_filter WHERE filter_id IN (".$result['filters'].")
-			// ");
-			// $product_count = $product_count->row['product_count'];
-
 			$data['filter_pages'][] = array(
 				'filter_page_id'  => $result['filter_page_id'],
 				'name'            => $result['name'],
-				// 'filters'         => implode(", ", $filter_names_list),
-				// 'filters'         => $result['filters'],
 				'filter_names'    => $result['filter_names'],
 				'product_count'   => $result['product_count'],
 				'seo_url'         => $result['seo_url'],
@@ -244,7 +214,7 @@ class ControllerCatalogFilterPages extends Controller {
 				'store'   		  => $stores[$result['store_id']]['name'],
 				'edit'            => $this->url->link('catalog/filter_pages/edit', 'user_token=' . $this->session->data['user_token'] . '&filter_page_id=' . $result['filter_page_id'] . $url, true),
 				'delete'          => $this->url->link('catalog/filter_pages/delete', 'user_token=' . $this->session->data['user_token'] . '&filter_page_id=' . $result['filter_page_id'] . $url, true),
-				// DONE Тут прописать путь к фильтру в фронте
+				// DONE Route to frontend filter page
 				'view'   		  => HTTP_CATALOG . 'index.php?route=product/category&path=' . ($result['default_category']) . '&filter=' . ($result['filters']),
 			);
 		}
@@ -314,15 +284,14 @@ class ControllerCatalogFilterPages extends Controller {
 		$data['header'] = $this->load->controller('common/header');
 		$data['column_left'] = $this->load->controller('common/column_left');
 		$data['footer'] = $this->load->controller('common/footer');
-		// echo($sort);
 		$this->response->setOutput($this->load->view('catalog/filter_pages_list', $data));
 	}
 
-	// Готово
+	// Filter page form
 	protected function getForm() {
-		// Заголовок формы
+		// Heading
 		$data['text_form'] = !isset($this->request->get['filter_page_id']) ? $this->language->get('text_add') : $this->language->get('text_edit');
-		// Ошибки
+		// Errors if persist
 		if (isset($this->error['warning'])) {
 			$data['error_warning'] = $this->error['warning'];
 		} else {
@@ -340,7 +309,7 @@ class ControllerCatalogFilterPages extends Controller {
 		} else {
 			$data['error_filter'] = array();
 		}
-
+		// $url for breadcrumbs. Stores previous page state - sort order, page number
 		$url = '';
 		if (isset($this->request->get['sort'])) {
 			$url .= '&sort=' . $this->request->get['sort'];
@@ -352,11 +321,10 @@ class ControllerCatalogFilterPages extends Controller {
 			$url .= '&page=' . $this->request->get['page'];
 		}
 
-
 		$this->load->model('catalog/category');
 		$data['categories'] = $this->model_catalog_category->getAllCategories();
 
-		// Хлебные крошки
+		// 
 		$data['breadcrumbs'] = array();
 		$data['breadcrumbs'][] = array(
 			'text' => $this->language->get('text_home'),
@@ -375,11 +343,12 @@ class ControllerCatalogFilterPages extends Controller {
 
 		$data['cancel'] = $this->url->link('catalog/filter_pages', 'user_token=' . $this->session->data['user_token'] . $url, true);
 		$data['user_token'] = $this->session->data['user_token'];
+		
 		$this->load->model('localisation/language');
 		$data['languages'] = $this->model_localisation_language->getLanguages();
 
-		// Список магазинов
-		// Магазин по умолчанию
+		// Stores list
+		// Default store (stored in config)
 		$this->load->model('setting/store');
 		$stores = array();
 		$stores[0] = array(
@@ -387,7 +356,7 @@ class ControllerCatalogFilterPages extends Controller {
 			'name'     => $this->config->get('config_name'),
 			'url'      => $this->config->get('config_secure') ? HTTPS_CATALOG : HTTP_CATALOG,
 		);
-		// Остальные магазины
+		// Other stores (stored in DB)
 		$stores_raw = $this->model_setting_store->getStores();
 		foreach ($stores_raw as $store) {
 			$stores[$store['store_id']] = array(
@@ -397,14 +366,13 @@ class ControllerCatalogFilterPages extends Controller {
 			);
 		}
 		$data['stores'] = $stores;
-		// print_r($data['stores']);
 
 
 		// Здесь получаем данные из БД
 		if (isset($this->request->get['filter_page_id']) && ($this->request->server['REQUEST_METHOD'] != 'POST')) {
 			$filter_pages_info = $this->model_catalog_filter_pages->getFilterPage($this->request->get['filter_page_id']);
 		}
-		// print_r($filter_pages_info['filter_page_seo_url']);
+		
 
 
 		// Вот это похоже на передачу текста в БД
@@ -421,11 +389,7 @@ class ControllerCatalogFilterPages extends Controller {
 
 		if (isset($this->request->post['sort_order'])) {
 			$data['sort_order'] = $this->request->post['sort_order'];
-		} 
-		// elseif (!empty($filter_pages_info)) {
-		// 	$data['sort_order'] = $filter_pages_info['sort_order'];
-		// } 
-		else {
+		} else {
 			$data['sort_order'] = '';
 		}
 
@@ -482,39 +446,39 @@ class ControllerCatalogFilterPages extends Controller {
 	}
 
 	// Переделать на поиск категории по имени
-	public function autocomplete() {
-		$json = array();
+	// public function autocomplete() {
+	// 	$json = array();
 
-		if (isset($this->request->get['filter_name'])) {
-			$this->load->model('catalog/filter_pages');
+	// 	if (isset($this->request->get['filter_name'])) {
+	// 		$this->load->model('catalog/filter_pages');
 
-			$filter_data = array(
-				'filter_name' => $this->request->get['filter_name'],
-				'start'       => 0,
-				'limit'       => 20
-			);
-			// Эту функцию я заккоментировал в 
-			// C:\OpenServer\domains\test9.loc\www\admin\model\catalog\filter_pages.php
-			// Ее надо будет заменить на поиск категорий по имени
-			$filters = $this->model_catalog_filter_pages->getFilters($filter_data);
+	// 		$filter_data = array(
+	// 			'filter_name' => $this->request->get['filter_name'],
+	// 			'start'       => 0,
+	// 			'limit'       => 20
+	// 		);
+	// 		// Эту функцию я заккоментировал в 
+	// 		// C:\OpenServer\domains\test9.loc\www\admin\model\catalog\filter_pages.php
+	// 		// Ее надо будет заменить на поиск категорий по имени
+	// 		$filters = $this->model_catalog_filter_pages->getFilters($filter_data);
 
-			foreach ($filters as $filter) {
-				$json[] = array(
-					'filter_id' => $filter['filter_id'],
-					'name'      => strip_tags(html_entity_decode($filter['group'] . ' &gt; ' . $filter['name'], ENT_QUOTES, 'UTF-8'))
-				);
-			}
-		}
+	// 		foreach ($filters as $filter) {
+	// 			$json[] = array(
+	// 				'filter_id' => $filter['filter_id'],
+	// 				'name'      => strip_tags(html_entity_decode($filter['group'] . ' &gt; ' . $filter['name'], ENT_QUOTES, 'UTF-8'))
+	// 			);
+	// 		}
+	// 	}
 
-		$sort_order = array();
+	// 	$sort_order = array();
 
-		foreach ($json as $key => $value) {
-			$sort_order[$key] = $value['name'];
-		}
+	// 	foreach ($json as $key => $value) {
+	// 		$sort_order[$key] = $value['name'];
+	// 	}
 
-		array_multisort($sort_order, SORT_ASC, $json);
+	// 	array_multisort($sort_order, SORT_ASC, $json);
 
-		$this->response->addHeader('Content-Type: application/json');
-		$this->response->setOutput(json_encode($json));
-	}
+	// 	$this->response->addHeader('Content-Type: application/json');
+	// 	$this->response->setOutput(json_encode($json));
+	// }
 }

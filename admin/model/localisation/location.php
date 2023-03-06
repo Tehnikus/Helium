@@ -1,7 +1,21 @@
 <?php
 class ModelLocalisationLocation extends Model {
 	public function addLocation($data) {
-		$this->db->query("INSERT INTO " . DB_PREFIX . "location SET name = '" . $this->db->escape($data['name']) . "', address = '" . $this->db->escape($data['address']) . "', geocode = '" . $this->db->escape($data['geocode']) . "', telephone = '" . $this->db->escape($data['telephone']) . "', fax = '" . $this->db->escape($data['fax']) . "', image = '" . $this->db->escape($data['image']) . "', open = '" . $this->db->escape($data['open']) . "', comment = '" . $this->db->escape($data['comment']) . "'");
+		$this->db->query("
+			INSERT INTO " . DB_PREFIX . "location 
+			SET 
+				language_id = '" . $this->db->escape($data['language_id']) . "', 
+				store_id = '" . $this->db->escape($data['store_id']) . "', 
+				name = '" . $this->db->escape($data['name']) . "', 
+				address = '" . $this->db->escape($data['address']) . "', 
+				geocode = '" . $this->db->escape($data['geocode']) . "', 
+				telephone = '" . $this->db->escape($data['telephone']) . "', 
+				fax = '" . $this->db->escape($data['fax']) . "', 
+				image = '" . $this->db->escape($data['image']) . "', 
+				open = '" . $this->db->escape($data['open']) . "', 
+				map = '" . $this->db->escape($data['map']) . "',
+				comment = '" . $this->db->escape($data['comment']) . "'
+			");
 	
 		return $this->db->getLastId();
 	}

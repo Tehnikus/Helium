@@ -246,6 +246,29 @@ class ControllerLocalisationLocation extends Controller {
 	}
 
 	protected function getForm() {
+		// Get store languages
+		$this->load->model('localisation/language');
+		$data['languages'] = $this->model_localisation_language->getLanguages();
+		// Stores list
+		// Default store (stored in config)
+		$this->load->model('setting/store');
+		$stores = array();
+		$stores[0] = array(
+			'store_id' => '0',
+			'name'     => $this->config->get('config_name'),
+			'url'      => $this->config->get('config_secure') ? HTTPS_CATALOG : HTTP_CATALOG,
+		);
+		// Other stores (stored in DB)
+		$stores_raw = $this->model_setting_store->getStores();
+		foreach ($stores_raw as $store) {
+			$stores[$store['store_id']] = array(
+				'store_id' => $store['store_id'],
+				'name'     => $store['name'],
+				'url'      => $store['url'],
+			);
+		}
+		$data['stores'] = $stores;
+
 		$data['text_form'] = !isset($this->request->get['location_id']) ? $this->language->get('text_add') : $this->language->get('text_edit');
 
 		if (isset($this->error['warning'])) {
@@ -388,6 +411,14 @@ class ControllerLocalisationLocation extends Controller {
 			$data['comment'] = $location_info['comment'];
 		} else {
 			$data['comment'] = '';
+		}
+
+		if (isset($this->request->post['map'])) {
+			$data['map'] = $this->request->post['map'];
+		} elseif (!empty($location_info)) {
+			$data['map'] = $location_info['map'];
+		} else {
+			$data['map'] = '';
 		}
 
 		$data['header'] = $this->load->controller('common/header');
