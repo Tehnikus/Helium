@@ -120,7 +120,9 @@ footer {column-gap: 1rem;order: 6;}
 .row {display: flex;flex-direction: row;flex-wrap: wrap;flex: 1 0 100%;align-items: center;}
 .flex {display:flex;}
 .flex-1 {flex: 1;}
+.flex-1-0-100 {flex: 1 0 100%;}
 .justify-between{justify-content: space-between;}
+.flex-wrap {flex-wrap: wrap;}
 .flex-column{flex-direction: column;}
 .flex-row{flex-direction: row;}
 /* span[class^='h'], span[class*=' h']{

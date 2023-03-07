@@ -96,11 +96,6 @@ class ModelBlogArticle extends Model {
 			}
 		}
 		
-		if($this->config->get('config_seo_pro')){		
-		$this->cache->delete('seopro');
-		}
-
-		$this->cache->delete('article');
 
 		return $article_id;
 	}
@@ -216,18 +211,13 @@ class ModelBlogArticle extends Model {
 			}
 		}
 		
-		$this->cache->delete('article');
-
-		if($this->config->get('config_seo_pro')){		
-		$this->cache->delete('seopro');
-		}
 
 	}
 	
 	public function editArticleStatus($article_id, $status) {
         $this->db->query("UPDATE " . DB_PREFIX . "article SET status = '" . (int)$status . "', date_modified = NOW() WHERE article_id = '" . (int)$article_id . "'");
         
-		$this->cache->delete('article');
+
 		
 		return $article_id;
     }
@@ -257,7 +247,6 @@ class ModelBlogArticle extends Model {
 	}
 
 	public function deleteArticle($article_id) {
-
 		$this->db->query("DELETE FROM " . DB_PREFIX . "article WHERE article_id = '" . (int)$article_id . "'");
 		$this->db->query("DELETE FROM " . DB_PREFIX . "article_description WHERE article_id = '" . (int)$article_id . "'");
 		$this->db->query("DELETE FROM " . DB_PREFIX . "article_image WHERE article_id = '" . (int)$article_id . "'");
@@ -270,13 +259,18 @@ class ModelBlogArticle extends Model {
 		$this->db->query("DELETE FROM " . DB_PREFIX . "article_to_store WHERE article_id = '" . (int)$article_id . "'");
 		$this->db->query("DELETE FROM " . DB_PREFIX . "review_article WHERE article_id = '" . (int)$article_id . "'");
 		$this->db->query("DELETE FROM " . DB_PREFIX . "seo_url WHERE query = 'article_id=" . (int)$article_id . "'");
-
-		$this->cache->delete('article');
-
 	}
 
 	public function getArticle($article_id) {
-		$query = $this->db->query("SELECT DISTINCT * FROM " . DB_PREFIX . "article p LEFT JOIN " . DB_PREFIX . "article_description pd ON (p.article_id = pd.article_id) WHERE p.article_id = '" . (int)$article_id . "' AND pd.language_id = '" . (int)$this->config->get('config_language_id') . "'");
+		$query = $this->db->query("
+			SELECT 
+				* 
+			FROM " . DB_PREFIX . "article p 
+			LEFT JOIN " . DB_PREFIX . "article_description pd 
+				ON (p.article_id = pd.article_id) 
+			WHERE p.article_id = '" . (int)$article_id . "' 
+				AND pd.language_id = '" . (int)$this->config->get('config_language_id') . "'
+			LIMIT 1");
 
 		return $query->row;
 	}

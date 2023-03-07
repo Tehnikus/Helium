@@ -56,8 +56,11 @@
           {# Image #}
           <div class="form-group">
             <label class="col-sm-2 control-label" for="input-image">{{ entry_image }}</label>
-            <div class="col-sm-10"><a href="" id="thumb-image" data-toggle="image" class="img-thumbnail"><img src="{{ thumb }}" alt="" title="" data-placeholder="{{ placeholder }}" /></a>
-              <input type="hidden" name="location[image]" value="{{ image }}" id="input-image" />
+            <div class="col-sm-10">
+              <a href="" id="thumb-image" data-toggle="image" class="img-thumbnail">
+                <img src="{{ thumb }}" alt="" title="" data-placeholder="{{ placeholder }}" />
+              </a>
+              <input type="hidden" name="location[image]" value="{{ location.image }}" id="input-image" />
             </div>
           </div>
 
@@ -68,7 +71,7 @@
               <input 
                 type="text" 
                 name="location[sort_order]" 
-                value="{{ sort_order }}" 
+                value="{{ location.sort_order }}" 
                 placeholder="{{ entry_sort_order }}" 
                 id="sort_order" 
                 class="form-control" 

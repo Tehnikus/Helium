@@ -98,11 +98,8 @@ class ModelBlogArticle extends Model {
 			$customer_group_id = $this->config->get('config_customer_group_id');
 		}	
 		
-		$cache = 'article.' . (int)$this->config->get('config_language_id') . '.' . (int)$this->config->get('config_store_id') . '.' . (int)$customer_group_id . '.' . md5(http_build_query($data));
 		
-		$article_data = $this->cache->get($cache);
 		
-		if (!$article_data) {
 			$sql = "
 				SELECT 
 					p.article_id, 
@@ -249,8 +246,6 @@ class ModelBlogArticle extends Model {
 				$article_data[$result['article_id']] = $this->getArticle($result['article_id']);
 			}
 			
-			$this->cache->set($cache, $article_data);
-		}
 
 		
 		return $article_data;
@@ -263,18 +258,15 @@ class ModelBlogArticle extends Model {
 			$customer_group_id = $this->config->get('config_customer_group_id');
 		}	
 				
-		$cache = 'article.latest.' . (int)$this->config->get('config_language_id') . '.' . (int)$this->config->get('config_store_id') . '.' . $customer_group_id . '.' . (int)$limit;
-		$article_data = $this->cache->get($cache);
 
-		if (!$article_data) { 
+
 			$query = $this->db->query("SELECT p.article_id FROM " . DB_PREFIX . "article p LEFT JOIN " . DB_PREFIX . "article_to_store p2s ON (p.article_id = p2s.article_id) WHERE p.status = '1' AND p.date_available <= NOW() AND p2s.store_id = '" . (int)$this->config->get('config_store_id') . "' ORDER BY p.date_added DESC LIMIT " . (int)$limit);
 		 	 
 			foreach ($query->rows as $result) {
 				$article_data[$result['article_id']] = $this->getArticle($result['article_id']);
 			}
 			
-			$this->cache->set($cache, $article_data);
-		}
+
 		
 		return $article_data;
 	}
@@ -436,13 +428,9 @@ class ModelBlogArticle extends Model {
 			$customer_group_id = $this->config->get('config_customer_group_id');
 		}	
 				
-		$cache = md5(http_build_query($data));
-		
-		$article_data = $this->cache->get('article.total.' . (int)$this->config->get('config_language_id') . '.' . (int)$this->config->get('config_store_id') . '.' . (int)$customer_group_id . '.' . $cache);
-		
+				
 		$article_data = [];
 		
-		if (!$article_data) {
 			$sql = "SELECT COUNT(DISTINCT p.article_id) AS total FROM " . DB_PREFIX . "article p LEFT JOIN " . DB_PREFIX . "article_description pd ON (p.article_id = pd.article_id) LEFT JOIN " . DB_PREFIX . "article_to_store p2s ON (p.article_id = p2s.article_id)";
 	
 			if (!empty($data['filter_blog_category_id'])) {
@@ -525,8 +513,7 @@ class ModelBlogArticle extends Model {
 			
 			$article_data = $query->row['total']; 
 			
-			$this->cache->set('article.total.' . (int)$this->config->get('config_language_id') . '.' . (int)$this->config->get('config_store_id') . '.' . (int)$customer_group_id . '.' . $cache, $article_data);
-		}
+
 		
 		return $article_data;
 	}

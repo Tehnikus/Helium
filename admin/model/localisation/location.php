@@ -1,37 +1,36 @@
 <?php
 class ModelLocalisationLocation extends Model {
 	public function addLocation($data) {
-		
+
 		$this->db->query("
 			INSERT INTO " . DB_PREFIX . "location 
 			SET 
-				store_id = '" . $this->db->escape($data['store_id']) . "', 
-				name = '" . $this->db->escape($data['name']) . "', 
-				image = '" . $this->db->escape($data['image']) . "', 
-				status = '" . $this->db->escape($data['status']) . "',
-				sort_order = '" . $this->db->escape($data['status']) . "'
+				store_id 	= '" . $this->db->escape($data['location']['store_id']) . "', 
+				image 		= '" . $this->db->escape($data['location']['image']) . "', 
+				status 		= '" . $this->db->escape($data['location']['status']) . "',
+				sort_order 	= '" . $this->db->escape($data['location']['status']) . "'
 		");
 
 		$location_last_id = $this->db->getLastId();
 		// Language data
-		foreach ($data['language_id'] as $language_id => $value) {
+		foreach ($data['location_description'] as $language_id => $value) {
 			$this->db->query("
 				INSERT INTO ".DB_PREFIX."location_description 
 					SET
 					location_id = '".(int)$location_last_id."',
 					language_id = '" . (int)$language_id . "', 
-					address = '" . $this->db->escape($value['address']) . "', 
-					geocode = '" . $this->db->escape($value['geocode']) . "', 
-					telephone = '" . $this->db->escape($value['telephone']) . "', 
-					fax = '" . $this->db->escape($value['fax']) . "', 
-					open = '" . $this->db->escape($value['open']) . "', 
-					map = '" . $this->db->escape($value['map']) . "',
-					comment = '" . $this->db->escape($value['comment']) . "'
+					name 		= '" . $this->db->escape($value['name']) . "', 
+					address 	= '" . $this->db->escape($value['address']) . "', 
+					geocode 	= '" . $this->db->escape($value['geocode']) . "', 
+					telephone 	= '" . $this->db->escape($value['telephone']) . "', 
+					fax 		= '" . $this->db->escape($value['fax']) . "', 
+					open 		= '" . $this->db->escape($value['open']) . "', 
+					map 		= '" . $this->db->escape($value['map']) . "',
+					comment 	= '" . $this->db->escape($value['comment']) . "'
 			");
 		}
 
-		
-		return $$location_last_id;
+		return $location_last_id;
 	}
 
 	public function editLocation($location_id, $data) {

@@ -7,21 +7,17 @@ class ModelBlogReview extends Model {
 
 		$review_article_id = $this->db->getLastId();
 
-		$this->cache->delete('article');
-
 		return $review_article_id;
 	}
 
 	public function editReview($review_article_id, $data) {
 		$this->db->query("UPDATE " . DB_PREFIX . "review_article SET author = '" . $this->db->escape($data['author']) . "', article_id = '" . (int)$data['article_id'] . "', text = '" . $this->db->escape(strip_tags($data['text'])) . "', rating = '" . (int)$data['rating'] . "', status = '" . (int)$data['status'] . "', date_added = '" . $this->db->escape($data['date_added']) . "', date_modified = NOW() WHERE review_article_id = '" . (int)$review_article_id . "'");
 
-		$this->cache->delete('article');
 	}
 
 	public function deleteReview($review_article_id) {
 		$this->db->query("DELETE FROM " . DB_PREFIX . "review_article WHERE review_article_id = '" . (int)$review_article_id . "'");
 
-		$this->cache->delete('article');
 	}
 
 	public function getReview($review_article_id) {

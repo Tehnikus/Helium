@@ -33,8 +33,17 @@
   {% for link in links %}
     <link href="{{ link.href }}" rel="{{ link.rel }}" />
   {% endfor %}
+  <meta property="og:title" content="{{ title }}" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="{{ og_url }}" />
+  {% if og_image %}
+  <meta property="og:image" content="{{ og_image }}" />
+  {% else %}
+  <meta property="og:image" content="{{ logo }}" />
+  {% endif %}
+  <meta property="og:site_name" content="{{ name }}" />
   {% for analytic in analytics %}
-  {{ analytic }}
+    {{ analytic }}
   {% endfor %}
   <script type="text/javascript">
     var js_lang = {

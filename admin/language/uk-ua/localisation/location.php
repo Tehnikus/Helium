@@ -14,6 +14,9 @@ $_['text_geocode']      = 'Помилка Геокодів ......';
 $_['column_name']       = 'Назва магазину';
 $_['column_address']    = 'Адреса';
 $_['column_action']     = 'Дія';
+$_['column_image']      = 'Світлина';
+$_['column_phone']      = 'Телефон';
+$_['column_sort_order'] = 'Порядок відображення';
 
 // Entry
 $_['entry_name']        = 'Назва магазину';

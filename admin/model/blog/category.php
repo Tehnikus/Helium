@@ -56,11 +56,6 @@ class ModelBlogCategory extends Model {
 				$this->db->query("INSERT INTO " . DB_PREFIX . "blog_category_to_layout SET blog_category_id = '" . (int)$blog_category_id . "', store_id = '" . (int)$store_id . "', layout_id = '" . (int)$layout_id . "'");
 			}
 		}
-		$this->cache->delete('blog_category');
-		
-		if($this->config->get('config_seo_pro')){		
-		$this->cache->delete('seopro');
-		}
 		return $blog_category_id;
 	}
 
@@ -139,17 +134,11 @@ class ModelBlogCategory extends Model {
 				$this->db->query("INSERT INTO " . DB_PREFIX . "blog_category_to_layout SET blog_category_id = '" . (int)$blog_category_id . "', store_id = '" . (int)$store_id . "', layout_id = '" . (int)$layout_id . "'");
 			}
 		}
-		$this->cache->delete('category');
-		
-		if($this->config->get('config_seo_pro')){		
-		$this->cache->delete('seopro');
-		}
 	}
 	
 	public function editCategoryStatus($blog_category_id, $status) {
         $this->db->query("UPDATE " . DB_PREFIX . "blog_category SET status = '" . (int)$status . "', date_modified = NOW() WHERE blog_category_id = '" . (int)$blog_category_id . "'");
         
-		$this->cache->delete('category');
     }
 	public function deleteCategory($blog_category_id) {
 		$this->db->query("DELETE FROM " . DB_PREFIX . "blog_category_path WHERE blog_category_id = '" . (int)$blog_category_id . "'");
@@ -163,11 +152,7 @@ class ModelBlogCategory extends Model {
 		$this->db->query("DELETE FROM " . DB_PREFIX . "blog_category_to_layout WHERE blog_category_id = '" . (int)$blog_category_id . "'");
 		$this->db->query("DELETE FROM " . DB_PREFIX . "article_to_blog_category WHERE blog_category_id = '" . (int)$blog_category_id . "'");
 		$this->db->query("DELETE FROM " . DB_PREFIX . "seo_url WHERE query = 'blog_category_id=" . (int)$blog_category_id . "'");
-		$this->cache->delete('blog_category');
 		
-		if($this->config->get('config_seo_pro')){		
-		$this->cache->delete('seopro');
-		}
 	}
 	public function repairCategories($parent_id = 0) {
 		$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "blog_category WHERE parent_id = '" . (int)$parent_id . "'");
@@ -279,18 +264,21 @@ class ModelBlogCategory extends Model {
 	}
 	
 	public function getAllCategories() {
-		$category_data = $this->cache->get('category.all.' . $this->config->get('config_language_id') . '.' . (int)$this->config->get('config_store_id'));
-		if (!$category_data || !is_array($category_data)) {
-		
-		$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "blog_category c LEFT JOIN " . DB_PREFIX . "blog_category_description cd ON (c.blog_category_id = cd.blog_category_id) LEFT JOIN " . DB_PREFIX . "blog_category_to_store c2s ON (c.blog_category_id = c2s.blog_category_id) WHERE cd.language_id = '" . (int)$this->config->get('config_language_id') . "' AND c2s.store_id = '" . (int)$this->config->get('config_store_id') . "' ORDER BY c.parent_id, c.sort_order, cd.name");
+		$query = $this->db->query("
+			SELECT 
+				* 
+			FROM " . DB_PREFIX . "blog_category c 
+			LEFT JOIN " . DB_PREFIX . "blog_category_description cd 
+				ON (c.blog_category_id = cd.blog_category_id) 
+			LEFT JOIN " . DB_PREFIX . "blog_category_to_store c2s 
+				ON (c.blog_category_id = c2s.blog_category_id) 
+			WHERE cd.language_id = '" . (int)$this->config->get('config_language_id') . "' 
+				AND c2s.store_id = '" . (int)$this->config->get('config_store_id') . "' 
+			ORDER BY c.parent_id, c.sort_order, cd.name");
 		$category_data = array();
-		
 		foreach ($query->rows as $row) {
 			$category_data[$row['parent_id']][$row['blog_category_id']] = $row;
 		}
-		$this->cache->set('category.all.' . $this->config->get('config_language_id') . '.' . (int)$this->config->get('config_store_id'), $category_data);
-		}
-		
 		return $category_data;
 	}
 }
