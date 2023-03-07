@@ -1,7 +1,26 @@
 <?php
 class ModelLocalisationLocation extends Model {
-	public function getLocation($location_id) {
-		$query = $this->db->query("SELECT location_id, name, address, geocode, telephone, fax, image, open, comment FROM " . DB_PREFIX . "location WHERE location_id = '" . (int)$location_id . "'");
+	public function getLocation($location_id, $language_id = null) {
+		if ($language_id == null) {
+			$language_id = (int)$this->config->get('config_language_id');
+		}
+		$query = $this->db->query("
+			SELECT 
+				l.location_id, 
+				ld.name, 
+				ld.address, 
+				ld.geocode, 
+				ld.telephone, 
+				ld.fax, 
+				l.image, 
+				ld.open, 
+				ld.map, 
+				ld.comment 
+			FROM " . DB_PREFIX . "location l
+			LEFT JOIN " . DB_PREFIX . "location_description ld
+			ON l.location_id = ld.location_id 
+				AND ld.language_id = '". $language_id ."'
+			WHERE l.location_id = '" . (int)$location_id . "'");
 
 		return $query->row;
 	}

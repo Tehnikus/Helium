@@ -82,6 +82,7 @@ class ControllerInformationContact extends Controller {
 
 		$this->load->model('localisation/location');
 
+
 		foreach((array)$this->config->get('config_location') as $location_id) {
 			$location_info = $this->model_localisation_location->getLocation($location_id);
 
@@ -95,10 +96,11 @@ class ControllerInformationContact extends Controller {
 				$data['locations'][] = array(
 					'location_id' => $location_info['location_id'],
 					'name'        => $location_info['name'],
+					'map'         => $location_info['map'],
 					'address'     => nl2br($location_info['address']),
-					'geocode'     => $location_info['geocode'],
 					'telephone'   => $location_info['telephone'],
 					'fax'         => $location_info['fax'],
+					'geocode'     => $location_info['geocode'],
 					'image'       => $image,
 					'open'        => nl2br($location_info['open']),
 					'comment'     => $location_info['comment']

@@ -139,8 +139,9 @@ class ModelLocalisationLocation extends Model {
 			SELECT 
 				*
 			FROM " . DB_PREFIX . "location l
-			LEFT JOIN " . DB_PREFIX . "location_description ld ON ld.location_id = l.location_id
-			AND ld.language_id = '".$this->config->get('config_language_id')."'
+			LEFT JOIN " . DB_PREFIX . "location_description ld 
+			ON ld.location_id = l.location_id
+			WHERE ld.language_id = '".$this->config->get('config_language_id')."'
 		";
 
 		$sort_data = array(
