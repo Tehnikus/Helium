@@ -171,8 +171,6 @@ class ControllerLocalisationLocation extends Controller {
 
 		$results = $this->model_localisation_location->getLocations($filter_data);
 
-		print_r($results);
-
 		foreach ($results as $result) {
 			$data['locations'][] =   array(
 				'location_id' => $result['location_id'],
@@ -343,7 +341,6 @@ class ControllerLocalisationLocation extends Controller {
 			$data['location_info'] = $this->model_localisation_location->getLocation($this->request->get['location_id']);
 		}
 
-		// print_r($location_info);
 		if (isset($this->request->post['location_description']) || isset($this->request->post['location'])) {
 			// Pass form data to POST
 			$data['location'] = $this->request->post['location'];
@@ -352,6 +349,7 @@ class ControllerLocalisationLocation extends Controller {
 			// Fill form fields with data
 			$data['location'] = $this->model_localisation_location->getLocation($this->request->get['location_id']);
 			$data['location_description'] = $this->model_localisation_location->getLocationDescriptions($this->request->get['location_id']);
+			print_r($data['location_description']);
 		} else {
 			// Leave blank
 			$data['location'] = array();

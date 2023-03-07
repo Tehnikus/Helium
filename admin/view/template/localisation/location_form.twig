@@ -96,6 +96,7 @@
 
 
                 {% for language in languages %}
+                  {# Name #}
                   <div class="tab-pane {% if loop.first %} active {% endif %}" id="language{{ language.language_id }}">
                     <div class="form-group required">
                       <label class="col-sm-2 control-label" for="input-name_{{ language.language_id }}">{{ entry_name }}</label>
@@ -178,7 +179,7 @@
                           rows="5" 
                           placeholder="{{ entry_map }}" 
                           id="input-map_{{ language.language_id }}" 
-                          class="form-control">{{ map }}</textarea>
+                          class="form-control">{{ location_description[language.language_id] ? location_description[language.language_id].map }}</textarea>
                       </div>
                     </div>
 
@@ -192,7 +193,7 @@
                           rows="5" 
                           placeholder="{{ entry_open }}" 
                           id="input-open_{{ language.language_id }}" 
-                          class="form-control">{{ open }}</textarea>
+                          class="form-control">{{ location_description[language.language_id] ? location_description[language.language_id].open }}</textarea>
                       </div>
                     </div>
 
@@ -204,7 +205,7 @@
                           rows="5" 
                           placeholder="{{ entry_comment }}" 
                           id="input-comment_{{ language.language_id }}" 
-                          class="form-control">{{ comment }}</textarea>
+                          class="form-control">{{ location_description[language.language_id] ? location_description[language.language_id].comment }}</textarea>
                       </div>
                     </div>
 
