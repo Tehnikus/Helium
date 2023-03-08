@@ -5,6 +5,7 @@ class ControllerProductProduct extends Controller {
 	public function index() {
 		$this->load->language('product/product');
 		$this->document->setRobots('index,follow');
+		$data = array();
 		$data['breadcrumbs'] = array();
 
 		$data['breadcrumbs'][] = array(
@@ -58,9 +59,12 @@ class ControllerProductProduct extends Controller {
 		$product_info = $this->model_catalog_product->getProduct($product_id);
 
 		if ($product_info) {
+			$this->load->model('catalog/review');
+			// Flags
 			$product_flags = array();
 			$product_flags = $this->model_catalog_product->renderFlags((array)$product_info, (int)$product_info['main_category']);
 			$data['product_flags'] = $product_flags;
+
 			$data['breadcrumbs'][] = array(
 				'text' => $product_info['name'],
 				'href' => $this->url->link('product/product', '&product_id=' . $this->request->get['product_id'])
@@ -72,8 +76,6 @@ class ControllerProductProduct extends Controller {
 				$this->document->setTitle($product_info['name']);
 			}
 			
-				
-			
 			if ($product_info['meta_h1']) {
 				$data['heading_title'] = $product_info['meta_h1'];
 			} else {
@@ -84,23 +86,18 @@ class ControllerProductProduct extends Controller {
 			$this->document->setKeywords($product_info['meta_keyword']);
 			$this->document->addLink($this->url->link('product/product', 'product_id=' . $this->request->get['product_id']), 'canonical');
 
+			$data['text_minimum'] 		= sprintf($this->language->get('text_minimum'), $product_info['minimum']);
+			$data['text_login'] 		= sprintf($this->language->get('text_login'), $this->url->link('account/login', '', true), $this->url->link('account/register', '', true));
+			$data['tab_review']			= sprintf($this->language->get('tab_review'), $product_info['reviews']);
 
-
-			$data['text_minimum'] = sprintf($this->language->get('text_minimum'), $product_info['minimum']);
-			$data['text_login'] = sprintf($this->language->get('text_login'), $this->url->link('account/login', '', true), $this->url->link('account/register', '', true));
-
-			$this->load->model('catalog/review');
-
-			$data['tab_review'] = sprintf($this->language->get('tab_review'), $product_info['reviews']);
-
-			$data['product_id'] = (int)$this->request->get['product_id'];
-			$data['manufacturer'] = $product_info['manufacturer'];
-			$data['manufacturers'] = $this->url->link('product/manufacturer/info', 'manufacturer_id=' . $product_info['manufacturer_id']);
-			$data['model'] = $product_info['model'];
-			$data['reward'] = $product_info['reward'];
-			$data['points'] = $product_info['points'];
-			$data['special_date_end'] = $product_info['special_date_end'];
-			$data['description'] = html_entity_decode($product_info['description'], ENT_QUOTES, 'UTF-8');
+			$data['product_id'] 		= (int)$this->request->get['product_id'];
+			$data['manufacturer'] 		= $product_info['manufacturer'];
+			$data['manufacturers'] 		= $this->url->link('product/manufacturer/info', 'manufacturer_id=' . $product_info['manufacturer_id']);
+			$data['model'] 				= $product_info['model'];
+			$data['reward'] 			= $product_info['reward'];
+			$data['points'] 			= $product_info['points'];
+			$data['special_date_end'] 	= $product_info['special_date_end'];
+			$data['description'] 		= html_entity_decode($product_info['description'], ENT_QUOTES, 'UTF-8');
 
 			if ($product_info['quantity'] <= 0) {
 				$data['stock'] = $product_info['stock_status'];
@@ -147,6 +144,8 @@ class ControllerProductProduct extends Controller {
 			} else {
 				$data['tax'] = false;
 			}
+			// Base price for animating price change when product option is selected
+			$data['base_price'] = $tax_price;
 
 			// Wholesale discounts
 			$discounts = $this->model_catalog_product->getProductDiscounts($this->request->get['product_id']);
@@ -232,11 +231,9 @@ class ControllerProductProduct extends Controller {
 			}
 
 			$data['share'] = $this->url->link('product/product', 'product_id=' . (int)$this->request->get['product_id']);
-
 			$data['attribute_groups'] = $this->model_catalog_product->getProductAttributes($this->request->get['product_id']);
-
-			$data['products'] = array();
-
+			
+			$data['related_products'] = array();
 			$related_products = $this->model_catalog_product->getProductRelated($this->request->get['product_id']);
 
 			foreach ($related_products as $related_product) {
@@ -272,7 +269,7 @@ class ControllerProductProduct extends Controller {
 					$rating = false;
 				}
 
-				$data['products'][] = array(
+				$data['related_products'][] = array(
 					'product_id'  => $related_product['product_id'],
 					'thumb'       => $image,
 					'name'        => $related_product['name'],
