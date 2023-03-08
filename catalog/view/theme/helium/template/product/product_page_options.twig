@@ -8,18 +8,22 @@
       <select 
         id="input-option_{{ option.product_option_id }}" 
         name="option[{{ option.product_option_id }}]" 
-        class="form-control">
+        class="form-control product-option">
         <option value="">{{ text_select }}</option>
         {% for option_value in option.product_option_value %}
           <option 
-          value="{{ option_value.product_option_value_id }}" 
-          data-option-price="{% if option_value.price_value %}({{ option_value.price_value }}){% endif %}"
-          {# Выбор опции по умолчанию #}
-          {% if option.default_option_isset == 'true' %}
-            {% if option_value.default_option %} selected {% endif %}
-          {% else %}
-            {% if loop.first %} selected {% endif %}
-          {% endif %}>
+            {# class="" #}
+            value="{{ option_value.product_option_value_id }}" 
+            data-base-price="{{ base_price }}"
+            {% if option_value.price_value %}
+              data-option-price="{{ option_value.price_value }}"
+            {% endif %}
+            {# Выбор опции по умолчанию #}
+            {% if option.default_option_isset == 'true' %}
+              {% if option_value.default_option %} selected {% endif %}
+            {% else %}
+              {% if loop.first %} selected {% endif %}
+            {% endif %}>
             {{ option_value.name }}{% if option_value.price %}({{ option_value.price_prefix }}{{ option_value.price }}){% endif %}
           </option>
         {% endfor %}
@@ -34,9 +38,13 @@
       {% for option_value in option.product_option_value %}
         <div class="radio">
           <input 
+            class="product-option" 
             type="radio" 
             id="product_option_{{option_value.product_option_value_id}}" 
-            data-option-price="{% if option_value.price_value %}({{ option_value.price_value }}){% endif %}"
+            data-base-price="{{ base_price }}"
+            {% if option_value.price_value %}
+              data-option-price="({{ option_value.price_value }})"
+            {% endif %}
             name="option[{{ option.product_option_id }}]" 
             value="{{ option_value.product_option_value_id }}"
             {# Выбор опции по умолчанию #}
@@ -73,9 +81,13 @@
       {% for option_value in option.product_option_value %}
         <div class="checkbox">
           <input 
+            class="product-option" 
             id="product_option_{{option_value.product_option_value_id}}" 
             type="checkbox" 
-            data-option-price="{% if option_value.price_value %}({{ option_value.price_value }}){% endif %}"
+            data-base-price="{{ base_price }}"
+            {% if option_value.price_value %}
+              data-option-price="({{ option_value.price_value }})"
+            {% endif %}
             name="option[{{ option.product_option_id }}][]" 
             value="{{ option_value.product_option_value_id }}" 
             {# Выбор опции по умолчанию #}
@@ -85,14 +97,13 @@
               {% if loop.first %}checked{% endif %}
             {% endif %}
             />
-          <label>
+          <label for="product_option_{{option_value.product_option_value_id}}">
             {% if option_value.image %} 
               <img 
                 loading="lazy" 
                 src="{{ option_value.image }}" 
                 alt="{{ option_value.name }} {% if option_value.price %} {{ option_value.price_prefix }} {{ option_value.price }} {% endif %}" 
-                class="img-thumbnail" 
-              /> 
+                class="img-thumbnail"/> 
             {% endif %}
             {{ option_value.name }}
             {% if option_value.price %}
