@@ -1239,7 +1239,9 @@ function searchFunction () {
 
 
 
-
+function animatePrice(element) {
+	console.log(element);
+}
 
 // Animate price change
 // const obj = document.getElementById("value");

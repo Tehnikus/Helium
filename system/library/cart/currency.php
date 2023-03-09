@@ -41,13 +41,13 @@ class Currency {
 		$string = '';
 
 		if ($symbol_left) {
-			$string .= $symbol_left;
+			$string .= '<span class="price-symbol">'.$symbol_left.'</span>';
 		}
 
 		$string .= '<span class="price-value">'.number_format($amount, (int)$decimal_place, $this->language->get('decimal_point'), $this->language->get('thousand_point')).'</span>';
 
 		if ($symbol_right) {
-			$string .= $symbol_right;
+			$string .= '<span class="price-symbol">'.$symbol_right.'</span>';
 		}
 
 		return $string;

@@ -63,8 +63,8 @@ class ControllerProductProduct extends Controller {
 			// Load models
 			$this->load->model('catalog/review');
 			$this->load->model('tool/image');
-
-			// JSON object to keep all price changes depending on options or quantity discounts
+			
+			// JSON object to calculate product price when option is selected or quantity discounts present
 			$data['json_prices'] = array();
 
 
@@ -194,7 +194,8 @@ class ControllerProductProduct extends Controller {
 							'product_option_value_id' => $option_value['product_option_value_id'],
 							'option_value_id'         => $option_value['option_value_id'],
 							'name'                    => $option_value['name'],
-							'image'                   => $option_value['image'] !== '' ? $this->model_tool_image->resize($option_value['image'], 50, 50) : '',
+							// TODO make option image size configurable
+							'image'                   => $option_value['image'] !== '' ? $this->model_tool_image->resize($option_value['image'], 120, 120) : '',
 							'price'                   => $price,
 							'price_value'			  => $price_value ? $option_value['price_prefix'].$price_value : '',
 							'price_prefix'            => $option_value['price_prefix'],

@@ -22,7 +22,7 @@
       {% if product.price and product.price != 0 %}
         <p class="prices h3"> 
           {% if not product.special %}
-            {{ text_price }} {{ product.price }}
+            <span class="text-price">{{ text_price }}</span> {{ product.price }}
           {% else %} 
             <span>{{ text_new_price }}<span class="price-new" {% if product.special_date_end %}data-special-date-end="{{ product.special_date_end }}"{% endif %}>{{ product.special }}</span> </span>
             <span class="price-old">{{ text_old_price }} {{ product.price }}</span> 

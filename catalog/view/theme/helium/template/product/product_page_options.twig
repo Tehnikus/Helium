@@ -8,7 +8,9 @@
       <select 
         id="input-option_{{ option.product_option_id }}" 
         name="option[{{ option.product_option_id }}]" 
-        class="form-control product-option">
+        class="form-control product-option"
+        onchange="animatePrice(this[this.selectedIndex])"
+        >
         <option value="">{{ text_select }}</option>
         {% for option_value in option.product_option_value %}
           <option 
@@ -42,6 +44,7 @@
             type="radio" 
             id="product_option_{{option_value.product_option_value_id}}" 
             data-base-price="{{ base_price }}"
+            oninput="animatePrice(this)"
             {% if option_value.price_value %}
               data-option-price="({{ option_value.price_value }})"
             {% endif %}
@@ -84,6 +87,7 @@
             class="product-option" 
             id="product_option_{{option_value.product_option_value_id}}" 
             type="checkbox" 
+            oninput="animatePrice(this)"
             data-base-price="{{ base_price }}"
             {% if option_value.price_value %}
               data-option-price="({{ option_value.price_value }})"
