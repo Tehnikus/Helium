@@ -63,13 +63,13 @@
 
       {# Цены #}
       {% if price %}
-        <div class="prices-block">
-          <p class="prices h1">
+        <div class="prices-block" >
+          <p class="prices h1" data-special-date-end="{{ special_date_end }}">
             {% if not special %}
               <span class="price-regular">{{ text_price }} {{ price }}</span>
             {% else %}
               <span class="price-old">{{ price }}</span>
-              <span class="price-new" data-special-date-end="{{ special_date_end }}">{{ special }}</span>
+              <span class="price-new" >{{ special }}</span>
             {% endif %}
           </p>
 
@@ -82,9 +82,14 @@
           {% endif %}
 
           {% if discounts %}
+            <div class="flex wrap">
             {% for discount in discounts %}
-              <span class="discount" data-discount-date-end="{{ discount.discount_date_end }}">{{ discount.quantity }}{{ text_discount }}{{ discount.price }}</span>
+              <p class="flex justify-between flex-1-0-100" data-discount-date-end="{{ discount.discount_date_end }}">
+                <span>{{ discount.quantity }}{{ text_discount }}</span>
+                <span class="price-new">{{ discount.price }}</span>
+              </p>
             {% endfor %}
+            </div>
           {% endif %}
         </div>
       {% endif %}

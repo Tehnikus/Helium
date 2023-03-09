@@ -122,7 +122,7 @@ footer {column-gap: 1rem;order: 6;}
 .flex-1 {flex: 1;}
 .flex-1-0-100 {flex: 1 0 100%;}
 .justify-between{justify-content: space-between;}
-.flex-wrap {flex-wrap: wrap;}
+.wrap {flex-wrap: wrap;}
 .flex-column{flex-direction: column;}
 .flex-row{flex-direction: row;}
 /* span[class^='h'], span[class*=' h']{
@@ -246,14 +246,14 @@ span.price-new {
 
 span.price-value {
     font-weight: bold;
-    font-size: 1.5rem;
 }
 
 .prices.h3 {
     display: flex;
     flex: 0 1 100px;
     justify-content: center;
-    align-items: flex-end;
+    align-items: center;
+	flex-wrap: wrap;
 }
 .flags {
     position: absolute;
@@ -318,7 +318,7 @@ span.product-flag.bestseller {
 
 /* Timer countdown */
 .timer {
-    position: absolute;
+    position: relative;
     bottom: 0;
     display: flex;
     /* flex: 1 0 100%; */
@@ -334,8 +334,8 @@ span.product-flag.bestseller {
 	width: 100%;
 }
 .time {display: flex;flex-direction: column;align-items: center;margin: 0 1rem;}
-.time > span:first-child {font-size: 1.5rem;}
-
+.miniature .timer {position: absolute;}
+.miniature .time > span:first-child {font-size: 1.5rem;}
 
 /* ------------------------- */
 

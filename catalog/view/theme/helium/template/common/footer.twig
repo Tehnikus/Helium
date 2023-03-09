@@ -2,7 +2,7 @@
 <footer>
     
       {% if informations %}
-      <div class="flex flex-wrap">
+      <div class="flex wrap">
         <span class="h5 flex-1-0-100">{{ text_information }}</span>
         {% for row in informations|batch(informations|length / 4|round(1, 'ceil')) %}
         <div class="flex">

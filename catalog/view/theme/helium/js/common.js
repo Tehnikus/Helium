@@ -1063,12 +1063,12 @@ let mwindow = {
 
 function countdown(element) {
 	// TODO add data-discount-date-end here
-	let products = element.querySelectorAll('[data-special-date-end]');
-	for (const p in products) {
-		const el = products[p];
-		if (!!el.dataset && !!el.dataset.specialDateEnd) {
-			let finalDate = new Date(el.dataset.specialDateEnd + 'T00:00:00').getTime();
-
+	let products = element.querySelectorAll('[data-special-date-end], [data-discount-date-end]');
+	for (let p = 0; p < products.length; p++) {
+		let el = products[p];
+		if (!!el.dataset && (!!el.dataset.specialDateEnd || !!el.dataset.discountDateEnd)) {
+			let date_end = el.dataset.discountDateEnd || el.dataset.specialDateEnd;
+			let finalDate = new Date(date_end + 'T00:00:00').getTime();
 			let t = timer(finalDate);
 			let div = createElm({attrs:{class: 'timer', 'aria-hidden':'true'}, nest:{1:{type:'span',props:{'innerText':js_lang.text_discount_ends_in}}}})
 
@@ -1084,7 +1084,8 @@ function countdown(element) {
 				});
 				div.appendChild(time);
 			}
-			el.closest('.miniature').getElementsByClassName('image')[0].appendChild(div);
+			
+			el.insertAdjacentElement('beforeend', div);
 			setInterval(function(){
 				let tt = timer(finalDate);
 				for (const key in tt) {
