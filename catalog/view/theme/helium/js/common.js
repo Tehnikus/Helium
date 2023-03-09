@@ -16,27 +16,6 @@ if (!!review_button) {
 	});
 }
 
-// function sendReview(t) {
-// 	// Получаем форму, превращаем данные в строку вида:
-// 	// &name='Вася'&review='ололо'
-// 	let review_form = document.getElementById('form-review');
-// 	let review = new URLSearchParams(new FormData(review_form)).toString();
-// 	let review_url = 'index.php?route='+t.dataset.type+'/write&entity_id=' + t.dataset.id;
-// 	ajax(review_url, review, 
-// 		function(r) {
-// 			if (r.error) {
-// 				mwindow.create('toast', r.error, 'error');
-// 			}
-// 			if (r.success) {
-// 				mwindow.create('toast', r.success, 'success');
-// 				// Убираем форму
-// 				// review_form.parentElement.removeChild(review_form);
-// 			}
-// 		}, 
-// 		null, null, null, 
-// 		'POST', 'JSON', true
-// 	);
-// }
 
 // АЯКС отправка отзыва о товаре
 function sendReview(t) {
@@ -164,7 +143,6 @@ document.addEventListener('DOMContentLoaded', function() {
 	countdown(d);
 	
 	let pagination = document.querySelector('main ul.pagination');
-	debugger
 	if (!!pagination) {
 		let load_more_btn = createElm({
 			type: 'button',
@@ -580,7 +558,6 @@ document.addEventListener('click', function(e){
 
 
 
-
 function accordion(toggler = null, close_all = false) {
 	let target = toggler.parentElement.querySelector('.dropdown-menu') || document.querySelector('[data-openedby="'+toggler.dataset.target+'"]') || toggler.href.split('#')[1];
 	if (close_all == true || toggler == null) {
@@ -657,7 +634,8 @@ function mainMenu() {
 	}
 }
 
-// Загрузить еще
+// Load more
+// DONE Fix so it works on every pagination, not only product list
 function loadMore() {
 	let pagination = document.querySelector('main ul.pagination');
 	if (!!pagination) {
@@ -966,29 +944,7 @@ function mobileMenu() {
 	}
 }
 
-// var transitionEnd = whichTransitionEvent();
-// element.addEventListener(transitionEnd, theFunctionToInvoke, false);
 
-// function theFunctionToInvoke(){
-// // set margin of div here
-// }
-// Wait until transition ends
-function whichTransitionEvent(){
-	var t;
-	var el = document.createElement('fakeelement');
-	var transitions = {
-	  'transition':'transitionend',
-	  'OTransition':'oTransitionEnd',
-	  'MozTransition':'transitionend',
-	  'WebkitTransition':'webkitTransitionEnd'
-	}
-
-	for(t in transitions){
-		if( el.style[t] !== undefined ){
-			return transitions[t];
-		}
-	}
-}
 // Create multilevel DOM elements from Javascript Object
 function createElm({type, styles, attrs, props, events, nest}) {
 	let [eType, eStyle,eAttr, eProps, eHandlers] = [type || 'div', styles || {}, attrs || {}, props || {}, events || {}];
@@ -1232,6 +1188,33 @@ function searchFunction () {
 // 	})();
 // };
 
+
+
+// // var transitionEnd = whichTransitionEvent();
+// // element.addEventListener(transitionEnd, theFunctionToInvoke, false);
+
+// // function theFunctionToInvoke(){
+// // // set margin of div here
+// // }
+// // Wait until transition ends
+// function whichTransitionEvent(){
+// 	var t;
+// 	var el = document.createElement('fakeelement');
+// 	var transitions = {
+// 	  'transition':'transitionend',
+// 	  'OTransition':'oTransitionEnd',
+// 	  'MozTransition':'transitionend',
+// 	  'WebkitTransition':'webkitTransitionEnd'
+// 	}
+
+// 	for(t in transitions){
+// 		if( el.style[t] !== undefined ){
+// 			return transitions[t];
+// 		}
+// 	}
+// }
+
+
 // Сериализация форм для отправки аяксом
 // function serialize (data) {
 // 	let obj = {};
@@ -1247,6 +1230,48 @@ function searchFunction () {
 // 	}
 // 	return obj;
 // }
+
+
+
+
+
+// Animate price change
+// const obj = document.getElementById("value");
+// animateValue(obj, 100, 4000, 300);
+function animateValue(obj, start, end, duration) {
+	let startTimestamp = null;
+	const step = (timestamp) => {
+	  	if (!startTimestamp) startTimestamp = timestamp;
+	  	const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+	  	obj.innerHTML =  Math.round(((progress * (end - start) + start) + Number.EPSILON) * 100) / 100;
+	  	if (progress < 1) {
+			window.requestAnimationFrame(step);
+	  	}
+	};
+	window.requestAnimationFrame(step);
+}
+// TODO add price animation when product has quantity discount
+let product_options = document.getElementsByClassName('product-option');
+if (product_options.length > 0) {
+	for (var i = 0; i < product_options.length; i++) {
+		element = product_options[i];
+		product_options[i].addEventListener('input', function(e) {
+			let prices = e.target[e.target.selectedIndex] ? e.target[e.target.selectedIndex].dataset : e.target.dataset;
+			if (prices.optionPrice) {
+				let price_block = document.querySelector('.prices.h1 .price-value');
+				let start = parseFloat(prices.basePrice);
+				let end = start + parseFloat(prices.optionPrice);
+				animateValue(price_block, start, end, 300);
+			}
+		})
+	}
+}
+
+
+
+
+
+
 
 // Find all elements by ID, class or queryselector and bind event listeners on them
 let elements_list = [
