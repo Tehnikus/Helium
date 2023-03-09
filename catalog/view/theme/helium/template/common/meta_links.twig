@@ -1,0 +1,108 @@
+    <meta charset="UTF-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge; chrome=1"> <!-- Render Chrome if available or using latest version of Internet Explorer (Recommended). -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, minimum-scale=1.0, maximum-scale=5.0">
+    <title>{{ title }}</title>
+    
+    <!-- Allows control over where resources are loaded from. Place as early in the document as possible, only applies to content below this tag. -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'">
+    <!-- Base URL to use for all relative URLs contained within the document -->
+    <base href="{{ base }}" />
+    <!-- Geo Positioning Meta Tags. -->
+    <meta name="geo.position"  content="50.97590;0.01722">
+    <meta name="geo.region"    content="GB">
+    <meta name="geo.placename" content="London, United Kingdom">
+    <meta name="ICBM"          content="50.9759, 0.0172">
+    <a href="geo:37.786971,-122.399677;u=35">
+    <meta name="DC.title"      content="Location Name">
+    <!-- Search Eengine and Browser Meta Tags. -->
+    {% if description %}<meta name="description" content="{{ description }}" />{% endif %}
+    {% if robots %}  <meta name="robots" content="{{ robots }}" /><meta name="googlebot" content="{{ robots }}">{% endif %}
+    {% if keywords %}<meta name="keywords" content="{{ keywords }}" />{% endif %}
+    <!-- Search engine robots Meta Tags. -->
+    <!-- Open Graph Meta Tags (ogp.me) -->
+    <meta property="og:image"            content="http://example.com/image.jpg">  <!-- Web page thumbnail -->
+    <meta property="og:image"            content="http://example.com/image2.jpg"> <!-- Web page thumbnail (can be multiple) -->
+    <meta property="og:site_name"        content="Site Name">                     <!-- Web site title -->
+    <meta property="og:title"            content="Page Title">                    <!-- Web page title -->
+    <meta property="og:description"      content="Description of this web page">  <!-- Web page description -->
+    <meta property="og:type"             content="article">                       <!-- Content type ["product", "blog", "website", "book", "movie", ... ] -->
+    <meta property="og:url"              content="http://example.com/index.html"> <!-- Url to this web page -->
+    <meta property="og:locale"           content="en_GB">                         <!-- Main Language -->
+    <meta property="og:locale:alternate" content="fr_FR">                         <!-- Alternate Language -->
+    <meta property="og:locale:alternate" content="es_ES">                         <!-- Alternate Language -->
+    <meta property="og:latitude"         content="50.97590">                      <!-- Geographical coordenate -->
+    <meta property="og:longitude"        content="0.017221">                      <!-- Geographical coordenate -->
+    <meta property="og:street-address"   content="Flat 1, 26 Street Name">        <!-- Postal Address -->
+    <meta property="og:locality"         content="London">                        <!-- Locality -->
+    <meta property="og:region"           content="London">                        <!-- Region -->
+    <meta property="og:postal-code"      content="N1 PLE">                        <!-- Post code -->
+    <meta property="og:country-name"     content="UK">                            <!-- Country -->
+    <meta property="og:phone_number"     content="+44 123 456 7622">              <!-- Contact phone number -->
+   
+    <meta property="og:upc"              content="885909367481">                  <!-- UPC EAN barcodes-->
+    <meta property="og:isbn"             content="1873520786">                    <!-- Book ISBN number-->
+    <!-- Facebook Meta Tags. -->
+    <meta property="fb:app_id" content="123456789">
+    <!-- Twitter Meta Tags. -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:site" content="@site_account">
+    <meta name="twitter:creator" content="@individual_account">
+    <meta name="twitter:url" content="https://example.com/page.html">
+    <meta name="twitter:title" content="Content Title">
+    <meta name="twitter:description" content="Content description less than 200 characters">
+    <meta name="twitter:image" content="https://example.com/image.jpg">
+    <!-- Pinterest. -->
+    <meta name="pinterest" content="nopin" description="Sorry, you can't save from my website!">  <!-- Prevents sharing of content by Pinterest users. -->
+    
+
+    <!-- Favicon Meta Tags.  -->
+    <link rel="icon" href="/graphics/favicon.ico">
+    <link rel="icon" href="/graphics/favicon-16.png"  sizes="16x16"   type="image/png">
+    <link rel="icon" href="/graphics/favicon-32.png"  sizes="32x32"   type="image/png">
+    <link rel="icon" href="/graphics/favicon-48.png"  sizes="48x48"   type="image/png">
+    <link rel="icon" href="/graphics/favicon-62.png"  sizes="62x62"   type="image/png">
+    <link rel="icon" href="/graphics/favicon-128.png" sizes="128x128" type="image/png">
+    <link rel="icon" href="/graphics/favicon-192.png" sizes="192x192" type="image/png">
+    <!-- Web App Settings. -->
+    <meta name="application-name" content="Application Name">
+    <meta name="mobile-web-app-capable" content="yes">
+    <!-- Apple iOS Settings. -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="App Title">
+    <meta name="apple-itunes-app" content="app-id=APP_ID, affiliate-data=AFFILIATE_ID, app-argument=http/url-sample.com"> <!-- App Banner. -->
+    <meta name="format-detection" content="telephone=no">
+    <link rel="apple-touch-icon" href="/graphics/apple-touch-icon.png">
+    <link rel="apple-touch-icon-precomposed" href="/graphics/apple-touch-icon-precomposed.png">
+    <link rel="apple-touch-icon" sizes="57x57" href="/graphics/apple-icon-57.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="/graphics/apple-icon-72.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="/graphics/apple-icon-114.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="/graphics/apple-icon-144.png">
+    <link rel="alternate" href="ios-app://APP-ID/http/url-sample.com"> <!-- Apple iOS app deep linking. -->
+    <meta property="al:ios:url" content="applinks://docs">
+    <meta property="al:ios:app_store_id" content="12345">
+    <meta property="al:ios:app_name" content="App Links">
+    <!-- Apple Safari Pinned Site. -->
+    <link rel="mask-icon" href="path/to/icon.svg" color="red">
+
+
+    <!-- Google Android. -->
+    <meta name="theme-color" content="#E64545">
+    <meta name="google-play-app" content="app-id=package-name">
+    <link rel="alternate" href="android-app://package-name/http/url-sample.com"> <!-- Android app deep linking. -->
+    <meta property="al:android:url" content="applinks://docs">
+    <meta property="al:android:app_name" content="App Links">
+    <meta property="al:android:package" content="org.applinks">
+    <!-- Google Chrome. -->
+    <link rel="chrome-webstore-item" href="https://chrome.google.com/webstore/detail/APP_ID">
+    <meta name="google" value="notranslate">
+    
+
+    <!-- Humans -->
+    <link rel="author" href="/humans.txt">
+    <link rel="copyright" href="/copyright.html">
+    <!-- Alternative Languages. -->
+    <link rel="alternate" href="https://ja.example.com/" hreflang="ja">
+    <!-- HMTL5 Prefetching -->
+    <link rel="prefetch" href="//example.com">            <!-- Prefetch the full page -->
+    <link rel="prefetch" href="//example.com/sprite.png"> <!-- Prefetch a single asset -->

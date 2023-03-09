@@ -13,6 +13,7 @@ class ControllerProductProduct extends Controller {
 			'href' => $this->url->link('common/home')
 		);
 
+		// TODO Remove category model and use main product category instead
 		$this->load->model('catalog/category');
 
 		if (isset($this->request->get['path'])) {
@@ -54,12 +55,19 @@ class ControllerProductProduct extends Controller {
 			$product_id = 0;
 		}
 
+		// Get product data
 		$this->load->model('catalog/product');
-
 		$product_info = $this->model_catalog_product->getProduct($product_id);
 
 		if ($product_info) {
+			// Load models
 			$this->load->model('catalog/review');
+			$this->load->model('tool/image');
+
+			// JSON object to keep all price changes depending on options or quantity discounts
+			$data['json_prices'] = array();
+
+
 			// Flags
 			$product_flags = array();
 			$product_flags = $this->model_catalog_product->renderFlags((array)$product_info, (int)$product_info['main_category']);
@@ -89,7 +97,6 @@ class ControllerProductProduct extends Controller {
 			$data['text_minimum'] 		= sprintf($this->language->get('text_minimum'), $product_info['minimum']);
 			$data['text_login'] 		= sprintf($this->language->get('text_login'), $this->url->link('account/login', '', true), $this->url->link('account/register', '', true));
 			$data['tab_review']			= sprintf($this->language->get('tab_review'), $product_info['reviews']);
-
 			$data['product_id'] 		= (int)$this->request->get['product_id'];
 			$data['manufacturer'] 		= $product_info['manufacturer'];
 			$data['manufacturers'] 		= $this->url->link('product/manufacturer/info', 'manufacturer_id=' . $product_info['manufacturer_id']);
@@ -99,6 +106,7 @@ class ControllerProductProduct extends Controller {
 			$data['special_date_end'] 	= $product_info['special_date_end'];
 			$data['description'] 		= html_entity_decode($product_info['description'], ENT_QUOTES, 'UTF-8');
 
+			// Stock status
 			if ($product_info['quantity'] <= 0) {
 				$data['stock'] = $product_info['stock_status'];
 			} elseif ($this->config->get('config_stock_display')) {
@@ -107,9 +115,7 @@ class ControllerProductProduct extends Controller {
 				$data['stock'] = $this->language->get('text_instock');
 			}
 
-
 			// Images
-			$this->load->model('tool/image');
 			if ($product_info['image']) {
 				$data['popup'] = $this->model_tool_image->resize($product_info['image'], $this->config->get('theme_' . $this->config->get('config_theme') . '_image_popup_width'), $this->config->get('theme_' . $this->config->get('config_theme') . '_image_popup_height'));
 				$data['thumb'] = $this->model_tool_image->resize($product_info['image'], $this->config->get('theme_' . $this->config->get('config_theme') . '_image_thumb_width'), $this->config->get('theme_' . $this->config->get('config_theme') . '_image_thumb_height'));
@@ -129,16 +135,20 @@ class ControllerProductProduct extends Controller {
 			// Prices
 			if ($this->customer->isLogged() || !$this->config->get('config_customer_price')) {
 				$data['price'] = $this->currency->format($this->tax->calculate($product_info['price'], $product_info['tax_class_id'], $this->config->get('config_tax')), $this->session->data['currency']);
+				$data['json_prices']['base_price'] = (float)$product_info['price'];
 			} else {
 				$data['price'] = false;
 			}
+
 			if (!is_null($product_info['special']) && (float)$product_info['special'] >= 0) {
 				$data['special'] = $this->currency->format($this->tax->calculate($product_info['special'], $product_info['tax_class_id'], $this->config->get('config_tax')), $this->session->data['currency']);
+				$data['json_prices']['base_price'] = (float)$product_info['special'];
 				$tax_price = (float)$product_info['special'];
 			} else {
 				$data['special'] = false;
 				$tax_price = (float)$product_info['price'];
 			}
+
 			if ($this->config->get('config_tax')) {
 				$data['tax'] = $this->currency->format($tax_price, $this->session->data['currency']);
 			} else {
@@ -146,15 +156,20 @@ class ControllerProductProduct extends Controller {
 			}
 			// Base price for animating price change when product option is selected
 			$data['base_price'] = $tax_price;
+			
 
 			// Wholesale discounts
 			$discounts = $this->model_catalog_product->getProductDiscounts($this->request->get['product_id']);
 			$data['discounts'] = array();
 			foreach ($discounts as $discount) {
 				$data['discounts'][] = array(
-					'quantity' => $discount['quantity'],
+					'quantity' => (int)$discount['quantity'],
 					'price'    => $this->currency->format($this->tax->calculate($discount['price'], $product_info['tax_class_id'], $this->config->get('config_tax')), $this->session->data['currency']),
 					'discount_date_end' => $discount['date_end']
+				);
+				$data['json_prices']['discounts'][] = array(
+					'quantity' 			=> (int)$discount['quantity'],
+					'discount_price' 	=> (float)$discount['price']
 				);
 			}
 
@@ -185,6 +200,13 @@ class ControllerProductProduct extends Controller {
 							'price_prefix'            => $option_value['price_prefix'],
 							'default_option'		  => $option_value['default_option']
 						);
+
+						if ($price_value) {
+							$data['json_prices']['options'][] = array(
+								'option_id' 		=> (int)$option_value['option_value_id'],
+								'option_price' 		=> $option_value['price_prefix'].$price_value,
+							);
+						}
 					}
 				}
 
@@ -199,6 +221,8 @@ class ControllerProductProduct extends Controller {
 					'default_option_isset' => $option['default_option_isset']
 				);
 			}
+
+			$data['json_prices'] = json_encode($data['json_prices']);
 
 			if ($product_info['minimum']) {
 				$data['minimum'] = $product_info['minimum'];

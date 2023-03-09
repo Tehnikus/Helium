@@ -1,6 +1,7 @@
 {{ header }}
 {% include 'helium/template/common/breadcrumbs.twig' %}
 <main id="product">
+  {{ json_prices }}
   {{ content_top }}
   <hgroup>
     {# Заголовок #}
@@ -91,7 +92,7 @@
     <div>
       {# Опции товара #}
       {% if options %}
-        {% include 'helium/template/product/product_page_options.twig' with {options: options} %}
+        {% include 'helium/template/product/product_page_options.twig' with {options: options, base_price:base_price} %}
       {% endif %}
 
       {# Регулярные платежи #}
@@ -134,7 +135,7 @@
       {% endif %}
     </div>
 
-    {# Отзывы #}
+    {# Rating stars display #}
     {% if review_status %}
       {% include 'helium/template/common/rating_stars.twig' with {rating: rating, count:reviews} %}
     {% endif %}
@@ -185,21 +186,23 @@
     {% if review_status %}
       <span class="h1">{{ tab_review }}</span>
       <div id="reviews">
-        
           {# Подключаем файл с обработкой отзывов для статичного отображения #}
           {% include 'helium/template/product/review.twig' %}
       </div>
     {% endif %}
   </article>
   {# Сопутствующие товары #}
-  {% if products %}
+  {% if related_products %}
     <span class="h1">{{ text_related }}</span>
     <div id="related" class="module-product-list">
-      {% for product in products %}
+      {% for product in related_products %}
         {% include 'helium/template/product/product_miniature.twig' with {product: product} %}
       {% endfor %} 
     </div>
   {% endif %}
+  <script type="text/javascript">
+    let json_prices = {{ json_prices }}
+  </script>
 </main>
 {{ content_bottom }}
 {# <script type="text/javascript"><!--

@@ -280,10 +280,16 @@ var cart = {
 		var data = 'product_id=' + product_id + '&quantity=' + (typeof(quantity) != 'undefined' ? quantity : 1);
 		
 		// Product options
-		var options_inputs = document.querySelectorAll('[name^="option"]:checked');
-		var options_string = '';
-		for (var i = 0; i < options_inputs.length; i++) {
+		let options_inputs = document.querySelectorAll('[name^="option"]:checked');
+		let options_selects = document.querySelectorAll('select[name^="option"]');
+		let options_string = '';
+		// Options inputs values
+		for (let i = 0; i < options_inputs.length; i++) {
 			options_string += '&' + options_inputs[i].name + '=' + options_inputs[i].value;
+		}
+		// Options selects values
+		for (let i = 0; i < options_selects.length; i++) {
+			options_string += '&' + options_selects[i].name + '=' + options_selects[i][options_selects[i].selectedIndex].value;
 		}
 		data += options_string;
 		
