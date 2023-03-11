@@ -309,12 +309,12 @@ var cart = {
 		ajax(url, data, 
 			function(r) {
 				if (r.success) {
-					document.getElementById('total_cart').innerText = r.total_cart;
+					document.getElementById('total_cart').innerHTML = r.total_cart;
 					document.getElementById('product_count').innerText = r.product_count;
 					setIcon(r.product_count);
 					// Запрос на обновление внешнего вида корзины
 					ajax('index.php?route=common/cart/modal',null,function(c) {
-						mwindow.create('dialog', c);
+						dialog.create(c);
 					}, null,null,null,"GET","text",true);
 					
 				}
@@ -324,7 +324,7 @@ var cart = {
 					var url = 'index.php?route=common/cart/displayAdditionalModal';
 					var data = 'product_id=' + product_id;
 					ajax(url, data, function(response) {
-						mwindow.create('dialog', '<span class="h3">'+options+'</span>'+response);
+						dialog.create('<span class="h3">'+options+'</span>'+response);
 					},null,null,null,'POST','text',true);
 				}
 			},
@@ -978,18 +978,46 @@ function createElm({type, styles, attrs, props, events, nest}) {
 }
 
 // TODO Допилить это
-let dialog;
-let modal_dialog = {
-	create: function(content) {
-		dialog = createElm({
+// let dialog;
+let dialog = {
+	create: (content) => {
+		dialog.close();
+		let a;
+		a = createElm({
 			type: 'dialog',
-			nest: {
-				1: {type: 'button', attrs: {'class':'close_modal','aria-label':js_lang.close}, events: {'click': dialog.close()}},
-				2: {attrs: {'class':'modal_content'},props:{'innerHTML': (typeof(content) == 'object' ? content.outerHTML : content)}},
-			}
+			attrs: {'class': ''},
+			events: {
+				'close': (e) => {console.log('closed', e)},
+				'click': (e) => {
+					if (e.target.contains(a)) {
+						dialog.close()
+					}
+				}
+			},
+			nest: [
+				{attrs: {'class':'modal_content'},
+				props:{'innerHTML': (typeof(content) == 'object' ? content.outerHTML : content)}},
+				{type: 'button', attrs: {'class':'close_modal','aria-label':js_lang.close}, events: {'click': (e) => {dialog.close(e)}}},
+			]
 		});
+		document.body.insertAdjacentElement('beforeend', a);
+		a.showModal();
+		return;
+	},
+	close: () => {
+		let b = document.getElementsByTagName('dialog');
+		for (let i = 0; i < b.length; i++) {
+			console.log(b[i]);
+			b[i].close();
+			document.body.removeChild(b[i]);
+		}
+		// [].forEach.call(document.getElementsByTagName('dialog'), function(f) {
+		// 	f.cancel();
+		// 	document.body.removeChild(f);
+		// })
 	}
 }
+
 
 
 
