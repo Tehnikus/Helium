@@ -66,10 +66,10 @@
         <div class="prices-block" >
           <p class="prices h1" data-special-date-end="{{ special_date_end }}">
             {% if not special %}
-              <span class="price-regular">{{ text_price }} {{ price }}</span>
+              <span id="js_product_id_{{ product_id }}" class="price-regular">{{ text_price }} {{ price }}</span>
             {% else %}
-              <span class="price-old">{{ price }}</span>
-              <span class="price-new" >{{ special }}</span>
+              <span  class="price-old">{{ price }}</span>
+              <span id="js_product_id_{{ pr0duct_id }}" class="price-new" >{{ special }}</span>
             {% endif %}
           </p>
 
@@ -117,7 +117,15 @@
       {# Кнопки купить #}
       <div class="form-group">
         <label class="control-label" for="input-quantity">{{ entry_qty }}</label>
-        <input type="number" name="quantity" value="{{ minimum }}" size="2" id="input-quantity" class="form-control" oninput="animatePrice(this)"/>
+        <input 
+          type="number" 
+          name="quantity" 
+          value="{{ minimum }}" 
+          size="2" 
+          id="input-quantity js_input_quantity" 
+          class="form-control" 
+          oninput="animatePrice(this)"
+        />
         <input type="hidden" name="product_id" value="{{ product_id }}" />
       </div>
       <div class="btn-group">

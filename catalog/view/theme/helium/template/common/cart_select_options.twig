@@ -14,7 +14,15 @@
       {% endif %}
       <div class="form-group">
         <label class="control-label" for="input-quantity">{{ entry_qty }}</label>
-        <input type="number" name="quantity" value="{{ minimum }}" size="2" id="input-quantity" class="form-control" oninput="animatePrice(this)"/>
+        <input 
+          type="number" 
+          name="quantity" 
+          value="{{ minimum }}" 
+          size="2" 
+          id="input-quantity" 
+          class="form-control" 
+          oninput="animatePrice(this)"
+        />
         <input type="hidden" name="product_id" value="{{ product_id }}" />
       </div>
       {% if price %}

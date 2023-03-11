@@ -135,14 +135,14 @@ class ControllerProductProduct extends Controller {
 			// Prices
 			if ($this->customer->isLogged() || !$this->config->get('config_customer_price')) {
 				$data['price'] = $this->currency->format($this->tax->calculate($product_info['price'], $product_info['tax_class_id'], $this->config->get('config_tax')), $this->session->data['currency']);
-				$data['json_prices']['base_price'] = (float)$product_info['price'];
+				$data['json_prices'][$product_id]['base_price'] = (float)$product_info['price'];
 			} else {
 				$data['price'] = false;
 			}
 
 			if (!is_null($product_info['special']) && (float)$product_info['special'] >= 0) {
 				$data['special'] = $this->currency->format($this->tax->calculate($product_info['special'], $product_info['tax_class_id'], $this->config->get('config_tax')), $this->session->data['currency']);
-				$data['json_prices']['base_price'] = (float)$product_info['special'];
+				$data['json_prices'][$product_id]['base_price'] = (float)$product_info['special'];
 				$tax_price = (float)$product_info['special'];
 			} else {
 				$data['special'] = false;
@@ -167,7 +167,7 @@ class ControllerProductProduct extends Controller {
 					'price'    => $this->currency->format($this->tax->calculate($discount['price'], $product_info['tax_class_id'], $this->config->get('config_tax')), $this->session->data['currency']),
 					'discount_date_end' => $discount['date_end']
 				);
-				$data['json_prices']['discounts'][] = array(
+				$data['json_prices'][$product_id]['discounts'][] = array(
 					'quantity' 			=> (int)$discount['quantity'],
 					'discount_price' 	=> (float)$discount['price']
 				);
@@ -203,9 +203,14 @@ class ControllerProductProduct extends Controller {
 						);
 
 						if ($price_value) {
-							$data['json_prices']['options'][] = array(
+							$data['json_prices'][$product_id]['options'][] = array(
 								'option_id' 		=> (int)$option_value['option_value_id'],
 								'option_price' 		=> $option_value['price_prefix'].$price_value,
+							);
+						} else {
+							$data['json_prices'][$product_id]['options'][] = array(
+								'option_id' 		=> (int)$option_value['option_value_id'],
+								'option_price' 		=> (float)$option_value['price'],
 							);
 						}
 					}
