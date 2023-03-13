@@ -1,3 +1,4 @@
+{# {% cache %} #}
 <article class="miniature"{% if wishlist %} data-wishlist="{{ wishlist }} "{% endif %} {% if compare %} data-compare="{{ compare }} "{% endif %}>
   <figure class="image" {% if product.special_date_end %}data-special-date-end="{{ product.special_date_end }}"{% endif %}>
     <a title="{{ product.name }}" href="{{ product.href }}">
@@ -42,3 +43,4 @@
     </div>
   </div>
 </article>
+{# {% endcache %} #}

@@ -89,8 +89,6 @@ class ControllerProductCategory extends Controller {
 
 		$filter_data = $this->securePostData($filter_data);
 
-		print_r($filter_data);
-
 
 		// if($this->model_catalog_category->filterPageExists($filter)) {
 		// 	echo('ololo');
