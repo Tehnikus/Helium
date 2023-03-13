@@ -87,17 +87,9 @@ class ControllerProductCategory extends Controller {
 			'limit'              => $limit
 		);
 
-		// foreach ($filter_data as $key => $val) {
-		// 	$val = preg_replace('/[^\\d,]+/', '', $val);
-		// 	$val = explode(',', $val);
-		// 	foreach ($val as $k => $string) {
-		// 		$strings[$k] = $this->db->escape($string);
-		// 	}
-		// 	asort($strings);
-		// 	$strings = array_unique(array_filter($strings));
-		// 	$string = implode(',',$strings);
-		// 	$filter_data[$key] = $string;
-		// } 
+		$filter_data = $this->securePostData($filter_data);
+
+		print_r($filter_data);
 
 
 		// if($this->model_catalog_category->filterPageExists($filter)) {
@@ -216,7 +208,7 @@ class ControllerProductCategory extends Controller {
 							fd.name
 						FROM " . DB_PREFIX . "filter_description fd
 						WHERE fd.language_id = '" . (int)$this->config->get('config_language_id') . "' 
-						AND fd.filter_id IN(".$filter_data['filter_filter'].") 
+						AND fd.filter_id IN (".$filter_data['filter_filter'].") 
 						ORDER BY fd.filter_id"
 					);
 					$names_query = $filter_query->rows;
@@ -766,6 +758,53 @@ class ControllerProductCategory extends Controller {
 			$this->cache->set($cache_name, $data);
 		}
 		return $data;
+	}
+
+	// Clear post data from any possible injections
+	public function securePostData($filter_data) {
+
+		// Allowed order strings
+		$allowed_sort_data = array(
+			'pd.name',
+			'p.model',
+			'p.quantity',
+			'p.price',
+			'p.rating',
+			'p.sort_order',
+			'p.date_added',
+			'p.date_modified',
+			'p.viewed',
+			'p.sold',
+			'p.returned',
+			'p.points',
+			'p.weight',
+			'price_to_weight'
+		);
+
+		// Clear post from possible sql injections
+		foreach ($filter_data as $key => $val) {
+			if ($key == 'sort') {
+				if (!in_array($val, $allowed_sort_data) || $val == '') {
+					$val = 'p.sort_order';
+				}
+			} elseif ($key == 'order' && ($key !== 'ASC' || $key !== 'DESC')) {
+				$key = 'ASC';
+			} else {
+				$val = preg_replace('/[^\\d,]+/', '', $val);
+				$val = explode(',', $val);
+				foreach ($val as $k => $string) {
+					// Watch this, may cause slowdowns
+					$strings[$k] = $this->db->escape($string);
+					// $strings[$k] = (int)$string;
+				}
+				asort($strings);
+				$strings = array_unique(array_filter($strings));
+				$string = implode(',',$strings);
+				$filter_data[$key] = $string;
+			}
+		}
+		$this->request->get['filter'] = $filter_data['filter_filter'];
+		return $filter_data;
 	}
 
 }

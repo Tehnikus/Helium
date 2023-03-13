@@ -643,6 +643,7 @@ class SeoPro {
         if ((int)$product_id < 1) {
             return false;
         }
+        $product_id = preg_replace('/[^\\d]+/', '', $product_id);
         $query = $this->db->query("
             SELECT main_category 
             FROM " . DB_PREFIX . "product 
@@ -653,11 +654,13 @@ class SeoPro {
     }
 
     private function getPathByCategory($category_id) {
+        $category_id = preg_replace('/[^\\d]+/', '', $category_id);
         return $category_id;
     }
 
     private function getFilterDefaultCategory($filters)
     {
+        $filters = preg_replace('/[^\\d,]+/', '', $filters);
         $query = $this->db->query("
             SELECT 
                 default_category
@@ -670,8 +673,10 @@ class SeoPro {
 
     private function getBlogPathByArticle($article_id) {
 
-        if ($article_id < 1)
+        if ($article_id < 1) {
             return false;
+        }
+        $article_id = preg_replace('/[^\\d]+/', '', $article_id);
 
         $query = $this->db->query("
             SELECT blog_category_id 
