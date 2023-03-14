@@ -2,7 +2,6 @@
 class ModelToolImage extends Model {
 	public function resize($filename, $width, $height) {
 		if (!is_file(DIR_IMAGE . $filename) || substr(str_replace('\\', '/', realpath(DIR_IMAGE . $filename)), 0, strlen(DIR_IMAGE)) != str_replace('\\', '/', DIR_IMAGE)) {
-			echo(DIR_IMAGE . $filename. '<br/>');
 			$filename = 'no_image.webp';
 		}
 
@@ -13,16 +12,11 @@ class ModelToolImage extends Model {
 			$webp_supports = true;
 		}
 
-
 		if ($webp_supports) {
 			$image = $this->createWebpImage($filename, $width, $height);
 		} else {
 			$image = $this->createJpgImage($filename, $width, $height);
 		}
-		
-
-
-
 		
 		// fix bug when attach image on email (gmail.com). it is automatic changing space " " to +
 		$image = str_replace(' ', '%20', $image);  
@@ -32,15 +26,11 @@ class ModelToolImage extends Model {
 		} else {
 			return $this->config->get('config_url') . 'image/' . $image;
 		}
-
-		
-		
-
 	}
 
 	public function createWebpImage($filename, $width, $height) {
 
-		// Default way
+		// Default file path
 		$webp_image = 'cache/webp/' . utf8_substr($filename, 0, utf8_strrpos($filename, '.')) . '-' . (int)$width . 'x' . (int)$height . '.webp';
 		
 		// Check if file not exisits 
@@ -50,7 +40,6 @@ class ModelToolImage extends Model {
 
 			// Create directories for image
 			$path = '';
-			$extension = pathinfo($filename, PATHINFO_EXTENSION);
 			$directories = explode('/', dirname($webp_image));
 	
 			foreach ($directories as $directory) {
@@ -60,39 +49,15 @@ class ModelToolImage extends Model {
 				}
 			}
 	
-	
-			// $jpg=imagecreatefromjpeg('filename.jpg');
-			// $w=imagesx($jpg);
-			// $h=imagesy($jpg);
-			// $webp=imagecreatetruecolor($width, $height);
-			// imagecopy($webp,$jpg,0,0,0,0,$width,$height);
-			// imagewebp($webp, 'filename.webp', 80);
-			// imagedestroy($jpg);
-			// imagedestroy($webp);
-	
-	
-			// if ((strtolower($extension) == 'jpg') || (strtolower($extension) == 'jpeg')) {
-			// 	$image_original = imagecreatefromjpeg(DIR_IMAGE . $filename);
-			// } elseif (strtolower($extension) == 'png') {
-			// 	$image_original = imagecreatefrompng(DIR_IMAGE . $filename);
-			// } elseif (strtolower($extension) == 'gif') {
-			// 	$image_original = imagecreatefromgif(DIR_IMAGE . $filename);
-			// }
-	
-			// if (isset($image_original)) {
+			// Resize
+			$image = new Image(DIR_IMAGE . $filename);
+			$image->resize($width, $height);
+			$resized = $image->getImage();
 
-				$image = new Image(DIR_IMAGE . $filename);
-				$image->resize($width, $height);
-				$resized = $image->getImage();
+			// Create WEBP image and save
+			imagewebp($resized, DIR_IMAGE . $webp_image, 85);
+			file_put_contents(DIR_IMAGE . $webp_image, "\0", FILE_APPEND);
 
-				imagewebp($resized, DIR_IMAGE . $webp_image, 85);
-				// Free memory
-				// imagedestroy($image_original);
-	
-				if (filesize(DIR_IMAGE . $webp_image) % 2 == 1) {
-					file_put_contents(DIR_IMAGE . $webp_image, "\0", FILE_APPEND);
-				}
-			// }
 		}
 
 		return $webp_image;
@@ -132,11 +97,5 @@ class ModelToolImage extends Model {
 		}
 
 		return $jpg_image;
-
-		// if ($this->request->server['HTTPS']) {
-		// 	return $this->config->get('config_ssl') . 'image/' . $jpg_image;
-		// } else {
-		// 	return $this->config->get('config_url') . 'image/' . $jpg_image;
-		// }
 	}
 }
