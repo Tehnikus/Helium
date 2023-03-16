@@ -136,13 +136,7 @@ class ControllerExtensionThemeHelium extends Controller {
 			$data['directories'][] = basename($directory);
 		}
 
-		if (isset($this->request->post['theme_helium_product_limit'])) {
-			$data['theme_helium_product_limit'] = $this->request->post['theme_helium_product_limit'];
-		} elseif (isset($setting_info['theme_helium_product_limit'])) {
-			$data['theme_helium_product_limit'] = $setting_info['theme_helium_product_limit'];
-		} else {
-			$data['theme_helium_product_limit'] = 15;
-		}		
+	
 		
 		if (isset($this->request->post['theme_helium_status'])) {
 			$data['theme_helium_status'] = $this->request->post['theme_helium_status'];
@@ -189,6 +183,41 @@ class ControllerExtensionThemeHelium extends Controller {
 		} else {
 			$data['theme_helium_product_description_length'] = 150;
 		}
+
+		if (isset($this->request->post['theme_helium_product_limit'])) {
+			$data['theme_helium_product_limit'] = $this->request->post['theme_helium_product_limit'];
+		} elseif (isset($setting_info['theme_helium_product_limit'])) {
+			$data['theme_helium_product_limit'] = $setting_info['theme_helium_product_limit'];
+		} else {
+			$data['theme_helium_product_limit'] = 15;
+		}	
+
+		// Bestseller limit
+		if (isset($this->request->post['bestsellers_limit'])) {
+			$data['bestsellers_limit'] = $this->request->post['bestsellers_limit'];
+		} elseif (isset($setting_info['bestsellers_limit'])) {
+			$data['bestsellers_limit'] = $setting_info['bestsellers_limit'];
+		} else {
+			$data['bestsellers_limit'] = 15;
+		}
+
+		// Best reviews limit
+		if (isset($this->request->post['best_reviews_limit'])) {
+			$data['best_reviews_limit'] = $this->request->post['best_reviews_limit'];
+		} elseif (isset($setting_info['best_reviews_limit'])) {
+			$data['best_reviews_limit'] = $setting_info['best_reviews_limit'];
+		} else {
+			$data['best_reviews_limit'] = 15;
+		}
+
+		// Most viewed limit
+		if (isset($this->request->post['most_viewed_limit'])) {
+			$data['most_viewed_limit'] = $this->request->post['most_viewed_limit'];
+		} elseif (isset($setting_info['most_viewed_limit'])) {
+			$data['most_viewed_limit'] = $setting_info['most_viewed_limit'];
+		} else {
+			$data['most_viewed_limit'] = 15;
+		}
 		
 		// Logo		
 		if (isset($this->request->post['theme_helium_image_logo_width'])) {
@@ -222,6 +251,8 @@ class ControllerExtensionThemeHelium extends Controller {
 		} else {
 			$data['theme_helium_image_category_height'] = 160;
 		}
+
+
 		
 		// Product images
 		if (isset($this->request->post['theme_helium_image_thumb_width'])) {

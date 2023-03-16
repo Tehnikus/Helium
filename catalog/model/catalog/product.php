@@ -634,6 +634,11 @@ class ModelCatalogProduct extends Model {
 
 	public function getBestReviews($category_id)
 	{
+		$limit = (int)$this->config->get('best_reviews_limit');
+		if (!$limit) {
+			(int)$limit = '15';
+		}
+
 		$best_rewievs = [];
 		$sql = "
 			SELECT DISTINCT
@@ -646,7 +651,7 @@ class ModelCatalogProduct extends Model {
 			(p2c.category_id = '".$category_id."' OR p.main_category = '".$category_id."')
 
 			ORDER by p.rating DESC
-			LIMIT 15;
+			LIMIT ".$limit.";
 		";
 		$query = $this->db->query($sql);
 		foreach ($query->rows as $row) {
@@ -656,6 +661,11 @@ class ModelCatalogProduct extends Model {
 	}
 	public function getBestSellers($category_id)
 	{
+		$limit = (int)$this->config->get('bestsellers_limit');
+		if (!$limit) {
+			(int)$limit = '15';
+		}
+		
 		$bestsellers = [];
 		$sql = "
 			SELECT DISTINCT
@@ -667,13 +677,40 @@ class ModelCatalogProduct extends Model {
 				(p2c.category_id = '".$category_id."' OR p.main_category = '".$category_id."')
 				AND p.sold > 10
 			ORDER by p.sold DESC
-			LIMIT 15;
+			LIMIT ".$limit.";
 		";
 		$query = $this->db->query($sql);
 		foreach ($query->rows as $row) {
 			$bestsellers[] = $row['product_id'];
 		}
 		return $bestsellers;
+	}
+
+	public function getMostViewed($category_id)
+	{
+		$limit = (int)$this->config->get('most_viewed_limit');
+		if (!$limit) {
+			(int)$limit = '15';
+		}
+
+		$most_viewed = [];
+		$sql = "
+			SELECT DISTINCT
+				p.product_id
+			FROM oc_product p 
+			LEFT JOIN oc_product_to_category p2c 
+				ON p.product_id = p2c.product_id 
+			WHERE 
+				(p2c.category_id = '".$category_id."' OR p.main_category = '".$category_id."')
+				AND p.viewed > 100
+			ORDER by p.viewed DESC
+			LIMIT ".$limit.";
+		";
+		$query = $this->db->query($sql);
+		foreach ($query->rows as $row) {
+			$most_viewed[] = $row['product_id'];
+		}
+		return $most_viewed;
 	}
 
 	public function getProductSpecials($data = array()) {

@@ -13,6 +13,13 @@ $_['text_image']                       = 'Images';
 $_['entry_directory']                  = 'Theme Directory';
 $_['entry_status']                     = 'Status';
 $_['entry_product_limit']              = 'Default Items Per Page';
+
+// Flags
+$_['entry_flags_settings']                   = 'Flag limit settings';
+$_['entry_bestsellers_limit']                = 'Bestseller count';
+$_['entry_best_reviews_limit']               = 'Best reviews count';
+$_['entry_most_viewed_limit']                = 'Most viewed count';
+
 $_['entry_product_description_length'] = 'List Description Limit';
 $_['entry_image_logo']                 = 'Logo Image Size (W x H)';
 $_['entry_image_category']             = 'Category Image Size (W x H)';
