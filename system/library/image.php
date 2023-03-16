@@ -47,6 +47,8 @@ class Image {
 				$this->image = imagecreatefromjpeg($file);
 			} elseif ($this->mime == 'image/webp') {
 				$this->image = imagecreatefromwebp($file);
+			} elseif (preg_match("/SVG/i", mime_content_type(DIR_IMAGE . $file))) {
+				$this->image = $file;
 			}
 		} else {
 			error_log('Error: Could not load image ' . $file . '!');
