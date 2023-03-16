@@ -293,6 +293,12 @@ span.product-flag.special {
     animation: gradient 15s ease infinite;
 }
 
+span.product-flag.new {
+    background-image: linear-gradient(92deg, #48b76e, #236e08);
+    background-size: 400% 400%;
+    animation: gradient 15s ease infinite;
+}
+
 span.product-flag.wishlist {
     background: #cd3232;
 }

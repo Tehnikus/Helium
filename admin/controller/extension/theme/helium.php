@@ -255,12 +255,12 @@ class ControllerExtensionThemeHelium extends Controller {
 			$data['theme_helium_image_popup_height'] = 1200;
 		}
 		
-		if (isset($this->request->post['theme_helium_image_product_width'])) {
-			$data['theme_helium_image_product_width'] = $this->request->post['theme_helium_image_product_width'];
-		} elseif (isset($setting_info['theme_helium_image_product_width'])) {
-			$data['theme_helium_image_product_width'] = $setting_info['theme_helium_image_product_width'];
+		if (isset($this->request->post['image_product_width'])) {
+			$data['image_product_width'] = $this->request->post['image_product_width'];
+		} elseif (isset($setting_info['image_product_width'])) {
+			$data['image_product_width'] = $setting_info['image_product_width'];
 		} else {
-			$data['theme_helium_image_product_width'] = 400;
+			$data['image_product_width'] = 400;
 		}
 		
 		if (isset($this->request->post['theme_helium_image_product_height'])) {
@@ -403,7 +403,7 @@ class ControllerExtensionThemeHelium extends Controller {
 			$this->error['image_popup'] = $this->language->get('error_image_popup');
 		}
 
-		if (!$this->request->post['theme_helium_image_product_width'] || !$this->request->post['theme_helium_image_product_height']) {
+		if (!$this->request->post['image_product_width'] || !$this->request->post['theme_helium_image_product_height']) {
 			$this->error['image_product'] = $this->language->get('error_image_product');
 		}
 

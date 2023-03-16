@@ -176,7 +176,7 @@ class ControllerExtensionFeedGoogleSitemap extends Controller {
 
 				if ($product['image']) {
 					$output .= '  <image:image>';
-					$output .= '  <image:loc>' . $this->model_tool_image->resize($product['image'], $this->config->get('theme_' . $this->config->get('config_theme') . '_image_product_width'), $this->config->get('theme_' . $this->config->get('config_theme') . '_image_product_height')) . '</image:loc>';
+					$output .= '  <image:loc>' . $this->model_tool_image->resize($product['image'], $this->config->get('image_product_width'), $this->config->get('image_product_height')) . '</image:loc>';
 					$output .= '  <image:caption>' . $product['name'] . '</image:caption>';
 					$output .= '  <image:title>' . $product['name'] . '</image:title>';
 					$output .= '  </image:image>';

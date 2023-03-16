@@ -13,8 +13,8 @@ class ControllerExtensionModuleFeatured extends Controller {
 			$setting['limit'] = 4;
 		}
 
-		$image_width = $this->config->get('theme_' . $this->config->get('config_theme') . '_image_product_width');
-		$image_height = $this->config->get('theme_' . $this->config->get('config_theme') . '_image_product_height');
+		$image_width = $this->config->get('image_product_width');
+		$image_height = $this->config->get('image_product_height');
 
 		if (!empty($setting['product'])) {
 			$products = array_slice($setting['product'], 0, (int)$setting['limit']);

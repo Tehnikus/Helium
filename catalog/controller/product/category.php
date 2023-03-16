@@ -140,7 +140,10 @@ class ControllerProductCategory extends Controller {
 			// Убираем описание категории на страницах фильтра
 			// Задаем index,follow для нужных страниц
 			// оказывается, страницы пагинации должны индексироваться
-			if (isset($this->request->get['filter']) || isset($this->request->get['sort']) || isset($this->request->get['order'])) {
+			if ((isset($this->request->get['filter']) && $this->request->get['filter'] !=='')
+				|| (isset($this->request->get['sort']) && $this->request->get['sort'] !== '') 
+				|| (isset($this->request->get['order']) && $this->request->get['order'] !== ''))
+			{
 				$this->document->setRobots('noindex,nofollow');
 				$data['description'] = '';
 				$data['categories'] = '';
@@ -760,7 +763,6 @@ class ControllerProductCategory extends Controller {
 
 	// Clear post data from any possible injections
 	public function securePostData($filter_data) {
-
 		// Allowed order strings
 		$allowed_sort_data = array(
 			'pd.name',
@@ -781,24 +783,27 @@ class ControllerProductCategory extends Controller {
 
 		// Clear post from possible sql injections
 		foreach ($filter_data as $key => $val) {
+			// return $filter_data;
 			if ($key == 'sort') {
-				if (!in_array($val, $allowed_sort_data) || $val == '') {
-					$val = 'p.sort_order';
+				if (!in_array($val, $allowed_sort_data)) {
+					$filter_data['sort'] = '';
 				}
 			} elseif ($key == 'order' && ($key !== 'ASC' || $key !== 'DESC')) {
-				$key = 'ASC';
-			} else {
+				$filter_data['order'] = '';
+			} elseif ($key == 'filter_filter') {
 				$val = preg_replace('/[^\\d,]+/', '', $val);
 				$val = explode(',', $val);
 				foreach ($val as $k => $string) {
 					// Watch this, may cause slowdowns
-					$strings[$k] = $this->db->escape($string);
-					// $strings[$k] = (int)$string;
+					// $strings[$k] = $this->db->escape($string);
+					$strings[$k] = (int)$string;
 				}
 				asort($strings);
 				$strings = array_unique(array_filter($strings));
 				$string = implode(',',$strings);
 				$filter_data[$key] = $string;
+			} else {
+				$filter_data[$key] = preg_replace('/[^\\d,_]+/', '', $val);
 			}
 		}
 		$this->request->get['filter'] = $filter_data['filter_filter'];

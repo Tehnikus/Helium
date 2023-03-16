@@ -275,7 +275,7 @@ class ControllerCommonFileManager extends Controller {
 						'image/png',
 						'image/x-png',
 						'image/gif',
-						'image/svg',
+						'image/svg+xml',
 						'image/webp',
 
 					);

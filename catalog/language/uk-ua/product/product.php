@@ -64,3 +64,4 @@ $_['flag_bestreviews']                          = '<i class="icon-thumbs-up"></i
 $_['flag_wishlist']                             = '<i class="icon-heart"></i> Список бажань';
 $_['flag_compare']                              = '<i class="icon-compare"></i> Порівняння';
 $_['flag_sale']                                 = '<i class="icon-fire"></i> Розпродаж';
+$_['flag_new']                                  = '<i class="icon-star"></i> Новинка';

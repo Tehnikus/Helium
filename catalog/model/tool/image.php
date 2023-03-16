@@ -86,7 +86,7 @@ class ModelToolImage extends Model {
 
 	public function createJpgImage($filename, $width, $height) {
 		$extension = pathinfo($filename, PATHINFO_EXTENSION);
-		$jpg_image = 'cache/jpg' . utf8_substr($filename, 0, utf8_strrpos($filename, '.')) . '-' . (int)$width . 'x' . (int)$height . '.' . $extension;
+		$jpg_image = 'cache/jpg/' . utf8_substr($filename, 0, utf8_strrpos($filename, '.')) . '-' . (int)$width . 'x' . (int)$height . '.' . $extension;
 		
 		if (!is_file(DIR_IMAGE . $jpg_image) || (filemtime(DIR_IMAGE . $filename) > filemtime(DIR_IMAGE . $jpg_image))) {		
 			$path = '';
@@ -110,65 +110,67 @@ class ModelToolImage extends Model {
 
 	public function createSvgImage($filename, $width, $height) {
 		$svg_image = 'cache/svg/' . utf8_substr($filename, 0, utf8_strrpos($filename, '.')) . '-' . (int)$width . 'x' . (int)$height . '.svg';
-		$path = '';
-		$directories = explode('/', dirname($svg_image));
+		if (!is_file(DIR_IMAGE . $svg_image) || (filemtime(DIR_IMAGE . $filename) > filemtime(DIR_IMAGE . $svg_image))) {
+			$path = '';
+			$directories = explode('/', dirname($svg_image));
 
-		foreach ($directories as $directory) {
-			$path = $path . '/' . $directory;
+			foreach ($directories as $directory) {
+				$path = $path . '/' . $directory;
 
-			if (!is_dir(DIR_IMAGE . $path)) {
-				@mkdir(DIR_IMAGE . $path, 0777);
-			}
-		}
-
-		$svg = file_get_contents(DIR_IMAGE . $filename);
-
-		// I prefer to use DOM, because it's safer and easier as to use preg_match
-		$svg_dom = new DOMDocument();
-
-		libxml_use_internal_errors(true);
-		$svg_dom->loadXML($svg);
-		libxml_use_internal_errors(false);
-
-
-		//get width and height values from your svg
-		$tmp_obj = $svg_dom->getElementsByTagName('svg')->item(0);
-		$svg_width = floatval($tmp_obj->getAttribute('width'));
-		$svg_height = floatval($tmp_obj->getAttribute('height'));
-		
-
-		// set width and height of your svg to preferred dimensions
-		$tmp_obj->setAttribute('width', $width);
-		$tmp_obj->setAttribute('height', $height);
-
-		// check if width and height of your svg is smaller than the width and 
-		// height you set above => no down scaling is needed
-		if ($svg_width < $width && $svg_height < $height) {
-			//center your svg content in new box
-			$x = abs($svg_width - $width) / 2;
-			$y = abs($svg_height - $height) / 2;
-			$tmp_obj->getElementsByTagName('g')->item(0)->setAttribute('transform', "translate($x,$y)");
-		} else {
-			// scale down your svg content and center it in new box
-			$scale = 1;
-
-			// set padding to 0 if no gaps are desired
-			$padding = 2;
-
-			// get scale factor
-			if ($svg_width > $svg_height) {
-				$scale = ($width - $padding) / $svg_width;
-			} else {
-				$scale = ($height - $padding) / $svg_height;
+				if (!is_dir(DIR_IMAGE . $path)) {
+					@mkdir(DIR_IMAGE . $path, 0777);
+				}
 			}
 
-			$x = abs(($scale * $svg_width) - $width) / 2;
-			$y = abs(($scale * $svg_height) - $height) / 2;
-			$tmp_obj->getElementsByTagName('g')->item(0)->setAttribute('transform', "translate($x,$y) scale($scale,$scale)");
+			$svg = file_get_contents(DIR_IMAGE . $filename);
 
+			// I prefer to use DOM, because it's safer and easier as to use preg_match
+			$svg_dom = new DOMDocument();
+
+			libxml_use_internal_errors(true);
+			$svg_dom->loadXML($svg);
+			libxml_use_internal_errors(false);
+
+
+			//get width and height values from your svg
+			$tmp_obj = $svg_dom->getElementsByTagName('svg')->item(0);
+			// set width and height of your svg to preferred dimensions
+			$tmp_obj->setAttribute('width', $width);
+			$tmp_obj->setAttribute('height', $height);
+
+			// // Calculate translate(x, y) values
+			// $svg_width = floatval($tmp_obj->getAttribute('width'));
+			// $svg_height = floatval($tmp_obj->getAttribute('height'));
+			
+			// // check if width and height of your svg is smaller than the width and 
+			// // height you set above => no down scaling is needed
+			// if ($svg_width < $width && $svg_height < $height) {
+			// 	//center your svg content in new box
+			// 	$x = abs($svg_width - $width) / 2;
+			// 	$y = abs($svg_height - $height) / 2;
+			// 	$tmp_obj->getElementsByTagName('g')->item(0)->setAttribute('transform', "translate($x,$y)");
+			// } else {
+			// 	// scale down your svg content and center it in new box
+			// 	$scale = 1;
+
+			// 	// set padding to 0 if no gaps are desired
+			// 	$padding = 2;
+
+			// 	// get scale factor
+			// 	if ($svg_width > $svg_height) {
+			// 		$scale = ($width - $padding) / $svg_width;
+			// 	} else {
+			// 		$scale = ($height - $padding) / $svg_height;
+			// 	}
+
+			// 	$x = abs(($scale * $svg_width) - $width) / 2;
+			// 	$y = abs(($scale * $svg_height) - $height) / 2;
+			// 	$tmp_obj->getElementsByTagName('g')->item(0)->setAttribute('transform', "translate($x,$y) scale($scale,$scale)");
+
+			// }
+			fopen(DIR_IMAGE . $svg_image, 'w');
+			file_put_contents(DIR_IMAGE . $svg_image, $svg_dom->saveXML());
 		}
-		fopen(DIR_IMAGE . $svg_image, 'w');
-		file_put_contents(DIR_IMAGE . $svg_image, $svg_dom->saveXML());
 
 		return $svg_image;
 	}
