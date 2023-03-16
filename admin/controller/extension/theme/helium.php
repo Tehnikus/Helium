@@ -223,6 +223,7 @@ class ControllerExtensionThemeHelium extends Controller {
 			$data['theme_helium_image_category_height'] = 160;
 		}
 		
+		// Product images
 		if (isset($this->request->post['theme_helium_image_thumb_width'])) {
 			$data['theme_helium_image_thumb_width'] = $this->request->post['theme_helium_image_thumb_width'];
 		} elseif (isset($setting_info['theme_helium_image_thumb_width'])) {
