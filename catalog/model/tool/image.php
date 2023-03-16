@@ -8,7 +8,10 @@ class ModelToolImage extends Model {
 		// Check if GD library is installed
 		$webp_supports = false;
 		$gd = gd_info();
-		if (isset($gd['WebP Support']) && $gd['WebP Support'] && (isset($this->request->server['HTTP_ACCEPT']) && strpos($this->request->server['HTTP_ACCEPT'], 'webp'))) {
+		if (isset($gd['WebP Support']) 
+			&& $gd['WebP Support'] 
+			// && (isset($this->request->server['HTTP_ACCEPT']) && strpos($this->request->server['HTTP_ACCEPT'], 'webp'))
+		) {
 			$webp_supports = true;
 		}
 
