@@ -142,7 +142,24 @@
                 {% endif %}
               </div>
             </div>
+            <div class="form-group">
+              <label class="col-sm-2 control-label" >{{ entry_flags_settings }}</label>
+              <div class="col-sm-10">
+                <div class="row">
+                  <div class="col-sm-3">
+                    <input type="text" name="bestsellers_limit" value="{{ bestsellers_limit }}" placeholder="{{ entry_bestsellers_limit }}" class="form-control" />
+                  </div>
+                  <div class="col-sm-3">
+                    <input type="text" name="best_reviews_limit" value="{{ best_reviews_limit }}" placeholder="{{ entry_best_reviews_limit }}" class="form-control" />
+                  </div>
+                  <div class="col-sm-3">
+                    <input type="text" name="most_viewed_limit" value="{{ most_viewed_limit }}" placeholder="{{ entry_most_viewed_limit }}" class="form-control" />
+                  </div>
+                </div>
+              </div>
+            </div>
           </fieldset>
+          
           <fieldset>
             <legend>{{ text_image }}</legend>
             <div class="form-group required">
@@ -160,8 +177,9 @@
                 <div class="text-danger">{{ error_image_category }}</div>
                 {% endif %}
               </div>
-              </div>
-              <div class="form-group required">
+            </div>
+
+            <div class="form-group required">
               <label class="col-sm-2 control-label" for="input-image-category-width">{{ entry_image_category }}</label>
               <div class="col-sm-10">
                 <div class="row">
@@ -177,6 +195,7 @@
                 {% endif %}
               </div>
             </div>
+
             <div class="form-group required">
               <label class="col-sm-2 control-label" for="input-image-thumb-width">{{ entry_image_thumb }}</label>
               <div class="col-sm-10">
@@ -193,6 +212,7 @@
                 {% endif %}
               </div>
             </div>
+
             <div class="form-group required">
               <label class="col-sm-2 control-label" for="input-image-popup-width">{{ entry_image_popup }}</label>
               <div class="col-sm-10">
