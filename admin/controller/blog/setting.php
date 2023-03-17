@@ -197,10 +197,10 @@ class ControllerBlogSetting extends Controller {
 			$data['blog_category_image_height'] = $this->config->get('blog_category_image_height');
 		}
 
-		if (isset($this->request->post['article_miniature_image_witdh'])) {
-			$data['article_miniature_image_witdh'] = $this->request->post['article_miniature_image_witdh'];
+		if (isset($this->request->post['article_miniature_image_width'])) {
+			$data['article_miniature_image_width'] = $this->request->post['article_miniature_image_width'];
 		} else {
-			$data['article_miniature_image_witdh'] = $this->config->get('article_miniature_image_witdh');
+			$data['article_miniature_image_width'] = $this->config->get('article_miniature_image_width');
 		}
 
 		if (isset($this->request->post['article_miniature_image_height'])) {
@@ -267,7 +267,7 @@ class ControllerBlogSetting extends Controller {
 			$this->error['image_category'] = $this->language->get('error_image_category');
 		}
 
-		if (!$this->request->post['article_miniature_image_witdh'] || !$this->request->post['article_miniature_image_height']) {
+		if (!$this->request->post['article_miniature_image_width'] || !$this->request->post['article_miniature_image_height']) {
 			$this->error['image_article'] = $this->language->get('error_image_article');
 		}
 

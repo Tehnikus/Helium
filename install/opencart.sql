@@ -2834,7 +2834,7 @@ INSERT INTO `oc_setting` (`store_id`, `code`, `key`, `value`, `serialized`) VALU
 (0, 'configblog', 'configblog_review_mail', '1', 0),
 (0, 'configblog', 'blog_category_image_width', '400', 0),
 (0, 'configblog', 'blog_category_image_height', '400', 0),
-(0, 'configblog', 'article_miniature_image_witdh', '400', 0),
+(0, 'configblog', 'article_miniature_image_width', '400', 0),
 (0, 'configblog', 'article_miniature_image_height', '300', 0),
 (0, 'configblog', 'related_articles_image_width', '400', 0),
 (0, 'configblog', 'related_articles_image_height', '300', 0),
