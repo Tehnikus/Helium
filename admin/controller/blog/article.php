@@ -296,9 +296,9 @@ class ControllerBlogArticle extends Controller {
 
 		foreach ($results as $result) {
 			if (is_file(DIR_IMAGE . $result['image'])) {
-				$image = $this->model_tool_image->resize($result['image'], 40, 40);
+				$image = $this->model_tool_image->resize($result['image'], $this->config->get('article_miniature_image_width'), $this->config->get('article_miniature_image_height'));
 			} else {
-				$image = $this->model_tool_image->resize('no_image.png', 40, 40);
+				$image = $this->model_tool_image->resize('no_image.webp', $this->config->get('article_miniature_image_width'), $this->config->get('article_miniature_image_height'));
 			}
 
 			$data['articles'][] = array(
@@ -521,14 +521,14 @@ class ControllerBlogArticle extends Controller {
 		$this->load->model('tool/image');
 
 		if (isset($this->request->post['image']) && is_file(DIR_IMAGE . $this->request->post['image'])) {
-			$data['thumb'] = $this->model_tool_image->resize($this->request->post['image'], 100, 100);
+			$data['thumb'] = $this->model_tool_image->resize($this->request->post['image'], $this->config->get('article_miniature_image_width'), $this->config->get('article_miniature_image_height'));
 		} elseif (!empty($article_info) && is_file(DIR_IMAGE . $article_info['image'])) {
-			$data['thumb'] = $this->model_tool_image->resize($article_info['image'], 100, 100);
+			$data['thumb'] = $this->model_tool_image->resize($article_info['image'], $this->config->get('article_miniature_image_width'), $this->config->get('article_miniature_image_height'));
 		} else {
-			$data['thumb'] = $this->model_tool_image->resize('no_image.png', 100, 100);
+			$data['thumb'] = $this->model_tool_image->resize('no_image.webp', $this->config->get('article_miniature_image_width'), $this->config->get('article_miniature_image_height'));
 		}
 
-		$data['placeholder'] = $this->model_tool_image->resize('no_image.png', 100, 100);
+		$data['placeholder'] = $this->model_tool_image->resize('no_image.webp', $this->config->get('article_miniature_image_width'), $this->config->get('article_miniature_image_height'));
 
 		$this->load->model('setting/store');
 
@@ -633,12 +633,12 @@ class ControllerBlogArticle extends Controller {
 				$thumb = $article_image['image'];
 			} else {
 				$image = '';
-				$thumb = 'no_image.png';
+				$thumb = 'no_image.webp';
 			}
 
 			$data['article_images'][] = array(
 				'image'      => $image,
-				'thumb'      => $this->model_tool_image->resize($thumb, 100, 100),
+				'thumb'      => $this->model_tool_image->resize($thumb, $this->config->get('article_miniature_image_width'), $this->config->get('article_miniature_image_height')),
 				'sort_order' => $article_image['sort_order']
 			);
 		}

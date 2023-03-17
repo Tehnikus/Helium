@@ -82,9 +82,9 @@ class ModelBlogArticle extends Model {
 			foreach ($articles as $key => $article) {
 				$articles[$key]['url'] = $this->url->link('blog/article', 'article_id=' . $article['article_id']);
 				if (isset($article['image']) && $article['image'] !== '') {
-					$articles[$key]['image'] = $this->model_tool_image->resize($article['image'], $this->config->get('configblog_image_article_width'), $this->config->get('configblog_image_article_height'));
+					$articles[$key]['image'] = $this->model_tool_image->resize($article['image'], $this->config->get('article_miniature_image_witdh'), $this->config->get('article_miniature_image_height'));
 				} else {
-					$articles[$key]['image'] = $this->model_tool_image->resize('no_image.webp', $this->config->get('configblog_image_article_width'), $this->config->get('configblog_image_article_height'));
+					$articles[$key]['image'] = $this->model_tool_image->resize('no_image.webp', $this->config->get('article_miniature_image_witdh'), $this->config->get('article_miniature_image_height'));
 				}
 			}
 		}

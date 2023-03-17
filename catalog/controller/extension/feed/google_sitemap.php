@@ -121,9 +121,9 @@ class ControllerExtensionFeedGoogleSitemap extends Controller {
 				$output .= '  <lastmod>' . date('Y-m-d\TH:i:sP', strtotime($category['date_modified'])) . '</lastmod>';
 				$output .= '  <priority>0.7</priority>';
 				if ($category['image']) {
-					$image = $this->model_tool_image->resize($category['image'], $this->config->get('theme_' . $this->config->get('config_theme') . '_image_category_width'), $this->config->get('theme_' . $this->config->get('config_theme') . '_image_category_height'));
+					$image = $this->model_tool_image->resize($category['image'], $this->config->get('image_category_width'), $this->config->get('image_category_height'));
 				} else {
-					$image = $this->model_tool_image->resize('no_image.webp', $this->config->get('theme_' . $this->config->get('config_theme') . '_image_category_width'), $this->config->get('theme_' . $this->config->get('config_theme') . '_image_category_height'));
+					$image = $this->model_tool_image->resize('no_image.webp', $this->config->get('image_category_width'), $this->config->get('image_category_height'));
 				}
 				$output .= '  <image:image>';
 				$output .= '  <image:loc>' . $image . '</image:loc>';
@@ -215,7 +215,7 @@ class ControllerExtensionFeedGoogleSitemap extends Controller {
 			foreach ($articles as $key => $article) {
 				$articles[$key]['url'] = $this->url->link('blog/article', 'article_id=' . $article['article_id']);
 				if (isset($article['image']) && $article['image'] !== '') {
-					$articles[$key]['image'] = $this->model_tool_image->resize($article['image'], $this->config->get('configblog_image_article_width'), $this->config->get('configblog_image_article_height'));
+					$articles[$key]['image'] = $this->model_tool_image->resize($article['image'], $this->config->get('article_miniature_image_witdh'), $this->config->get('article_miniature_image_height'));
 				}
 			}
 		}

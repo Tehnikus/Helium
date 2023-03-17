@@ -125,9 +125,9 @@ class ControllerProductCategory extends Controller {
 			$this->document->setKeywords($category_info['meta_keyword']);
 
 			if ($category_info['image']) {
-				$data['thumb'] = $this->model_tool_image->resize($category_info['image'], $this->config->get('theme_' . $this->config->get('config_theme') . '_image_category_width'), $this->config->get('theme_' . $this->config->get('config_theme') . '_image_category_height'));
+				$data['thumb'] = $this->model_tool_image->resize($category_info['image'], $this->config->get('image_category_width'), $this->config->get('image_category_height'));
 			} else {
-				$data['thumb'] = $this->model_tool_image->resize('no_image.webp', $this->config->get('theme_' . $this->config->get('config_theme') . '_image_category_width'), $this->config->get('theme_' . $this->config->get('config_theme') . '_image_category_height'));
+				$data['thumb'] = $this->model_tool_image->resize('no_image.webp', $this->config->get('image_category_width'), $this->config->get('image_category_height'));
 			}
 
 			$data['description'] = html_entity_decode($category_info['description'], ENT_QUOTES, 'UTF-8');
@@ -518,9 +518,9 @@ class ControllerProductCategory extends Controller {
 				// Изображение дочерней категории
 				// DONE - добавить картинку no_image.webp
 				if ($result['image']) {
-					$image['thumb'] = $this->model_tool_image->resize($result['image'], $this->config->get('theme_' . $this->config->get('config_theme') . '_image_category_width'), $this->config->get('theme_' . $this->config->get('config_theme') . '_image_category_height'));
+					$image['thumb'] = $this->model_tool_image->resize($result['image'], $this->config->get('image_category_width'), $this->config->get('image_category_height'));
 				} else {
-					$image['thumb'] = $this->model_tool_image->resize('no_image.webp', $this->config->get('theme_' . $this->config->get('config_theme') . '_image_category_width'), $this->config->get('theme_' . $this->config->get('config_theme') . '_image_category_height'));
+					$image['thumb'] = $this->model_tool_image->resize('no_image.webp', $this->config->get('image_category_width'), $this->config->get('image_category_height'));
 				}
 
 				$child_categories[] = array(
@@ -528,8 +528,8 @@ class ControllerProductCategory extends Controller {
 					'product_count' => $subcategory_product_count ?: '',
 					'href' => $this->url->link('product/category', 'path=' . $this->request->get['path'] . '_' . $result['category_id']),
 					'thumb' => $image['thumb'],
-					'width' => $this->config->get('theme_' . $this->config->get('config_theme') . '_image_category_width'),
-					'height' => $this->config->get('theme_' . $this->config->get('config_theme') . '_image_category_height')
+					'width' => $this->config->get('image_category_width'),
+					'height' => $this->config->get('image_category_height')
 				);
 			}
 			$this->cache->set($cache_name, $child_categories);

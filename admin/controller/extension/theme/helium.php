@@ -236,55 +236,55 @@ class ControllerExtensionThemeHelium extends Controller {
 		}
 
 		// Category miniature
-		if (isset($this->request->post['theme_helium_image_category_width'])) {
-			$data['theme_helium_image_category_width'] = $this->request->post['theme_helium_image_category_width'];
-		} elseif (isset($setting_info['theme_helium_image_category_width'])) {
-			$data['theme_helium_image_category_width'] = $setting_info['theme_helium_image_category_width'];
+		if (isset($this->request->post['image_category_width'])) {
+			$data['image_category_width'] = $this->request->post['image_category_width'];
+		} elseif (isset($setting_info['image_category_width'])) {
+			$data['image_category_width'] = $setting_info['image_category_width'];
 		} else {
-			$data['theme_helium_image_category_width'] = 160;		
+			$data['image_category_width'] = 160;		
 		}
 		
-		if (isset($this->request->post['theme_helium_image_category_height'])) {
-			$data['theme_helium_image_category_height'] = $this->request->post['theme_helium_image_category_height'];
-		} elseif (isset($setting_info['theme_helium_image_category_height'])) {
-			$data['theme_helium_image_category_height'] = $setting_info['theme_helium_image_category_height'];
+		if (isset($this->request->post['image_category_height'])) {
+			$data['image_category_height'] = $this->request->post['image_category_height'];
+		} elseif (isset($setting_info['image_category_height'])) {
+			$data['image_category_height'] = $setting_info['image_category_height'];
 		} else {
-			$data['theme_helium_image_category_height'] = 160;
+			$data['image_category_height'] = 160;
 		}
 
 
 		
 		// Product images
-		if (isset($this->request->post['theme_helium_image_thumb_width'])) {
-			$data['theme_helium_image_thumb_width'] = $this->request->post['theme_helium_image_thumb_width'];
-		} elseif (isset($setting_info['theme_helium_image_thumb_width'])) {
-			$data['theme_helium_image_thumb_width'] = $setting_info['theme_helium_image_thumb_width'];
+		if (isset($this->request->post['image_thumb_width'])) {
+			$data['image_thumb_width'] = $this->request->post['image_thumb_width'];
+		} elseif (isset($setting_info['image_thumb_width'])) {
+			$data['image_thumb_width'] = $setting_info['image_thumb_width'];
 		} else {
-			$data['theme_helium_image_thumb_width'] = 800;
+			$data['image_thumb_width'] = 800;
 		}
 		
-		if (isset($this->request->post['theme_helium_image_thumb_height'])) {
-			$data['theme_helium_image_thumb_height'] = $this->request->post['theme_helium_image_thumb_height'];
-		} elseif (isset($setting_info['theme_helium_image_thumb_height'])) {
-			$data['theme_helium_image_thumb_height'] = $setting_info['theme_helium_image_thumb_height'];
+		if (isset($this->request->post['image_thumb_height'])) {
+			$data['image_thumb_height'] = $this->request->post['image_thumb_height'];
+		} elseif (isset($setting_info['image_thumb_height'])) {
+			$data['image_thumb_height'] = $setting_info['image_thumb_height'];
 		} else {
-			$data['theme_helium_image_thumb_height'] = 800;		
+			$data['image_thumb_height'] = 800;		
 		}
 		
-		if (isset($this->request->post['theme_helium_image_popup_width'])) {
-			$data['theme_helium_image_popup_width'] = $this->request->post['theme_helium_image_popup_width'];
-		} elseif (isset($setting_info['theme_helium_image_popup_width'])) {
-			$data['theme_helium_image_popup_width'] = $setting_info['theme_helium_image_popup_width'];
+		if (isset($this->request->post['image_popup_width'])) {
+			$data['image_popup_width'] = $this->request->post['image_popup_width'];
+		} elseif (isset($setting_info['image_popup_width'])) {
+			$data['image_popup_width'] = $setting_info['image_popup_width'];
 		} else {
-			$data['theme_helium_image_popup_width'] = 1200;
+			$data['image_popup_width'] = 1200;
 		}
 		
-		if (isset($this->request->post['theme_helium_image_popup_height'])) {
-			$data['theme_helium_image_popup_height'] = $this->request->post['theme_helium_image_popup_height'];
-		} elseif (isset($setting_info['theme_helium_image_popup_height'])) {
-			$data['theme_helium_image_popup_height'] = $setting_info['theme_helium_image_popup_height'];
+		if (isset($this->request->post['image_popup_height'])) {
+			$data['image_popup_height'] = $this->request->post['image_popup_height'];
+		} elseif (isset($setting_info['image_popup_height'])) {
+			$data['image_popup_height'] = $setting_info['image_popup_height'];
 		} else {
-			$data['theme_helium_image_popup_height'] = 1200;
+			$data['image_popup_height'] = 1200;
 		}
 		
 		if (isset($this->request->post['image_product_width'])) {
@@ -303,20 +303,20 @@ class ControllerExtensionThemeHelium extends Controller {
 			$data['image_product_height'] = 400;
 		}
 		
-		if (isset($this->request->post['theme_helium_image_additional_width'])) {
-			$data['theme_helium_image_additional_width'] = $this->request->post['theme_helium_image_additional_width'];
-		} elseif (isset($setting_info['theme_helium_image_additional_width'])) {
-			$data['theme_helium_image_additional_width'] = $setting_info['theme_helium_image_additional_width'];
+		if (isset($this->request->post['image_additional_width'])) {
+			$data['image_additional_width'] = $this->request->post['image_additional_width'];
+		} elseif (isset($setting_info['image_additional_width'])) {
+			$data['image_additional_width'] = $setting_info['image_additional_width'];
 		} else {
-			$data['theme_helium_image_additional_width'] = 160;
+			$data['image_additional_width'] = 160;
 		}
 		
-		if (isset($this->request->post['theme_helium_image_additional_height'])) {
-			$data['theme_helium_image_additional_height'] = $this->request->post['theme_helium_image_additional_height'];
-		} elseif (isset($setting_info['theme_helium_image_additional_height'])) {
-			$data['theme_helium_image_additional_height'] = $setting_info['theme_helium_image_additional_height'];
+		if (isset($this->request->post['image_additional_height'])) {
+			$data['image_additional_height'] = $this->request->post['image_additional_height'];
+		} elseif (isset($setting_info['image_additional_height'])) {
+			$data['image_additional_height'] = $setting_info['image_additional_height'];
 		} else {
-			$data['theme_helium_image_additional_height'] = 160;
+			$data['image_additional_height'] = 160;
 		}
 		
 		if (isset($this->request->post['theme_helium_image_related_width'])) {
@@ -419,7 +419,7 @@ class ControllerExtensionThemeHelium extends Controller {
 			$this->error['product_description_length'] = $this->language->get('error_limit');
 		}
 
-		if (!$this->request->post['theme_helium_image_category_width'] || !$this->request->post['theme_helium_image_category_height']) {
+		if (!$this->request->post['image_category_width'] || !$this->request->post['image_category_height']) {
 			$this->error['image_category'] = $this->language->get('error_image_category');
 		}
 		
@@ -427,11 +427,11 @@ class ControllerExtensionThemeHelium extends Controller {
 			$this->error['image_logo'] = $this->language->get('error_image_category');
 		}
 
-		if (!$this->request->post['theme_helium_image_thumb_width'] || !$this->request->post['theme_helium_image_thumb_height']) {
+		if (!$this->request->post['image_thumb_width'] || !$this->request->post['image_thumb_height']) {
 			$this->error['image_thumb'] = $this->language->get('error_image_thumb');
 		}
 
-		if (!$this->request->post['theme_helium_image_popup_width'] || !$this->request->post['theme_helium_image_popup_height']) {
+		if (!$this->request->post['image_popup_width'] || !$this->request->post['image_popup_height']) {
 			$this->error['image_popup'] = $this->language->get('error_image_popup');
 		}
 
@@ -439,7 +439,7 @@ class ControllerExtensionThemeHelium extends Controller {
 			$this->error['image_product'] = $this->language->get('error_image_product');
 		}
 
-		if (!$this->request->post['theme_helium_image_additional_width'] || !$this->request->post['theme_helium_image_additional_height']) {
+		if (!$this->request->post['image_additional_width'] || !$this->request->post['image_additional_height']) {
 			$this->error['image_additional'] = $this->language->get('error_image_additional');
 		}
 

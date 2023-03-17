@@ -185,40 +185,40 @@ class ControllerBlogSetting extends Controller {
 			$data['configblog_review_mail'] = $this->config->get('configblog_review_mail');
 		}
 
-		if (isset($this->request->post['configblog_image_category_width'])) {
-			$data['configblog_image_category_width'] = $this->request->post['configblog_image_category_width'];
+		if (isset($this->request->post['blog_category_image_width'])) {
+			$data['blog_category_image_width'] = $this->request->post['blog_category_image_width'];
 		} else {
-			$data['configblog_image_category_width'] = $this->config->get('configblog_image_category_width');
+			$data['blog_category_image_width'] = $this->config->get('blog_category_image_width');
 		}
 
-		if (isset($this->request->post['configblog_image_category_height'])) {
-			$data['configblog_image_category_height'] = $this->request->post['configblog_image_category_height'];
+		if (isset($this->request->post['blog_category_image_height'])) {
+			$data['blog_category_image_height'] = $this->request->post['blog_category_image_height'];
 		} else {
-			$data['configblog_image_category_height'] = $this->config->get('configblog_image_category_height');
+			$data['blog_category_image_height'] = $this->config->get('blog_category_image_height');
 		}
 
-		if (isset($this->request->post['configblog_image_article_width'])) {
-			$data['configblog_image_article_width'] = $this->request->post['configblog_image_article_width'];
+		if (isset($this->request->post['article_miniature_image_witdh'])) {
+			$data['article_miniature_image_witdh'] = $this->request->post['article_miniature_image_witdh'];
 		} else {
-			$data['configblog_image_article_width'] = $this->config->get('configblog_image_article_width');
+			$data['article_miniature_image_witdh'] = $this->config->get('article_miniature_image_witdh');
 		}
 
-		if (isset($this->request->post['configblog_image_article_height'])) {
-			$data['configblog_image_article_height'] = $this->request->post['configblog_image_article_height'];
+		if (isset($this->request->post['article_miniature_image_height'])) {
+			$data['article_miniature_image_height'] = $this->request->post['article_miniature_image_height'];
 		} else {
-			$data['configblog_image_article_height'] = $this->config->get('configblog_image_article_height');
+			$data['article_miniature_image_height'] = $this->config->get('article_miniature_image_height');
 		}
 
-		if (isset($this->request->post['configblog_image_related_width'])) {
-			$data['configblog_image_related_width'] = $this->request->post['configblog_image_related_width'];
+		if (isset($this->request->post['related_articles_image_width'])) {
+			$data['related_articles_image_width'] = $this->request->post['related_articles_image_width'];
 		} else {
-			$data['configblog_image_related_width'] = $this->config->get('configblog_image_related_width');
+			$data['related_articles_image_width'] = $this->config->get('related_articles_image_width');
 		}
 
-		if (isset($this->request->post['configblog_image_related_height'])) {
-			$data['configblog_image_related_height'] = $this->request->post['configblog_image_related_height'];
+		if (isset($this->request->post['related_articles_image_height'])) {
+			$data['related_articles_image_height'] = $this->request->post['related_articles_image_height'];
 		} else {
-			$data['configblog_image_related_height'] = $this->config->get('configblog_image_related_height');
+			$data['related_articles_image_height'] = $this->config->get('related_articles_image_height');
 		}
 		
 		if (isset($this->request->post['configblog_name'])) {
@@ -263,15 +263,15 @@ class ControllerBlogSetting extends Controller {
 			$this->error['warning'] = $this->language->get('error_permission');
 		}
 
-		if (!$this->request->post['configblog_image_category_width'] || !$this->request->post['configblog_image_category_height']) {
+		if (!$this->request->post['blog_category_image_width'] || !$this->request->post['blog_category_image_height']) {
 			$this->error['image_category'] = $this->language->get('error_image_category');
 		}
 
-		if (!$this->request->post['configblog_image_article_width'] || !$this->request->post['configblog_image_article_height']) {
+		if (!$this->request->post['article_miniature_image_witdh'] || !$this->request->post['article_miniature_image_height']) {
 			$this->error['image_article'] = $this->language->get('error_image_article');
 		}
 
-		if (!$this->request->post['configblog_image_related_width'] || !$this->request->post['configblog_image_related_height']) {
+		if (!$this->request->post['related_articles_image_width'] || !$this->request->post['related_articles_image_height']) {
 			$this->error['image_related'] = $this->language->get('error_image_related');
 		}
 

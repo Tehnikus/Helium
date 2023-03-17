@@ -623,9 +623,9 @@ class ControllerCatalogProduct extends Controller {
 
 		foreach ($results as $result) {
 			if (is_file(DIR_IMAGE . $result['image'])) {
-				$image = $this->model_tool_image->resize($result['image'], 40, 40);
+				$image = $this->model_tool_image->resize($result['image'], $this->config->get('image_additional_width'), $this->config->get('image_additional_height'));
 			} else {
-				$image = $this->model_tool_image->resize('no_image.png', 40, 40);
+				$image = $this->model_tool_image->resize('no_image.webp', $this->config->get('image_additional_width'), $this->config->get('image_additional_height'));
 			}
 
 			$special = false;
@@ -1468,14 +1468,14 @@ class ControllerCatalogProduct extends Controller {
 		$this->load->model('tool/image');
 
 		if (isset($this->request->post['image']) && is_file(DIR_IMAGE . $this->request->post['image'])) {
-			$data['thumb'] = $this->model_tool_image->resize($this->request->post['image'], 100, 100);
+			$data['thumb'] = $this->model_tool_image->resize($this->request->post['image'], $this->config->get('image_additional_width'), $this->config->get('image_additional_height'));
 		} elseif (!empty($product_info) && is_file(DIR_IMAGE . $product_info['image'])) {
-			$data['thumb'] = $this->model_tool_image->resize($product_info['image'], 100, 100);
+			$data['thumb'] = $this->model_tool_image->resize($product_info['image'], $this->config->get('image_additional_width'), $this->config->get('image_additional_height'));
 		} else {
-			$data['thumb'] = $this->model_tool_image->resize('no_image.png', 100, 100);
+			$data['thumb'] = $this->model_tool_image->resize('no_image.png', $this->config->get('image_additional_width'), $this->config->get('image_additional_height'));
 		}
 
-		$data['placeholder'] = $this->model_tool_image->resize('no_image.png', 100, 100);
+		$data['placeholder'] = $this->model_tool_image->resize('no_image.png', $this->config->get('image_additional_width'), $this->config->get('image_additional_height'));
 
 		// Images
 		if (isset($this->request->post['product_image'])) {
@@ -1499,7 +1499,7 @@ class ControllerCatalogProduct extends Controller {
 
 			$data['product_images'][] = array(
 				'image'      => $image,
-				'thumb'      => $this->model_tool_image->resize($thumb, 100, 100),
+				'thumb'      => $this->model_tool_image->resize($thumb, $this->config->get('image_additional_width'), $this->config->get('image_additional_height')),
 				'sort_order' => $product_image['sort_order']
 			);
 		}

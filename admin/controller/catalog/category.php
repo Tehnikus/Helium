@@ -442,14 +442,14 @@ class ControllerCatalogCategory extends Controller {
 		$this->load->model('tool/image');
 
 		if (isset($this->request->post['image']) && is_file(DIR_IMAGE . $this->request->post['image'])) {
-			$data['thumb'] = $this->model_tool_image->resize($this->request->post['image'], 100, 100);
+			$data['thumb'] = $this->model_tool_image->resize($this->request->post['image'], $this->config->get('image_category_width'), $this->config->get('image_category_height'));
 		} elseif (!empty($category_info) && is_file(DIR_IMAGE . $category_info['image'])) {
-			$data['thumb'] = $this->model_tool_image->resize($category_info['image'], 100, 100);
+			$data['thumb'] = $this->model_tool_image->resize($category_info['image'], $this->config->get('image_category_width'), $this->config->get('image_category_height'));
 		} else {
-			$data['thumb'] = $this->model_tool_image->resize('no_image.png', 100, 100);
+			$data['thumb'] = $this->model_tool_image->resize('no_image.webp', $this->config->get('image_category_width'), $this->config->get('image_category_height'));
 		}
 
-		$data['placeholder'] = $this->model_tool_image->resize('no_image.png', 100, 100);
+		$data['placeholder'] = $this->model_tool_image->resize('no_image.webp', $this->config->get('image_category_width'), $this->config->get('image_category_height'));
 
 		if (isset($this->request->post['top'])) {
 			$data['top'] = $this->request->post['top'];
@@ -808,9 +808,9 @@ class ControllerCatalogCategory extends Controller {
 			}
 
 			if (is_file(DIR_IMAGE . $result['image'])) {
-				$image = $this->model_tool_image->resize($result['image'], 60, 60);
+				$image = $this->model_tool_image->resize($result['image'], $this->config->get('image_category_width'), $this->config->get('image_category_height'));
 			} else {
-				$image = $this->model_tool_image->resize('no_image.png', 60, 60);
+				$image = $this->model_tool_image->resize('no_image.webp', $this->config->get('image_category_width'), $this->config->get('image_category_height'));
 			}
 
 			$output[$result['category_id']] = array(

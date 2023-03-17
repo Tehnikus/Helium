@@ -181,9 +181,9 @@ class ControllerBlogArticle extends Controller {
 			
 			foreach ($results as $result) {
 				if ($result['image']) {
-					$image = $this->model_tool_image->resize($result['image'], $this->config->get('configblog_image_related_width'), $this->config->get('configblog_image_related_height'));
+					$image = $this->model_tool_image->resize($result['image'], $this->config->get('related_articles_image_width'), $this->config->get('related_articles_image_height'));
 				} else {
-					$image = $this->model_tool_image->resize('no_image.webp', $this->config->get('configblog_image_related_width'), $this->config->get('configblog_image_related_height'));
+					$image = $this->model_tool_image->resize('no_image.webp', $this->config->get('related_articles_image_width'), $this->config->get('related_articles_image_height'));
 				}
 				
 				if ($this->config->get('configblog_review_status')) {

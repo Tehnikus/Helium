@@ -157,13 +157,13 @@ class ControllerBlogCategory extends Controller {
 			);
 
 			if ($category_info['image']) {
-				$data['thumb'] = $this->model_tool_image->resize($category_info['image'], $this->config->get('configblog_image_category_width'), $this->config->get('configblog_image_category_height'));
+				$data['thumb'] = $this->model_tool_image->resize($category_info['image'], $this->config->get('blog_category_image_width'), $this->config->get('blog_category_image_height'));
 			} else {
-				$data['thumb'] = $this->model_tool_image->resize('no_image.webp', $this->config->get('configblog_image_category_width'), $this->config->get('configblog_image_category_height'));
+				$data['thumb'] = $this->model_tool_image->resize('no_image.webp', $this->config->get('blog_category_image_width'), $this->config->get('blog_category_image_height'));
 			}
 
-			$data['width'] = $this->config->get('configblog_image_category_width');
-			$data['height'] = $this->config->get('configblog_image_category_height');
+			$data['width'] = $this->config->get('blog_category_image_width');
+			$data['height'] = $this->config->get('blog_category_image_height');
 			$data['description'] = html_entity_decode($category_info['description'], ENT_QUOTES, 'UTF-8');
 			$data['configblog_review_status'] = $this->config->get('configblog_review_status');
 
@@ -214,9 +214,9 @@ class ControllerBlogCategory extends Controller {
 			$results = $this->model_blog_article->getArticles($article_data);
 			foreach ($results as $result) {
 				if ($result['image']) {
-					$image = $this->model_tool_image->resize($result['image'], $this->config->get('configblog_image_article_width'), $this->config->get('configblog_image_article_height'));
+					$image = $this->model_tool_image->resize($result['image'], $this->config->get('article_miniature_image_witdh'), $this->config->get('article_miniature_image_height'));
 				} else {
-					$image = $this->model_tool_image->resize('no_image.webp', $this->config->get('configblog_image_article_width'), $this->config->get('configblog_image_article_height'));
+					$image = $this->model_tool_image->resize('no_image.webp', $this->config->get('article_miniature_image_witdh'), $this->config->get('article_miniature_image_height'));
 				}
 
 				if ($this->config->get('configblog_review_status')) {
@@ -228,8 +228,8 @@ class ControllerBlogCategory extends Controller {
 				$data['articles'][] = array(
 					'article_id'  => $result['article_id'],
 					'thumb'       => $image,
-					'width'		  => $this->config->get('configblog_image_article_width'),
-					'height'	  => $this->config->get('configblog_image_article_height'),
+					'width'		  => $this->config->get('article_miniature_image_witdh'),
+					'height'	  => $this->config->get('article_miniature_image_height'),
 					'name'        => $result['name'],
 					'description' => utf8_substr(strip_tags(html_entity_decode($result['description'], ENT_QUOTES, 'UTF-8')), 0, $this->config->get('configblog_article_description_length')) . '..',
 					'date_added'  => date($this->language->get('date_format_short'), strtotime($result['date_added'])),
