@@ -2,7 +2,7 @@
 {# Microdata #}
 {# EAN is used as GTIN, it's OK #}
 <!-- Microdata -->
-{% if microdata is defined and microdata.show == true %}
+{% if microdata is defined %}
   <script type="application/ld+json">
     {{ microdata }}
   </script>

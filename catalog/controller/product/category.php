@@ -52,6 +52,7 @@ class ControllerProductCategory extends Controller {
             }
         }
 
+		// Add noindex for sort, filter and page requests
 		foreach ($this->noindex_follow_requests as $request_type) {
 			if (isset($this->request->get[$request_type])) {
 				$this->document->setRobots('noindex,follow');
@@ -137,7 +138,7 @@ class ControllerProductCategory extends Controller {
 				$data['categories'] = '';
 			}
 
-			$data['microdata'] = $this->renderMicrodata($data);
+			
 
 			// Fortuner
 			// Set breadcrumbs for filter values
@@ -150,7 +151,16 @@ class ControllerProductCategory extends Controller {
 				// If static filter page exists
 				if ($filter_page_data) {
 
-					$data['meta_description'] = $filter_page_data['meta_description'] ?: $data['meta_description'];
+					// Microdata
+					$data['name'] 				= $filter_page_data['name'];
+					$data['meta_description'] 	= $filter_page_data['meta_description'] ?: $data['meta_description'];
+					$data['offer_count'] 		= $filter_page_data['offer_count'];
+					$data['min_price'] 			= $filter_page_data['min_price'];
+					$data['max_price'] 			= $filter_page_data['max_price'];
+					$data['rating']				= $filter_page_data['rating'];
+					$data['review_count']		= $filter_page_data['review_count'];
+
+					// Meta data
 					$this->document->setTitle($filter_page_data['meta_title'] ?: $filter_page_data['name']);
 					$this->document->setDescription($filter_page_data['meta_description'] ?: $data['meta_description']);
 					$this->document->setKeywords($filter_page_data['meta_keyword'] ?: $data['meta_keyword']);
@@ -172,6 +182,7 @@ class ControllerProductCategory extends Controller {
 						'text' => $filter_page_data['name'],
 						'href' => '',
 					);
+					$data['offer_count'] = $filter_page_data['offer_count'];
 				} else {
 					// Получаем список названий выбранных фильтров
 					$filter_query = $this->db->query("
@@ -197,10 +208,12 @@ class ControllerProductCategory extends Controller {
 					$data['heading_title'] = $data['name'].' - '.implode(", ", $filter_names);
 				}
 			}
-			
 
-	
+			if ($page > 1) {
+				$data['heading_title'] .= ' - '.sprintf($this->language->get('page'), $page);
+			}
 
+			$data['microdata'] = $this->renderMicrodata($data);
 			
 			// Pagination
 			$url = '';
@@ -497,6 +510,7 @@ class ControllerProductCategory extends Controller {
 		if (!isset($this->request->get['filter']) || $this->request->get['filter'] == '') {
 			// Add category canonical only on non-filter pages
 			$this->document->addLink($this->url->link('product/category', 'path=' . $data['category_id']), 'canonical');
+		}
 			if ($page > 1) {
 				// Fortuner
 				// Добавляем каноникал для страниц пагинации
@@ -511,21 +525,13 @@ class ControllerProductCategory extends Controller {
 				// Зацикливаем ссылку на главную страницу категории
 				$this->document->addLink($this->url->link('product/category', 'path=' . $data['category_id']), 'next');
 			}
-		}
 	}
 
+	// DONE Microdata
+	// DONE Remove huge code, make json_encode
+	// DONE Cache microdata
 	public function renderMicrodata($data)
 	{
-		// DONE Microdata
-		// DONE Remove huge code, make json_encode
-		// DONE Cache microdata
-		
-		// if ($page == 1 && $sort == 'p.sort_order' && $order == 'ASC') {
-		// 	// Условия, при которых нужно спрятать микродату
-		// 	$data['microdata']['show'] = true;
-		// }
-
-
 		$microdata_array = array(
 			'@context' => 'http://schema.org/',
 			'@type' => 'Product',
@@ -535,8 +541,8 @@ class ControllerProductCategory extends Controller {
 			'offers' => array(
 				'@type' => 'AggregateOffer',
 				'offerCount' 	=> $data['offer_count'],
-				'lowPrice' 		=> $data['min_price'],
-				'highPrice' 	=> $data['max_price'],
+				'lowPrice' 		=> round($data['min_price'], 2),
+				'highPrice' 	=> round($data['max_price'], 2),
 				'priceCurrency' => $this->session->data['currency'],
 				'availability'	=>'http://schema.org/InStock',
 			),
@@ -546,7 +552,7 @@ class ControllerProductCategory extends Controller {
 			),
 			'aggregateRating' => array(
 				'@type' => 'AggregateRating',
-				'ratingValue' => $data['rating'],
+				'ratingValue' => round($data['rating'], 2),
 				'ratingCount' => $data['review_count'],
 				'reviewCount' => $data['review_count'],
 				'bestRating' => '5',
@@ -566,58 +572,6 @@ class ControllerProductCategory extends Controller {
 	{
 		$category_info = $this->model_catalog_category->getCategory($category_id);
 		return $category_info;
-	}
-
-
-
-	// Clear post data from any possible injections
-	public function securePostData($filter_data)
-	{
-		// Allowed order strings
-		$allowed_sort_data = array(
-			'pd.name',
-			'p.model',
-			'p.quantity',
-			'p.price',
-			'p.rating',
-			'p.sort_order',
-			'p.date_added',
-			'p.date_modified',
-			'p.viewed',
-			'p.sold',
-			'p.returned',
-			'p.points',
-			'p.weight',
-			'price_to_weight'
-		);
-
-		// Clear post from possible sql injections
-		foreach ($filter_data as $key => $val) {
-			// return $filter_data;
-			if ($key == 'sort') {
-				if (!in_array($val, $allowed_sort_data)) {
-					$filter_data['sort'] = '';
-				}
-			} elseif ($key == 'order' && ($key !== 'ASC' || $key !== 'DESC')) {
-				$filter_data['order'] = '';
-			} elseif ($key == 'filter_filter') {
-				$val = preg_replace('/[^\\d,]+/', '', $val);
-				$val = explode(',', $val);
-				foreach ($val as $k => $string) {
-					// Watch this, may cause slowdowns
-					// $strings[$k] = $this->db->escape($string);
-					$strings[$k] = (int) $string;
-				}
-				asort($strings);
-				$strings           = array_unique(array_filter($strings));
-				$string            = implode(',', $strings);
-				$filter_data[$key] = $string;
-			} else {
-				$filter_data[$key] = preg_replace('/[^\\d,_]+/', '', $val);
-			}
-		}
-		// $this->request->get['filter'] = $filter_data['filter_filter'];
-		return $filter_data;
 	}
 
 	public function setPageMetaData(&$data) {

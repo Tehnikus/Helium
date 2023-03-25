@@ -1,6 +1,6 @@
 <?php
-$_['text_subcategories']  = 'Подкатегории';
-$_['text_pupular_search'] = 'Популярные разделы:';
+$_['text_subcategories']    = 'Подкатегории';
+$_['text_pupular_search']   = 'Популярные разделы:';
 $_['text_product']          = 'Товары';
 $_['text_error']            = 'Категория не найдена!';
 $_['text_empty']            = 'В данной категории нет товаров';
