@@ -499,14 +499,16 @@ class ControllerProductCategory extends Controller {
 
 	public function loadMore($filter_data) {
 		// TODO
-		// return jsencoded $this->renderProductList($filter_data)
+		// return json encoded $this->renderProductList($filter_data)
+		$product_list = $this->renderProductList($filter_data);
+		echo(json_encode($product_list));
 	}
 
 	public function renderCanonicalLinks($data) {
 		$page = (isset($this->request->get['page'])) ? (int)$this->request->get['page'] : 1;
 		$limit = (isset($this->request->get['limit'])) ? (int)$this->request->get['limit'] : $this->config->get('theme_' . $this->config->get('config_theme') . '_product_limit');
 		// Canonical, next, prev
-		// TODO Add filter next and prev
+		// DONE Add filter next and prev
 		if (!isset($this->request->get['filter']) || $this->request->get['filter'] == '') {
 			// Add category canonical only on non-filter pages
 			$this->document->addLink($this->url->link('product/category', 'path=' . $data['category_id']), 'canonical');
