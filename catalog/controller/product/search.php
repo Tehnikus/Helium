@@ -664,7 +664,7 @@ class ControllerProductSearch extends Controller {
 								'attrs' => array('class' => 'flags'),
 								'nest' => array(),
 							),
-							'div' => array(
+							'flags' => array(
 								'attrs' => array('class' => 'infos'),
 								'nest' => array(
 									'div' => array(

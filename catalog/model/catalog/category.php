@@ -187,34 +187,62 @@ class ModelCatalogCategory extends Model {
 
 	// Get filter page data by filter_page_id or filters ids
 	// Arguments are null to be able to get all filter pages for sitemap
-	public function getFilterPageData($filter_page_id = null, $filters = null) {
+	// DONE select min_price, max_price, review_count, offer_count, rating for filter microdata
+	public function getFilterPageData($filters) {
+
+		if ($filters !== null) {
+			// Clear filters from everything except integers and commas
+			$filters = preg_replace('/[^\\d,]+/', '', $filters);
+			// Sort in ascending order
+			$filters = explode(',', $filters);
+			asort($filters);
+			// remove dublicates and empty values
+			$f = array_unique(array_filter($filters));
+			$filters = implode(',',$f);
+		} else {
+			return false;
+		}
+
+		$language_id = (int)$this->config->get('config_language_id');
+		$store_id 	 = (int)$this->config->get('config_store_id');
+
 		$sql = "
 			SELECT 
-				fpd.name, 
-				fpd.description, 
+				fpd.filter_page_id,
+				fpd.name,
+				fpd.description,
 				fpd.meta_title,
 				fpd.meta_description,
-				fpd.meta_keyword
-			FROM " . DB_PREFIX . "filter_page_description fpd 
-			WHERE fpd.enabled = '1' ";
-			if (isset($filter_page_id) && $filter_page_id !== null) {
-				$sql .= " and fpd.filter_page_id = '".$filter_page_id."'";
-			}
-			if (isset($filters) && $filters !== null) {
-				$filters = preg_replace('/[^\\d,]+/', '', $filters);
-				$filters = explode(',', $filters);
-				asort($filters);
-				$f = array_unique(array_filter($filters));
+				fpd.meta_keyword,
+				fpd.default_category,
+				
+				MIN(p.price) AS min_price,
+				MAX(p.price) AS max_price,
+				COUNT(DISTINCT(pf.product_id)) AS offer_count,
+				SUM(DISTINCT(p.review_count)) AS review_count,
+				(SUM(DISTINCT(p.rating)) / SUM(DISTINCT(p.review_count))) AS rating
+			
+			FROM oc_product p 
+			
+			LEFT JOIN oc_product_filter pf ON p.product_id = pf.product_id
+			LEFT JOIN oc_filter_page_description fpd ON fpd.filters = '".$filters."'
+			WHERE p.product_id = pf.product_id 
+				AND pf.filter_id IN(".$filters.")
+				AND fpd.language_id = ".$language_id."
+				AND fpd.store_id = ".$store_id."
+				AND fpd.enabled = 1
+			LIMIT 1
+		";
 
-				$filters_string = implode(',',$f);
-				$sql .= " and fpd.filters = '".$filters_string."'";
-			}
-			$sql .= "
-				AND fpd.language_id = '".(int)$this->config->get('config_language_id')."'
-				AND fpd.store_id = '".(int)$this->config->get('config_store_id')."'
-			";
 		$query = $this->db->query($sql);
-		return($query->rows);
+
+		// check if data exists
+		// because MySQL MIN(), MAX(), COUNT() return NULL instead of empty result
+		if ($query->row['filter_page_id'] !== null) {
+			return ($query->row);
+		} else {
+			return false;
+		}
 	}
 
 	public function getCategoryLayoutId($category_id) {

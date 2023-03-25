@@ -3,89 +3,12 @@
 {# EAN is used as GTIN, it's OK #}
 <!-- Microdata -->
 {% if microdata is defined and microdata.show == true %}
-{% if microdata_encoded is defined %}
-{{ microdata_encoded }}
+  <script type="application/ld+json">
+    {{ microdata }}
+  </script>
 {% endif %}
+<!-- End Microdata -->
 
-<script type="application/ld+json">
-{
-  "@context": "http://schema.org/",
-  "@type": "Product",
-  "name": "{{ microdata.title }}",
-  "description": "{{ microdata.description }}",
-  "image": "{{ microdata.thumb }}",
-  {% if microdata.manufacturers is defined and microdata.manufacturers|length > 0 %}
-  "brand": [
-    {% for brand in microdata.manufacturers %}
-    {
-      "@type": "Brand",
-      "name": "{{ brand }}"
-    }{% if loop.last == false  %},{% endif%}
-    {% endfor %}
-  ],
-  {% endif %}
-  {% if microdata.sku_list is defined and microdata.sku_list|length > 0 %}
-  "sku": [{% for sku in microdata.sku_list %}"{{ sku }}"{% if loop.last == false  %},{% endif%}{% endfor %}],
-  {% endif %}
-  {% if microdata.ean_list is defined and microdata.ean_list|length > 0 %}
-  "gtin": [{% for ean in microdata.ean_list %}"{{ ean }}"{% if loop.last == false  %},{% endif%}{% endfor %}],
-  {% endif %}
-  "offers": {
-    "@type": "AggregateOffer",
-    "offerCount": "{{ microdata.product_count }}",
-    "lowPrice": "{{ microdata.lowest_price }}",
-    "highPrice": "{{ microdata.highest_price }}",
-    "priceCurrency": "{{ microdata.price_currency }}",
-    "availability":"http://schema.org/InStock",
-    {% if microdata.offers is defined and microdata.offers|length > 0 %}
-    "offers": [
-        {% for offer in microdata.offers %}
-        {
-          "@type": "Offer",
-          "url": "{{ offer.url }}",
-          "name": "{{ offer.name }}",
-          "image": "{{ offer.image }}",
-          "price": "{{ offer.price }}",
-          "priceCurrency": "{{ microdata.price_currency }}"
-          {% if offer.gtin is defined and offer.gtin is not empty %}
-          , "gtin": "{{ offer.gtin }}"
-          {% endif %}
-        }{% if loop.last == false  %},{% endif%}
-        {% endfor %}
-    ],
-    {% endif %}
-    "seller": {
-      "@type": "Organization",
-      "name": "{{ microdata.shop_name }}"
-    }
-  },
-  "aggregateRating": {
-    "@type": "AggregateRating",
-    "ratingValue": "{{ microdata.rating }}",
-    "ratingCount": "{{ microdata.review_count }}",
-    "reviewCount": "{{ microdata.review_count }}",
-    "bestRating": "5",
-    "worstRating": "1"
-  },
-  "review": [
-    {
-      "@type": "Review",
-      "author": {
-        "@type": "Person",
-        "name": "Fred Benson"
-      },
-      "datePublished": "2006-05-04",
-      "name": "A masterpiece of literature",
-      "reviewBody": "I really enjoyed this book. It captures the essential challenge people face as they try make sense of their lives and grow to adulthood.",
-      "reviewRating": {
-        "@type": "Rating",
-        "ratingValue": "5"
-      }
-    }
-  ]
-}
-</script>
-{% endif %}
 {% include 'helium/template/common/breadcrumbs.twig' %}
 <main id="main">
   <h1 class="uppercase">{{ heading_title }}</h1>
