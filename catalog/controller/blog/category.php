@@ -354,6 +354,27 @@ class ControllerBlogCategory extends Controller {
 
 			$data['results'] = sprintf($this->language->get('text_pagination'), ($article_total) ? (($page - 1) * $limit) + 1 : 0, ((($page - 1) * $limit) > ($article_total - $limit)) ? $article_total : ((($page - 1) * $limit) + $limit), $article_total, ceil($article_total / $limit));
 
+			// Canonical, next, prev for pagination pages
+			if ($page > 1) {
+				// Add canonical, prev for pagination
+				$this->document->addLink($this->url->link('blog/category', 'blog_category_id=' . $this->request->get['blog_category_id'] . '&page=' . $page), 'canonical');
+				$this->document->addLink($this->url->link('blog/category', 'blog_category_id=' . $this->request->get['blog_category_id'] . (($page > 2) ? '&page='. ($page - 1) : '')), 'prev');
+			}
+			
+			if ($limit && ceil($article_total / $limit) > $page) {
+				// Add next for pagination
+				$this->document->addLink($this->url->link('blog/category', 'blog_category_id=' . $this->request->get['blog_category_id'] . '&page=' . ($page + 1)), 'next');
+			} else {
+				// If current page is the last one - next will be the first
+				// A little hack for cycle googlebot one more time
+				$this->document->addLink($this->url->link('blog/category', 'blog_category_id=' . $this->request->get['blog_category_id']), 'next');
+			}
+
+			// Add page number to the heading (SEO purpose)
+			if ($page > 1) {
+				$data['heading_title'] .= ' - '.sprintf($this->language->get('page'), $page);
+			}
+
 			$data['sort'] = $sort;
 			$data['order'] = $order;
 			$data['limit'] = $limit;

@@ -513,20 +513,18 @@ class ControllerProductCategory extends Controller {
 			// Add category canonical only on non-filter pages
 			$this->document->addLink($this->url->link('product/category', 'path=' . $data['category_id']), 'canonical');
 		}
-			if ($page > 1) {
-				// Fortuner
-				// Добавляем каноникал для страниц пагинации
-				$this->document->addLink($this->url->link('product/category', 'path=' . $data['category_id']).'?page='. $page, 'canonical');
-				$this->document->addLink($this->url->link('product/category', 'path=' . $data['category_id'] . (($page == 2) ? '&page='. ($page - 1) : '')), 'prev');
-			}
-			
-			if ($limit && ceil($data['offer_count'] / $limit) > $page) {
-				$this->document->addLink($this->url->link('product/category', 'path=' . $data['category_id'] . '&page=' . ($page + 1)), 'next');
-			} else {
-				// Fortuner
-				// Зацикливаем ссылку на главную страницу категории
-				$this->document->addLink($this->url->link('product/category', 'path=' . $data['category_id']), 'next');
-			}
+		if ($page > 1) {
+			// Добавляем каноникал для страниц пагинации
+			$this->document->addLink($this->url->link('product/category', 'path=' . $data['category_id']).'?page='. $page, 'canonical');
+			$this->document->addLink($this->url->link('product/category', 'path=' . $data['category_id'] . (($page > 2) ? '&page='. ($page - 1) : '')), 'prev');
+		}
+		
+		if ($limit && ceil($data['offer_count'] / $limit) > $page) {
+			$this->document->addLink($this->url->link('product/category', 'path=' . $data['category_id'] . '&page=' . ($page + 1)), 'next');
+		} else {
+			// Зацикливаем ссылку на главную страницу категории
+			$this->document->addLink($this->url->link('product/category', 'path=' . $data['category_id']), 'next');
+		}
 	}
 
 	// DONE Microdata
