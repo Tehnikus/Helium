@@ -1167,7 +1167,7 @@ function searchFunction () {
 		}
 	});
 	search_input.addEventListener('focusin', function(){
-		if (Object.keys(response).length !== 0) {
+		if (typeof(response) == 'object' && Object.keys(response).length !== 0) {
 			inner_search.classList.add('some-results');
 		}
 	});
