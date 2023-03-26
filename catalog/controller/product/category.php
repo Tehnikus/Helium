@@ -129,18 +129,7 @@ class ControllerProductCategory extends Controller {
 			$data['products'] 		= $this->renderProductList($filter_data);
 			$data['sorts'] 			= $this->renderSorts();
 
-			// Remove category description and child categories, set noindex, nofollow on sort and order pages
-			if ((isset($this->request->get['filter']) 	&& $this->request->get['filter'] !== '') || 
-				(isset($this->request->get['sort']) 	&& $this->request->get['sort'] 	!== '') || 
-				(isset($this->request->get['order']) 	&& $this->request->get['order'] !== '')) {
-				$this->document->setRobots('noindex,follow');
-				$data['description'] = '';
-				$data['categories'] = '';
-			}
 
-			
-
-			// Fortuner
 			// Set breadcrumbs for filter values
 			if (isset($filter_data['filter_filter']) && $filter_data['filter_filter'] !== '') {
 				// DONE remove sql request here
@@ -173,18 +162,22 @@ class ControllerProductCategory extends Controller {
 						$this->document->setRobots('index,follow');
 					}
 
-					// Заголовок H1
+					// H1 Title
 					$data['heading_title'] = $filter_page_data['name'];
-					// SEO Текст
+					// SEO Text
 					$data['description'] = $filter_page_data['description'] ? html_entity_decode($filter_page_data['description'], ENT_QUOTES, 'UTF-8')  : '';
-					// Хлебные крошки фильтра
+					// Hide child categories
+					$data['categories'] = '';
+					// Breadcrumbs for filter
 					$data['breadcrumbs'][] = array(
 						'text' => $filter_page_data['name'],
 						'href' => '',
 					);
 					$data['offer_count'] = $filter_page_data['offer_count'];
 				} else {
-					// Получаем список названий выбранных фильтров
+					// No static page exist
+					// Set H1 of the page like this:
+					// Category name - Filter 1, Filter 2 ... etc
 					$filter_query = $this->db->query("
 						SELECT 
 							fd.filter_id,
@@ -204,13 +197,25 @@ class ControllerProductCategory extends Controller {
 						'text' => implode(", ", $filter_names),
 						'href' => '',
 					);
-					// Заголовок H1
+					// Set H1 for SEO
 					$data['heading_title'] = $data['name'].' - '.implode(", ", $filter_names);
 				}
 			}
 
 			if ($page > 1) {
 				$data['heading_title'] .= ' - '.sprintf($this->language->get('page'), $page);
+			}
+
+			// Remove category description and child categories, set noindex, nofollow on sort and order pages
+			if (
+				($sort !== 'p.sort_order' && $sort !== '') ||
+				$order !== 'ASC' ||
+				$page > 1 ||
+				($filter !== '' && !$filter_page_data)
+			) {
+				$data['description'] = '';
+				$data['categories']  = '';
+				$this->document->setRobots('noindex,follow');
 			}
 
 			$data['microdata'] = $this->renderMicrodata($data);
@@ -564,7 +569,8 @@ class ControllerProductCategory extends Controller {
 	}
 
 	public function renderProductList($filter_data) {
-		$product_list = $this->model_catalog_product->prepareProductList($filter_data);
+		$products = $this->model_catalog_product->getProducts($filter_data);
+		$product_list = $this->model_catalog_product->prepareProductList($products, $filter_data['filter_category_id']);
 		return $product_list;
 	}
 
