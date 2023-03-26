@@ -150,7 +150,7 @@ class ControllerProductManufacturer extends Controller {
 
 
 			if ($manufacturer_info['image']) {
-				$data['thumb'] = $this->model_tool_image->resize($manufacturer_info['image'], $this->config->get('theme_' . $this->config->get('config_theme') . '_image_manufacturer_width'), $this->config->get('theme_' . $this->config->get('config_theme') . '_image_manufacturer_height'));
+				$data['thumb'] = $this->model_tool_image->resize($manufacturer_info['image'], $this->config->get('image_category_width'), $this->config->get('image_category_height'));
 			} else {
 				$data['thumb'] = '';
 			}
@@ -194,7 +194,8 @@ class ControllerProductManufacturer extends Controller {
 
 			$product_total = $this->model_catalog_product->getTotalProducts($filter_data);
 
-			$results = $this->model_catalog_product->prepareProductList($filter_data);
+			$products = $this->model_catalog_product->getProducts($filter_data);
+			$results = $this->model_catalog_product->prepareProductList($products);
 			$data['products'] = $results;
 
 			$url = '';
