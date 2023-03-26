@@ -1145,7 +1145,9 @@ function searchFunction () {
 		function(r) {
 			if (!!r && Object.keys(r).length !== 0) {
 				response = r;
-				let search_results = createElm(r.products);
+				console.dir(r)
+				// return;
+				let search_results = createElm(r);
 				countdown(search_results);
 				
 				inner_search.innerHTML = '';

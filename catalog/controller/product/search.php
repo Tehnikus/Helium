@@ -485,108 +485,26 @@ class ControllerProductSearch extends Controller {
 					)
 				),
 			);
+			$product_list = [];
+			foreach ($products as $id) {
+				$product_list[$id['product_id']] = $this->model_catalog_product->getProduct($id['product_id']);
+			}
+			// prepare product list
+			$products = $this->model_catalog_product->prepareProductList($product_list, null);
 
+			
 			foreach ($products as $key => $product) {
 
-				// Prepare images
-				if (isset($this->request->server['HTTPS']) && (($this->request->server['HTTPS'] == 'on') || ($this->request->server['HTTPS'] == '1'))) {
-					$site_name = $this->config->get('config_ssl');
-				} else {
-					$site_name = $this->config->get('config_url');
-				}
-				if ($product['product_image'] !== '') {
-					$image = $site_name.'image/cache/webp/'.str_replace('.jpg', '-400x400.webp', $product['product_image']);
-				} else {
-					$image = $site_name.'image/cache/webp/placeholder-400x400.webp';
-				}
-
-				// Prepare prices
-				if ($this->customer->isLogged() || !$this->config->get('config_customer_price')) {
-					$price = $this->currency->format($this->tax->calculate($product['product_price'], $product['tax_class_id'], $this->config->get('config_tax')), $this->session->data['currency']);
-				} else {
-					$price = false;
-				}
-
-				// $special_price = $product['special_price'];
-
-				if (!is_null($product['special_price']) && (float)$product['special_price'] >= 0) {
-					$special_price = $this->currency->format($this->tax->calculate($product['special_price'], $product['tax_class_id'], $this->config->get('config_tax')), $this->session->data['currency']);
-					$tax_price = (float)$product['special_price'];
-				} else {
-					$special_price = false;
-					$tax_price = (float)$product['product_price'];
-				}
-
-				if($special_price == false) {
-					$prices = array(
-						'price' => array(
-							'type' => 'span',
-							'attrs' => array('class' => 'price'),
-							'props' => array('innerText' => $this->language->get('text_price').$price)
-						),
-					);
-				} else {
-					$prices = array(
-						'price-new' => array(
-							'type' => 'span',
-							'attrs' => array('class' => 'price-new'),
-							'props' => array('innerText' => $this->language->get('text_new_price').$special_price, 'dataset'=>array('specialDateEnd' => $product['special_date_end'] ?: ''))
-						),
-						'price-old' => array(
-							'type' => 'span',
-							'attrs' => array('class' => 'price-old'),
-							'props' => array('innerHTML' => $this->language->get('text_old_price').$price),
-						)
-					);
-				}
-
-				// Ratings
-				if (isset($product['rating']) && $product['rating'] !== null) {
-					$rating = array(
-						'attrs' => array('class' => 'rating')
-					);
-					$i = 1;
-					while($i <= 5) {
-						if ($i < $rating) {
-							$rating['nest'][$i] = array(
-								'type' => 'i',
-								'attrs' => array('class' => 'icon-star')
-							);
-						} else {
-							if ($i - (float)$rating > 0) {
-								$rating['nest'][$i] = array(
-									'type' => 'i',
-									'attrs' => array('class' => 'icon-star-half')
-								);
-							} else {
-								$rating['nest'][$i] = array(
-									'type' => 'i',
-									'attrs' => array('class' => 'icon-star-empty')
-								);
-							}
-						}
-						$i++;
-					}
-				} else {
-					$rating = '';
-				}
-
-				// Flags
-				$product_flags = $this->model_catalog_product->renderFlags($product, $product['main_category']);
-
-				// Trim descriptions
-				// If search word is found in description, it is highlighted by <b>search word</b> tags
-				// Else first sentence of description is used 
-				// DONE Fix this
+				// Highlight search words in product description
 				$description = '';
-				if (isset($product['product_description']) && $product['product_description'] !== '') {
-					$desc = $product['product_description'];
-
+				if (isset($product['description']) && $product['description'] !== '') {
+					$desc = $product['description'];
+	
 					// Find all html tags that may not have trailing space
 					$html_tags = ["</li>", "</h1>", "</h2>", "</h3>", "</h4>", "</h5>"];
 					$replace   = [".</li>", ".</h1>", ".</h2>", ".</h3>", ".</h4>", ".</h5>"];
 					$desc = str_ireplace($html_tags, $replace, $desc);
-
+	
 					// Split description to array of sentences
 					$sentences_array = preg_split('/(?<=[.?!;:])\s+/', strip_tags(html_entity_decode($desc)), -1, PREG_SPLIT_NO_EMPTY);
 					
@@ -594,7 +512,7 @@ class ControllerProductSearch extends Controller {
 					$search_words = explode(' ', $search_string);
 					// clear spaces and empty words
 					$search_words = array_filter(array_map('trim', $search_words));
-
+	
 					// Foreach sentence in description
 					foreach ($sentences_array as $key => $sentence) {
 						// Explode sentence to words
@@ -613,8 +531,263 @@ class ControllerProductSearch extends Controller {
 							// TODO Check if product has no description or description shorter than 300 chars
 							$description .= $sentence;
 						}
-
 					}
+				}
+
+				// Prices
+				$prices = array();
+				if($product['special'] == false) {
+					$prices = array(
+						'price' => array(
+							'type' => 'span',
+							'attrs' => array('class' => 'price'),
+							'props' => array('innerHTML' => $product['price'])
+						),
+					);
+				} else {
+					$prices = array(
+						'price-new' => array(
+							'type' => 'span',
+							'attrs' => array('class' => 'price-new'),
+							'props' => array('innerHTML' => $product['special'], 'dataset' =>array('specialDateEnd' => $product['special_date_end'] ?: ''))
+						),
+						'price-old' => array(
+							'type' => 'span',
+							'attrs' => array('class' => 'price-old'),
+							'props' => array('innerHTML' =>  $product['price']),
+						)
+					);
+				}
+
+				// Ratings
+				if (isset($product['rating']) && $product['rating'] !== null) {
+					$rating = array(
+						'attrs' => array('class' => 'rating')
+					);
+					$i = 1;
+					while ($i <= 5) {
+						if ($i < $product['rating']) {
+							$rating['nest'][$i] = array(
+								'type' => 'i',
+								'attrs' => array('class' => 'icon-star')
+							);
+						} else {
+							if ($i - (float)$product['rating'] > 0) {
+								$rating['nest'][$i] = array(
+									'type' => 'i',
+									'attrs' => array('class' => 'icon-star-half')
+								);
+							} else {
+								$rating['nest'][$i] = array(
+									'type' => 'i',
+									'attrs' => array('class' => 'icon-star-empty')
+								);
+							}
+						}
+						$i++;
+					}
+					$rating['nest'][] = array(
+						'type' => 'span',
+						'attrs' => array('class' => 'reviews-count'),
+						'props' => array('innerText' => (int)$product['reviews'])
+					);
+				} else {
+					$rating = '';
+				}
+
+				$result_products[$product['product_id']] = array(
+					'type' => 'article',
+					'attrs' => array('class' => 'miniature'),
+					'nest' => array(
+						'figure' => array (
+							'type' => 'figure',
+							'attrs' => array('class' => 'image'),
+							'nest' => array(
+								'a' => array(
+									'type' => 'a',
+									'props' => array('href' => $product['href']),
+									'nest' => array(
+										'img' => array(
+											'type' => 'img',
+											'attrs' => array('class' => 'img-responsive'),
+											'props' => array('loading' => 'lazy', 'width' => '400', 'height'=> '400', 'src' => $product['thumb']),
+										)
+									)
+								)
+							)
+						),
+						'flags' => array(
+							'attrs' => array('class' => 'flags'),
+							'nest' => array(),
+						),
+						'infos' => array(
+							'attrs' => array('class' => 'infos'),
+							'nest' => array(
+								'div' => array(
+									'attrs' => array('class' => 'caption'),
+									'nest' => array(
+										'h3' => array(
+											'type' => 'h3',
+											'nest' => array(
+												'a' => array(
+													'type' => 'a',
+													'props' => array('href' => $product['href'], 'innerText' => $product['name'])
+												)
+											)
+										),
+										'descr' => array(
+											'type' => 'p',
+											'attrs' => array('class' => 'short-description'),
+											'props' => array('innerHTML' => $description)
+										),
+										// 'rating' => $rating,
+										// 'prices' => array(
+										// 	'type' => 'span',
+										// 	'attrs' => array('class' => 'prices h3'),
+										// 	'nest' => $prices
+										// )
+									)
+								)
+							)
+						)
+					)
+				);
+
+				$results['nest']['products']['nest'] = $result_products;
+			}
+
+			$this->response->addHeader('Content-Type: application/json');
+			return $this->response->setOutput(json_encode($results));
+
+			// 	$this->model_catalog_product->getProduct($product);
+
+			// 	// Prepare images
+			// 	if (isset($this->request->server['HTTPS']) && (($this->request->server['HTTPS'] == 'on') || ($this->request->server['HTTPS'] == '1'))) {
+			// 		$site_name = $this->config->get('config_ssl');
+			// 	} else {
+			// 		$site_name = $this->config->get('config_url');
+			// 	}
+			// 	if ($product['product_image'] !== '') {
+			// 		$image = $site_name.'image/cache/webp/'.str_replace('.jpg', '-400x400.webp', $product['product_image']);
+			// 	} else {
+			// 		$image = $site_name.'image/cache/webp/placeholder-400x400.webp';
+			// 	}
+
+			// 	// Prepare prices
+			// 	if ($this->customer->isLogged() || !$this->config->get('config_customer_price')) {
+			// 		$price = $this->currency->format($this->tax->calculate($product['product_price'], $product['tax_class_id'], $this->config->get('config_tax')), $this->session->data['currency']);
+			// 	} else {
+			// 		$price = false;
+			// 	}
+
+			// 	// $special_price = $product['special_price'];
+
+			// 	if (!is_null($product['special_price']) && (float)$product['special_price'] >= 0) {
+			// 		$special_price = $this->currency->format($this->tax->calculate($product['special_price'], $product['tax_class_id'], $this->config->get('config_tax')), $this->session->data['currency']);
+			// 		$tax_price = (float)$product['special_price'];
+			// 	} else {
+			// 		$special_price = false;
+			// 		$tax_price = (float)$product['product_price'];
+			// 	}
+
+			// 	if($special_price == false) {
+			// 		$prices = array(
+			// 			'price' => array(
+			// 				'type' => 'span',
+			// 				'attrs' => array('class' => 'price'),
+			// 				'props' => array('innerText' => $this->language->get('text_price').$price)
+			// 			),
+			// 		);
+			// 	} else {
+			// 		$prices = array(
+			// 			'price-new' => array(
+			// 				'type' => 'span',
+			// 				'attrs' => array('class' => 'price-new'),
+			// 				'props' => array('innerText' => $this->language->get('text_new_price').$special_price, 'dataset'=>array('specialDateEnd' => $product['special_date_end'] ?: ''))
+			// 			),
+			// 			'price-old' => array(
+			// 				'type' => 'span',
+			// 				'attrs' => array('class' => 'price-old'),
+			// 				'props' => array('innerHTML' => $this->language->get('text_old_price').$price),
+			// 			)
+			// 		);
+			// 	}
+
+			// 	// Ratings
+			// 	if (isset($product['rating']) && $product['rating'] !== null) {
+			// 		$rating = array(
+			// 			'attrs' => array('class' => 'rating')
+			// 		);
+			// 		$i = 1;
+			// 		while($i <= 5) {
+			// 			if ($i < $rating) {
+			// 				$rating['nest'][$i] = array(
+			// 					'type' => 'i',
+			// 					'attrs' => array('class' => 'icon-star')
+			// 				);
+			// 			} else {
+			// 				if ($i - (float)$rating > 0) {
+			// 					$rating['nest'][$i] = array(
+			// 						'type' => 'i',
+			// 						'attrs' => array('class' => 'icon-star-half')
+			// 					);
+			// 				} else {
+			// 					$rating['nest'][$i] = array(
+			// 						'type' => 'i',
+			// 						'attrs' => array('class' => 'icon-star-empty')
+			// 					);
+			// 				}
+			// 			}
+			// 			$i++;
+			// 		}
+			// 	} else {
+			// 		$rating = '';
+			// 	}
+
+			// 	// Flags
+			// 	$product_flags = $this->model_catalog_product->renderFlags($product, $product['main_category']);
+
+			// 	// Trim descriptions
+			// 	// If search word is found in description, it is highlighted by <b>search word</b> tags
+			// 	// Else first sentence of description is used 
+			// 	// DONE Fix this
+				// $description = '';
+				// if (isset($product['product_description']) && $product['product_description'] !== '') {
+					// $desc = $product['product_description'];
+
+					// // Find all html tags that may not have trailing space
+					// $html_tags = ["</li>", "</h1>", "</h2>", "</h3>", "</h4>", "</h5>"];
+					// $replace   = [".</li>", ".</h1>", ".</h2>", ".</h3>", ".</h4>", ".</h5>"];
+					// $desc = str_ireplace($html_tags, $replace, $desc);
+
+					// // Split description to array of sentences
+					// $sentences_array = preg_split('/(?<=[.?!;:])\s+/', strip_tags(html_entity_decode($desc)), -1, PREG_SPLIT_NO_EMPTY);
+					
+					// // Explode search string
+					// $search_words = explode(' ', $search_string);
+					// // clear spaces and empty words
+					// $search_words = array_filter(array_map('trim', $search_words));
+
+					// // Foreach sentence in description
+					// foreach ($sentences_array as $key => $sentence) {
+					// 	// Explode sentence to words
+					// 	$words = explode(' ', $sentence);
+					// 	foreach ($words as $key => $word) {
+					// 		// Foreach word in search query wrap search word with <b> tag
+					// 		foreach ($search_words as $search_word) {
+					// 			if (mb_stripos($words[$key], $search_word) !== false) {
+					// 				$words[$key] = '<b>'.$word.'</b>';
+					// 			}
+					// 		}
+					// 	}
+					// 	$sentence = implode(' ', $words);
+					// 	// TODO Make this configurable
+					// 	while (strlen($description) < 300) {
+					// 		// TODO Check if product has no description or description shorter than 300 chars
+					// 		$description .= $sentence;
+					// 	}
+
+					// }
 
 					// $description = strip_tags(html_entity_decode($description));
 					// $sentences = explode('.', $description);
@@ -637,76 +810,76 @@ class ControllerProductSearch extends Controller {
 					// break;
 					// }
 
-				}
-				// Render products
-				$result_products[] = array(
-						'type' => 'article',
-						'attrs' => array('class' => 'miniature'),
-						'nest' => array(
-							'figure' => array (
-								'type' => 'figure',
-								'attrs' => array('class' => 'image'),
-								'nest' => array(
-									'a' => array(
-										'type' => 'a',
-										'props' => array('href' => $product['url']),
-										'nest' => array(
-											'img' => array(
-												'type' => 'img',
-												'attrs' => array('class' => 'img-responsive'),
-												'props' => array('loading' => 'lazy', 'width' => '400', 'height'=> '400', 'src' => $image),
-											)
-										)
-									)
-								)
-							),
-							'div' => array(
-								'attrs' => array('class' => 'flags'),
-								'nest' => array(),
-							),
-							'flags' => array(
-								'attrs' => array('class' => 'infos'),
-								'nest' => array(
-									'div' => array(
-										'attrs' => array('class' => 'caption'),
-										'nest' => array(
-											'h3' => array(
-												'type' => 'h3',
-												'nest' => array(
-													'a' => array(
-														'type' => 'a',
-														'props' => array('href' => $product['url'], 'innerText' => $product['product_name'])
-													)
-												)
-											),
-											'descr' => array(
-												'type' => 'p',
-												'attrs' => array('class' => 'short-description'),
-												'props' => array('innerHTML' => $description)
-											),
-											'rating' => $rating,
-											'prices' => array(
-												'type' => 'p',
-												'attrs' => array('class' => 'prices h3'),
-												'nest' => $prices
-											)
-										)
-									)
-								)
-							)
-						)
+				// }
+			// 	// Render products
+			// 	$result_products[] = array(
+			// 			'type' => 'article',
+			// 			'attrs' => array('class' => 'miniature'),
+			// 			'nest' => array(
+			// 				'figure' => array (
+			// 					'type' => 'figure',
+			// 					'attrs' => array('class' => 'image'),
+			// 					'nest' => array(
+			// 						'a' => array(
+			// 							'type' => 'a',
+			// 							'props' => array('href' => $product['url']),
+			// 							'nest' => array(
+			// 								'img' => array(
+			// 									'type' => 'img',
+			// 									'attrs' => array('class' => 'img-responsive'),
+			// 									'props' => array('loading' => 'lazy', 'width' => '400', 'height'=> '400', 'src' => $image),
+			// 								)
+			// 							)
+			// 						)
+			// 					)
+			// 				),
+			// 				'div' => array(
+			// 					'attrs' => array('class' => 'flags'),
+			// 					'nest' => array(),
+			// 				),
+			// 				'flags' => array(
+			// 					'attrs' => array('class' => 'infos'),
+			// 					'nest' => array(
+			// 						'div' => array(
+			// 							'attrs' => array('class' => 'caption'),
+			// 							'nest' => array(
+			// 								'h3' => array(
+			// 									'type' => 'h3',
+			// 									'nest' => array(
+			// 										'a' => array(
+			// 											'type' => 'a',
+			// 											'props' => array('href' => $product['url'], 'innerText' => $product['product_name'])
+			// 										)
+			// 									)
+			// 								),
+			// 								'descr' => array(
+			// 									'type' => 'p',
+			// 									'attrs' => array('class' => 'short-description'),
+			// 									'props' => array('innerHTML' => $description)
+			// 								),
+			// 								'rating' => $rating,
+			// 								'prices' => array(
+			// 									'type' => 'p',
+			// 									'attrs' => array('class' => 'prices h3'),
+			// 									'nest' => $prices
+			// 								)
+			// 							)
+			// 						)
+			// 					)
+			// 				)
+			// 			)
 					
-				);
+			// 	);
 				
-				$results['nest']['products']['nest'] = $result_products;
-			}
+			// 	$results['nest']['products']['nest'] = $result_products;
+			// }
 
-			$return['products'] = $results;
+			// $return['products'] = $results;
 			
 
-			// Return data
-			$this->response->addHeader('Content-Type: application/json');
-			$this->response->setOutput(json_encode($return));
+			// // Return data
+			// $this->response->addHeader('Content-Type: application/json');
+			// $this->response->setOutput(json_encode($return));
 		}
 	}
 }

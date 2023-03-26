@@ -29,8 +29,8 @@ class ModelCatalogProduct extends Model {
 	// DONE Добавить информацию о списке желаний
 	// DONE Добавить информацию о просмотренных товарах
 	// DONE Добавить информацию о сравнении товарах
-	// TODO Split to different functions so caching control would be easier
-	// TODO Move flags render to separate function so it is available on any page where needed
+	// DONE Split to different functions so caching control would be easier
+	// DONE Move flags render to separate function so it is available on any page where needed
 	public function renderProduct($product_id) {
 		if (is_array($product_id)) {
 			$product_id = implode(',', $product_id);
@@ -292,6 +292,7 @@ class ModelCatalogProduct extends Model {
 		}
 
 		// New product
+		// TODO make configurable
 		$end_date = strtotime('+1000 day', strtotime($product['date_added']));
 		if ($end_date > time()) {
 			$product_flags['new'] = true;
@@ -329,10 +330,10 @@ class ModelCatalogProduct extends Model {
 		return $product_flags_data;
 	}
 
-	public function prepareProductList($filter = array()) {
+	public function prepareProductList($products, $category_scope = null) {
 		$this->load->language('product/product');
 		$this->load->model('tool/image');
-		$products = $this->getProducts($filter);
+		// $products = $this->getProducts($filter);
 
 		$data = array();
 		if ($products !== null) {
@@ -388,9 +389,12 @@ class ModelCatalogProduct extends Model {
 				
 				// Product flags
 				$product_flags = array();
-				$product_flags = $this->renderFlags($product, $filter['filter_category_id']);
+				if ($category_scope == null) {
+					$category_scope = $product['main_category'];
+				}
+				$product_flags = $this->renderFlags($product, $category_scope);
 
-				$data[] = array(
+				$data[$product['product_id']] = array(
 					'product_id'  			=> $product['product_id'],
 					'model'  				=> $product['model'],
 					'ean'  					=> $product['ean'],
@@ -1153,37 +1157,7 @@ class ModelCatalogProduct extends Model {
 		$sql = "
 
 			SELECT 
-				p.product_id AS product_id,
-				pd.name AS product_name,
-				p.model,
-				p.main_category as main_category,
-
-				# Leave this for a while in case some MySQL versions doesnt support ExtractValue
-				# See stored functions in DB
-				# strip_tags(pd.description) AS product_description,
-				# ExtractValue(pd.description, '//text()') AS product_description,
-				pd.description as product_description,
-				
-				p.price AS product_price,
-				p.tax_class_id AS tax_class_id,
-				p.image AS product_image,
-				p2c.category_id AS product_category_id,
-				p.manufacturer_id,
-				ps.price AS special_price,
-				ps.date_end as special_date_end,
-				
-				# Get product rating
-				(SELECT 
-					AVG(rating) AS total 
-					FROM " . DB_PREFIX . "review r1 
-					WHERE r1.product_id = p.product_id 
-					AND r1.status = '1' 
-					GROUP BY r1.product_id) 
-				AS rating,
-
-
-				# Select url from DB by stored function
-				getProductUrl(p.product_id,'".$language_id."','".$store_id."') as url
+				p.product_id AS product_id
 			
 			FROM " . DB_PREFIX . "product p
 			
@@ -1191,12 +1165,7 @@ class ModelCatalogProduct extends Model {
 				ON p.product_id = pd.product_id
 				AND pd.language_id = '".$language_id."'
 
-			LEFT JOIN " . DB_PREFIX . "product_special ps 
-				ON p.product_id = ps.product_id AND
-				((ps.date_start = '0000-00-00' OR ps.date_start < NOW()) AND
-				(ps.date_end = '0000-00-00' OR ps.date_end > NOW())) AND
-				ps.priority = (SELECT MIN(ps.priority) FROM " . DB_PREFIX . "product_special ps WHERE ps.product_id = p.product_id AND ps.customer_group_id = '".$customer_group_id."')
-				
+
 			LEFT JOIN " . DB_PREFIX . "product_to_store p2s
 				ON p.product_id = p2s.product_id
 				
