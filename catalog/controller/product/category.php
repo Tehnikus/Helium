@@ -8,7 +8,7 @@ class ControllerProductCategory extends Controller {
 		'p.model',
 		'p.quantity',
 		'p.price',
-		'discounts_first',
+		'discounts',
 		'p.rating',
 		'p.sort_order',
 		'p.date_added',
@@ -399,10 +399,9 @@ class ControllerProductCategory extends Controller {
 			);
 
 			$sorts[] = array(
-				// 'text'  => $this->language->get('text_discounts_first'),
-				'text'  => 'Discounts first',
-				'value' => 'discounts_first',
-				'href'  => $this->url->link('product/category', 'path=' . $this->request->get['path'] . '&sort=discounts_first&order=DESC')
+				'text'  => $this->language->get('text_discounts_desc'),
+				'value' => 'discounts-DESC',
+				'href'  => $this->url->link('product/category', 'path=' . $this->request->get['path'] . '&sort=discounts&order=DESC')
 			);
 
 			$sorts[] = array(

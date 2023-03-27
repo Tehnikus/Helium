@@ -571,7 +571,7 @@ class ModelCatalogProduct extends Model {
 			'p.model',
 			'p.quantity',
 			'p.price',
-			'discounts_first',
+			'discounts',
 			'p.rating',
 			'p.sort_order',
 			'p.date_added',
@@ -600,7 +600,7 @@ class ModelCatalogProduct extends Model {
 						ELSE p.price 
 					END)
 				";
-			} elseif ($data['sort'] == 'discounts_first') {
+			} elseif ($data['sort'] == 'discounts') {
 				$sql .= " 
 					ORDER BY special IS NULL, discount IS NULL, special, discount
 				";

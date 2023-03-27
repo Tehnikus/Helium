@@ -25,7 +25,7 @@ $_['text_model_desc']       = 'Model (Z - A)';
 $_['text_views_desc']       = 'Most viewed';
 $_['text_date_added_desc']  = 'New arrivals first';
 $_['text_bestsellers_desc'] = 'Bestsellers first';
-$_['text_discounts_first']  = 'Discounts first';
+$_['text_discounts_desc']    = 'Discounts first';
 
 $_['heading_title']         = 'Search';
 $_['heading_tag']		    = 'By tag - ';

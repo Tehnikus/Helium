@@ -25,7 +25,7 @@ $_['text_model_desc']       = 'Код Товара (Я - А)';
 $_['text_views_desc']       = 'Самые просматриваемые';
 $_['text_date_added_desc']  = 'Новинки сначала';
 $_['text_bestsellers_desc'] = 'Лидеры продаж сначала';
-$_['text_discounts_first']  = 'Сначала со скидками';
+$_['text_discounts_desc']    = 'Сначала со скидками';
 
 $_['heading_title']         = 'Поиск';
 $_['heading_tag']		    = 'По тегу - ';
