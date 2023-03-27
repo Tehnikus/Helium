@@ -1,6 +1,5 @@
 <?php
 
-
 class ControllerProductCategory extends Controller {
 
 	public	$allowed_sort_data = array(
@@ -29,7 +28,6 @@ class ControllerProductCategory extends Controller {
 	);
 
 	public function index() {
-		// print_r($this->request->get);
 		$this->load->language('product/category');
 		$this->load->model('catalog/category');
 		$this->load->model('catalog/product');
@@ -45,8 +43,6 @@ class ControllerProductCategory extends Controller {
 		} else {
 			$category_id = 0;
 		}
-
-		print_r($this->request->get);
 
         if ($this->config->get('config_noindex_disallow_params')) {
             $params = explode ("\r\n", $this->config->get('config_noindex_disallow_params'));
@@ -203,6 +199,15 @@ class ControllerProductCategory extends Controller {
 					// Set H1 for SEO
 					$data['heading_title'] = $data['name'].' - '.implode(", ", $filter_names);
 				}
+			}
+
+			if ($sort !== '' && $sort !== 'p.sort_order') {
+				foreach ($data['sorts'] as $sort_value) {
+					if (str_contains($sort_value['href'], $sort)) {
+						$sort_heading = $sort_value['text'];
+					}
+				}
+				$data['heading_title'] .= ', ' . $sort_heading;
 			}
 
 			if ($page > 1) {
