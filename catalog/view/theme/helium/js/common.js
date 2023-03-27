@@ -680,40 +680,41 @@ function loadMore() {
 
 // TODO Исправить так, чтобы количество товаров задавалось при загрузке страницы
 function setIcon(productCount) {
-
-	// var favicon = document.getElementById('favicon');
-	// let favicon = document.querySelector("link[rel~='icon']");
-	let faviconSize = 16;
-  
-	let canvas = document.createElement('canvas');
-	canvas.width = faviconSize;
-	canvas.height = faviconSize;
-  
-	let context = canvas.getContext('2d');
-	let img = document.createElement('img');
-	img.src = favicon.href;
-  
-  
-	img.onload = () => {
-		// Draw Original Favicon as Background
-		context.drawImage(img, 0, 0, faviconSize, faviconSize);
-  
-		// Draw Notification Circle
-		context.beginPath();
-		context.arc( canvas.width - faviconSize / 3 , faviconSize / 3, faviconSize / 3, 0, 2*Math.PI);
-		context.fillStyle = '#FF0000';
-		context.fill();
-  
-		// Draw Notification Number
-		context.font = '10px "helvetica", sans-serif';
-		context.textAlign = "center";
-		context.textBaseline = "middle";
-		context.fillStyle = '#FFFFFF';
-		context.fillText(productCount, canvas.width - faviconSize / 3, faviconSize / 3);
-  
-		// Replace favicon
-		favicon.href = canvas.toDataURL('image/png');
-	};
+	if (typeof(favicon) !== 'undefined' && favicon !== null) {
+		// var favicon = document.getElementById('favicon');
+		// let favicon = document.querySelector("link[rel~='icon']");
+		let faviconSize = 16;
+	  
+		let canvas = document.createElement('canvas');
+		canvas.width = faviconSize;
+		canvas.height = faviconSize;
+	  
+		let context = canvas.getContext('2d');
+		let img = document.createElement('img');
+		img.src = favicon.href;
+	  
+	  
+		img.onload = () => {
+			// Draw Original Favicon as Background
+			context.drawImage(img, 0, 0, faviconSize, faviconSize);
+	  
+			// Draw Notification Circle
+			context.beginPath();
+			context.arc( canvas.width - faviconSize / 3 , faviconSize / 3, faviconSize / 3, 0, 2*Math.PI);
+			context.fillStyle = '#FF0000';
+			context.fill();
+	  
+			// Draw Notification Number
+			context.font = '10px "helvetica", sans-serif';
+			context.textAlign = "center";
+			context.textBaseline = "middle";
+			context.fillStyle = '#FFFFFF';
+			context.fillText(productCount, canvas.width - faviconSize / 3, faviconSize / 3);
+	  
+			// Replace favicon
+			favicon.href = canvas.toDataURL('image/png');
+		};
+	}
 };
 
 
