@@ -589,7 +589,7 @@ class ModelCatalogProduct extends Model {
 			} elseif ($data['sort'] == 'p.price') {
 				// DONE Sort including special and discount prices
 				// DONE Fix ordering when price is null
-				$sql .= " ORDER BY ISNULL(p.price), (
+				$sql .= " ORDER BY p.price = 0, (
 						CASE 
 						WHEN special IS NOT NULL 
 						THEN special 
