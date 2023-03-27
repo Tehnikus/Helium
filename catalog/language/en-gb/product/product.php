@@ -64,3 +64,4 @@ $_['flag_wishlist']          = '<i class="icon-heart"></i> Wishlist';
 $_['flag_compare']           = '<i class="icon-compare"></i> Compare';
 $_['flag_sale']              = '<i class="icon-fire"></i> Sale';
 $_['flag_new']               = '<i class="icon-star"></i> New';
+$_['flag_video']             = '<i class="icon-youtube"></i> Video';

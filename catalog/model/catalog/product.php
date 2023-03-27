@@ -290,6 +290,10 @@ class ModelCatalogProduct extends Model {
 		if ($product['discount_date_end'] || $product['special_date_end']) {
 			$product_flags['sale'] = true;
 		}
+		// video - when description contains embedded video
+		if (str_contains($product['description'], 'youtube.com/embed/')) {
+			$product_flags['video'] = true;
+		}
 
 		// New product
 		// TODO make configurable
