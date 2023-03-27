@@ -20,7 +20,7 @@
       {% if product.rating %}
         {% include 'helium/template/common/rating_stars.twig' with {rating: product.rating, count: product.reviews} %}
       {% endif %} 
-      {% if product.price and product.price != 0 %}
+      {% if product.price_value and product.price_value != 0 %}
         <p class="prices h3"> 
           {% if not product.special %}
             <span class="text-price">{{ text_price }}</span> {{ product.price }}
@@ -37,7 +37,7 @@
 
     </div>
     <div class="btn-group">
-      <button type="button" aria-haspopup="dialog" class="add-to-cart primary" {% if product.price and product.price != 0 %} onclick="cart.add('{{ product.product_id }}', '{{ product.minimum }}');" {% else %} disabled {% endif %}><i class="icon-cart"></i> <span>{{ button_cart }}</span></button>
+      <button type="button" aria-haspopup="dialog" class="add-to-cart primary" {% if product.price_value and product.price_value != 0 %} onclick="cart.add('{{ product.product_id }}', '{{ product.minimum }}');" {% else %} disabled {% endif %}><i class="icon-cart"></i> <span>{{ button_cart }}</span></button>
       <button type="button" aria-haspopup="dialog" class="wishlist" title="{{ button_wishlist }}" onclick="wishlist.add('{{ product.product_id }}');"><i class="icon-heart"></i></button>
       <button type="button" aria-haspopup="dialog" class="compare" title="{{ button_compare }}" onclick="compare.add('{{ product.product_id }}');"><i class="icon-compare"></i></button>
     </div>

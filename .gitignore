@@ -9,3 +9,7 @@ index.php
 image/*.*
 *.zip
 *.rar
+*.webp
+*.svg
+*.cpuprofile
+.vscode/extensions.json
