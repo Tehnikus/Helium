@@ -435,7 +435,7 @@ class ModelCatalogProduct extends Model {
 				FROM " . DB_PREFIX . "product_discount pd2 
 				WHERE pd2.product_id = p.product_id 
 				AND pd2.customer_group_id = '" . (int)$this->config->get('config_customer_group_id') . "' 
-				AND pd2.quantity = '1' 
+				-- AND pd2.quantity = '1' 
 				AND ((pd2.date_start = '0000-00-00' OR pd2.date_start < NOW()) 
 				AND (pd2.date_end = '0000-00-00' OR pd2.date_end > NOW())) 
 				ORDER BY pd2.priority ASC, pd2.price ASC LIMIT 1) 
@@ -571,6 +571,7 @@ class ModelCatalogProduct extends Model {
 			'p.model',
 			'p.quantity',
 			'p.price',
+			'discounts_first',
 			'p.rating',
 			'p.sort_order',
 			'p.date_added',
@@ -589,14 +590,20 @@ class ModelCatalogProduct extends Model {
 			} elseif ($data['sort'] == 'p.price') {
 				// DONE Sort including special and discount prices
 				// DONE Fix ordering when price is null
-				$sql .= " ORDER BY p.price = 0, (
+				$sql .= " 
+					ORDER BY p.price = 0, (
 						CASE 
 						WHEN special IS NOT NULL 
 						THEN special 
 						WHEN discount IS NOT NULL 
 						THEN discount 
 						ELSE p.price 
-					END)";
+					END)
+				";
+			} elseif ($data['sort'] == 'discounts_first') {
+				$sql .= " 
+					ORDER BY special IS NULL, discount IS NULL, special, discount
+				";
 			} else {
 				$sql .= " ORDER BY " . $data['sort'];
 			}

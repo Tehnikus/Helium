@@ -16,15 +16,16 @@ $_['text_sort']             = 'Sort By:';
 $_['text_default']          = 'Default';
 $_['text_name_asc']         = 'Name (A - Z)';
 $_['text_name_desc']        = 'Name (Z - A)';
-$_['text_price_asc']        = 'Price (Low &gt; High)';
-$_['text_price_desc']       = 'Price (High &gt; Low)';
-$_['text_rating_desc']      = 'Rating (Highest)';
+$_['text_price_asc']        = 'Price, lowest first';
+$_['text_price_desc']       = 'Price, highest first';
+$_['text_rating_desc']      = 'Best rated';
 $_['text_model_asc']        = 'Model (A - Z)';
 $_['text_model_desc']       = 'Model (Z - A)';
 
 $_['text_views_desc']       = 'Most viewed';
 $_['text_date_added_desc']  = 'New arrivals first';
 $_['text_bestsellers_desc'] = 'Bestsellers first';
+$_['text_discounts_first']  = 'Discounts first';
 
 $_['heading_title']         = 'Search';
 $_['heading_tag']		    = 'By tag - ';

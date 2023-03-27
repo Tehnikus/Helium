@@ -8,6 +8,7 @@ class ControllerProductCategory extends Controller {
 		'p.model',
 		'p.quantity',
 		'p.price',
+		'discounts_first',
 		'p.rating',
 		'p.sort_order',
 		'p.date_added',
@@ -44,6 +45,8 @@ class ControllerProductCategory extends Controller {
 		} else {
 			$category_id = 0;
 		}
+
+		print_r($this->request->get);
 
         if ($this->config->get('config_noindex_disallow_params')) {
             $params = explode ("\r\n", $this->config->get('config_noindex_disallow_params'));
@@ -393,6 +396,13 @@ class ControllerProductCategory extends Controller {
 				'text'  => $this->language->get('text_price_desc'),
 				'value' => 'p.price-DESC',
 				'href'  => $this->url->link('product/category', 'path=' . $this->request->get['path'] . '&sort=p.price&order=DESC')
+			);
+
+			$sorts[] = array(
+				// 'text'  => $this->language->get('text_discounts_first'),
+				'text'  => 'Discounts first',
+				'value' => 'discounts_first',
+				'href'  => $this->url->link('product/category', 'path=' . $this->request->get['path'] . '&sort=discounts_first&order=DESC')
 			);
 
 			$sorts[] = array(
