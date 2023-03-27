@@ -404,6 +404,7 @@ class ModelCatalogProduct extends Model {
 					'width'		            => $this->config->get('image_product_width'),
 					'height'	            => $this->config->get('image_product_height'),
 					'price'       			=> $price,
+					'price_value'			=> $product['price'],
 					'special'     			=> $special,
 					'discount'     			=> $discount,
 					'special_date_end'     	=> $product['special_date_end'],
