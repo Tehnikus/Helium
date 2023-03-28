@@ -203,7 +203,10 @@ class ControllerProductCategory extends Controller {
 
 			if ($sort !== '' && $sort !== 'p.sort_order') {
 				foreach ($data['sorts'] as $sort_value) {
-					if (str_contains($sort_value['href'], $sort)) {
+					if (
+						(str_contains($sort_value['href'], $sort)) && 
+						(str_contains($sort_value['href'], $order))
+						) {
 						$sort_heading = $sort_value['text'];
 					}
 				}
