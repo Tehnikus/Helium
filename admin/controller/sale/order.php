@@ -387,9 +387,10 @@ class ControllerSaleOrder extends Controller {
 			
 			$this->model_user_api->addApiSession($api_info['api_id'], $session->getId(), $this->request->server['REMOTE_ADDR']);
 			
-			if(is_array($session->data) && is_array($session->data['api_id'])) {
-				$session->data['api_id'] = $api_info['api_id'] ?? false;
+			if (!is_array($session->data)) {
+				$session->data = [];
 			}
+			$session->data['api_id'] = $api_info['api_id'];
 
 			$data['api_token'] = $session->getId();
 		} else {
@@ -722,9 +723,10 @@ class ControllerSaleOrder extends Controller {
 			
 			$this->model_user_api->addApiSession($api_info['api_id'], $session->getId(), $this->request->server['REMOTE_ADDR']);
 			
-			$session->data['api_id'] = $api_info['api_id'];
+			$session->data = [];
+			$session->data['api_id'] = (int)$api_info['api_id'];
 
-			$data['api_token'] = $session->getId() ?? false;
+			$data['api_token'] = $session->getId();
 		} else {
 			$data['api_token'] = '';
 		}
