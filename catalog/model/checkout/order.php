@@ -211,7 +211,7 @@ class ModelCheckoutOrder extends Model {
 				$this->db->query("
 				UPDATE " . DB_PREFIX . "product 
 					SET 
-						sold = sold + (".(int)$product['quantity']."),
+						sold = sold + (".(int)$product['quantity'].")
 					WHERE product_id = '" . (int)$product['product_id'] . "'
 				");
 

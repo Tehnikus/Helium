@@ -13,3 +13,4 @@ image/*.*
 *.svg
 *.cpuprofile
 .vscode/extensions.json
+.vscode/settings.json

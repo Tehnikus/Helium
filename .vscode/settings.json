@@ -1,3 +1,4 @@
 {
-    "svg.preview.background": "transparent"
+    "svg.preview.background": "transparent",
+    "php.version": "v8.1"
 }
