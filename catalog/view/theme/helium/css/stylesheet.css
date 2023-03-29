@@ -265,26 +265,27 @@ span.price-value {
 
 span.product-flag {
     background: #777;
-    margin: 0 0 5px -7px;
+    margin: 0 0 3px -6px;
     padding: 2px 7px;
     border-radius: calc(var(--radius)*0.7);
     color: #eaeaea;
-    font-size: 0.9rem;
+    font-size: 0.8rem;
     white-space: nowrap;
     display: inline-block;
     opacity: .4;
     transition: opacity var(--animation-duration);
     text-shadow: 0px 0px 3px #111;
-    /* box-shadow: 0 0 5px #555; */
+    box-shadow: 0 0 5px #555;
+    font-family: 'Roboto Condensed';
 }
 span.product-flag i::before {
-	font-size: 1.1rem;
+	font-size: 1rem;
 	vertical-align: middle;
 	text-shadow: 0 0 3px #111;
 }
 #photos:hover span.product-flag,
 .miniature:hover span.product-flag {
-	opacity: 1;
+	opacity: .9;
 	transition: opacity var(--animation-duration);
 }
 span.product-flag.special {
@@ -320,6 +321,10 @@ span.product-flag.bestreviews {
 
 span.product-flag.bestseller {
     background: #ff8505;
+}
+
+span.product-flag.video {
+    background: #c72626;
 }
 
 /* Timer countdown */
