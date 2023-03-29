@@ -28,7 +28,7 @@ final class Registry {
      * 
      *
      * @param	string	$key
-	 * @param	string	$value
+	 * @param	mixed	$value
      */	
 	public function set($key, $value) {
 		$this->data[$key] = $value;
