@@ -19,6 +19,33 @@ class ControllerProductCategory extends Controller {
 		'p.weight',
 		'price_to_weight'
 	);
+	// TODO Check if sort corresponds order
+	public	$allowed_sort_data2 = array(
+		'ASC' => array(
+			'pd.name',
+			'p.model',
+			'p.price',
+			'p.weight',
+			'price_to_weight',
+			'p.returned',
+			'p.sort_order',
+		),
+		'DESC' => array(
+			'pd.name',
+			'p.model',
+			'p.quantity',
+			'p.price',
+			'p.weight',
+			'price_to_weight',
+			'p.sold',
+			'p.viewed',
+			'p.date_added',
+			'p.date_modified',
+			'p.rating',
+			'p.points',
+		),
+	);
+	
 	public $noindex_follow_requests = array(
 		'filter',
 		'page',
@@ -210,7 +237,10 @@ class ControllerProductCategory extends Controller {
 						$sort_heading = $sort_value['text'];
 					}
 				}
-				$data['heading_title'] .= ', ' . $sort_heading;
+				if (isset($sort_heading)) {
+
+					$data['heading_title'] .= ', ' . $sort_heading;
+				}
 			}
 
 			if ($page > 1) {
