@@ -584,32 +584,42 @@ class ControllerProductCategory extends Controller {
 	// DONE Cache microdata
 	public function renderMicrodata($data)
 	{
-		$microdata_array = array(
-			'@context' => 'http://schema.org/',
-			'@type' => 'Product',
-			'name' => $data['name'],
-			'description' => $data['meta_description'],
-			'image' => $this->model_tool_image->resize($data['image'], $this->config->get('image_category_width'), $this->config->get('image_category_height')),
-			'offers' => array(
+		$offers = array();
+		$rating = array();
+		$microdata_array = array();
+		echo($data['rating']);
+		if ((int)$data['offer_count'] !== 0) {
+			$offers = array(
 				'@type' => 'AggregateOffer',
 				'offerCount' 	=> $data['offer_count'],
 				'lowPrice' 		=> round($data['min_price'], 2),
 				'highPrice' 	=> round($data['max_price'], 2),
 				'priceCurrency' => $this->session->data['currency'],
 				'availability'	=>'http://schema.org/InStock',
-			),
-			'seller' => array(
-				'@type' => 'Organization',
-				'name' => $this->config->get('config_name')
-			),
-			'aggregateRating' => array(
+			);
+		}
+		if ($data['rating'] !== null && $data['review_count'] !== null) {
+			$rating = array(
 				'@type' => 'AggregateRating',
 				'ratingValue' => round($data['rating'], 2),
 				'ratingCount' => $data['review_count'],
 				'reviewCount' => $data['review_count'],
 				'bestRating' => '5',
 				'worstRating' => '1'
+			);
+		}
+		$microdata_array = array(
+			'@context' => 'http://schema.org/',
+			'@type' => 'Product',
+			'name' => $data['name'],
+			'description' => $data['meta_description'],
+			'image' => $this->model_tool_image->resize($data['image'], $this->config->get('image_category_width'), $this->config->get('image_category_height')),
+			'offers' => $offers,
+			'seller' => array(
+				'@type' => 'Organization',
+				'name' => $this->config->get('config_name')
 			),
+			'aggregateRating' => $rating
 		);
 		$microdata = (json_encode($microdata_array, JSON_UNESCAPED_UNICODE));
 		return $microdata;
