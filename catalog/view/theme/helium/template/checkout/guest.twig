@@ -1,4 +1,9 @@
 <div class="flex">
+  <script type="text/javascript">
+    var js_guest_checkout = {{ js_defs }}
+  </script>
+  <!-- Guest checkout -->
+  <form action="index.php?route=checkout/guest/save" method="post" id="guest_checkout">
     <fieldset id="account">
       <legend>{{ text_your_details }}</legend>
       <div class="form-group" style="display: {% if customer_groups|length > 1 %} block {% else %} none {% endif %};">
@@ -6,15 +11,13 @@
         {% for customer_group in customer_groups %}
         {% if customer_group.customer_group_id == customer_group_id %}
         <div class="radio">
-          <label>
-            <input type="radio" name="customer_group_id" value="{{ customer_group.customer_group_id }}" checked="checked" />
-            {{ customer_group.name }}</label>
+          <label>{{ customer_group.name }}</label>
+          <input type="radio" name="customer_group_id" value="{{ customer_group.customer_group_id }}" checked="checked" />
         </div>
         {% else %}
         <div class="radio">
-          <label>
-            <input type="radio" name="customer_group_id" value="{{ customer_group.customer_group_id }}" />
-            {{ customer_group.name }}</label>
+          <label for="">{{ customer_group.name }}</label>
+          <input type="radio" name="customer_group_id" value="{{ customer_group.customer_group_id }}" />
         </div>
         {% endif %}
         {% endfor %}</div>
@@ -34,33 +37,27 @@
         <label class="control-label" for="input-payment-telephone">{{ entry_telephone }}</label>
         <input type="text" name="telephone" value="{{ telephone }}" placeholder="{{ entry_telephone }}" id="input-payment-telephone" class="form-control" />
       </div>
+
       {% for custom_field in custom_fields %}
-      {% if custom_field.location == 'account' %}
-      {% if custom_field.type == 'select' %}
-      <div id="payment-custom-field{{ custom_field.custom_field_id }}" class="form-group custom-field" data-sort="{{ custom_field.sort_order }}">
-        <label class="control-label" for="input-payment-custom-field{{ custom_field.custom_field_id }}">{{ custom_field.name }}</label>
-        <select name="custom_field[{{ custom_field.location }}][{{ custom_field.custom_field_id }}]" id="input-payment-custom-field{{ custom_field.custom_field_id }}" class="form-control">
-          <option value="">{{ text_select }}</option>
-          
-          
-          {% for custom_field_value in custom_field.custom_field_value %}
-          {% if guest_custom_field[custom_field.custom_field_id] and custom_field_value.custom_field_value_id == guest_custom_field[custom_field.custom_field_id] %}
-          <option value="{{ custom_field_value.custom_field_value_id }}" selected="selected">{{ custom_field_value.name }}</option>
-          
-          
-          {% else %}
-          
-          
-          <option value="{{ custom_field_value.custom_field_value_id }}">{{ custom_field_value.name }}</option>
-          
-          
+        {% if custom_field.location == 'account' %}
+          {% if custom_field.type == 'select' %}
+            <div id="payment-custom-field{{ custom_field.custom_field_id }}" class="form-group custom-field" data-sort="{{ custom_field.sort_order }}">
+              <label class="control-label" for="input-payment-custom-field{{ custom_field.custom_field_id }}">{{ custom_field.name }}</label>
+            
+              <select name="custom_field[{{ custom_field.location }}][{{ custom_field.custom_field_id }}]" id="input-payment-custom-field{{ custom_field.custom_field_id }}" class="form-control">
+                <option value="">{{ text_select }}</option>
+                {% for custom_field_value in custom_field.custom_field_value %}
+                  {% if guest_custom_field[custom_field.custom_field_id] and custom_field_value.custom_field_value_id == guest_custom_field[custom_field.custom_field_id] %}
+                    <option value="{{ custom_field_value.custom_field_value_id }}" selected="selected">{{ custom_field_value.name }}</option>
+                  {% else %}
+                    <option value="{{ custom_field_value.custom_field_value_id }}">{{ custom_field_value.name }}</option>
+                  {% endif %}
+                {% endfor %}
+              </select>
+
+            </div>
           {% endif %}
-          {% endfor %}
-        
-        
-        </select>
-      </div>
-      {% endif %}
+
       {% if custom_field.type == 'radio' %}
       <div id="payment-custom-field{{ custom_field.custom_field_id }}" class="form-group custom-field" data-sort="{{ custom_field.sort_order }}">
         <label class="control-label">{{ custom_field.name }}</label>
@@ -324,24 +321,30 @@
       {% endif %}
       {% endfor %}
     </fieldset>
-    {{ captcha }} </div>
+    {{ captcha }} 
+</div>
+
+
 {% if shipping_required %}
 <div class="checkbox">
   {% if shipping_address %}
-    <input type="checkbox" name="shipping_address" value="1" checked="checked" />
+    <input id="shipping_address_guest" type="checkbox" name="shipping_address" value="1" checked="checked" />
   {% else %}
-    <input type="checkbox" name="shipping_address" value="1" />
+    <input id="shipping_address_guest" type="checkbox" name="shipping_address" value="1" />
   {% endif %}
-  <label> {{ entry_shipping }}</label>
+  <label for="shipping_address_guest"> {{ entry_shipping }}</label>
 </div>
 {% endif %}
 <div class="buttons">
   <div class="pull-right">
-    <input type="button" value="{{ button_continue }}" id="button-guest" data-loading-text="{{ text_loading }}" class="btn btn-primary" />
+    <input type="submit" value="{{ button_continue }}" id="button-guest" form="guest_checkout" class="btn btn-primary" />
   </div>
 </div>
-<script type="text/javascript"><!--
-// Sort the custom fields
+
+
+
+{# 
+<script type="text/javascript">
 $('#account .form-group[data-sort]').detach().each(function() {
 	if ($(this).attr('data-sort') >= 0 && $(this).attr('data-sort') <= $('#account .form-group').length) {
 		$('#account .form-group').eq($(this).attr('data-sort')).before(this);
@@ -458,7 +461,7 @@ $('#collapse-payment-address button[id^=\'button-payment-custom-field\']').on('c
 		}
 	}, 500);
 });
-//--></script>
+</script> #}
 {# <script type="text/javascript"><!--
 $('.date').datetimepicker({
 	language: '{{ datepicker }}',
@@ -476,47 +479,48 @@ $('.datetime').datetimepicker({
 	pickTime: true
 });
 //--></script>  #}
+
 <script type="text/javascript"><!--
-$('#collapse-payment-address select[name=\'country_id\']').on('change', function() {
-	$.ajax({
-		url: 'index.php?route=checkout/checkout/country&country_id=' + this.value,
-		dataType: 'json',
-		beforeSend: function() {
-			$('#collapse-payment-address select[name=\'country_id\']').prop('disabled', true);
-		},
-		complete: function() {
-			$('#collapse-payment-address select[name=\'country_id\']').prop('disabled', false);
-		},
-		success: function(json) {
-			if (json['postcode_required'] == '1') {
-				$('#collapse-payment-address input[name=\'postcode\']').parent().parent().addClass('required');
-			} else {
-				$('#collapse-payment-address input[name=\'postcode\']').parent().parent().removeClass('required');
-			}
+// $('#collapse-payment-address select[name=\'country_id\']').on('change', function() {
+// 	$.ajax({
+// 		url: 'index.php?route=checkout/checkout/country&country_id=' + this.value,
+// 		dataType: 'json',
+// 		beforeSend: function() {
+// 			$('#collapse-payment-address select[name=\'country_id\']').prop('disabled', true);
+// 		},
+// 		complete: function() {
+// 			$('#collapse-payment-address select[name=\'country_id\']').prop('disabled', false);
+// 		},
+// 		success: function(json) {
+// 			if (json['postcode_required'] == '1') {
+// 				$('#collapse-payment-address input[name=\'postcode\']').parent().parent().addClass('required');
+// 			} else {
+// 				$('#collapse-payment-address input[name=\'postcode\']').parent().parent().removeClass('required');
+// 			}
 
-			html = '<option value="">{{ text_select }}</option>';
+// 			html = '<option value="">{{ text_select }}</option>';
 
-			if (json['zone'] && json['zone'] != '') {
-				for (i = 0; i < json['zone'].length; i++) {
-					html += '<option value="' + json['zone'][i]['zone_id'] + '"';
+// 			if (json['zone'] && json['zone'] != '') {
+// 				for (i = 0; i < json['zone'].length; i++) {
+// 					html += '<option value="' + json['zone'][i]['zone_id'] + '"';
 
-					if (json['zone'][i]['zone_id'] == '{{ zone_id }}') {
-						html += ' selected="selected"';
-					}
+// 					if (json['zone'][i]['zone_id'] == '{{ zone_id }}') {
+// 						html += ' selected="selected"';
+// 					}
 
-					html += '>' + json['zone'][i]['name'] + '</option>';
-				}
-			} else {
-				html += '<option value="0" selected="selected">{{ text_none }}</option>';
-			}
+// 					html += '>' + json['zone'][i]['name'] + '</option>';
+// 				}
+// 			} else {
+// 				html += '<option value="0" selected="selected">{{ text_none }}</option>';
+// 			}
 
-			$('#collapse-payment-address select[name=\'zone_id\']').html(html);
-		},
-		error: function(xhr, ajaxOptions, thrownError) {
-			alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
-		}
-	});
-});
+// 			$('#collapse-payment-address select[name=\'zone_id\']').html(html);
+// 		},
+// 		error: function(xhr, ajaxOptions, thrownError) {
+// 			alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+// 		}
+// 	});
+// });
 
-$('#collapse-payment-address select[name=\'country_id\']').trigger('change');
+// $('#collapse-payment-address select[name=\'country_id\']').trigger('change');
 //--></script> 

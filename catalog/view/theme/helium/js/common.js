@@ -96,6 +96,8 @@ document.addEventListener('click', function(e) {
 		}
 		if (filter.length > 0) {
 			filter.sort();
+			// TODO Add condition if window.location has question mark
+			// Then replace '?filter=' with '&filter='
 			window.location = filter_action+'?filter='+ filter.join(',');
 		} else {
 			window.location = filter_action;

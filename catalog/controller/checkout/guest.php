@@ -138,6 +138,11 @@ class ControllerCheckoutGuest extends Controller {
 		} else {
 			$data['captcha'] = '';
 		}
+
+		// Add JS defs so no conditions for javascript used in twig
+		$js_defs = [];
+		$js_defs['shipping_required'] = $this->cart->hasShipping();
+		$data['js_defs'] = json_encode($js_defs);
 		
 		$this->response->setOutput($this->load->view('checkout/guest', $data));
 	}
@@ -342,6 +347,11 @@ class ControllerCheckoutGuest extends Controller {
 			unset($this->session->data['payment_method']);
 			unset($this->session->data['payment_methods']);
 		}
+
+		// Add JS defs so no conditions for javascript used in twig
+		$js_defs = [];
+		$js_defs['shipping_required'] = $this->cart->hasShipping();
+		$json['js_defs'] = $js_defs;
 
 		$this->response->addHeader('Content-Type: application/json');
 		$this->response->setOutput(json_encode($json));
