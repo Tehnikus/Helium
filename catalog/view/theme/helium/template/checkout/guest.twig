@@ -1,7 +1,5 @@
 <div class="flex">
-  <script type="text/javascript">
-    var js_guest_checkout = {{ js_defs }}
-  </script>
+
   <!-- Guest checkout -->
   <form action="index.php?route=checkout/guest/save" method="post" id="guest_checkout">
     <fieldset id="account">
@@ -322,24 +320,18 @@
       {% endfor %}
     </fieldset>
     {{ captcha }} 
-</div>
-
-
-{% if shipping_required %}
-<div class="checkbox">
-  {% if shipping_address %}
-    <input id="shipping_address_guest" type="checkbox" name="shipping_address" value="1" checked="checked" />
-  {% else %}
-    <input id="shipping_address_guest" type="checkbox" name="shipping_address" value="1" />
-  {% endif %}
-  <label for="shipping_address_guest"> {{ entry_shipping }}</label>
-</div>
-{% endif %}
-<div class="buttons">
-  <div class="pull-right">
+    {% if shipping_required %}
+      {% if shipping_address %}
+        <input id="shipping_address_guest" type="checkbox" name="shipping_address" value="1" checked="checked" />
+      {% else %}
+        <input id="shipping_address_guest" type="checkbox" name="shipping_address" value="1" />
+      {% endif %}
+      <label for="shipping_address_guest"> {{ entry_shipping }}</label>
+    {% endif %}
     <input type="submit" value="{{ button_continue }}" id="button-guest" form="guest_checkout" class="btn btn-primary" />
-  </div>
+    </form>
 </div>
+
 
 
 
