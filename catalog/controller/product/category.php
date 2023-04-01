@@ -218,7 +218,7 @@ class ControllerProductCategory extends Controller {
 					foreach($names_query as $name) {
 						$filter_names[$name['filter_id']] = $name['name'];
 					}
-					// Хлебные крошки
+					// Breadcrumbs
 					$data['breadcrumbs'][] = array(
 						'text' => implode(", ", $filter_names),
 						'href' => '',
