@@ -225,6 +225,7 @@ class ControllerProductCategory extends Controller {
 					);
 					// Set H1 for SEO
 					$data['heading_title'] = $data['name'].' - '.implode(", ", $filter_names);
+					$data['offer_count'] = $this->model_catalog_product->getTotalProducts($filter_data);
 				}
 			}
 
@@ -587,7 +588,6 @@ class ControllerProductCategory extends Controller {
 		$offers = array();
 		$rating = array();
 		$microdata_array = array();
-		echo($data['rating']);
 		if ((int)$data['offer_count'] !== 0) {
 			$offers = array(
 				'@type' => 'AggregateOffer',
