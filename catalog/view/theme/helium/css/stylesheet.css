@@ -39,11 +39,12 @@
 
 	--small-shadow: 0 0 3px 3px #3333;
 	--outstanding-shadow: -6px -5px 5px #ffffff70, -3px -3px 7px #ffffff7d, -4px 2px 10px 4px #ffffff7a, 4px 5px 10px 2px rgb(0 0 0 / 20%);
+	--transition:  all .5s cubic-bezier(.68,-0.55,.27,1.55);
 }
 
 * {box-sizing: border-box;}
 body {
-	/* font-family:system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen,Ubuntu,Cantarell,Fira Sans,Droid Sans,Helvetica Neue,Segoe UI Emoji,Apple Color Emoji,Noto Color Emoji,sans-serif; */
+	font-family:system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen,Ubuntu,Cantarell,Fira Sans,Droid Sans,Helvetica Neue,Segoe UI Emoji,Apple Color Emoji,Noto Color Emoji,sans-serif;
 	font-family: 'Roboto', sans-serif;
 	line-height:1.4;
 	max-width:100%;
@@ -55,6 +56,7 @@ body {
 	margin: 0 auto;
 	width: 100%;
 	max-width: 100%;
+	overflow-x: hidden;
 }
 
 aside#column-left {
@@ -70,16 +72,30 @@ aside > * {
 	padding: var(--padding);
 }
 aside .module {
-    display: flex;
+    /* display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    max-width: 100%;
+    max-width: 100%; */
+	display: grid;
+	grid-template-columns: 1fr;
+	position: relative;
+	gap: var(--padding);
 }
 aside .module .h3,
 aside .module .primary {
 	width: 100%;
 }
+aside .module button.scroll_left {
+    position: absolute;
+    right: 60px;
+    top: 5px;
+}
 
+aside .module button.scroll_right {
+    position: absolute;
+    right: 5px;
+    top: 5px;
+}
 
 
 body, header, main, footer {
@@ -90,6 +106,7 @@ body, header, main, footer {
 	flex: 1;
 	max-width: 100%;
 	gap: var(--padding); /* Отступ между основными блоками */
+	
 }
 body > * {background:var(--background-blocks);padding: var(--padding);}
 
@@ -114,6 +131,7 @@ footer {column-gap: 1rem;order: 6;}
 .product.grid,
 .article.grid {
 	grid-template-columns: repeat(auto-fill, minmax(21rem, 1fr));
+	will-change: contents;
 }
 
 
@@ -123,6 +141,7 @@ footer {column-gap: 1rem;order: 6;}
 .flex-1-0-100 {flex: 1 0 100%;}
 .flex-1-0-50 {flex: 1 0 50%;}
 .justify-between{justify-content: space-between;}
+.j-center{justify-content: center;}
 .wrap {flex-wrap: wrap;}
 .flex-column{flex-direction: column;}
 .flex-row{flex-direction: row;}
@@ -1238,17 +1257,17 @@ header span.product-count:not(:empty) {
 	/* Mobile menu  */
     .mobile_menu {
 		justify-content: center;
-		position: fixed;
+		position: fixed!important;
 		z-index: 1;
-		bottom: var(--padding);
+		bottom: calc(var(--padding) + 3.5rem);
 		left: var(--padding);
 		right: var(--padding);
-		top: var(--padding);
+		/* top: var(--padding); */
 		border-radius: var(--radius);
 		box-shadow: var(--small-shadow);
 		background: var(--background-blocks);
-		transform: translateX(calc(var(--padding) + 100%));
-		transition: all .5s cubic-bezier(.68,-0.55,.27,1.55);
+		transform: translateX(calc(var(--padding) + 110%));
+		transition: var(--transition);
 	}
 	.mobile_menu.open {
 		transform: translateX(0%);
@@ -1268,11 +1287,12 @@ header span.product-count:not(:empty) {
 		z-index: 2;
 		box-shadow: var(--small-shadow);
 		padding: calc(var(--padding) / 3);
+		height: 3.5rem;
 	}
 	.mobile_button.active {
 		background: #333;
 		color: #fff;
-		transition: all .5s;
+		transition: var(--transition);
 	}
 	body .modal_window {top:1rem;left:1rem;bottom:1rem;right:1rem;}
 
@@ -1367,7 +1387,7 @@ ul.inner-level {
     /* top: 0;
     left: 0; */
     /* overflow: hidden; */
-    transition: transform .3s;
+    transition: var(--transition);
     /* width: 100%;
     height: 100%; */
     background: var(--background-blocks);
@@ -1574,17 +1594,9 @@ input#input-quantity {
 
 /* Pretty radio and checkboxes */
 /* Todo Clean styles of radio and checkboxes */
-input[type="checkbox"], input[type="radio"] {
-	/* Add if not using autoprefixer */
-	-webkit-appearance: none;
-	appearance: none;
-	/* For iOS < 15 to remove gradient background */
-	background-color: #fff;
-	/* Not removed via appearance */
-	margin: 0;
-}
 
-@supports (transform: rotate(1turn)) and (opacity: 0) {
+
+/* @supports (transform: rotate(1turn)) and (opacity: 0) {
 
     input[type="checkbox"], input[type="radio"] {
         position: absolute;
@@ -1611,7 +1623,7 @@ input[type="checkbox"], input[type="radio"] {
         border-radius: 50%;
     }
     input[type="checkbox"]:focus+label::before, input[type="radio"]:focus+label::before {
-        /* macOS default focus, change as needed, but be sure to include focus-specific styles! */
+         macOS default focus, change as needed, but be sure to include focus-specific styles!
         box-shadow: 0 0 0 calc(2rem/16) rgb(136, 184, 255);
         outline: calc(2rem/16) solid transparent;
     }
@@ -1654,7 +1666,96 @@ input[type="checkbox"], input[type="radio"] {
 		0% {transform: scale(0) rotate(.625turn);}
 		100% {transform: scale(1) rotate(.625turn);}
 	}
+} */
+
+form {
+	display: grid;
+	place-content: center;
 }
+  
+.form-control {
+    display: grid;
+    grid-template-columns: 1.2rem auto;
+    gap: 1rem;
+    align-items: center;
+	transition: color var(--animation-duration);
+}
+.form-control:focus-within {
+	color: var(--primary-color);
+}
+  
+.form-control + .form-control {
+	margin-top: .5rem;
+}
+  
+input[type="checkbox"], input[type="radio"] {
+	/* Add if not using autoprefixer */
+	-webkit-appearance: none;
+	/* Remove most all native input styles */
+	appearance: none;
+	/* For iOS < 15 */
+	background-color: var(--form-background);
+	/* Not removed via appearance */
+	margin: 0;
+  
+	font: inherit;
+	color: currentColor;
+	width: 1.15em;
+	height: 1.15em;
+	border: 0.15em solid var(--text-muted);
+	box-shadow: none;
+	display: grid;
+	place-content: center;
+}
+
+input[type="checkbox"] {border-radius:var(--radius)}
+input[type="radio"] {border-radius: 50%}
+
+  /* Checkmark polygon */
+input[type="checkbox"]::before {
+	clip-path: polygon(1% 53%, 49% 91%, 100% 25%, 82% 11%, 46% 59%, 16% 35%);
+}
+  /* Radiobutton circle */
+input[type="radio"]::before {
+	border-radius: 50%;
+}
+  
+input[type="checkbox"]::before, input[type="radio"]::before {
+	content: "";
+	width: 1.1rem;
+	height: 1.1rem;
+	transform: scale(0);
+	transform-origin: center;
+	transition: var(--animation-duration) transform cubic-bezier(0.175, 0.885, 0.32, 1.275);
+	box-shadow: inset 1em 1em var(--primary-color);
+	/* Windows High Contrast Mode */
+	background-color: CanvasText;
+	will-change: auto;
+}
+
+input[type="checkbox"]:checked::before, input[type="radio"]:checked::before {
+	transform: scale(1);
+}
+  
+input[type="checkbox"]:focus, input[type="radio"]:focus {
+	outline: max(2px, 0.15em) solid var(--secondary-color);
+	outline-offset: max(2px, 0.15em);
+}
+  
+input[type="checkbox"]:disabled, input[type="checkbox"]:disabled+label,
+input[type="radio"]:disabled, input[type="radio"]:disabled+label {
+	color: var(--form-control-disabled);
+	cursor: not-allowed;
+}
+
+@keyframes scale {
+	0% {transform: scale(0)}
+	100% {transform: scale(1)}
+}
+  
+
+
+
 /* --------------------------- */
 /* ------- Dropdowns ------- */
 .collapse {
@@ -1706,4 +1807,10 @@ input[type="checkbox"], input[type="radio"] {
 	100% {
 		background-position: 0% 50%;
 	}
+}
+
+.panel-body {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	grid-gap: var(--padding);
 }

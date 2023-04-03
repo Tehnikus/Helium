@@ -1,4 +1,3 @@
-<div class="flex">
 
   <!-- Guest checkout -->
   <form action="index.php?route=checkout/guest/save" method="post" id="guest_checkout">
@@ -412,19 +411,21 @@
         {% endif %}
       {% endfor %}
     </fieldset>
-    {{ captcha }} 
-    <div class="form-group">
-    {% if shipping_required %}
-      {% if shipping_address %}
-        <input id="shipping_address_guest" type="checkbox" name="shipping_address" value="1" checked="checked" />
-      {% else %}
-        <input id="shipping_address_guest" type="checkbox" name="shipping_address" value="1" />
-      {% endif %}
-      <label for="shipping_address_guest"> {{ entry_shipping }}</label>
-    {% endif %}
-    <input type="submit" value="{{ button_continue }}" id="button-guest" form="guest_checkout" class="btn btn-primary" />
+    {{ captcha }}
+    <div class="full-width">
+      <div class="form-group">
+        {% if shipping_required %}
+          {% if shipping_address %}
+            <input id="shipping_address_guest" type="checkbox" name="shipping_address" value="1" checked="checked" />
+          {% else %}
+            <input id="shipping_address_guest" type="checkbox" name="shipping_address" value="1" />
+          {% endif %}
+          <label for="shipping_address_guest"> {{ entry_shipping }}</label>
+        {% endif %}
+      </div>
+      <button type="submit" id="button-guest" form="guest_checkout" class="primary">{{ button_continue }}</button>
+    </div>
     </form>
-</div>
 
 
 

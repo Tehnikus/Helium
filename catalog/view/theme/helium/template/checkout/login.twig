@@ -1,4 +1,3 @@
-<div class="flex flex-1-0-100 flex-row wrap">
   <div class="flex flex-column">
     <h2>{{ text_new_customer }}</h2>
     <p>{{ text_checkout }}</p>
@@ -23,7 +22,7 @@
     </div>
     {% endif %}
     <p>{{ text_register_account }}</p>
-    <button type="button" id="button-account" class="btn btn-primary">{{ button_continue }}</button>
+    <button type="button" id="button-account" class="primary">{{ button_continue }}</button>
   </div>
   <div class="flex flex-column">
     <h2>{{ text_returning_customer }}</h2>
@@ -36,7 +35,6 @@
       <label class="control-label" for="input-password">{{ entry_password }}</label>
       <input type="password" name="password" value="" placeholder="{{ entry_password }}" id="input-password" class="form-control" />
     </div>
-      <button type="button" id="button-login" class="button primary">{{ button_login }}</button>
+      <button type="button" id="button-login" class="primary">{{ button_login }}</button>
       <a class="button" href="{{ forgotten }}">{{ text_forgotten }}</a>
   </div>
-</div>
