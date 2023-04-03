@@ -3,7 +3,7 @@
   <form action="index.php?route=checkout/guest/save" method="post" id="guest_checkout">
     <fieldset id="account">
       <legend>{{ text_your_details }}</legend>
-      <div class="form-group" style="display: {% if customer_groups|length > 1 %} block {% else %} none {% endif %};">
+      <div class="form-group" {% if customer_groups|length <= 1 %} style="display: none" tabindex="-1"{% endif %}>
         <label>{{ entry_customer_group }}</label>
         {% for customer_group in customer_groups %}
           {% if customer_group.customer_group_id == customer_group_id %}
