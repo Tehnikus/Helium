@@ -24,7 +24,7 @@ function sendReview(t) {
 	let review_form = document.getElementById('form-review');
 	let review = new URLSearchParams(new FormData(review_form)).toString();
 	let review_url = 'index.php?route='+t.dataset.type+'/sendReview&entity_id=' + t.dataset.id;
-	ajax(review_url, review, 
+	ajax(review_url, review,
 		function(r) {
 			if (r.error) {
 				mwindow.create('toast', r.error, 'error');
@@ -34,7 +34,7 @@ function sendReview(t) {
 				// Убираем форму
 				review_form.parentElement.removeChild(review_form);
 			}
-		}, 
+		},
 		null,null,null,'POST','JSON',true
 	);
 }
@@ -130,7 +130,7 @@ document.addEventListener('click', function(e) {
 // 		var query = String(document.location.pathname).split('/');
 // 		if (query[query.length - 1] == 'cart') value['route'] = 'checkout/cart';
 // 		if (query[query.length - 1] == 'checkout') value['route'] = 'checkout/checkout';
-		
+
 // 		if (value[key]) {
 // 			return value[key];
 // 		} else {
@@ -143,7 +143,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	mobileMenu();
 	mainMenu();
 	countdown(d);
-	
+
 	let pagination = document.querySelector('main ul.pagination');
 	if (!!pagination) {
 		let load_more_btn = createElm({
@@ -156,7 +156,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	}
 
 
-		
+
 
 	// Highlight any found errors
 	var error_inputs = document.getElementsByClassName('.text-danger');
@@ -272,7 +272,7 @@ document.addEventListener('DOMContentLoaded', function() {
 // Cart add remove functions
 var cart = {
 	'add': function(product_id, quantity = null) {
-		
+
 		if (quantity == null) {
 			qty_input = document.getElementById('input-quantity');
 			if (!!qty_input) {
@@ -280,7 +280,7 @@ var cart = {
 			}
 		}
 		var data = 'product_id=' + product_id + '&quantity=' + (typeof(quantity) != 'undefined' ? quantity : 1);
-		
+
 		// Product options
 		let options_inputs = document.querySelectorAll('[name^="option"]:checked');
 		let options_selects = document.querySelectorAll('select[name^="option"]');
@@ -294,10 +294,10 @@ var cart = {
 			options_string += '&' + options_selects[i].name + '=' + options_selects[i][options_selects[i].selectedIndex].value;
 		}
 		data += options_string;
-		
+
 		// var data = new FormData();
 		// data.append( "json", JSON.stringify( p ) );
-		
+
 		// fetch(url,
 		// {
 		// 	method: "POST",
@@ -308,7 +308,7 @@ var cart = {
 
 		// Add to cart request
 		var url = 'index.php?route=checkout/cart/add';
-		ajax(url, data, 
+		ajax(url, data,
 			function(r) {
 				if (r.success) {
 					document.getElementById('total_cart').innerHTML = r.total_cart;
@@ -318,7 +318,7 @@ var cart = {
 					ajax('index.php?route=common/cart/modal',null,function(c) {
 						dialog.create(c);
 					}, null,null,null,"GET","text",true);
-					
+
 				}
 				// Display additional dialog for required options
 				if (r.error && r.error.option) {
@@ -498,7 +498,101 @@ var compare = {
 	}
 }
 
+function scrollslider() {
+  let containers_class = 'module-product-list';
+  let slides_class = 'miniature';
+  let scrollbehaviour = {behavior: "smooth",block: "nearest",inline: "nearest"};
 
+  [].forEach.call(document.getElementsByClassName(containers_class), c => {
+    let observer = new IntersectionObserver(onIntersection, {
+      root: c,      // default is the viewport
+      threshold: .5 // percentage of target's visible area. Triggers "onIntersection"
+    });
+    function onIntersection(slides, opts) {
+      slides.forEach(entry => {
+        entry.target.classList.toggle('visible', entry.isIntersecting)
+      })
+    }
+    [].forEach.call(c.getElementsByClassName(slides_class), s => {
+      observer.observe(s);
+    });
+    function scrollLeft() {
+      var visible_slide = c.querySelector('article.visible');
+      if (visible_slide.previousElementSibling) {
+        visible_slide.previousElementSibling.scrollIntoView(scrollbehaviour);
+      } else {
+        c.lastElementChild.scrollIntoView(scrollbehaviour);
+      }
+    }
+    function scrollRight() {
+      var visible_slide = c.querySelector('article.visible');
+      if (visible_slide.nextElementSibling) {
+        visible_slide.nextElementSibling.scrollIntoView(scrollbehaviour);
+      } else {
+        c.firstElementChild.scrollIntoView(scrollbehaviour);
+      }
+    }
+
+    ['left', 'right'].forEach(b => {
+      button = createElm({type: 'button', attrs: {'class': 'scroll_'+b}, props:{innerHTML: '<i class="icon-chevron-'+b+'"></i>'}});
+      if (b == 'left') {
+        button.addEventListener('click', (e) => {
+          scrollLeft();
+        })
+      }
+      if (b == 'right') {
+        button.addEventListener('click', (e) => {
+          scrollRight()
+        })
+      }
+      c.insertAdjacentElement('beforebegin', button);
+    })
+    // setInterval(() => {
+    //   scrollRight();
+    // }, 1500);
+  })
+}
+scrollslider();
+// const container = document.querySelector(".container");
+// const content = document.querySelectorAll(".content");
+// const scrollLeft = document.getElementById("scroll-left");
+// const scrollRight = document.getElementById("scroll-right");
+// scrollLeft.addEventListener("click", () => {
+//   let currentContent = document.querySelector(
+//     ".content:not(:first-child):not(:last-child)"
+//   );
+//   if (currentContent) {
+//     currentContent.previousElementSibling.scrollIntoView({
+//       behavior: "smooth",
+//       block: "nearest",
+//       inline: "start",
+//     });
+//   } else {
+//     container.lastElementChild.scrollIntoView({
+//       behavior: "smooth",
+//       block: "nearest",
+//       inline: "start",
+//     });
+//   }
+// });
+// scrollRight.addEventListener("click", () => {
+//   let currentContent = document.querySelector(
+//     ".content:not(:first-child):not(:last-child)"
+//   );
+//   if (currentContent) {
+//     currentContent.nextElementSibling.scrollIntoView({
+//       behavior: "smooth",
+//       block: "nearest",
+//       inline: "start",
+//     });
+//   } else {
+//     container.firstElementChild.scrollIntoView({
+//       behavior: "smooth",
+//       block: "nearest",
+//       inline: "start",
+//     });
+//   }
+// });
 
 // Clicks handling
 document.addEventListener('click', function(e){
@@ -588,7 +682,7 @@ function accordion(toggler = null, close_all = false) {
 }
 
 // Main menu function
-// Appends open and close buttons to list of categories 
+// Appends open and close buttons to list of categories
 function mainMenu() {
 	let main_menu = document.getElementById('main-menu');
 	let ul = main_menu.getElementsByClassName('top-level');
@@ -686,33 +780,33 @@ function setIcon(productCount) {
 		// var favicon = document.getElementById('favicon');
 		// let favicon = document.querySelector("link[rel~='icon']");
 		let faviconSize = 16;
-	  
+
 		let canvas = document.createElement('canvas');
 		canvas.width = faviconSize;
 		canvas.height = faviconSize;
-	  
+
 		let context = canvas.getContext('2d');
 		let img = document.createElement('img');
 		img.src = favicon.href;
-	  
-	  
+
+
 		img.onload = () => {
 			// Draw Original Favicon as Background
 			context.drawImage(img, 0, 0, faviconSize, faviconSize);
-	  
+
 			// Draw Notification Circle
 			context.beginPath();
 			context.arc( canvas.width - faviconSize / 3 , faviconSize / 3, faviconSize / 3, 0, 2*Math.PI);
 			context.fillStyle = '#FF0000';
 			context.fill();
-	  
+
 			// Draw Notification Number
 			context.font = '10px "helvetica", sans-serif';
 			context.textAlign = "center";
 			context.textBaseline = "middle";
 			context.fillStyle = '#FFFFFF';
 			context.fillText(productCount, canvas.width - faviconSize / 3, faviconSize / 3);
-	  
+
 			// Replace favicon
 			favicon.href = canvas.toDataURL('image/png');
 		};
@@ -812,7 +906,7 @@ function ajax(url, data, success=null, beforesend=null,  complete=null, error=nu
 				if (success !== null) {
 					success(xhr.response);
 				}
-			} 
+			}
 			if (xhr.readyState !== 4 && xhr.status !== 200) {
 				if (error !== null) {
 					error(xhr.response);
@@ -838,7 +932,7 @@ function ajax(url, data, success=null, beforesend=null,  complete=null, error=nu
 // // var restURL = "index.php?route=checkout/cart/add" + encodeURIComponent(document.getElementById('email').value)
 // var url = "index.php?route=checkout/cart/add&" + 'product_id=' + product_id + '&quantity=' + (typeof(quantity) != 'undefined' ? quantity : 1)
 // var opts = {
-// 	method: 'POST',      
+// 	method: 'POST',
 // 	headers: {
 // 		'Content-Type': 'application/json',
 // 		'Accept': 'application/json'
@@ -854,8 +948,8 @@ function login() {
 	email = document.querySelector('[name="email"]');
 	password = document.querySelector('[name="password"]');
 	ajax(
-		'index.php?route=checkout/login/save', 
-		'password='+password+'&email='+email, 
+		'index.php?route=checkout/login/save',
+		'password='+password+'&email='+email,
 		// Если запрос отправлен успешно и получен какой-то ответ...
 		(success) => {
 			// Закрываем предыдущие сообщения об ошибках
@@ -908,9 +1002,9 @@ function login() {
 // ///////////////////////////// //
 
 // Mobile menu render
-// Find all div.mobile_menu, 
-// create corresponding button, 
-// order buttons by data-order, 
+// Find all div.mobile_menu,
+// create corresponding button,
+// order buttons by data-order,
 // add icon from data-icon
 // button name from data-block-name
 function mobileMenu() {
@@ -923,7 +1017,7 @@ function mobileMenu() {
 			let b = mb[k];
 			let btn = {
 				type: 'button',
-				attrs: {'class':'mobile_button button', 'aria-label':b.dataset.blockName}, 
+				attrs: {'class':'mobile_button button', 'aria-label':b.dataset.blockName},
 				props:{'innerHTML':'<i class="'+ b.dataset.icon +'"></i><span>'+ b.dataset.blockName+ '</span>'},
 				events:{
 					'click': function(e) {
@@ -939,7 +1033,7 @@ function mobileMenu() {
 								c.classList.remove('active');
 							}
 						}
-						b.classList.toggle('open'); 
+						b.classList.toggle('open');
 					}
 				},
 			};
@@ -975,7 +1069,7 @@ function createElm({type, styles, attrs, props, events, nest}) {
 				let e = createElm(nest[k]);
 				el.appendChild(e);
 			}
-		}		
+		}
 	}
 	return el;
 }
@@ -1107,7 +1201,7 @@ function countdown(element) {
 				let time = createElm({
 					attrs: {
 						class:'time ' + key
-					}, 
+					},
 					nest: {
 						1: {type:'span', attrs:{class:'span_'+key}, props:{'innerText': t[key]}},
 						2: {type:'span', props:{'textContent': js_lang[key]}}
@@ -1115,7 +1209,7 @@ function countdown(element) {
 				});
 				div.appendChild(time);
 			}
-			
+
 			el.insertAdjacentElement('beforeend', div);
 			setInterval(function(){
 				let tt = timer(finalDate);
@@ -1144,13 +1238,13 @@ function searchFunction () {
 	let url = 'index.php?route=product/search/find';
 	let inner_search = document.getElementById('search-results');
 	let response;
-	ajax(url, 'search='+data, 
+	ajax(url, 'search='+data,
 		function(r) {
 			if (!!r && Object.keys(r).length !== 0) {
 				response = r;
 				let search_results = createElm(r);
 				countdown(search_results);
-				
+
 				inner_search.innerHTML = '';
 				inner_search.appendChild(search_results);
 				inner_search.classList.add('some-results');
@@ -1194,7 +1288,7 @@ function searchFunction () {
 	// 				category_description.style.maxHeight = category_description.scrollHeight+'px';
 	// 				expand_btn.innerText = js_lang.collapse;
 	// 			}
-	// 		}			
+	// 		}
 	// 	});
 	// 	category_description.insertAdjacentElement('afterend', expand_btn);
 	// }
