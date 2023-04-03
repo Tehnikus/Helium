@@ -1,7 +1,7 @@
   <div class="flex flex-column">
     <h2>{{ text_new_customer }}</h2>
     <p>{{ text_checkout }}</p>
-    <div class="radio">
+    <div class="form-control">
       {% if account == 'register' %}
         <input type="radio" name="account" id="register-checkout" value="register" checked="checked" />
         <label for="register-checkout">{{ text_register }}</label>
@@ -11,7 +11,7 @@
       {% endif %}
     </div>
     {% if checkout_guest %}
-    <div class="radio">
+    <div class="form-control">
       {% if account == 'guest' %}
         <input type="radio" name="account" id="guest-checkout" value="guest" checked="checked" />
         <label for="guest-checkout">{{ text_guest }}</label>
