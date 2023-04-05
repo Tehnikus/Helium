@@ -1,16 +1,16 @@
-<form class="form-horizontal" id="form-review">
+<form  id="form-review">
   <span class="h2">{{ text_write }}</span>
   <div class="form-group required">
-    {# <label class="control-label" for="input-name">{{ entry_name }}</label> #}
-    <input type="text" placeholder="{{ entry_name }}" name="name" value="{{ customer_name }}" id="input-name" class="form-control" />
+    {# <label for="input-name">{{ entry_name }}</label> #}
+    <input type="text" placeholder="{{ entry_name }}" name="name" value="{{ customer_name }}" id="input-name" />
   </div>
   <div class="form-group required">
-    {# <label class="control-label" for="input-review">{{ entry_review }}</label> #}
+    {# <label for="input-review">{{ entry_review }}</label> #}
     <textarea name="text" placeholder="{{ entry_review }}" rows="5" id="input-review" class="form-control"></textarea>
     {# <div class="help-block">{{ text_note }}</div> #}
   </div>
 
-  <label class="control-label">{{ entry_rating }}</label>
+  <label>{{ entry_rating }}</label>
   {# Звездочки выбор оценки #}
   <div class="form-group required rating">
     {% for i in 5..1 %}
@@ -22,7 +22,7 @@
 
   <div class="buttons clearfix">
     <div class="pull-right">
-      <button type="submit" id="button-review" data-type="{{ type }}" data-id="{{ entity_id }}" class="btn btn-primary">
+      <button type="submit" id="button-review" data-type="{{ type }}" data-id="{{ entity_id }}" class="primary">
         {{ button_send_review }}
       </button>
     </div>

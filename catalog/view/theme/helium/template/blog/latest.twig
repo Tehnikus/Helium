@@ -1,6 +1,6 @@
 {{ header }}
 {% include 'helium/template/common/breadcrumbs.twig' %}
-<main class="container">
+<main>
 {{ content_top }}
   <div class="row">
     <div id="content">
@@ -17,7 +17,7 @@
       {% else %}
         <p>{{ text_empty }}</p>
         <div class="buttons">
-          <div class="pull-right"><a href="{{ continue }}" class="btn btn-primary">{{ button_continue }}</a></div>
+          <div class="pull-right"><a href="{{ continue }}" class="primary">{{ button_continue }}</a></div>
         </div>
       {% endif %}
       </div>

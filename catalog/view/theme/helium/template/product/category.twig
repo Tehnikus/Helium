@@ -40,8 +40,8 @@
 
   {% if products %}
     <div class="row category-sort">
-      <div class="input-group">
-        <label class="input-group-addon" for="input-sort">{{ text_sort }}</label>
+      <div class="form-group">
+        <label for="input-sort">{{ text_sort }}</label>
         <select id="input-sort" class="form-control" onchange="location = this.value;">
         {% for sorts in sorts %}
           {% if sorts.value == '%s-%s'|format(sort, order) %}
@@ -71,7 +71,7 @@
   {% if not categories and not products %}
     <p>{{ text_empty }}</p>
     <div class="row">
-      <a href="{{ continue }}" class="btn btn-primary">{{ button_continue }}</a>
+      <a href="{{ continue }}" class="primary">{{ button_continue }}</a>
     </div>
   {% endif %}
   {{ content_bottom }}

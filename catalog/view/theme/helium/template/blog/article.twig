@@ -160,7 +160,7 @@ $('#button-review').on('click', function() {
 			}
 
 			if (json['success']) {
-				$('#review').after('<div class="alert alert-success alert-dismissible"><i class="fa fa-check-circle"></i> ' + json['success'] + '</div>');
+				$('#review').after('<div class="alert alert-success alert-dismissible"><i class="icon-info"></i></i> ' + json['success'] + '</div>');
 
 				$('input[name=\'name\']').val('');
 				$('textarea[name=\'text\']').val('');

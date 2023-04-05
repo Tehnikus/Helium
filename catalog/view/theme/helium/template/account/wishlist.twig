@@ -1,6 +1,6 @@
 {{ header }}
 {% include 'helium/template/common/breadcrumbs.twig' %}
-<main id="account-wishlist" class="container">
+<main id="account-wishlist">
   {{ content_top }}
       <h2>{{ heading_title }}</h2>
       {% include 'helium/template/account/wishlist_table.twig' with {products: products, success:success} %}
