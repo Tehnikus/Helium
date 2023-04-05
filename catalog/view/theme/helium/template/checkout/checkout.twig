@@ -1,7 +1,7 @@
 {{ header }}
 {% include 'helium/template/common/breadcrumbs.twig' %}
 
-<main id="checkout-checkout" class="container">
+<main id="checkout-checkout">
   {% if error_warning %}
   <div class="alert danger"><i class="icon-alert"></i> {{ error_warning }}
     <button type="button" class="close" data-dismiss="alert">&times;</button>
@@ -64,11 +64,6 @@
         {# Payment method #}
       </div>
     </div>
-
-
-
-
-		
 	</div>
 </main>
 {{ content_bottom }}
@@ -79,9 +74,9 @@
 //$(document).on('change', 'input[name=\'account\']', function() {
 //	if ($('#collapse-payment-address').parent().find('.panel-heading .panel-title > *').is('a')) {
 //		if (this.value == 'register') {
-//			$('#collapse-payment-address').parent().find('.panel-heading .panel-title').html('<a href="#collapse-payment-address" data-toggle="collapse" data-parent="#accordion" class="accordion-toggle">{{ text_checkout_account }} <i class="fa fa-caret-down"></i></a>');
+//			$('#collapse-payment-address').parent().find('.panel-heading .panel-title').html('<a href="#collapse-payment-address" data-toggle="collapse" data-parent="#accordion" class="accordion-toggle">{{ text_checkout_account }} <i class="icon-chevron-down"></i></a>');
 //		} else {
-//			$('#collapse-payment-address').parent().find('.panel-heading .panel-title').html('<a href="#collapse-payment-address" data-toggle="collapse" data-parent="#accordion" class="accordion-toggle">{{ text_checkout_payment_address }} <i class="fa fa-caret-down"></i></a>');
+//			$('#collapse-payment-address').parent().find('.panel-heading .panel-title').html('<a href="#collapse-payment-address" data-toggle="collapse" data-parent="#accordion" class="accordion-toggle">{{ text_checkout_payment_address }} <i class="icon-chevron-down"></i></a>');
 //		}
 //	} else {
 //		if (this.value == 'register') {
@@ -95,12 +90,6 @@
 // Step 1
 {% if not logged %}
   getForm('login');
-	// fetch('index.php?route=checkout/login',{method: "GET"})
-	// .then((r) => {return r.text();})
-	// .then((body) => {
-	// 	let step1 = document.querySelector('#collapse-checkout-option .panel-body');
-	// 	step1.innerHTML = body;
-	// });
 {% else %}
   getForm('payment_address');
 	// fetch('index.php?route=checkout/payment_address',{method: "GET"})
@@ -117,7 +106,7 @@
 //        success: function(html) {
 //            $('#collapse-payment-address .panel-body').html(html);
 //
-//			$('#collapse-payment-address').parent().find('.panel-heading .panel-title').html('<a href="#collapse-payment-address" data-toggle="collapse" data-parent="#accordion" class="accordion-toggle">{{ text_checkout_payment_address }} <i class="fa fa-caret-down"></i></a>');
+//			$('#collapse-payment-address').parent().find('.panel-heading .panel-title').html('<a href="#collapse-payment-address" data-toggle="collapse" data-parent="#accordion" class="accordion-toggle">{{ text_checkout_payment_address }} <i class="icon-chevron-down"></i></a>');
 //
 //			$('a[href=\'#collapse-payment-address\']').trigger('click');
 //        },
@@ -147,31 +136,6 @@ document.addEventListener('click', async (e) => {
 		if (button_account.contains(e.target)) {
 			var guest_or_register = document.querySelector('input[name="account"]:checked').value;
       getForm(guest_or_register);
-      
-      // Get zones of payment country
-      // let country_select = document.getElementById('input-payment-country');
-      // if (!!country_select) {
-      //   getZones(country_select.value, 'input-payment-zone');
-      //   country_select.addEventListener('input', (e) => {
-      //     getZones(country_select.value, 'input-payment-zone');
-      //   });
-      // }
-      // 
-      // chainFunctions(saveForm,'checkout_register', getForm, 'shipping_method')
-
-
-
-			// fetch('index.php?route=checkout/'+guest_or_register, {method: "GET"})
-			// .then((r) => {return r.text();})
-			// .then((body) => {
-      //   // Collapse previous step
-      //   document.querySelector('#collapse-login').classList.add('collapse');
-			// 	let step2 = document.querySelector('#collapse-payment_address');
-			// 	step2.innerHTML = body;
-      //   // step2.querySelector('#input-payment-firstname').focus();
-
-
-			// });
 		}
 	}
 
@@ -206,51 +170,6 @@ document.addEventListener('click', async (e) => {
       chainFunctions(saveForm, 'shipping_method', getForm, 'payment_method');
     }
   }
-
-
-
-
-          // Shipping
-          // if (result.js_defs.shipping_required == true) {
-          //   // If shipping required for this order
-          //   var shipping_address_same_as_order = document.querySelector('#collapse-payment-address input[name=\'shipping_address\']:checked');
-          //   if (shipping_address_same_as_order) {
-          //     // If delivery address is the same as order address
-          //     console.log('Shipping address is the same as delivery');
-          //     // Go to shipping method
-          //     getShippingMethods();
-          //   } else {
-          //     // Else fetch guest delivery address
-          //     console.log('Shipping and delivery addresses are different');
-          //     fetch('index.php?route=checkout/guest_shipping',{method: "POST"})
-          //     .then((r) => {return r.text();})
-          //     .then((body) => {
-          //       document.getElementById('collapse-shipping-address').innerHTML = body;
-          //       let country_select = document.getElementById('input-shipping-country');
-          //       if (!!country_select) {
-          //         getZones(country_select.value, 'input-shipping-zone');
-          //         country_select.addEventListener('input', (e) => {
-          //           getZones(country_select.value, 'input-shipping-zone');
-          //         });
-          //       }
-          //       document.getElementById('button_guest_shipping').addEventListener('click', e => {
-          //         e.preventDefault();
-          //         // chainFunctions(saveForm, 'guest_shipping', getForm, 'shipping_method');
-          //       // let result = await saveShippingMethod();
-          //       // if (result) {
-          //       //   console.log(result);
-          //       //   getShippingMethods();
-          //       // }
-          //       })
-          //     });
-          //   }
-          // } else {
-          //   // If no shipping is required
-            
-          // }
-
-    
-  
 });
 
 // Universal save method
@@ -288,7 +207,6 @@ function getForm(method_name) {
       getZones(country_select.value, zone_select.id);
     }
   });
-  
 }
 
 // Chain xhr request functions
@@ -331,66 +249,6 @@ function handleErrors(errors_object, form_with_errors) {
     }
   }
 }
-
-// Guest shipping - when shipping and payment addreses are different
-// function guestShippingSave() {
-//   let guest_shipping_address_form = document.getElementById('guest_shipping');
-//   guest_shipping_address_form.onsubmit = async (e) => {
-//     e.preventDefault();
-//     let data = new FormData(guest_shipping_address_form);
-//     // for (var pair of data.entries()) {
-//     //   console.log(pair[0]+ ', ' + pair[1]); 
-//     // }
-//     let response = await fetch('index.php?route=checkout/guest_shipping/save', {method: 'POST', body: data});
-//     let result = await response.json();
-
-//     // Handle errors
-//     if ('error' in result) {
-//       handleErrors(result.error, 'shipping');
-//       return;
-//     } else {
-//       // handle redirect
-//       if ('redirect' in result) {
-//         location = result.redirect;
-//         return;
-//       } else {
-//         getShippingMethods();
-//         return;
-//       }
-//     }
-//   }
-// }
-
-
-
-// function saveShippingMethod() {
-//   let saved_form = document.getElementById('shipping_method');
-//   saved_form.onsubmit = async (e) => {
-//     e.preventDefault();
-//     let data = new FormData(saved_form);
-//     // for (var pair of data.entries()) {
-//     //   console.log(pair[0]+ ', ' + pair[1]); 
-//     // }
-//     let response = await fetch('index.php?route=checkout/shipping_method/save', {method: 'POST', body: data});
-//     let result = await response.json();
-
-//     // Handle errors
-//     if ('error' in result) {
-//       handleErrors(result.error, 'shipping');
-//     } else {
-//       // handle redirect
-//       if ('redirect' in result) {
-//         location = result.redirect;
-//       } else {
-//         getShippingMethods();
-//       }
-//     }
-//   }
-// }
-
-
-
-
 
 // Create zones options
 function getZones(country_id, zone_input_id) {
@@ -449,7 +307,7 @@ function getZones(country_id, zone_input_id) {
 // 											dataType: 'html',
 // 											success: function(html) {
 // 												$('#collapse-shipping-address .panel-body').html(html);
-// 												$('#collapse-shipping-address').parent().find('.panel-heading .panel-title').html('<a href="#collapse-shipping-address" data-toggle="collapse" data-parent="#accordion" class="accordion-toggle">{{ text_checkout_shipping_address }} <i class="fa fa-caret-down"></i></a>');
+// 												$('#collapse-shipping-address').parent().find('.panel-heading .panel-title').html('<a href="#collapse-shipping-address" data-toggle="collapse" data-parent="#accordion" class="accordion-toggle">{{ text_checkout_shipping_address }} <i class="icon-chevron-down"></i></a>');
 // 											},
 // 											error: function(xhr, ajaxOptions, thrownError) {
 // 												alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
@@ -457,7 +315,7 @@ function getZones(country_id, zone_input_id) {
 // 									});
 
 // 									$('#collapse-shipping-method .panel-body').html(html);
-// 									$('#collapse-shipping-method').parent().find('.panel-heading .panel-title').html('<a href="#collapse-shipping-method" data-toggle="collapse" data-parent="#accordion" class="accordion-toggle">{{ text_checkout_shipping_method }} <i class="fa fa-caret-down"></i></a>');
+// 									$('#collapse-shipping-method').parent().find('.panel-heading .panel-title').html('<a href="#collapse-shipping-method" data-toggle="collapse" data-parent="#accordion" class="accordion-toggle">{{ text_checkout_shipping_method }} <i class="icon-chevron-down"></i></a>');
 // 									$('a[href=\'#collapse-shipping-method\']').trigger('click');
 // 									$('#collapse-payment-method').parent().find('.panel-heading .panel-title').html('{{ text_checkout_payment_method }}');
 // 									$('#collapse-checkout-confirm').parent().find('.panel-heading .panel-title').html('{{ text_checkout_confirm }}');
@@ -475,7 +333,7 @@ function getZones(country_id, zone_input_id) {
 // 								},
 // 								success: function(html) {
 // 									$('#collapse-shipping-address .panel-body').html(html);
-// 									$('#collapse-shipping-address').parent().find('.panel-heading .panel-title').html('<a href="#collapse-shipping-address" data-toggle="collapse" data-parent="#accordion" class="accordion-toggle">{{ text_checkout_shipping_address }} <i class="fa fa-caret-down"></i></a>');
+// 									$('#collapse-shipping-address').parent().find('.panel-heading .panel-title').html('<a href="#collapse-shipping-address" data-toggle="collapse" data-parent="#accordion" class="accordion-toggle">{{ text_checkout_shipping_address }} <i class="icon-chevron-down"></i></a>');
 // 									$('a[href=\'#collapse-shipping-address\']').trigger('click');
 // 									$('#collapse-shipping-method').parent().find('.panel-heading .panel-title').html('{{ text_checkout_shipping_method }}');
 // 									$('#collapse-payment-method').parent().find('.panel-heading .panel-title').html('{{ text_checkout_payment_method }}');
@@ -496,7 +354,7 @@ function getZones(country_id, zone_input_id) {
 // 							},
 // 							success: function(html) {
 // 								$('#collapse-payment-method .panel-body').html(html);
-// 								$('#collapse-payment-method').parent().find('.panel-heading .panel-title').html('<a href="#collapse-payment-method" data-toggle="collapse" data-parent="#accordion" class="accordion-toggle">{{ text_checkout_payment_method }} <i class="fa fa-caret-down"></i></a>');
+// 								$('#collapse-payment-method').parent().find('.panel-heading .panel-title').html('<a href="#collapse-payment-method" data-toggle="collapse" data-parent="#accordion" class="accordion-toggle">{{ text_checkout_payment_method }} <i class="icon-chevron-down"></i></a>');
 // 								$('a[href=\'#collapse-payment-method\']').trigger('click');
 // 								$('#collapse-checkout-confirm').parent().find('.panel-heading .panel-title').html('{{ text_checkout_confirm }}');
 // 							},
@@ -530,10 +388,10 @@ function getZones(country_id, zone_input_id) {
 // 
 // 			if ($('input[name=\'account\']:checked').val() == 'register') {
 //                 $('#collapse-payment-address').parent().find('.panel-heading .panel-title')
-//                 .html('<a href="#collapse-payment-address" data-toggle="collapse" data-parent="#accordion" class="accordion-toggle">{{ text_checkout_account }} <i class="fa fa-caret-down"></i></a>');
+//                 .html('<a href="#collapse-payment-address" data-toggle="collapse" data-parent="#accordion" class="accordion-toggle">{{ text_checkout_account }} <i class="icon-chevron-down"></i></a>');
 // 			} else {
 //                 $('#collapse-payment-address').parent().find('.panel-heading .panel-title')
-//                 .html('<a href="#collapse-payment-address" data-toggle="collapse" data-parent="#accordion" class="accordion-toggle">{{ text_checkout_payment_address }} <i class="fa fa-caret-down"></i></a>');
+//                 .html('<a href="#collapse-payment-address" data-toggle="collapse" data-parent="#accordion" class="accordion-toggle">{{ text_checkout_payment_address }} <i class="icon-chevron-down"></i></a>');
 // 			}
 // 
 // 			$('a[href=\'#collapse-payment-address\']').trigger('click');
@@ -596,7 +454,7 @@ function getZones(country_id, zone_input_id) {
 //                                 success: function(html) {
 //                                     $('#collapse-shipping-address .panel-body').html(html);
 
-// 									$('#collapse-shipping-address').parent().find('.panel-heading .panel-title').html('<a href="#collapse-shipping-address" data-toggle="collapse" data-parent="#accordion" class="accordion-toggle">{{ text_checkout_shipping_address }} <i class="fa fa-caret-down"></i></a>');
+// 									$('#collapse-shipping-address').parent().find('.panel-heading .panel-title').html('<a href="#collapse-shipping-address" data-toggle="collapse" data-parent="#accordion" class="accordion-toggle">{{ text_checkout_shipping_address }} <i class="icon-chevron-down"></i></a>');
 //                                 },
 //                                 error: function(xhr, ajaxOptions, thrownError) {
 //                                     alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
@@ -605,7 +463,7 @@ function getZones(country_id, zone_input_id) {
 
 // 							$('#collapse-shipping-method .panel-body').html(html);
 
-// 							$('#collapse-shipping-method').parent().find('.panel-heading .panel-title').html('<a href="#collapse-shipping-method" data-toggle="collapse" data-parent="#accordion" class="accordion-toggle">{{ text_checkout_shipping_method }} <i class="fa fa-caret-down"></i></a>');
+// 							$('#collapse-shipping-method').parent().find('.panel-heading .panel-title').html('<a href="#collapse-shipping-method" data-toggle="collapse" data-parent="#accordion" class="accordion-toggle">{{ text_checkout_shipping_method }} <i class="icon-chevron-down"></i></a>');
 
 //    							$('a[href=\'#collapse-shipping-method\']').trigger('click');
 
@@ -624,7 +482,7 @@ function getZones(country_id, zone_input_id) {
 //                         success: function(html) {
 //                             $('#collapse-shipping-address .panel-body').html(html);
 
-// 							$('#collapse-shipping-address').parent().find('.panel-heading .panel-title').html('<a href="#collapse-shipping-address" data-toggle="collapse" data-parent="#accordion" class="accordion-toggle">{{ text_checkout_shipping_address }} <i class="fa fa-caret-down"></i></a>');
+// 							$('#collapse-shipping-address').parent().find('.panel-heading .panel-title').html('<a href="#collapse-shipping-address" data-toggle="collapse" data-parent="#accordion" class="accordion-toggle">{{ text_checkout_shipping_address }} <i class="icon-chevron-down"></i></a>');
 
 // 							$('a[href=\'#collapse-shipping-address\']').trigger('click');
 
@@ -644,7 +502,7 @@ function getZones(country_id, zone_input_id) {
 //                     success: function(html) {
 //                         $('#collapse-payment-method .panel-body').html(html);
 
-// 						$('#collapse-payment-method').parent().find('.panel-heading .panel-title').html('<a href="#collapse-payment-method" data-toggle="collapse" data-parent="#accordion" class="accordion-toggle">{{ text_checkout_payment_method }} <i class="fa fa-caret-down"></i></a>');
+// 						$('#collapse-payment-method').parent().find('.panel-heading .panel-title').html('<a href="#collapse-payment-method" data-toggle="collapse" data-parent="#accordion" class="accordion-toggle">{{ text_checkout_payment_method }} <i class="icon-chevron-down"></i></a>');
 
 // 						$('a[href=\'#collapse-payment-method\']').trigger('click');
 
@@ -665,7 +523,7 @@ function getZones(country_id, zone_input_id) {
 //                     success: function(html) {
 //                         $('#collapse-payment-address .panel-body').html(html);
 
-// 						$('#collapse-payment-address').parent().find('.panel-heading .panel-title').html('<a href="#collapse-payment-address" data-toggle="collapse" data-parent="#accordion" class="accordion-toggle">{{ text_checkout_payment_address }} <i class="fa fa-caret-down"></i></a>');
+// 						$('#collapse-payment-address').parent().find('.panel-heading .panel-title').html('<a href="#collapse-payment-address" data-toggle="collapse" data-parent="#accordion" class="accordion-toggle">{{ text_checkout_payment_address }} <i class="icon-chevron-down"></i></a>');
 //                     },
 //                     error: function(xhr, ajaxOptions, thrownError) {
 //                         alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
@@ -723,7 +581,7 @@ $(document).delegate('#button-payment-address', 'click', function() {
                     success: function(html) {
                         $('#collapse-shipping-address .panel-body').html(html);
 
-						$('#collapse-shipping-address').parent().find('.panel-heading .panel-title').html('<a href="#collapse-shipping-address" data-toggle="collapse" data-parent="#accordion" class="accordion-toggle">{{ text_checkout_shipping_address }} <i class="fa fa-caret-down"></i></a>');
+						$('#collapse-shipping-address').parent().find('.panel-heading .panel-title').html('<a href="#collapse-shipping-address" data-toggle="collapse" data-parent="#accordion" class="accordion-toggle">{{ text_checkout_shipping_address }} <i class="icon-chevron-down"></i></a>');
 
 						$('a[href=\'#collapse-shipping-address\']').trigger('click');
 
@@ -753,7 +611,7 @@ $(document).delegate('#button-payment-address', 'click', function() {
                     success: function(html) {
                         $('#collapse-payment-method .panel-body').html(html);
 
-						$('#collapse-payment-method').parent().find('.panel-heading .panel-title').html('<a href="#collapse-payment-method" data-toggle="collapse" data-parent="#accordion" class="accordion-toggle">{{ text_checkout_payment_method }} <i class="fa fa-caret-down"></i></a>');
+						$('#collapse-payment-method').parent().find('.panel-heading .panel-title').html('<a href="#collapse-payment-method" data-toggle="collapse" data-parent="#accordion" class="accordion-toggle">{{ text_checkout_payment_method }} <i class="icon-chevron-down"></i></a>');
 
 						$('a[href=\'#collapse-payment-method\']').trigger('click');
 
@@ -828,7 +686,7 @@ $(document).delegate('#button-shipping-address', 'click', function() {
                     success: function(html) {
                         $('#collapse-shipping-method .panel-body').html(html);
 
-						$('#collapse-shipping-method').parent().find('.panel-heading .panel-title').html('<a href="#collapse-shipping-method" data-toggle="collapse" data-parent="#accordion" class="accordion-toggle">{{ text_checkout_shipping_method }} <i class="fa fa-caret-down"></i></a>');
+						$('#collapse-shipping-method').parent().find('.panel-heading .panel-title').html('<a href="#collapse-shipping-method" data-toggle="collapse" data-parent="#accordion" class="accordion-toggle">{{ text_checkout_shipping_method }} <i class="icon-chevron-down"></i></a>');
 
 						$('a[href=\'#collapse-shipping-method\']').trigger('click');
 
@@ -916,7 +774,7 @@ $(document).delegate('#button-shipping-address', 'click', function() {
 //                     success: function(html) {
 //                         $('#collapse-shipping-method .panel-body').html(html);
 
-// 						$('#collapse-shipping-method').parent().find('.panel-heading .panel-title').html('<a href="#collapse-shipping-method" data-toggle="collapse" data-parent="#accordion" class="accordion-toggle">{{ text_checkout_shipping_method }} <i class="fa fa-caret-down"></i>');
+// 						$('#collapse-shipping-method').parent().find('.panel-heading .panel-title').html('<a href="#collapse-shipping-method" data-toggle="collapse" data-parent="#accordion" class="accordion-toggle">{{ text_checkout_shipping_method }} <i class="icon-chevron-down"></i>');
 
 // 						$('a[href=\'#collapse-shipping-method\']').trigger('click');
 
@@ -965,7 +823,7 @@ $(document).delegate('#button-shipping-address', 'click', function() {
 //                     success: function(html) {
 //                         $('#collapse-payment-method .panel-body').html(html);
 
-// 						$('#collapse-payment-method').parent().find('.panel-heading .panel-title').html('<a href="#collapse-payment-method" data-toggle="collapse" data-parent="#accordion" class="accordion-toggle">{{ text_checkout_payment_method }} <i class="fa fa-caret-down"></i></a>');
+// 						$('#collapse-payment-method').parent().find('.panel-heading .panel-title').html('<a href="#collapse-payment-method" data-toggle="collapse" data-parent="#accordion" class="accordion-toggle">{{ text_checkout_payment_method }} <i class="icon-chevron-down"></i></a>');
 
 // 						$('a[href=\'#collapse-payment-method\']').trigger('click');
 
@@ -1013,7 +871,7 @@ $(document).delegate('#button-shipping-address', 'click', function() {
 //                     success: function(html) {
 //                         $('#collapse-checkout-confirm .panel-body').html(html);
 
-// 						$('#collapse-checkout-confirm').parent().find('.panel-heading .panel-title').html('<a href="#collapse-checkout-confirm" data-toggle="collapse" data-parent="#accordion" class="accordion-toggle">{{ text_checkout_confirm }} <i class="fa fa-caret-down"></i></a>');
+// 						$('#collapse-checkout-confirm').parent().find('.panel-heading .panel-title').html('<a href="#collapse-checkout-confirm" data-toggle="collapse" data-parent="#accordion" class="accordion-toggle">{{ text_checkout_confirm }} <i class="icon-chevron-down"></i></a>');
 
 // 						$('a[href=\'#collapse-checkout-confirm\']').trigger('click');
 // 					},
