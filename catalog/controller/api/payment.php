@@ -61,7 +61,7 @@ class ControllerApiPayment extends Controller {
 			}
 
 			if (!isset($this->request->post['zone_id']) || $this->request->post['zone_id'] == '') {
-				$json['error']['zone'] = $this->language->get('error_zone');
+				$json['error']['zone_id'] = $this->language->get('error_zone');
 			}
 
 			// Custom field validation
