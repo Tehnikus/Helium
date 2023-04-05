@@ -553,7 +553,7 @@ button#quickorder {background-image: linear-gradient(to right, #4f9731 0%, #1e85
 input {
 	vertical-align:top;
 	line-height: var(--icon-height);
-	padding: 0.75rem;
+	/* padding: 0.75rem; */
 	box-shadow: inset 0 0 0 2px var(--button-base);
 }
 label {
@@ -643,7 +643,6 @@ fieldset {
 }
 .form-group {
 	padding: 10px;
-	margin: 0 10px 10px;
 	border: 2px solid transparent;
 	transition: all var(--animation-duration);
 	display: grid;
@@ -651,14 +650,14 @@ fieldset {
     gap: 0.5em;
 	align-items: center;
 }
+/* Highlight requredi fields with asterix */
+.form-group.required label:after {
+    padding: 0 0.2rem;
+    content: '*';
+    color: red;
+    font-weight: bold;
+}
 
-/* .form-group.required input[type=""]::before {
-	content: '*';
-	color: var(--danger);
-	font-size: 1.5rem;
-	line-height: 1;
-	padding: 0 5px;
-} */
 .has-error {
 	box-shadow: inset 0 0 0 2px var(--danger);
 	transition: all var(--animation-duration);
@@ -1680,15 +1679,12 @@ form {
     display: grid;
     grid-template-columns: 1.2rem auto;
     gap: 1rem;
+	margin: .5rem;
     align-items: center;
 	transition: color var(--animation-duration);
 }
 .form-control:focus-within {
 	color: var(--primary-color);
-}
-  
-.form-control + .form-control {
-	margin-top: .5rem;
 }
   
 input[type="checkbox"], input[type="radio"] {
