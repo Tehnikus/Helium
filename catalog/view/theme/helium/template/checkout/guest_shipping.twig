@@ -1,4 +1,4 @@
-<form class="form-horizontal">
+<form action="index.php?route=checkout/guest_shipping/save" method="post" class="form-horizontal" id="guest_shipping">
   <fieldset id="account">
     <legend>{{ text_your_address }}</legend>
     <div class="form-group required">
@@ -199,6 +199,8 @@
   
     {% endif %}
   {% endfor %}
+  <button form="guest_shipping" type="submit" id="button_guest_shipping" class="brimary">{{ button_continue }}</button>
+
 </form>
 
 
