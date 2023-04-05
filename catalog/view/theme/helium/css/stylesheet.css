@@ -946,6 +946,7 @@ button.danger {
 }
 
 a.button.primary,
+a.primary,
 button.primary {
 	background-image: linear-gradient(to right, #4776E6 0%, #8E54E9  51%, #4776E6  100%);
 	text-align: center;
