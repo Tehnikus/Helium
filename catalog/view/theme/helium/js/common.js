@@ -460,7 +460,7 @@ var voucher = {
 }
 
 var wishlist = {
-	// TODO Переделать на отображение окошка со списком желаний
+	// DONE Переделать на отображение окошка со списком желаний
 	'add': function(product_id) {
 		var url = 'index.php?route=account/wishlist/add';
 		var data = 'product_id=' + product_id;
@@ -1187,7 +1187,7 @@ let mwindow = {
 
 
 function countdown(element) {
-	// TODO add data-discount-date-end here
+	// DONE add data-discount-date-end here
 	let products = element.querySelectorAll('[data-special-date-end], [data-discount-date-end]');
 	for (let p = 0; p < products.length; p++) {
 		let el = products[p];
