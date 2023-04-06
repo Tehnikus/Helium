@@ -823,9 +823,9 @@ function setIcon(productCount) {
 // Маска номера телефона
 // ID инпутов, куда может вводиться номер телефона
 // TODO Объединить все в одну функцию
-let masked_inputs = ['InputPhone', 'one_click_input', 'user_telephone', 'input-payment-telephone'];
+let masked_inputs = ['tel'];
 document.addEventListener('input', function(e) {
-    if (masked_inputs.indexOf(e.target.id) != -1) {
+    if (masked_inputs.indexOf(e.target.type) != -1) {
         e.target.addEventListener('input', handleInput, false);
     }
 });
