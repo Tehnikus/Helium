@@ -1264,7 +1264,7 @@ class ControllerSaleOrder extends Controller {
 				$this->model_user_api->deleteApiSessionBySessionId($session->getId());
 				
 				$this->model_user_api->addApiSession($api_info['api_id'], $session->getId(), $this->request->server['REMOTE_ADDR']);
-				
+				$session->data = [];
 				$session->data['api_id'] = $api_info['api_id'];
 
 				$data['api_token'] = $session->getId();
