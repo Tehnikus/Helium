@@ -75,9 +75,9 @@ class ControllerCheckoutCart extends Controller {
 				}
 
 				if ($product['image']) {
-					$image = $this->model_tool_image->resize($product['image'], $this->config->get('image_cart_width'), $this->config->get('image_cart_height'));
+					$image = $this->model_tool_image->resize($product['image'], $this->config->get('image_product_width'), $this->config->get('image_product_height'));
 				} else {
-					$image = $this->model_tool_image->resize('no_image.webp', $this->config->get('image_cart_width'), $this->config->get('image_cart_height'));
+					$image = $this->model_tool_image->resize('no_image.webp', $this->config->get('image_product_width'), $this->config->get('image_product_height'));
 				}
 
 				$option_data = array();
