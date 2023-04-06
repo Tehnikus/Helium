@@ -1,47 +1,45 @@
 {{ header }}
 {% include 'helium/template/common/breadcrumbs.twig' %}
 <main id="affiliate-login">
-
   {% if success %}
-  <div class="alert alert-success alert-dismissible"><i class="icon-info"></i></i> {{ success }}</div>
+    <div class="alert alert-success alert-dismissible"><i class="icon-info"></i></i> {{ success }}</div>
   {% endif %}
   {% if error_warning %}
-  <div class="alert alert-danger alert-dismissible"><i class="fa fa-exclamation-circle"></i> {{ error_warning }}</div>
+    <div class="alert alert-danger alert-dismissible"><i class="fa fa-exclamation-circle"></i> {{ error_warning }}</div>
   {% endif %}
-  {{ column_left }}
-
-    {{ content_top }}
-      <h1>{{ heading_title }}</h1>
-      {{ text_description }}
-      <div class="row">
-        <div class="col-sm-6">
-          <div class="well">
-            <h2>{{ text_new_affiliate }}</h2>
-            <p>{{ text_register_account }}</p>
-            <a class="primary" href="{{ register }}">{{ button_continue }}</a></div>
-        </div>
-        <div class="col-sm-6">
-          <div class="well">
-            <h2>{{ text_returning_affiliate }}</h2>
-            <p><strong>{{ text_i_am_returning_affiliate }}</strong></p>
-            <form action="{{ action }}" method="post" enctype="multipart/form-data">
-              <div class="form-group">
-                <label for="input-email">{{ entry_email }}</label>
-                <input type="text" name="email" value="{{ email }}" placeholder="{{ entry_email }}" id="input-email" />
-              </div>
-              <div class="form-group">
-                <label for="input-password">{{ entry_password }}</label>
-                <input type="password" name="password" value="{{ password }}" placeholder="{{ entry_password }}" id="input-password" />
-                <a href="{{ forgotten }}">{{ text_forgotten }}</a> </div>
-              <button type="submit" class="primary">{{ button_login }}</button>
-              {% if redirect %}
-              <input type="hidden" name="redirect" value="{{ redirect }}" />
-              {% endif %}
-            </form>
+  <h1>{{ heading_title }}</h1>
+  {{ content_top }}
+  {{ text_description }}
+  <div class="row">
+    <div class="col-sm-6">
+      <div class="well">
+        <h2>{{ text_new_affiliate }}</h2>
+        <p>{{ text_register_account }}</p>
+        <a class="primary" href="{{ register }}">{{ button_continue }}</a></div>
+    </div>
+    <div class="col-sm-6">
+      <div class="well">
+        <h2>{{ text_returning_affiliate }}</h2>
+        <p><strong>{{ text_i_am_returning_affiliate }}</strong></p>
+        <form action="{{ action }}" method="post" enctype="multipart/form-data">
+          <div class="form-group">
+            <label for="input-email">{{ entry_email }}</label>
+            <input type="text" name="email" value="{{ email }}" placeholder="{{ entry_email }}" id="input-email" />
           </div>
-        </div>
+          <div class="form-group">
+            <label for="input-password">{{ entry_password }}</label>
+            <input type="password" name="password" value="{{ password }}" placeholder="{{ entry_password }}" id="input-password" />
+            <a href="{{ forgotten }}">{{ text_forgotten }}</a> </div>
+          <button type="submit" class="primary">{{ button_login }}</button>
+          {% if redirect %}
+          <input type="hidden" name="redirect" value="{{ redirect }}" />
+          {% endif %}
+        </form>
       </div>
-      {{ content_bottom }}
-    {{ column_right }}
+    </div>
+  </div>
+  {{ content_bottom }}
 </div>
+{{ column_left }}
+{{ column_right }}
 {{ footer }}

@@ -1,38 +1,36 @@
 {{ header }}
 {% include 'helium/template/common/breadcrumbs.twig' %}
 <main id="account-tracking">
-
-  {{ column_left }}
-
-    {{ content_top }}
-      <h1>{{ heading_title }}</h1>
-      <p>{{ text_description }}</p>
-      <form>
-        <div class="form-group">
-          <label for="input-code">{{ entry_code }}</label>
-          <div class="col-sm-10">
-            <textarea cols="40" rows="5" placeholder="{{ entry_code }}" id="input-code" class="form-control">{{ code }}</textarea>
-          </div>
-        </div>
-        <div class="form-group">
-          <label for="input-generator"><span data-toggle="tooltip" title="{{ help_generator }}">{{ entry_generator }}</span></label>
-          <div class="col-sm-10">
-            <input type="text" name="product" value="" placeholder="{{ entry_generator }}" id="input-generator" />
-          </div>
-        </div>
-        <div class="form-group">
-          <label for="input-link">{{ entry_link }}</label>
-          <div class="col-sm-10">
-            <textarea name="link" cols="40" rows="5" placeholder="{{ entry_link }}" id="input-link" class="form-control"></textarea>
-          </div>
-        </div>
-      </form>
-      <div class="buttons clearfix">
-        <div class="pull-right"><a href="{{ continue }}" class="primary">{{ button_continue }}</a></div>
+  <h1>{{ heading_title }}</h1>
+  {{ content_top }}
+  <p>{{ text_description }}</p>
+  <form>
+    <div class="form-group">
+      <label for="input-code">{{ entry_code }}</label>
+      <div class="col-sm-10">
+        <textarea cols="40" rows="5" placeholder="{{ entry_code }}" id="input-code" class="form-control">{{ code }}</textarea>
       </div>
-      {{ content_bottom }}
-    {{ column_right }}
-</main>
+    </div>
+    <div class="form-group">
+      <label for="input-generator"><span data-toggle="tooltip" title="{{ help_generator }}">{{ entry_generator }}</span></label>
+      <div class="col-sm-10">
+        <input type="text" name="product" value="" placeholder="{{ entry_generator }}" id="input-generator" />
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="input-link">{{ entry_link }}</label>
+      <div class="col-sm-10">
+        <textarea name="link" cols="40" rows="5" placeholder="{{ entry_link }}" id="input-link" class="form-control"></textarea>
+      </div>
+    </div>
+  </form>
+  <div class="buttons clearfix">
+    <div class="pull-right"><a href="{{ continue }}" class="primary">{{ button_continue }}</a></div>
+  </div>
+  {{ content_bottom }}
+  </main>
+{{ column_left }}
+{{ column_right }}
 <script type="text/javascript"><!--
 $('input[name=\'product\']').autocomplete({
 	'source': function(request, response) {
