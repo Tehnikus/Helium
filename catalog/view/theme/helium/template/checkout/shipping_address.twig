@@ -1,25 +1,23 @@
-<form>
+<form action="index.php?route=checkout/shipping_address/save" method="post" id="shipping_address">
   {% if addresses %}
   <div class="form-control">
-    <label>
-      <input type="radio" name="shipping_address" value="existing" checked="checked" />
-      {{ text_address_existing }}</label>
+    <input type="radio" name="shipping_address" id="shipping_address_existing" value="existing" checked="checked" />
+    <label for="shipping_address_existing">{{ text_address_existing }}</label>
   </div>
   <div id="shipping-existing">
     <select name="address_id" class="form-control">
      {% for address in addresses %}
       {% if address.address_id == address_id %}
-      <option value="{{ address.address_id }}" selected="selected">{{ address.firstname }} {{ address.lastname }}, {{ address.address_1 }}, {{ address.city }}, {{ address.zone }}, {{ address.country }}</option>
+        <option value="{{ address.address_id }}" selected="selected">{{ address.firstname }} {{ address.lastname }}, {{ address.address_1 }}, {{ address.city }}, {{ address.zone }}, {{ address.country }}</option>
       {% else %}
-      <option value="{{ address.address_id }}">{{ address.firstname }} {{ address.lastname }}, {{ address.address_1 }}, {{ address.city }}, {{ address.zone }}, {{ address.country }}</option>
+        <option value="{{ address.address_id }}">{{ address.firstname }} {{ address.lastname }}, {{ address.address_1 }}, {{ address.city }}, {{ address.zone }}, {{ address.country }}</option>
       {% endif %}
-      {% endfor %}
+    {% endfor %}
     </select>
   </div>
   <div class="form-control">
-    <label>
-      <input type="radio" name="shipping_address" value="new" />
-      {{ text_address_new }}</label>
+    <input type="radio" name="shipping_address" value="new" id="shipping_address_new" />
+    <label for="shipping_address_new">{{ text_address_new }}</label>
   </div>
   {% endif %}
   <br />
