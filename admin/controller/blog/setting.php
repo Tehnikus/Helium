@@ -209,17 +209,17 @@ class ControllerBlogSetting extends Controller {
 			$data['article_miniature_image_height'] = $this->config->get('article_miniature_image_height');
 		}
 
-		if (isset($this->request->post['related_articles_image_width'])) {
-			$data['related_articles_image_width'] = $this->request->post['related_articles_image_width'];
-		} else {
-			$data['related_articles_image_width'] = $this->config->get('related_articles_image_width');
-		}
+		// if (isset($this->request->post['related_articles_image_width'])) {
+		// 	$data['related_articles_image_width'] = $this->request->post['related_articles_image_width'];
+		// } else {
+		// 	$data['related_articles_image_width'] = $this->config->get('related_articles_image_width');
+		// }
 
-		if (isset($this->request->post['related_articles_image_height'])) {
-			$data['related_articles_image_height'] = $this->request->post['related_articles_image_height'];
-		} else {
-			$data['related_articles_image_height'] = $this->config->get('related_articles_image_height');
-		}
+		// if (isset($this->request->post['related_articles_image_height'])) {
+		// 	$data['related_articles_image_height'] = $this->request->post['related_articles_image_height'];
+		// } else {
+		// 	$data['related_articles_image_height'] = $this->config->get('related_articles_image_height');
+		// }
 		
 		if (isset($this->request->post['configblog_name'])) {
 			$data['configblog_name'] = $this->request->post['configblog_name'];
@@ -271,9 +271,9 @@ class ControllerBlogSetting extends Controller {
 			$this->error['image_article'] = $this->language->get('error_image_article');
 		}
 
-		if (!$this->request->post['related_articles_image_width'] || !$this->request->post['related_articles_image_height']) {
-			$this->error['image_related'] = $this->language->get('error_image_related');
-		}
+		// if (!$this->request->post['related_articles_image_width'] || !$this->request->post['related_articles_image_height']) {
+		// 	$this->error['image_related'] = $this->language->get('error_image_related');
+		// }
 
 		if (!$this->request->post['configblog_article_limit']) {
 			$this->error['article_limit'] = $this->language->get('error_limit');
