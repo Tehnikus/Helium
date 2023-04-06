@@ -168,6 +168,9 @@ class ControllerCheckoutPaymentAddress extends Controller {
 				}
 			}
 		}
+		$js_defs = [];
+		$js_defs['shipping_required'] = $this->cart->hasShipping();
+		$json['js_defs'] = $js_defs;
 
 		$this->response->addHeader('Content-Type: application/json');
 		$this->response->setOutput(json_encode($json));
