@@ -1232,27 +1232,32 @@ function countdown(element) {
 	}
 }
 
+let timeout = null;
 function searchFunction () {
+	clearTimeout(timeout);
 	search_input = document.getElementById('search-input');
 	let data = search_input.value;
 	let url = 'index.php?route=product/search/find';
 	let inner_search = document.getElementById('search-results');
 	let response;
-	ajax(url, 'search='+data,
-		function(r) {
-			if (!!r && Object.keys(r).length !== 0) {
-				response = r;
-				let search_results = createElm(r);
-				countdown(search_results);
-
-				inner_search.innerHTML = '';
-				inner_search.appendChild(search_results);
-				inner_search.classList.add('some-results');
-			}
-
-		},
-		null,null,null,'POST','JSON',true
-	);
+	timeout = setTimeout(function () {
+		console.log(data);
+		ajax(url, 'search='+data,
+			function(r) {
+				if (!!r && Object.keys(r).length !== 0) {
+					response = r;
+					let search_results = createElm(r);
+					countdown(search_results);
+	
+					inner_search.innerHTML = '';
+					inner_search.appendChild(search_results);
+					inner_search.classList.add('some-results');
+				}
+	
+			},
+			null,null,null,'POST','JSON',true
+		);
+    }, 400);
 	if (data.length < 1) {
 		inner_search.classList.remove('some-results');
 	}
