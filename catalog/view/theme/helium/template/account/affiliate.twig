@@ -12,10 +12,20 @@
       <legend>{{ text_my_affiliate }}</legend>
       <div class="form-group">
         <label for="input-company">{{ entry_company }}</label>
-        <div class="col-sm-10">
-          <input type="text" name="company" value="{{ company }}" placeholder="{{ entry_company }}" id="input-company" />
-        </div>
+        <input
+          type="text"
+          name="company"
+          value="{{ company }}"
+          placeholder="{{ entry_company }}"
+          id="input-company"
+          inputmode="text"
+          enterkeyhint="next"
+          autocapitalize="words"
+          minlength="3" maxlength="64"
+          autocomplete="on"
+        />
       </div>
+
       <div class="form-group">
         <label for="input-website">{{ entry_website }}</label>
         <div class="col-sm-10">

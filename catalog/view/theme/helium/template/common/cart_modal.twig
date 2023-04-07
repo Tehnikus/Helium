@@ -72,9 +72,7 @@
         </a>
       </p>
     </div>
-  {% else %}
-    <p class="text-center">{{ text_empty }}</p>
-  {% endif %}
+
   {# {% set 'quickcheckout' = 1 %}
   {% if quickcheckout %} #}
     <form>
@@ -84,7 +82,7 @@
           <input placeholder="First name" autocapitalize="words" autocomplete="on" type="text" name="firstname">
           <input placeholder="Last name" autocapitalize="words" autocomplete="on" type="text" name="lastname">
         </div>
-        <input placeholder="Phone" autocapitalize="words" autocomplete="on" type="tel" name="phone">
+        <input placeholder="Phone" autocapitalize="words" autocomplete="on" type="tel" name="telephone">
         <input placeholder="Address" autocapitalize="words" autocomplete="on" type="text" name="address">
         <select name="delivery">
           <option value="1">delivery 1</option>
@@ -98,4 +96,8 @@
       </fieldset>
     </form>
   {# {% endif %} #}
+
+  {% else %}
+    <p class="text-center">{{ text_empty }}</p>
+  {% endif %}
 </div>

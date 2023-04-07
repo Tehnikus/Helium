@@ -17,50 +17,89 @@
         <div class="col-sm-10">{% for customer_group in customer_groups %}
           {% if customer_group.customer_group_id == customer_group_id %}
           <div class="form-control">
-            <label>
-              <input type="radio" name="customer_group_id" value="{{ customer_group.customer_group_id }}" checked="checked" />
-              {{ customer_group.name }}</label>
+            <input type="radio" name="customer_group_id" value="{{ customer_group.customer_group_id }}" checked="checked" />
+            <label>{{ customer_group.name }}</label>
+              
           </div>
           {% else %}
           <div class="form-control">
-            <label>
-              <input type="radio" name="customer_group_id" value="{{ customer_group.customer_group_id }}" />
-              {{ customer_group.name }}</label>
+            <input type="radio" name="customer_group_id" value="{{ customer_group.customer_group_id }}" />
+            <label>{{ customer_group.name }}</label>
+              
           </div>
           {% endif %}
           {% endfor %}</div>
       </div>
+
       <div class="form-group required">
-        <label for="input-firstname">{{ entry_firstname }}</label>
-        <div class="col-sm-10">
-          <input type="text" name="firstname" value="{{ firstname }}" placeholder="{{ entry_firstname }}" id="input-firstname" />
-          {% if error_firstname %}
+        <label for="input-firstname">{{ entry_firstname }}</label>        
+        <input
+          type="text"
+          name="firstname"
+          value="{{ firstname }}"
+          placeholder="{{ entry_firstname }}"
+          id="input-firstname"
+          inputmode="text"
+          enterkeyhint="next"
+          autocapitalize="words"
+          minlength="3" maxlength="32"
+        />
+        {% if error_firstname %}
           <div class="text-danger">{{ error_firstname }}</div>
-          {% endif %} </div>
+        {% endif %}
       </div>
+
       <div class="form-group required">
         <label for="input-lastname">{{ entry_lastname }}</label>
-        <div class="col-sm-10">
-          <input type="text" name="lastname" value="{{ lastname }}" placeholder="{{ entry_lastname }}" id="input-lastname" />
-          {% if error_lastname %}
+        <input
+          type="text"
+          name="lastname"
+          value="{{ lastname }}"
+          placeholder="{{ entry_lastname }}"
+          id="input-lastname"
+          inputmode="text"
+          enterkeyhint="next"
+          autocapitalize="words"
+          minlength="3" maxlength="32"
+        />
+        {% if error_lastname %}
           <div class="text-danger">{{ error_lastname }}</div>
-          {% endif %} </div>
+        {% endif %}
       </div>
+
       <div class="form-group required">
         <label for="input-email">{{ entry_email }}</label>
-        <div class="col-sm-10">
-          <input type="text" name="email" value="{{ email }}" placeholder="{{ entry_email }}" id="input-email" />
-          {% if error_email %}
+        <input
+          type="email"
+          name="email"
+          value="{{ email }}"
+          placeholder="{{ entry_email }}"
+          id="input-email"
+          inputmode="email"
+          enterkeyhint="next"
+        />
+        {% if error_email %}
           <div class="text-danger">{{ error_email }}</div>
-          {% endif %} </div>
+        {% endif %} 
       </div>
+
       <div class="form-group required">
         <label for="input-telephone">{{ entry_telephone }}</label>
-        <div class="col-sm-10">
-          <input type="text" name="telephone" value="{{ telephone }}" placeholder="{{ entry_telephone }}" id="input-telephone" />
-          {% if error_telephone %}
+        <input
+          type="tel"
+          name="telephone"
+          value="{{ telephone }}"
+          placeholder="{{ entry_telephone }}"
+          id="input-telephone"
+          inputmode="tel"
+          enterkeyhint="next"
+          minlength="3" maxlength="32"
+        />
+        {% if error_telephone %}
           <div class="text-danger">{{ error_telephone }}</div>
-          {% endif %} </div>
+        {% endif %} 
+      </div>
+          
       </div>
       {% for custom_field in custom_fields %}
       {% if custom_field.location == 'account' %}
@@ -123,15 +162,17 @@
         <label>{{ custom_field.name }}</label>
         <div class="col-sm-10">
           <div> {% for custom_field_value in custom_field.custom_field_value %}
-            <div class="form-control"> {% if register_custom_field[custom_field.custom_field_id] and custom_field_value.custom_field_value_id == register_custom_field[custom_field.custom_field_id] %}
-              <label>
+            <div class="form-control">
+              {% if register_custom_field[custom_field.custom_field_id] and custom_field_value.custom_field_value_id == register_custom_field[custom_field.custom_field_id] %}
                 <input type="radio" name="custom_field[{{ custom_field.location }}][{{ custom_field.custom_field_id }}]" value="{{ custom_field_value.custom_field_value_id }}" checked="checked" />
-                {{ custom_field_value.name }}</label>
+                <label>{{ custom_field_value.name }}</label>
+                
               {% else %}
-              <label>
                 <input type="radio" name="custom_field[{{ custom_field.location }}][{{ custom_field.custom_field_id }}]" value="{{ custom_field_value.custom_field_value_id }}" />
-                {{ custom_field_value.name }}</label>
-              {% endif %} </div>
+                <label>{{ custom_field_value.name }}</label>
+                
+              {% endif %} 
+            </div>
             {% endfor %} </div>
           {% if error_custom_field[custom_field.custom_field_id] %}
           <div class="text-danger">{{ error_custom_field[custom_field.custom_field_id] }}</div>
@@ -238,10 +279,19 @@
       <legend>{{ text_your_affiliate }}</legend>
       <div class="form-group">
         <label for="input-company">{{ entry_company }}</label>
-        <div class="col-sm-10">
-          <input type="text" name="company" value="{{ company }}" placeholder="{{ entry_company }}" id="input-company" />
-        </div>
-      </div>       
+        <input
+          type="text"
+          name="company"
+          value="{{ company }}"
+          placeholder="{{ entry_company }}"
+          id="input-company"
+          inputmode="text"
+          enterkeyhint="next"
+          autocapitalize="words"
+          minlength="3" maxlength="64"
+          autocomplete="on"
+        />
+      </div>
       
       <div class="form-group">
         <label for="input-website">{{ entry_website }}</label>
@@ -259,28 +309,33 @@
         <label>{{ entry_payment }}</label>
         <div class="col-sm-10">
           <div class="form-control">
-            <label> {% if payment == 'cheque' %}
+            {% if payment == 'cheque' %}
               <input type="radio" name="payment" value="cheque" checked="checked" />
-              {% else %}
+              <label for="payment_{{payment}}">{{ text_cheque }}</label>
+            {% else %}
               <input type="radio" name="payment" value="cheque" />
-              {% endif %}
-              {{ text_cheque }}</label>
+              <label for="payment_{{payment}}">{{ text_cheque }}</label>
+            {% endif %}
+              
           </div>
           <div class="form-control">
-            <label> {% if payment == 'paypal' %}
+            {% if payment == 'paypal' %}
               <input type="radio" name="payment" value="paypal" checked="checked" />
-              {% else %}
+              <label for="payment_{{payment}}">{{ text_paypal }}</label>
+            {% else %}
               <input type="radio" name="payment" value="paypal" />
-              {% endif %}
-              {{ text_paypal }}</label>
+              <label for="payment_{{payment}}">{{ text_paypal }}</label>
+            {% endif %}
+              
           </div>
           <div class="form-control">
-            <label> {% if payment == 'bank' %}
+            {% if payment == 'bank' %}
               <input type="radio" name="payment" value="bank" checked="checked" />
-              {% else %}
+              <label for="payment_{{payment}}">{{ text_bank }}</label>
+            {% else %}
               <input type="radio" name="payment" value="bank" />
-              {% endif %}
-              {{ text_bank }}</label>
+              <label for="payment_{{payment}}">{{ text_bank }}</label>
+            {% endif %}
           </div>
         </div>
       </div>
@@ -402,13 +457,13 @@
           <div class="col-sm-10">
             <div> {% for custom_field_value in custom_field.custom_field_value %}
               <div class="form-control"> {% if register_custom_field[custom_field.custom_field_id] and custom_field_value.custom_field_value_id == register_custom_field[custom_field.custom_field_id] %}
-                <label>
-                  <input type="radio" name="custom_field[{{ custom_field.location }}][{{ custom_field.custom_field_id }}]" value="{{ custom_field_value.custom_field_value_id }}" checked="checked" />
-                  {{ custom_field_value.name }}</label>
+                <input type="radio" name="custom_field[{{ custom_field.location }}][{{ custom_field.custom_field_id }}]" value="{{ custom_field_value.custom_field_value_id }}" checked="checked" />
+                <label>{{ custom_field_value.name }}</label>
+                  
                 {% else %}
-                <label>
                   <input type="radio" name="custom_field[{{ custom_field.location }}][{{ custom_field.custom_field_id }}]" value="{{ custom_field_value.custom_field_value_id }}" />
-                  {{ custom_field_value.name }}</label>
+                  <label>{{ custom_field_value.name }}</label>
+                  
                 {% endif %} </div>
               {% endfor %} </div>
             {% if error_custom_field[custom_field.custom_field_id] %}
@@ -422,13 +477,12 @@
           <div class="col-sm-10">
             <div> {% for custom_field_value in custom_field.custom_field_value %}
               <div class="form-control"> {% if register_custom_field[custom_field.custom_field_id] and custom_field_value.custom_field_value_id == register_custom_field[custom_field.custom_field_id] %}
-                <label>
-                  <input type="checkbox" name="custom_field[{{ custom_field.location }}][{{ custom_field.custom_field_id }}][]" value="{{ custom_field_value.custom_field_value_id }}" checked="checked" />
-                  {{ custom_field_value.name }}</label>
+                <input type="checkbox" name="custom_field[{{ custom_field.location }}][{{ custom_field.custom_field_id }}][]" value="{{ custom_field_value.custom_field_value_id }}" checked="checked" />
+                <label>{{ custom_field_value.name }}</label>
+                  
                 {% else %}
-                <label>
+                <label>{{ custom_field_value.name }}</label>
                   <input type="checkbox" name="custom_field[{{ custom_field.location }}][{{ custom_field.custom_field_id }}][]" value="{{ custom_field_value.custom_field_value_id }}" />
-                  {{ custom_field_value.name }}</label>
                 {% endif %} </div>
               {% endfor %} </div>
             {% if error_custom_field[custom_field.custom_field_id] %}
@@ -533,17 +587,16 @@
     </fieldset>
     {{ captcha }}
     {% if text_agree %}
-    <div class="buttons clearfix">
-      <div class="pull-right">{{ text_agree }}
+      <div class="form-control">
         {% if agree %}
-        <input type="checkbox" name="agree" value="1" checked="checked" />
+          <input type="checkbox" name="agree" value="1" checked="checked" />
+          <label for="agree_with_terms">{{ text_agree }}</label>
         {% else %}
-        <input type="checkbox" name="agree" value="1" />
+          <input type="checkbox" name="agree" value="1" />
+          <label for="agree_with_terms">{{ text_agree }}</label>
         {% endif %}
-        &nbsp;
         <button type="submit" class="primary">{{ button_continue }}</button>
       </div>
-    </div>
     {% else %}
     <div class="buttons clearfix">
       <div class="pull-right">

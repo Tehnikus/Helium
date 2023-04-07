@@ -14,7 +14,18 @@
       <legend>{{ text_your_email }}</legend>
       <div class="form-group required">
         <label for="input-email">{{ entry_email }}</label>
-        <input type="text" name="email" value="{{ email }}" placeholder="{{ entry_email }}" id="input-email" />
+        <input
+          type="email"
+          name="email"
+          value="{{ email }}"
+          placeholder="{{ entry_email }}"
+          id="input-email"
+          inputmode="email"
+          enterkeyhint="next"
+        />
+        {% if error_email %}
+          <div class="text-danger">{{ error_email }}</div>
+        {% endif %} 
       </div>
     </fieldset>
     <div class="buttons clearfix">

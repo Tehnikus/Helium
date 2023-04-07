@@ -3,35 +3,116 @@
     <legend>{{ text_your_address }}</legend>
     <div class="form-group required">
       <label for="input-shipping-firstname">{{ entry_firstname }}</label>
-      <input type="text" name="firstname" value="{{ firstname }}" placeholder="{{ entry_firstname }}" id="input-shipping-firstname" />
+      <input
+        type="text"
+        name="firstname"
+        value="{{ firstname }}"
+        placeholder="{{ entry_firstname }}"
+        id="input-shipping-firstname"
+        inputmode="text"
+        enterkeyhint="next"
+        autocapitalize="words"
+        minlength="3" maxlength="32"
+      />
     </div>
+
     <div class="form-group required">
       <label for="input-shipping-lastname">{{ entry_lastname }}</label>
-      <input type="text" name="lastname" value="{{ lastname }}" placeholder="{{ entry_lastname }}" id="input-shipping-lastname" />
-      </div>
+      <input
+        type="text"
+        name="lastname"
+        value="{{ lastname }}"
+        placeholder="{{ entry_lastname }}"
+        id="input-shipping-lastname"
+        inputmode="text"
+        enterkeyhint="next"
+        autocapitalize="words"
+        minlength="3" maxlength="32"
+      />
+    </div>
+
     <div class="form-group">
       <label for="input-shipping-company">{{ entry_company }}</label>
-      <input type="text" name="company" value="{{ company }}" placeholder="{{ entry_company }}" id="input-shipping-company" />
+      <input
+        type="text"
+        name="company"
+        value="{{ company }}"
+        placeholder="{{ entry_company }}"
+        id="input-shipping-company"
+        inputmode="text"
+        enterkeyhint="next"
+        autocapitalize="words"
+        minlength="3" maxlength="64"
+        autocomplete="on"
+      />
     </div>
+
     <div class="form-group required">
-      <label for="input-shipping-address-1">{{ entry_address_1 }}</label>
-      <input type="text" name="address_1" value="{{ address_1 }}" placeholder="{{ entry_address_1 }}" id="input-shipping-address-1" />
+        <label for="input-shipping-address-1">{{ entry_address_1 }}</label>
+        <input
+          type="text"
+          name="address_1"
+          value="{{ address_1 }}"
+          placeholder="{{ entry_address_1 }}"
+          id="input-shipping-address-1"
+          inputmode="text"
+          enterkeyhint="next"
+          autocapitalize="words"
+          minlength="3" maxlength="32"
+          autocomplete="on"
+        />
     </div>
+
     <div class="form-group">
-      <label for="input-shipping-address-2">{{ entry_address_2 }}</label>
-      <input type="text" name="address_2" value="{{ address_2 }}" placeholder="{{ entry_address_2 }}" id="input-shipping-address-2" />
+        <label for="input-shipping-address-2">{{ entry_address_2 }}</label>
+        <input
+          type="text"
+          name="address_2"
+          value="{{ address_2 }}"
+          placeholder="{{ entry_address_2 }}"
+          id="input-shipping-address-2"
+          inputmode="text"
+          enterkeyhint="next"
+          autocapitalize="words"
+          minlength="3" maxlength="32"
+          autocomplete="on"
+        />
     </div>
+
     <div class="form-group required">
       <label for="input-shipping-city">{{ entry_city }}</label>
-      <input type="text" name="city" value="{{ city }}" placeholder="{{ entry_city }}" id="input-shipping-city" />
+      <input 
+        type="text" 
+        name="city"
+        value="{{ city }}"
+        placeholder="{{ entry_city }}" 
+        id="input-shipping-city"
+        inputmode="text"
+        enterkeyhint="next"
+        autocapitalize="words"
+        minlength="3" maxlength="32"
+        autocomplete="on"
+      />
     </div>
-    <div class="form-group required">
+
+    <div class="form-group">
       <label for="input-shipping-postcode">{{ entry_postcode }}</label>
-      <input type="text" name="postcode" value="{{ postcode }}" placeholder="{{ entry_postcode }}" id="input-shipping-postcode" />
+      <input
+        type="text"
+        name="postcode"
+        value="{{ postcode }}"
+        placeholder="{{ entry_postcode }}"
+        id="input-shipping-postcode"
+        inputmode="numeric"
+        enterkeyhint="next"
+        minlength="3" maxlength="32"
+        autocomplete="on"
+      />
     </div>
+    
     <div class="form-group required">
       <label for="input-shipping-country">{{ entry_country }}</label>
-      <select name="country_id" id="input-shipping-country" class="form-control">
+      <select name="country_id" id="input-shipping-country">
         <option value="">{{ text_select }}</option>
         {% for country in countries %}
           {% if country.country_id == country_id %}
@@ -45,7 +126,7 @@
     <div class="form-group required">
       <label for="input-shipping-zone">{{ entry_zone }}</label>
       <!-- JS added options -->
-      <select name="zone_id" id="input-shipping-zone" class="form-control"></select>
+      <select name="zone_id" id="input-shipping-zone"></select>
     </div>
   </fieldset>
 

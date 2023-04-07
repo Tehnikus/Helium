@@ -6,65 +6,142 @@
   
   <form action="{{ action }}" method="post" enctype="multipart/form-data" >
     <fieldset>
+      
       <div class="form-group required">
-        <label for="input-firstname">{{ entry_firstname }}</label>
-        <input type="text" name="firstname" value="{{ firstname }}" placeholder="{{ entry_firstname }}" id="input-firstname" />
+        <label for="input-firstname">{{ entry_firstname }}</label>        
+        <input
+          type="text"
+          name="firstname"
+          value="{{ firstname }}"
+          placeholder="{{ entry_firstname }}"
+          id="input-firstname"
+          inputmode="text"
+          enterkeyhint="next"
+          autocapitalize="words"
+          minlength="3" maxlength="32"
+        />
         {% if error_firstname %}
-        <div class="text-danger">{{ error_firstname }}</div>
+          <div class="text-danger">{{ error_firstname }}</div>
         {% endif %}
       </div>
+
       <div class="form-group required">
         <label for="input-lastname">{{ entry_lastname }}</label>
-        <input type="text" name="lastname" value="{{ lastname }}" placeholder="{{ entry_lastname }}" id="input-lastname" />
+        <input
+          type="text"
+          name="lastname"
+          value="{{ lastname }}"
+          placeholder="{{ entry_lastname }}"
+          id="input-lastname"
+          inputmode="text"
+          enterkeyhint="next"
+          autocapitalize="words"
+          minlength="3" maxlength="32"
+        />
         {% if error_lastname %}
           <div class="text-danger">{{ error_lastname }}</div>
-        {% endif %} 
+        {% endif %}
       </div>
+
       <div class="form-group">
         <label for="input-company">{{ entry_company }}</label>
-        <input type="text" name="company" value="{{ company }}" placeholder="{{ entry_company }}" id="input-company" />
+        <input
+          type="text"
+          name="company"
+          value="{{ company }}"
+          placeholder="{{ entry_company }}"
+          id="input-company"
+          inputmode="text"
+          enterkeyhint="next"
+          autocapitalize="words"
+          minlength="3" maxlength="64"
+          autocomplete="on"
+        />
       </div>
+
       <div class="form-group required">
-        <label for="input-address-1">{{ entry_address_1 }}</label>
-        <input type="text" name="address_1" value="{{ address_1 }}" placeholder="{{ entry_address_1 }}" id="input-address-1" />
+        <label for="input-address-1">{{ entry_address_2 }}</label>
+        <input
+          type="text"
+          name="address_1"
+          value="{{ address_1 }}"
+          placeholder="{{ entry_address_2 }}"
+          id="input-address-1"
+          inputmode="text"
+          enterkeyhint="next"
+          autocapitalize="words"
+          minlength="3" maxlength="32"
+          autocomplete="on"
+        />
         {% if error_address_1 %}
           <div class="text-danger">{{ error_address_1 }}</div>
         {% endif %}
       </div>
       <div class="form-group">
         <label for="input-address-2">{{ entry_address_2 }}</label>
-        <input type="text" name="address_2" value="{{ address_2 }}" placeholder="{{ entry_address_2 }}" id="input-address-2" />
+        <input
+          type="text"
+          name="address_2"
+          value="{{ address_2 }}"
+          placeholder="{{ entry_address_2 }}"
+          id="input-address-2"
+          inputmode="text"
+          enterkeyhint="next"
+          autocapitalize="words"
+          minlength="3" maxlength="32"
+          autocomplete="on"
+        />
       </div>
       <div class="form-group required">
         <label for="input-city">{{ entry_city }}</label>
-        <input type="text" name="city" value="{{ city }}" placeholder="{{ entry_city }}" id="input-city" />
+        <input 
+          type="text" 
+          name="city"
+          value="{{ city }}"
+          placeholder="{{ entry_city }}" 
+          id="input-city"
+          inputmode="text"
+          enterkeyhint="next"
+          autocapitalize="words"
+          minlength="3" maxlength="32"
+          autocomplete="on"
+        />
         {% if error_city %}
           <div class="text-danger">{{ error_city }}</div>
         {% endif %}
       </div>
-      <div class="form-group required">
+      <div class="form-group">
         <label for="input-postcode">{{ entry_postcode }}</label>
-        <input type="text" name="postcode" value="{{ postcode }}" placeholder="{{ entry_postcode }}" id="input-postcode" />
+        <input
+          type="text"
+          name="postcode"
+          value="{{ postcode }}"
+          placeholder="{{ entry_postcode }}"
+          id="input-postcode"
+          inputmode="numeric"
+          enterkeyhint="next"
+          minlength="3" maxlength="32"
+          autocomplete="on"
+        />
         {% if error_postcode %}
           <div class="text-danger">{{ error_postcode }}</div>
         {% endif %}
       </div>
       <div class="form-group required">
         <label for="input-country">{{ entry_country }}</label>
-        <div class="col-sm-10">
-          <select name="country_id" id="input-country" class="form-control">
-            <option value="">{{ text_select }}</option>
-            {% for country in countries %}
-              {% if country.country_id == country_id %}
-                <option value="{{ country.country_id }}" selected="selected">{{ country.name }}</option>
-              {% else %}
-                <option value="{{ country.country_id }}">{{ country.name }}</option>
-              {% endif %}
-            {% endfor %}
-          </select>
-          {% if error_country %}
-            <div class="text-danger">{{ error_country }}</div>
-          {% endif %} </div>
+        <select name="country_id" id="input-country">
+          <option value="">{{ text_select }}</option>
+          {% for country in countries %}
+            {% if country.country_id == country_id %}
+              <option value="{{ country.country_id }}" selected="selected">{{ country.name }}</option>
+            {% else %}
+              <option value="{{ country.country_id }}">{{ country.name }}</option>
+            {% endif %}
+          {% endfor %}
+        </select>
+        {% if error_country %}
+          <div class="text-danger">{{ error_country }}</div>
+        {% endif %} 
       </div>
       <div class="form-group required">
         <label for="input-zone">{{ entry_zone }}</label>
@@ -94,7 +171,6 @@
       {% endif %}
       {% if custom_field.type == 'radio' %}
         <div class="form-group{% if custom_field.required %} required {% endif %} custom-field" data-sort="{{ custom_field.sort_order }}">
-          <legend>{{ custom_field.name }}</legend>
           {% for custom_field_value in custom_field.custom_field_value %}
             <div class="form-control"> 
               {% if address_custom_field[custom_field.custom_field_id] and custom_field_value.custom_field_value_id == address_custom_field[custom_field.custom_field_id] %}
