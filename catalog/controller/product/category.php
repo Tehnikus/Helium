@@ -452,7 +452,7 @@ class ControllerProductCategory extends Controller {
 			if ($this->config->get('config_review_status')) {
 				$sorts[] = array(
 					'text'  => $this->language->get('text_rating_desc'),
-					'value' => 'rating-DESC',
+					'value' => 'p.rating-DESC',
 					'href'  => $this->url->link('product/category', 'path=' . $this->request->get['path'] . '&sort=p.rating&order=DESC')
 				);
 			}
