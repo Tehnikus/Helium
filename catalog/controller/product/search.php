@@ -487,7 +487,7 @@ class ControllerProductSearch extends Controller {
 			);
 			$product_list = [];
 			foreach ($products as $id) {
-				$product_list[$id['product_id']] = $this->model_catalog_product->getProduct($id['product_id']);
+				$product_list[] = $this->model_catalog_product->getProduct($id['product_id']);
 			}
 			// prepare product list
 			$products = $this->model_catalog_product->prepareProductList($product_list, null);
@@ -559,7 +559,7 @@ class ControllerProductSearch extends Controller {
 				}
 
 				// Ratings
-				if (isset($product['rating']) && $product['rating'] !== null) {
+				if (isset($product['rating']) && $product['rating'] !== false && $product['rating'] > 0) {
 					$rating = array(
 						'attrs' => array('class' => 'rating')
 					);
@@ -606,7 +606,7 @@ class ControllerProductSearch extends Controller {
 					}
 				}
 
-				$result_products[$product['product_id']] = array(
+				$result_products[] = array(
 					'type' => 'article',
 					'attrs' => array('class' => 'miniature'),
 					'nest' => array(

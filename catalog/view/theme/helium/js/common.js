@@ -1247,6 +1247,7 @@ function searchFunction () {
 				if (!!r && Object.keys(r).length !== 0) {
 					response = r;
 					let search_results = createElm(r);
+					// Add special price countdown for search results
 					countdown(search_results);
 	
 					inner_search.innerHTML = '';

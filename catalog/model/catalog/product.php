@@ -200,7 +200,7 @@ class ModelCatalogProduct extends Model {
 				'height'            	=> $query->row['height'],
 				'length_class_id'   	=> $query->row['length_class_id'],
 				'subtract'          	=> $query->row['subtract'],
-				'rating'            	=> round((float)$query->row['rating']),
+				'rating'            	=> ($query->row['rating'] !== null) ? round((float)$query->row['rating'], 2) : false,
 				'reviews'           	=> $query->row['reviews'] ? $query->row['reviews'] : 0,
 				'sold'              	=> $query->row['sold'],
 				'returned'          	=> $query->row['returned'],
@@ -377,7 +377,7 @@ class ModelCatalogProduct extends Model {
 				}
 
 				if ($this->config->get('config_review_status')) {
-					$rating = (int)$product['rating'];
+					$rating = (float)$product['rating'];
 				} else {
 					$rating = false;
 				}
@@ -398,7 +398,7 @@ class ModelCatalogProduct extends Model {
 				}
 				$product_flags = $this->renderFlags($product, $category_scope);
 
-				$data[$product['product_id']] = array(
+				$data[] = array(
 					'product_id'  			=> $product['product_id'],
 					'model'  				=> $product['model'],
 					'ean'  					=> $product['ean'],
@@ -416,7 +416,7 @@ class ModelCatalogProduct extends Model {
 					'discount_quantity'     => $product['discount_quantity'],
 					'tax'         			=> $tax,
 					'minimum'     			=> $product['minimum'] > 0 ? $product['minimum'] : 1,
-					'rating'      			=> $product['rating'],
+					'rating'      			=> $rating,
 					'reviews'               => $product['reviews'],
 					'href'                  => $this->url->link('product/product', 'path=' . $product['main_category'] . '&product_id=' . $product['product_id']),
 					'product_flags'			=> $product_flags,
