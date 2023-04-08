@@ -3,6 +3,59 @@
 
 class ModelCatalogProduct extends Model {
 
+	public	$allowed_sort_data = array(
+		'optgroup_default' => array(
+			'ASC' => array(
+				'p.sort_order',
+			)
+		),
+		'optgroup_popular' => array(
+			'ASC' => array(
+				'p.returned',
+			),
+			'DESC' => array(
+				'p.sold',
+				'p.viewed',
+				'p.date_added',
+				'p.date_modified',
+				'p.rating',
+				'p.points',
+				'p.quantity',
+				'discounts',
+			),
+		),
+		'optgroup_price' => array(
+			'ASC' => array(
+				'p.price',
+				'price_to_weight',
+			),
+			'DESC' => array(
+				'p.price',
+				'price_to_weight',
+			)
+		),
+
+		'optgroup_name' => array(
+			'ASC' => array(
+				'pd.name',
+				'p.model',
+			),
+			'DESC' => array(
+				'pd.name',
+				'p.model',
+			),
+		),
+		'optgroup_weight' => array(
+			'ASC' => array(
+				'p.weight',
+				
+			),
+			'DESC' => array(
+				'p.weight',
+			),
+		)
+	);
+
 	public function updateViewed($product_id) {
 		$this->db->query("
 			UPDATE " . DB_PREFIX . "product 

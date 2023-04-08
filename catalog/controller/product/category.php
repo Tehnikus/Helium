@@ -20,31 +20,59 @@ class ControllerProductCategory extends Controller {
 		'price_to_weight'
 	);
 	// TODO Check if sort corresponds order
-	public	$allowed_sort_data2 = array(
-		'ASC' => array(
-			'pd.name',
-			'p.model',
-			'p.price',
-			'p.weight',
-			'price_to_weight',
-			'p.returned',
-			'p.sort_order',
-		),
-		'DESC' => array(
-			'pd.name',
-			'p.model',
-			'p.quantity',
-			'p.price',
-			'p.weight',
-			'price_to_weight',
-			'p.sold',
-			'p.viewed',
-			'p.date_added',
-			'p.date_modified',
-			'p.rating',
-			'p.points',
-		),
-	);
+	// public	$allowed_sort_data2 = array(
+	// 	'optgroup_default' => array(
+	// 		'ASC' => array(
+	// 			'p.sort_order',
+	// 		)
+	// 	),
+	// 	'optgroup_popular' => array(
+	// 		'ASC' => array(
+	// 			'p.returned',
+	// 		),
+	// 		'DESC' => array(
+	// 			'p.sold',
+	// 			'p.viewed',
+	// 			'p.date_added',
+	// 			'p.date_modified',
+	// 			'p.rating',
+	// 			'p.points',
+	// 			'p.quantity',
+	// 			'discounts',
+	// 		),
+	// 	),
+	// 	'optgroup_price' => array(
+	// 		'ASC' => array(
+	// 			'p.price',
+	// 			'price_to_weight',
+	// 		),
+	// 		'DESC' => array(
+	// 			'p.price',
+	// 			'price_to_weight',
+	// 		)
+	// 	),
+
+	// 	'optgroup_name' => array(
+	// 		'ASC' => array(
+	// 			'pd.name',
+	// 			'p.model',
+	// 		),
+	// 		'DESC' => array(
+	// 			'pd.name',
+	// 			'p.model',
+	// 		),
+	// 	),
+	// 	'optgroup_weight' => array(
+	// 		'ASC' => array(
+	// 			'p.weight',
+				
+	// 		),
+	// 		'DESC' => array(
+				
+	// 			'p.weight',
+	// 		),
+	// 	)
+	// );
 	
 	public $noindex_follow_requests = array(
 		'filter',
@@ -133,6 +161,8 @@ class ControllerProductCategory extends Controller {
 			$limit = $this->config->get('theme_' . $this->config->get('config_theme') . '_product_limit');
 		}
 
+
+
 		// Secure data before it goes to DB
 		$filter_data = array(
 			'filter_category_id' => (int)$category_id,
@@ -153,7 +183,7 @@ class ControllerProductCategory extends Controller {
 			$data['thumb'] 			= $this->model_tool_image->resize($data['image'], $this->config->get('image_category_width'), $this->config->get('image_category_height'));
 			$data['description'] 	= html_entity_decode($data['description'], ENT_QUOTES, 'UTF-8');
 			$data['products'] 		= $this->renderProductList($filter_data);
-			$data['sorts'] 			= $this->renderSorts();
+			// $data['sorts'] 			= $this->renderSorts2();
 
 
 			// Set breadcrumbs for filter values
@@ -230,14 +260,16 @@ class ControllerProductCategory extends Controller {
 			}
 
 			if ($sort !== '' && $sort !== 'p.sort_order') {
-				foreach ($data['sorts'] as $sort_value) {
-					if (
-						(str_contains($sort_value['href'], $sort)) && 
-						(str_contains($sort_value['href'], $order))
-						) {
-						$sort_heading = $sort_value['text'];
-					}
-				}
+				// foreach ($data['sorts'] as $sort_value) {
+				// 	if (
+				// 		(str_contains($sort_value['href'], $sort)) && 
+				// 		(str_contains($sort_value['href'], $order))
+				// 		) {
+				// 		$sort_heading = $sort_value['text'];
+				// 	}
+				// }
+				// p.points-DESC
+				$sort_heading = $this->language->get($sort.'-'.$order);
 				if (isset($sort_heading)) {
 
 					$data['heading_title'] .= ', ' . $sort_heading;
@@ -411,104 +443,144 @@ class ControllerProductCategory extends Controller {
 		return $filter_links;
 	}
 
-
+	// public function renderSorts2() {
+	// 	$sorts = [];
+	// 	foreach ($this->allowed_sort_data2 as $optgroup_name => $optgroup) {
+	// 		$sorts[$optgroup_name] = array(
+	// 			'name' => $this->language->get($optgroup_name),
+	// 			'values' => array(),
+	// 		);
+			
+	// 		foreach ($optgroup as $order2 => $sort2) {
+	// 			foreach ($sort2 as $sort_order2) {
+	// 				if (in_array($sort_order2, $this->allowed_sort_data2[$optgroup_name][$order2])) {
+	// 					$value = $sort_order2.'-'.$order2;
+	// 					$text = $this->language->get($value);
+	// 					$href = $this->url->link('product/category', 'path=' . $this->request->get['path'] . '&sort='.$sort_order2.'&order='.$order2);
+						
+	// 					// DONE Добавить фильтр в сортировку
+	// 					if (isset($this->request->get['filter'])) {
+	// 						$href .= '&filter='.$this->request->get['filter'];
+	// 					}
+						
+	// 					// DONE Добавить пагинацию в сортировку
+	// 					if (isset($this->request->get['page'])) {
+	// 						$href .= '&page='.$this->request->get['page'];
+	// 					}
+		
+	// 					$sorts[$optgroup_name]['values'][] = array(
+	// 						'text'  => $text,
+	// 						'value' => $value,
+	// 						'href'  => $href,
+	// 					);
+	// 					// echo('$_[\''.$value.'\'] = \''.$text.'\';<br/>');
+	// 				}
+	// 			}
+	// 		}
+	// 	}
+	// 	return $sorts;
+	// }
 
 	// Отображение списка сортировок
 	// DONE Добавить условия для фильтров
-	public function renderSorts() {
-		$sorts = array();
-		if (!$sorts) {
-			// DONE Убрать get параметры из сортировки по умолчанию
-			$sorts[] = array(
-				'text'  => $this->language->get('text_default'),
-				'value' => 'p.sort_order-ASC',
-				'href'  => $this->url->link('product/category', 'path=' . $this->request->get['path'])
-			);
+	// public function renderSorts() {
+	// 	// $this->renderSorts2();
+	// 	$sorts = array();
+	// 	if (!$sorts) {
+	// 		// DONE Убрать get параметры из сортировки по умолчанию
+	// 		$sorts[] = array(
+	// 			'text'  => $this->language->get('text_default'),
+	// 			'value' => 'p.sort_order-ASC',
+	// 			'href'  => $this->url->link('product/category', 'path=' . $this->request->get['path'])
+	// 		);
 
-			$sorts[] = array(
-				'text'  => $this->language->get('text_price_asc'),
-				'value' => 'p.price-ASC',
-				'href'  => $this->url->link('product/category', 'path=' . $this->request->get['path'] . '&sort=p.price&order=ASC')
-			);
+	// 		$sorts[] = array(
+	// 			'text'  => $this->language->get('text_price_asc'),
+	// 			'value' => 'p.price-ASC',
+	// 			'href'  => $this->url->link('product/category', 'path=' . $this->request->get['path'] . '&sort=p.price&order=ASC')
+	// 		);
 
-			$sorts[] = array(
-				'text'  => $this->language->get('text_price_desc'),
-				'value' => 'p.price-DESC',
-				'href'  => $this->url->link('product/category', 'path=' . $this->request->get['path'] . '&sort=p.price&order=DESC')
-			);
+	// 		$sorts[] = array(
+	// 			'text'  => $this->language->get('text_price_desc'),
+	// 			'value' => 'p.price-DESC',
+	// 			'href'  => $this->url->link('product/category', 'path=' . $this->request->get['path'] . '&sort=p.price&order=DESC')
+	// 		);
 
-			$sorts[] = array(
-				'text'  => $this->language->get('text_discounts_desc'),
-				'value' => 'discounts-DESC',
-				'href'  => $this->url->link('product/category', 'path=' . $this->request->get['path'] . '&sort=discounts&order=DESC')
-			);
+	// 		$sorts[] = array(
+	// 			'text'  => $this->language->get('text_discounts_desc'),
+	// 			'value' => 'discounts-DESC',
+	// 			'href'  => $this->url->link('product/category', 'path=' . $this->request->get['path'] . '&sort=discounts&order=DESC')
+	// 		);
 
-			$sorts[] = array(
-				'text'  => $this->language->get('text_bestsellers_desc'),
-				'value' => 'p.sold-DESC',
-				'href'  => $this->url->link('product/category', 'path=' . $this->request->get['path'] . '&sort=p.sold&order=DESC')
-			);
+	// 		$sorts[] = array(
+	// 			'text'  => $this->language->get('text_bestsellers_desc'),
+	// 			'value' => 'p.sold-DESC',
+	// 			'href'  => $this->url->link('product/category', 'path=' . $this->request->get['path'] . '&sort=p.sold&order=DESC')
+	// 		);
 
-			if ($this->config->get('config_review_status')) {
-				$sorts[] = array(
-					'text'  => $this->language->get('text_rating_desc'),
-					'value' => 'p.rating-DESC',
-					'href'  => $this->url->link('product/category', 'path=' . $this->request->get['path'] . '&sort=p.rating&order=DESC')
-				);
-			}
+	// 		if ($this->config->get('config_review_status')) {
+	// 			$sorts[] = array(
+	// 				'text'  => $this->language->get('text_rating_desc'),
+	// 				'value' => 'p.rating-DESC',
+	// 				'href'  => $this->url->link('product/category', 'path=' . $this->request->get['path'] . '&sort=p.rating&order=DESC')
+	// 			);
+	// 		}
 
-			$sorts[] = array(
-				'text'  => $this->language->get('text_date_added_desc'),
-				'value' => 'p.date_added-DESC',
-				'href'  => $this->url->link('product/category', 'path=' . $this->request->get['path'] . '&sort=p.date_added&order=DESC')
-			);
+	// 		$sorts[] = array(
+	// 			'text'  => $this->language->get('text_date_added_desc'),
+	// 			'value' => 'p.date_added-DESC',
+	// 			'href'  => $this->url->link('product/category', 'path=' . $this->request->get['path'] . '&sort=p.date_added&order=DESC')
+	// 		);
 			
-			$sorts[] = array(
-				'text'  => $this->language->get('text_views_desc'),
-				'value' => 'p.viewed-DESC',
-				'href'  => $this->url->link('product/category', 'path=' . $this->request->get['path'] . '&sort=p.viewed&order=DESC')
-			);
+	// 		$sorts[] = array(
+	// 			'text'  => $this->language->get('text_views_desc'),
+	// 			'value' => 'p.viewed-DESC',
+	// 			'href'  => $this->url->link('product/category', 'path=' . $this->request->get['path'] . '&sort=p.viewed&order=DESC')
+	// 		);
 
-			$sorts[] = array(
-				'text'  => $this->language->get('text_name_asc'),
-				'value' => 'pd.name-ASC',
-				'href'  => $this->url->link('product/category', 'path=' . $this->request->get['path'] . '&sort=pd.name&order=ASC')
-			);
+	// 		$sorts[] = array(
+	// 			'text'  => $this->language->get('text_name_asc'),
+	// 			'value' => 'pd.name-ASC',
+	// 			'href'  => $this->url->link('product/category', 'path=' . $this->request->get['path'] . '&sort=pd.name&order=ASC')
+	// 		);
 
-			$sorts[] = array(
-				'text'  => $this->language->get('text_name_desc'),
-				'value' => 'pd.name-DESC',
-				'href'  => $this->url->link('product/category', 'path=' . $this->request->get['path'] . '&sort=pd.name&order=DESC')
-			);
+	// 		$sorts[] = array(
+	// 			'text'  => $this->language->get('text_name_desc'),
+	// 			'value' => 'pd.name-DESC',
+	// 			'href'  => $this->url->link('product/category', 'path=' . $this->request->get['path'] . '&sort=pd.name&order=DESC')
+	// 		);
 
 
-			$sorts[] = array(
-				'text'  => $this->language->get('text_model_asc'),
-				'value' => 'p.model-ASC',
-				'href'  => $this->url->link('product/category', 'path=' . $this->request->get['path'] . '&sort=p.model&order=ASC')
-			);
+	// 		$sorts[] = array(
+	// 			'text'  => $this->language->get('text_model_asc'),
+	// 			'value' => 'p.model-ASC',
+	// 			'href'  => $this->url->link('product/category', 'path=' . $this->request->get['path'] . '&sort=p.model&order=ASC')
+	// 		);
 
-			$sorts[] = array(
-				'text'  => $this->language->get('text_model_desc'),
-				'value' => 'p.model-DESC',
-				'href'  => $this->url->link('product/category', 'path=' . $this->request->get['path'] . '&sort=p.model&order=DESC')
-			);
-		}
+	// 		$sorts[] = array(
+	// 			'text'  => $this->language->get('text_model_desc'),
+	// 			'value' => 'p.model-DESC',
+	// 			'href'  => $this->url->link('product/category', 'path=' . $this->request->get['path'] . '&sort=p.model&order=DESC')
+	// 		);
+	// 	}
 
-		// DONE Добавить фильтр в сортировку
-		if (isset($this->request->get['filter'])) {
-			foreach ($sorts as &$sort) {
-				$sort['href'] .= '&filter='.$this->request->get['filter'];
-			}
-		}
-		// DONE Добавить пагинацию в сортировку
-		if (isset($this->request->get['page'])) {
-			foreach ($sorts as &$sort) {
-				$sort['href'] .= '&page='.$this->request->get['page'];
-			}
-		}
-		return $sorts;
-	}
+	// 	// DONE Добавить фильтр в сортировку
+	// 	if (isset($this->request->get['filter'])) {
+	// 		foreach ($sorts as &$sort) {
+	// 			$sort['href'] .= '&filter='.$this->request->get['filter'];
+	// 		}
+	// 	}
+	// 	// DONE Добавить пагинацию в сортировку
+	// 	if (isset($this->request->get['page'])) {
+	// 		foreach ($sorts as &$sort) {
+	// 			$sort['href'] .= '&page='.$this->request->get['page'];
+	// 		}
+	// 	}
+	// 	// foreach ($sorts as $sort) {
+	// 	// 	echo('$_[\''.$sort["value"].'\'] = \''.$sort["text"].'\';<br/>');
+	// 	// }
+	// 	return $sorts;
+	// }
 
 	// Список хлебных крошек
 	// DONE прописать полный путь к категории

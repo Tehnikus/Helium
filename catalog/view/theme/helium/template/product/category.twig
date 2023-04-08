@@ -40,20 +40,25 @@
 
   {% if products %}
     {# {{ sorts | json_encode(constant('JSON_UNESCAPED_UNICODE')) }} #}
-    <div class="row category-sort">
+    {# <div class="row category-sort">
       <div class="form-group">
         <label for="input-sort">{{ text_sort }}</label>
         <select id="input-sort" class="form-control" onchange="location = this.value;">
-        {% for sorts in sorts %}
-          {% if sorts.value == '%s-%s'|format(sort, order) %}
-            <option value="{{ sorts.href }}" selected="selected">{{ sorts.text }}</option>
-          {% else %}
-            <option value="{{ sorts.href }}">{{ sorts.text }}</option>
-          {% endif %}
-        {% endfor %}
+          {% for optgroup in sorts %}
+            
+            <optgroup label="{{ optgroup.name }}">
+              {% for values in optgroup.values %}
+                {% if values.value == '%s-%s'|format(sort, order) %}
+                  <option value="{{ values.href }}" selected="selected">{{ values.text }}</option>
+                {% else %}
+                  <option value="{{ values.href }}">{{ values.text }}</option>
+                {% endif %}
+              {% endfor %}
+            </optgroup>
+          {% endfor %}
         </select>
       </div>
-    </div>
+    </div> #}
 
     {# Список товаров #}
     <div class="product grid"> 

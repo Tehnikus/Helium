@@ -1,5 +1,25 @@
 <div class="module filter mobile_menu" data-block-name="{{ heading_title }}" data-icon="icon-filter" data-order="1">
   <span class="h3">{{ heading_title }}</span>
+    
+      <div class="sort">
+        <label for="input-sort">{{ text_sort }}</label>
+        <select id="input-sort" onchange="location = this.value;">
+          {% for optgroup in sorts %}
+            
+            <optgroup label="{{ optgroup.name }}">
+              {% for values in optgroup.values %}
+                {% if values.value == '%s-%s'|format(sort, order) %}
+                  <option value="{{ values.href }}" selected="selected">{{ values.text }}</option>
+                {% else %}
+                  <option value="{{ values.href }}">{{ values.text }}</option>
+                {% endif %}
+              {% endfor %}
+            </optgroup>
+          {% endfor %}
+        </select>
+        </div>
+
+
     {% for filter_group in filter_groups %} 
       <div id="filter-group_{{ filter_group.filter_group_id }}">
         <span class="h4">{{ filter_group.name }}</span>
