@@ -4,14 +4,14 @@ class ControllerCommonMenu extends Controller {
 		$this->load->language('common/menu');
 
 		// Get cached data
-		$cache_module_name = 'top_menu.'.(int)$this->config->get('config_language_id').'.'.(int)$this->config->get('config_store_id');
-		$data = $this->cache->get($cache_module_name);
+		$cache_name = 'top_menu.'.(int)$this->config->get('config_language_id').'.'.(int)$this->config->get('config_store_id');
+		$data = $this->cache->get($cache_name);
 		if (!$data) {
 			$data = $this->renderTree();
-			$this->cache->set($cache_module_name, $data);
+			$this->cache->set($cache_name, $data);
 		}
 		$output['categories'] = $data;
-
+		
 		// Return
 		return $this->load->view('common/menu', $output);
 	}
@@ -42,13 +42,23 @@ class ControllerCommonMenu extends Controller {
 		);
 
 		$result = $query->rows;
-		$tree = $this->buildTree($result);
+		// print_r($this->buildFlat($result));
+		// $tree = $this->buildTree($result);
+		$tree = $this->buildFlat($result);
 		// print_r($tree);
 		// foreach ($result as $category) {
 		// 	$category['href'] = $this->url->link('product/category', 'path=' . $category['category_id']);
 		// 	$flat[$category['parent_id']][] = $category;
 		// }
 		return $tree;
+	}
+
+	public function buildFlat($elements) {
+		$flat_tree = [];
+		foreach ($elements as $key => $element) {
+			$flat_tree[$element['parent_id']][] = $element;
+		}
+		return $flat_tree;
 	}
 
 	// // Build mutilevel tree from flat array

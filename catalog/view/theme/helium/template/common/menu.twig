@@ -1,32 +1,54 @@
 {% if categories %}
-<button type="button" id="main-menu-trigger" class="primary dropdown-toggle main-menu-trigger" aria-label="{{ text_category }}">
-  <div class="icon nav-icon-1">
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
-  </div>
-  <span class="hidden-md">
-    {{ text_category }}
-  </span>
-</button>
-<div id="main-menu" class="dropdown-menu collapse">
-  <div class="menu-inner">
-    <div class="menu">
-      <ul class="top-level">
-        {% for category_set in categories %}
-          {{ _self.recursiveCategory(category_set) }}
+  <button type="button" id="main-menu-trigger" class="primary dropdown-toggle main-menu-trigger" aria-label="{{ text_category }}">
+    <div class="icon nav-icon-1">
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+    <span class="hidden-md">
+      {{ text_category }}
+    </span>
+  </button>
+  <div id="main-menu" class="dropdown-menu collapse">
+    <div class="menu-inner">
+      <div class="menu">
+        {% for parent, category in categories %}
+          {# {{ category | json_encode(constant('JSON_UNESCAPED_UNICODE')) }} #}
+          <ul data-parent="{{ parent }}">
+            {% for child in category %}
+              <li {% if child.children_count > 0 %} data-category-id="{{ child.category_id }}" {%  endif %}>
+                <a href="{{ child.href }}">{{ child.name }}</a>
+                <span class="product_count">{{child.product_count}}</span>
+              </li>
+            {% endfor %}
+          </ul>
         {% endfor %}
-      </ul>
+      </div>
     </div>
   </div>
-</div>
+
+
+  {# Build recursive nested list #}
+  {# Leave this for now #}
+  {# <div id="main-menu" class="dropdown-menu collapse">
+    <div class="menu-inner">
+      <div class="menu">
+        <ul class="top-level">
+          {% for category_set in categories %}
+            {{ _self.recursiveCategory(category_set) }}
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+  </div> #}
 {% endif %}
+
 
 {# Build categories list recursively #}
 {% macro recursiveCategory(category) %}
@@ -38,5 +60,5 @@
         {% endfor %}
       </ul>
     {% endif %}
-  </li>
+    </li>
 {% endmacro %}

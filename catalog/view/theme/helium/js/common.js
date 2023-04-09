@@ -681,60 +681,97 @@ function accordion(toggler = null, close_all = false) {
 	}
 }
 
+function mainMenu() {
+	// TODO Set tabindex="-1" for all elements except active
+	let main_menu = document.getElementById('main-menu');
+	let categories_with_children = main_menu.querySelectorAll('li[data-category-id]');
+	[].forEach.call(categories_with_children, function(c) {
+		let child_ul = main_menu.querySelector('ul[data-parent="'+ c.dataset.categoryId +'"]');
+		let button_forward = createElm({
+			type: 'button', 
+			attrs: {'class':'menu-forward', 'aria-label': js_lang.openlist },
+			events: {'click': () => {
+				child_ul.classList.add('open');
+				child_ul.inert = false;
+				console.log(child_ul);
+				setTimeout(() => {
+					child_ul.firstChild.focus();
+				}, 500);
+			}}
+		});
+		c.appendChild(button_forward);
+
+	});
+	[].forEach.call(main_menu.querySelectorAll('ul:not([data-parent="0"])'), p => {
+		p.inert = true;
+		let back_text =  main_menu.querySelector('li[data-category-id="'+p.dataset.parent+'"]');
+		let button_back = createElm({
+			type: 'button', 
+			attrs: {'class':'menu-back'},
+			props: {'innerText': back_text ? back_text.querySelector('a').innerText : js_lang.back_to},
+			events: {'click': () => {
+				p.classList.remove('open');
+				p.inert = true;
+			}}
+		});
+		p.insertAdjacentElement('afterbegin', button_back);
+	})
+}
+
 // Main menu function
 // Appends open and close buttons to list of categories
-function mainMenu() {
-	let main_menu = document.getElementById('main-menu');
-	let ul = main_menu.getElementsByClassName('top-level');
+// function mainMenu() {
+// 	let main_menu = document.getElementById('main-menu');
+// 	let ul = main_menu.getElementsByClassName('top-level');
 
-	[].forEach.call(ul, function(e) {
-		renderMenuButtons(e);
-	});
+// 	[].forEach.call(ul, function(e) {
+// 		renderMenuButtons(e);
+// 	});
 
-	function renderMenuButtons(ul) {
-		let nested_uls = ul.querySelectorAll('li > ul');
-		for (const nested_ul in nested_uls) {
-			if (nested_uls.hasOwnProperty(nested_ul)) {
-				const el = nested_uls[nested_ul];
-				// render toggle buttons
-				let inner_text = el.parentElement.querySelector('a').innerText;
-				let open_button = createElm({
-					type: 'button',
-					attrs: {'class': 'menu-toggle', 'aria-label':js_lang.openlist}
-				});
-				let back_button = createElm({
-					type: 'button',
-					attrs: {'class': 'menu-back', 'aria-label':js_lang.back_to+' '+inner_text},
-					props: {'innerText': inner_text}
-				});
+// 	function renderMenuButtons(ul) {
+// 		let nested_uls = ul.querySelectorAll('li > ul');
+// 		for (const nested_ul in nested_uls) {
+// 			if (nested_uls.hasOwnProperty(nested_ul)) {
+// 				const el = nested_uls[nested_ul];
+// 				// render toggle buttons
+// 				let inner_text = el.parentElement.querySelector('a').innerText;
+// 				let open_button = createElm({
+// 					type: 'button',
+// 					attrs: {'class': 'menu-toggle', 'aria-label':js_lang.openlist}
+// 				});
+// 				let back_button = createElm({
+// 					type: 'button',
+// 					attrs: {'class': 'menu-back', 'aria-label':js_lang.back_to+' '+inner_text},
+// 					props: {'innerText': inner_text}
+// 				});
 
 
-				// Toggle visibility and scrolling classes
-				[open_button, back_button].forEach(function(button) {
-					button.addEventListener('click', function() {
-						// remove scrolling ability for other elements than visible one so they do not overlap
-						for (const other_uls in nested_uls) {
-							if (nested_uls.hasOwnProperty(other_uls)) {
-								const element = nested_uls[other_uls];
-								// element.scrollTop = 0;
-								element.classList.remove('scrollable');
-							}
-						}
-						// Then slide into view target ul and add scrolling ability to it
-						['open', 'scrollable'].map(each_class => el.classList.toggle(each_class));
-						// Toggle scrolling ability on back action on parent list element
-						if (!el.classList.contains('open')) {
-							console.log(el.parentElement.parentElement);
-							el.parentElement.parentElement.classList.add('scrollable');
-						}
-					})
-				});
-				el.insertAdjacentElement('beforeBegin', open_button);
-				el.insertAdjacentElement('afterBegin', back_button);
-			}
-		}
-	}
-}
+// 				// Toggle visibility and scrolling classes
+// 				[open_button, back_button].forEach(function(button) {
+// 					button.addEventListener('click', function() {
+// 						// remove scrolling ability for other elements than visible one so they do not overlap
+// 						for (const other_uls in nested_uls) {
+// 							if (nested_uls.hasOwnProperty(other_uls)) {
+// 								const element = nested_uls[other_uls];
+// 								// element.scrollTop = 0;
+// 								element.classList.remove('scrollable');
+// 							}
+// 						}
+// 						// Then slide into view target ul and add scrolling ability to it
+// 						['open', 'scrollable'].map(each_class => el.classList.toggle(each_class));
+// 						// Toggle scrolling ability on back action on parent list element
+// 						if (!el.classList.contains('open')) {
+// 							console.log(el.parentElement.parentElement);
+// 							el.parentElement.parentElement.classList.add('scrollable');
+// 						}
+// 					})
+// 				});
+// 				el.insertAdjacentElement('beforeBegin', open_button);
+// 				el.insertAdjacentElement('afterBegin', back_button);
+// 			}
+// 		}
+// 	}
+// }
 
 // Load more
 // DONE Fix so it works on every pagination, not only product list

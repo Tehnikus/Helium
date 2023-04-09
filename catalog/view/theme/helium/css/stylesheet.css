@@ -370,7 +370,7 @@ span.product-flag.video {
 body > *,
 aside, aside > *,
 img, video,
-button, .button, input, select, textarea, details,.form-group,fieldset,
+button, .button, input, select, textarea, details, .form-group, fieldset, a.button, a.primary,
 #main-menu .menu-inner,
 
 .subcategory,
@@ -448,10 +448,10 @@ blockquote>footer {
 
 
 /* --------- Transitions ------------*/
-button, .button,
+button, .button, a.button, a.primary,
 input,
 textarea {
-	transition:all var(--animation-duration) ease
+	transition: var(--transition);
 }
 /* --------------------------------- */
 
@@ -496,7 +496,7 @@ textarea {
 	background: var(--background-inputs);
 }
 form {display:flex}
-button, .button,
+button, .button, a.button, a.primary,
 input,
 select,
 textarea {
@@ -511,7 +511,7 @@ textarea {
 	line-height: var(--icon-height);
 	
 }
-button, .button,
+button, .button, a.button, a.primary,
 input,
 select,
 textarea:not([rows]) {
@@ -615,7 +615,7 @@ textarea:disabled {
 	cursor:not-allowed;
 	opacity:.5
 }
-::-moz-placeholder {
+/* ::-moz-placeholder {
 	color:#949494;
 	color:var(--form-placeholder)
 }
@@ -630,7 +630,7 @@ textarea:disabled {
 ::placeholder {
 	color:#949494;
 	color:var(--form-placeholder)
-}
+} */
 fieldset {
 	border:2px solid rgba(0,150,191,.67);
 	border:2px solid var(--focus);
@@ -845,14 +845,16 @@ tbody tr:nth-child(2n) button:hover {
 /* --------------------------- */
 
 
-::-moz-selection {
+/* ::-moz-selection {
 	background-color:var(--selection);
 	color:var(--text-bright)
 }
 ::selection {
 	background-color:var(--selection);
 	color:var(--text-bright)
-}
+} */
+
+
 /* details {
 	display:flex;
 	flex-direction:column;
@@ -1343,7 +1345,7 @@ button.menu-back {
 } */
 
 
-#main-menu li {
+/* #main-menu li {
 	display: flex;
 	list-style-type: none;
 }
@@ -1360,22 +1362,15 @@ button.menu-back {
 	background: #fff;
 	width: 300px;
 	padding: 1rem;
-}
-
-/* Forward button */
-#main-menu button.menu-toggle:after {
-    content: "\2BC8";
-}
-/* back button */
-#main-menu button.menu-back:before {
-    content: "\2BC7";
-}
+} */
 
 
 
-#main-menu ul.scrollable {
+
+
+/* #main-menu ul.scrollable {
 	overflow-y: auto;
-}
+} */
 
 /* ul.top-level {
      width: 100%;
@@ -1383,30 +1378,77 @@ button.menu-back {
 	 position: relative;
 } */
 
-ul.inner-level {
-    /* position: absolute; */
-    transform: translateX(100%);
-    /* top: 0;
-    left: 0; */
-    /* overflow: hidden; */
-    transition: var(--transition);
-    /* width: 100%;
-    height: 100%; */
-    background: var(--background-blocks);
+#main-menu .menu {
+	position: relative;
+	overflow: hidden;
+	height: 50vh;
+	scrollbar-gutter: auto;
+	background: #fff;
+	box-shadow: var(--small-shadow);
+	border-radius: var(--radius);
 }
 
-ul.inner-level.open {
-	transform: translateX(0);
+#main-menu ul {
+	/* position: absolute;
+	transform: translateX(100%);
+	top: 0;
+	left: 0;
+	overflow: hidden;
+	width: 100%;
+	height: 100%; */
+	transition: var(--transition);
+	background: #fff;
+	margin: 0;
+	padding: 0;
+	overflow-y: auto;
+	height: 50vh;
 }
-ul.inner-level.closed {
-	transform: translateX(-100%);
+
+#main-menu li {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+	display: grid;
+	grid-template-columns: 300px 40px 40px;
+	align-items: baseline;
 }
 
 #main-menu a {
+	padding: .5rem;
+}
+
+#main-menu ul:not([data-parent="0"]) {
+	position: absolute;
+	top: 0;
+	left: 0;
+	transform: translateX(100%);
+}
+
+#main-menu ul:not([data-parent="0"]).open {
+	transform: translateX(0);
+}
+
+/* Forward button */
+#main-menu button.menu-forward:after {
+    content: "\2BC8";
+}
+/* back button */
+#main-menu button.menu-back:before {
+    content: "\2BC7";
+}
+
+/* ul.inner-level.open {
+	transform: translateX(0);
+}
+ul.inner-level.closed {
+	
+} */
+
+/* #main-menu a {
     flex: 1 1 auto;
     padding: 11px 0;
     max-width: calc(100% - 60px);
-}
+} */
 
 /* #main-menu .menu-inner {
     display: flex;
@@ -1452,54 +1494,7 @@ span.product_count {
 .dropdown-toggle:hover .nav-icon-1 span {
     transform: scale(0.9);
     box-shadow: 0 0 0 1px #333;
-    transition: .4s cubic-bezier(.8, .5, .2, 1.4);
-}
-
-.nav-icon-1 span:nth-child(1) {
-    left: 0;
-    top: 0;
-}
-
-.nav-icon-1 span:nth-child(2) {
-    left: 8px;
-    top: 0;
-}
-
-.nav-icon-1 span:nth-child(3) {
-    right: 0;
-    top: 0;
-}
-
-.nav-icon-1 span:nth-child(4) {
-    left: 0;
-    top: 8px;
-}
-
-.nav-icon-1 span:nth-child(5) {
-    position: absolute;
-    left: 8px;
-    top: 8px;
-}
-
-.nav-icon-1 span:nth-child(6) {
-    right: 0px;
-    top: 8px;
-}
-
-.nav-icon-1 span:nth-child(7) {
-    left: 0px;
-    bottom: 0px;
-}
-
-.nav-icon-1 span:nth-child(8) {
-    position: absolute;
-    left: 8px;
-    bottom: 0px;
-}
-
-.nav-icon-1 span:nth-child(9) {
-    right: 0px;
-    bottom: 0px;
+    /* transition: .4s cubic-bezier(.8, .5, .2, 1.4); */
 }
 
 .nav-icon-1.open {
@@ -1510,30 +1505,25 @@ span.product_count {
 
 .nav-icon-1.open span {
     border-radius: 50%;
-    transition-delay: 300ms;
+    /* transition-delay: 300ms; */
     transition: .5s cubic-bezier(.8, .5, .2, 1.4);
 }
 
-.nav-icon-1.open span:nth-child(2) {
-    left: 4px;
-    top: 4px;
-}
 
-.nav-icon-1.open span:nth-child(4) {
-    left: 4px;
-    top: 12px;
-}
 
-.nav-icon-1.open span:nth-child(6) {
-    right: 4px;
-    top: 4px;
-}
-
-.nav-icon-1.open span:nth-child(8) {
-    left: 12px;
-    bottom: 4px;
-}
-
+.nav-icon-1 span:nth-child(1) {left: 0;top: 0;}
+.nav-icon-1 span:nth-child(2) {left: 8px;top: 0;}
+.nav-icon-1 span:nth-child(3) {right: 0;top: 0;}
+.nav-icon-1 span:nth-child(4) {left: 0;top: 8px;}
+.nav-icon-1 span:nth-child(5) {position: absolute;left: 8px;top: 8px;}
+.nav-icon-1 span:nth-child(6) {right: 0px;top: 8px;}
+.nav-icon-1 span:nth-child(7) {left: 0px;bottom: 0px;}
+.nav-icon-1 span:nth-child(8) {position: absolute;left: 8px;bottom: 0px;}
+.nav-icon-1 span:nth-child(9) {right: 0px;bottom: 0px;}
+.nav-icon-1.open span:nth-child(2) {left: 4px;top: 4px;}
+.nav-icon-1.open span:nth-child(4) {left: 4px;top: 12px;}
+.nav-icon-1.open span:nth-child(6) {right: 4px;top: 4px;}
+.nav-icon-1.open span:nth-child(8) {left: 12px;bottom: 4px;}
 /* ------ end Main menu ------------ */
 
 

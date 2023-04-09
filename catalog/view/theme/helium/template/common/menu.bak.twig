@@ -27,7 +27,7 @@
 </div>
 {% endif %}
 
-{# {% macro recursiveCategory(category) %}
+{% macro recursiveCategory(category) %}
     <a href="{{ category.href }}" title="{{ category.name }}">{{ category.name }}</a>
 
     {% if category.children|length %}
@@ -38,9 +38,9 @@
         {% endfor %}
     </div>
     {% endif %}
-{% endmacro %} #}
+{% endmacro %}
 
-{% macro recursiveCategory(category) %}
+{# {% macro recursiveCategory(category) %}
     <li>
         <a href="{{ category.href }}">{{ category.name }}</a>
         {% if category.children|length %}
@@ -52,7 +52,7 @@
             </ul>
         {% endif %}
     </li>
-{% endmacro %}
+{% endmacro %} #}
 
   {# <div id="main-menu" class="dropdown-menu collapse">
     <div class="menu-inner">
