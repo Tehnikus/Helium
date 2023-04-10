@@ -276,7 +276,7 @@ class ModelCatalogProduct extends Model {
 	public function getProduct($product_id) {
 		// if ($this->config->get('cache_products')) {
 		if (true) {
-			$cache_name = 'product.'.(int)$this->config->get('config_store_id').'.'.(int)$this->config->get('config_language_id').'.'.$product_id;
+			$cache_name = 'product.'.(int)$this->config->get('config_store_id').'.'.(int)$this->config->get('config_language_id').'.'.(int)$product_id;
 			$product = $this->cache->get($cache_name);
 			if ($product) {
 				return $product; 

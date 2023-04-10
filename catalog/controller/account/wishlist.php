@@ -161,6 +161,7 @@ class ControllerAccountWishList extends Controller {
 	{
 		$this->load->model('catalog/product');
 		$this->load->model('tool/image');
+		$this->load->model('account/wishlist');
 		if (!isset($this->session->data['wishlist'])) {
 			$this->session->data['wishlist'] = array();
 		}
@@ -173,7 +174,8 @@ class ControllerAccountWishList extends Controller {
 		}
 
 		foreach ($results as $key => $result) {
-			$product_info = $this->model_catalog_product->getProduct($results[$key]);
+			// $results[$key] = Array ( [customer_id] => 3 [product_id] => 1 [date_added] => 2023-04-08 17:52:26 );
+			$product_info = $this->model_catalog_product->getProduct($result['product_id']);
 
 			if ($product_info) {
 				if ($product_info['image']) {
