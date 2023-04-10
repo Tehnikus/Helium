@@ -56,6 +56,7 @@ class ControllerCommonMenu extends Controller {
 	public function buildFlat($elements) {
 		$flat_tree = [];
 		foreach ($elements as $key => $element) {
+			$element['href'] = $this->url->link('product/category', 'path=' . $element['category_id']);
 			$flat_tree[$element['parent_id']][] = $element;
 		}
 		return $flat_tree;

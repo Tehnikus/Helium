@@ -451,7 +451,7 @@ blockquote>footer {
 button, .button, a.button, a.primary,
 input,
 textarea {
-	transition: var(--transition);
+	transition: background ease-in var(--animation-duration);
 }
 /* --------------------------------- */
 
@@ -1470,61 +1470,26 @@ span.product_count {
     padding: 0 3px;
 	line-height: 25px;
 }
-
-.nav-icon-1 {
-    width: 21px;
-    height: 21px;
-    position: relative;
-    transition: .5s;
-    /* margin: 10px 10px; */
-    cursor: pointer;
-    display: inline-block;
-    margin: 0 10px;
-}
-
-.nav-icon-1 span {
-    width: 5px;
-    height: 5px;
-    background-color: #fff;
-    display: block;
-    border-radius: 50%;
-    position: absolute;
-}
-
-.dropdown-toggle:hover .nav-icon-1 span {
-    transform: scale(0.9);
-    box-shadow: 0 0 0 1px #333;
-    /* transition: .4s cubic-bezier(.8, .5, .2, 1.4); */
-}
-
-.nav-icon-1.open {
-    transform: rotate(180deg);
-    cursor: pointer;
-    transition: .5s cubic-bezier(.8, .5, .2, 1.4);
-}
-
-.nav-icon-1.open span {
-    border-radius: 50%;
-    /* transition-delay: 300ms; */
-    transition: .5s cubic-bezier(.8, .5, .2, 1.4);
-}
-
-
-
-.nav-icon-1 span:nth-child(1) {left: 0;top: 0;}
-.nav-icon-1 span:nth-child(2) {left: 8px;top: 0;}
-.nav-icon-1 span:nth-child(3) {right: 0;top: 0;}
-.nav-icon-1 span:nth-child(4) {left: 0;top: 8px;}
-.nav-icon-1 span:nth-child(5) {position: absolute;left: 8px;top: 8px;}
-.nav-icon-1 span:nth-child(6) {right: 0px;top: 8px;}
-.nav-icon-1 span:nth-child(7) {left: 0px;bottom: 0px;}
-.nav-icon-1 span:nth-child(8) {position: absolute;left: 8px;bottom: 0px;}
-.nav-icon-1 span:nth-child(9) {right: 0px;bottom: 0px;}
-.nav-icon-1.open span:nth-child(2) {left: 4px;top: 4px;}
-.nav-icon-1.open span:nth-child(4) {left: 4px;top: 12px;}
-.nav-icon-1.open span:nth-child(6) {right: 4px;top: 4px;}
-.nav-icon-1.open span:nth-child(8) {left: 12px;bottom: 4px;}
-/* ------ end Main menu ------------ */
+/* Animated main menu icon */
+.menu-icon {width:21px;height:21px;position:relative;transition:.5s;cursor:pointer;display:inline-block;margin:0 10px;}
+.menu-icon span {width:5px;height:5px;background-color:#fff;display:block;border-radius:50%;position:absolute;}
+.dropdown-toggle:hover .menu-icon span {transform:scale(0.9);box-shadow:0 0 0 1px #333;}
+.menu-icon.open {transform:rotate(180deg);cursor:pointer;transition:.5s cubic-bezier(.8, .5, .2, 1.4);}
+.menu-icon.open span {border-radius:50%;transition:.5s cubic-bezier(.8, .5, .2, 1.4);}
+.menu-icon span:nth-child(1) {left:0;top:0;}
+.menu-icon span:nth-child(2) {left:8px;top:0;}
+.menu-icon span:nth-child(3) {right:0;top:0;}
+.menu-icon span:nth-child(4) {left:0;top:8px;}
+.menu-icon span:nth-child(5) {position:absolute;left:8px;top:8px;}
+.menu-icon span:nth-child(6) {right:0px;top:8px;}
+.menu-icon span:nth-child(7) {left:0px;bottom:0px;}
+.menu-icon span:nth-child(8) {position:absolute;left:8px;bottom:0px;}
+.menu-icon span:nth-child(9) {right:0px;bottom:0px;}
+.menu-icon.open span:nth-child(2) {left:4px;top:4px;}
+.menu-icon.open span:nth-child(4) {left:4px;top:12px;}
+.menu-icon.open span:nth-child(6) {right:4px;top:4px;}
+.menu-icon.open span:nth-child(8) {left:12px;bottom:4px;}
+/* ------------ end Main menu ------------ */
 
 
 
