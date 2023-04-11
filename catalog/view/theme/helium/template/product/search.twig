@@ -1,6 +1,6 @@
 {{ header }}
 {% include 'helium/template/common/breadcrumbs.twig' %}
-<main id="product-search">
+<main role="main" id="product-search">
 
   {{ column_left }}
 
@@ -9,7 +9,7 @@
       <label for="input-search">{{ entry_search }}</label>
       <div class="row">
         <div class="col-sm-4">
-          <input type="text" name="search" value="{{ search }}" placeholder="{{ text_keyword }}" id="input-search" />
+          <input role="search" type="text" name="search" value="{{ search }}" placeholder="{{ text_keyword }}" id="input-search" />
         </div>
         <div class="col-sm-3">
           <select name="category_id" class="form-control">

@@ -1,6 +1,6 @@
 {{ header }}
 {% include 'helium/template/common/breadcrumbs.twig' %}
-<main id="blog-article">
+<main role="main" id="blog-article">
   <hgroup>
     {# Заголовок #}
     <h1 class="article-name">{{ heading_title }}</h1>
@@ -40,7 +40,7 @@
   {% if thumb or images %}
     {% include 'helium/template/common/images_gallery.twig' with {thumb:thumb, images:images, class:'article-image'} %}
   {% endif %}
-  <article id="article">
+  <article role="article" id="article">
     {{ description }}
   </article>
 

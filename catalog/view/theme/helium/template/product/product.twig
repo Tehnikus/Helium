@@ -1,6 +1,6 @@
 {{ header }}
 {% include 'helium/template/common/breadcrumbs.twig' %}
-<main id="product">
+<main role="main" id="product">
   {{ json_prices }}
   {{ content_top }}
   <hgroup>
@@ -159,7 +159,7 @@
 
 
 
-  <article class="content">
+  <article role="article" class="content">
     {# Описание товара #}
     {% if description %}
       <span class="h1">{{ tab_description }}</span>

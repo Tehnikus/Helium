@@ -25,14 +25,14 @@
         <span class="h4">{{ filter_group.name }}</span>
         {# Пустое значение для радиокнопок #}
         {% if filter_group.filter_type == 'radio' %}
-          <div class="form-control">
-            <input id="filter_{{ filter.filter_id }}" type="{{ filter_group.filter_type }}" name="filter[]" value="0" checked="checked"/>
+          <div class="form-control" role="radiogroup">
+            <input role="radio" id="filter_{{ filter.filter_id }}" type="{{ filter_group.filter_type }}" name="filter[]" value="0" checked="checked"/>
             <label for="filter_{{ filter.filter_id }}">{{ all }}</label>
           </div>
         {% endif %}
         {% for filter in filter_group.filter %}
           <div class="form-control">
-            <input id="filter_{{ filter.filter_id }}" type="{{ filter_group.filter_type }}" name="filter[]" value="{{ filter.filter_id }}" {% if filter.filter_id in filter_category %}checked="checked"{% endif %}/>
+            <input role="checkbox" id="filter_{{ filter.filter_id }}" type="{{ filter_group.filter_type }}" name="filter[]" value="{{ filter.filter_id }}" {% if filter.filter_id in filter_category %}checked="checked"{% endif %}/>
             <label for="filter_{{ filter.filter_id }}">{{ filter.name }}</label>
           </div>
         {% endfor %}

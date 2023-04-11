@@ -2,7 +2,7 @@
   {% if thumb %}
     <link rel="preload" as="image" href="{{ thumb }}">
     <figure class="image">
-      <a class="thumbnail" href="{{ popup }}" title="{{ heading_title }}">
+      <a role="img" aria-label="{{ heading_title }}" class="thumbnail" href="{{ popup }}" title="{{ heading_title }}">
         <img 
           loading="lazy" 
           src="{{ thumb }}" 
@@ -16,7 +16,7 @@
   {% if images %}
     <div class="scroll-x">
       {% for image in images %}
-        <a class="thumbnail" href="{{ image.popup }}" title="{{ heading_title }}"> 
+        <a role="img" aria-label="{{ heading_title }}" class="thumbnail" href="{{ image.popup }}" title="{{ heading_title }}"> 
           <img 
             loading="lazy" 
             data-large-img="{{ image.thumb }}" 

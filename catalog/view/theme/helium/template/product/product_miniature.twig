@@ -1,6 +1,6 @@
 {# {% cache %} #}
-<article class="miniature"{% if wishlist %} data-wishlist="{{ wishlist }} "{% endif %} {% if compare %} data-compare="{{ compare }} "{% endif %}>
-  <figure class="image" {% if product.special_date_end %}data-special-date-end="{{ product.special_date_end }}"{% endif %}>
+<article role="article" class="miniature"{% if wishlist %} data-wishlist="{{ wishlist }} "{% endif %} {% if compare %} data-compare="{{ compare }} "{% endif %}>
+  <figure role="img" aria-label="{{ product.name }}" class="image" {% if product.special_date_end %}data-special-date-end="{{ product.special_date_end }}"{% endif %}>
     <a title="{{ product.name }}" href="{{ product.href }}">
       <img decoding="async" loading="lazy" src="{{ product.thumb }}" alt="{{ product.name }}" title="{{ product.name }}" width="{{product.width}}" height="{{product.height}}" class="img-responsive" />
     </a>

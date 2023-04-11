@@ -1,5 +1,12 @@
 {% if categories %}
-  <button type="button" id="main-menu-trigger" class="primary dropdown-toggle main-menu-trigger" aria-label="{{ text_category }}">
+  <button 
+    type="button"
+    id="main-menu-trigger"
+    class="primary dropdown-toggle main-menu-trigger"
+    aria-role="menu"
+    aria-haspopup="menu"
+    aria-label="{{ text_category }}"
+  >
     <div class="icon menu-icon">
       <span></span>
       <span></span>
@@ -15,15 +22,15 @@
       {{ text_category }}
     </span>
   </button>
-  <div id="main-menu" class="dropdown-menu collapse">
+  <div id="main-menu" aria-haspopup="menu" class="dropdown-menu collapse">
     <div class="menu-inner">
       <div class="menu">
         {% for parent, category in categories %}
           {# {{ category | json_encode(constant('JSON_UNESCAPED_UNICODE')) }} #}
-          <ul data-parent="{{ parent }}">
+          <ul aria-role="menu" data-parent="{{ parent }}">
             {% for child in category %}
               <li {% if child.children_count > 0 %} data-category-id="{{ child.category_id }}" {%  endif %}>
-                <a href="{{ child.href }}">{{ child.name }}</a>
+                <a role="menuitem" href="{{ child.href }}">{{ child.name }}</a>
                 <span class="product_count">{{child.product_count}}</span>
               </li>
             {% endfor %}

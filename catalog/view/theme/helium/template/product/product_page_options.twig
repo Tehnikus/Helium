@@ -38,8 +38,9 @@
     <h4>{{ option.name }}</h4>
     <div id="input-option_{{ option.product_option_id }}">
       {% for option_value in option.product_option_value %}
-        <div class="form-control">
+        <div class="form-control" role="radiogroup">
           <input 
+            role="radio"
             class="product-option" 
             type="radio" 
             id="product_option_{{option_value.product_option_value_id}}" 

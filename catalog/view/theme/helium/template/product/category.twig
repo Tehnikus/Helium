@@ -10,7 +10,7 @@
 <!-- End Microdata -->
 
 {% include 'helium/template/common/breadcrumbs.twig' %}
-<main id="main">
+<main role="main" id="main">
   <h1 class="uppercase">{{ heading_title }}</h1>
   {% if filter_links %}
   <div class="row popular-links">
@@ -21,7 +21,7 @@
   </div>
   {% endif %}
   {% if description %}
-    <article class="category-description">{{ description }}</article>
+    <article role="article" class="category-description">{{ description }}</article>
   {% endif %}
   {{ content_top }}
   {% if categories %}

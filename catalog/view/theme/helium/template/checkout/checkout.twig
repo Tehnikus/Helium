@@ -1,7 +1,7 @@
 {{ header }}
 {% include 'helium/template/common/breadcrumbs.twig' %}
 
-<main id="checkout-checkout">
+<main role="main" id="checkout-checkout">
   {% if error_warning %}
   <div class="alert danger"><i class="icon-alert"></i> {{ error_warning }}
     <button type="button" class="close" data-dismiss="alert">&times;</button>
@@ -12,58 +12,59 @@
 	<h1>{{ heading_title }}</h1>
 	<div class="panel-group" id="accordion">
 
-    <div class="step">
-      <h4 class="panel-title">{{ text_checkout_option }}</h4>
-      <div class="panel-collapse collapse-login" id="collapse-login">
-        {# JS requested login form #}
-      </div>
+  {# TODO Change all divs to details #}
+  <details aria-labelledby="title_login_or_register">
+    <summary><h4 id="title_login_or_register" class="panel-title">{{ text_checkout_option }}</h4></summary>
+    <div class="content collapse-login" id="collapse-login">
+      {# Login or register form #}
     </div>
+  </details>
     
     {% if not logged and account != 'guest' %}
-      <div class="step">
-        <h4 class="panel-title">{{ text_checkout_account }}</h4>
+      <details aria-labelledby="title_guest_checkout">
+        <summary><h4 id="title_guest_checkout" class="panel-title">{{ text_checkout_account }}</h4></summary>
         <div class="panel-collapse collapse-payment_address collapse-guest collapse-register" id="collapse-payment_address">
           {# payment address #}
         </div>
-      </div>
+      </details>
     {% else %}
-      <div class="step">
-        <h4>{{ text_checkout_payment_address }}</h4>
+      <details aria-labelledby="title_payment_address">
+        <summary><h4 id="title_payment_address">{{ text_checkout_payment_address }}</h4></summary>
         <div class="panel-collapse collapse-payment_address collapse-guest collapse-register" id="collapse-payment_address">
           {# payment address #}
         </div>
-      </div>
+      </details>
     {% endif %}
 
     {% if shipping_required %}
-      <div class="step">
-        <h4>{{ text_checkout_shipping_address }}</h4>
+      <details aria-labelledby="title_shipping_address">
+        <summary><h4 id="title_shipping_address">{{ text_checkout_shipping_address }}</h4></summary>
         <div class="panel-collapse collapse-shipping_address" id="collapse-shipping_address">
           {# Shipping address #}
         </div>
-      </div>
+      </details>
 
-      <div class="step">
-        <h4>{{ text_checkout_shipping_method }}</h4>
+      <details aria-labelledby="title_shipping_method">
+        <summary><h4 id="title_shipping_method">{{ text_checkout_shipping_method }}</h4></summary>
         <div class="panel-collapse collapse-shipping_method" id="collapse-shipping_method">
           {# Shipping method #}
         </div>
-      </div>
+      </details>
     {% endif %}
 
-    <div class="step">
-      <h4>{{ text_checkout_payment_method }}</h4>
+    <details aria-labelledby="title_payment_method">
+      <summary><h4 id="title_payment_method">{{ text_checkout_payment_method }}</h4></summary>
       <div class="panel-collapse collapse-payment_method" id="collapse-payment_method">
         {# Payment method #}
       </div>
-    </div>
+    </details>
 
-    <div class="step">
-      <h4>{{ text_checkout_confirm }}</h4>
+    <details aria-labelledby="title_confirm">
+      <summary><h4 id="title_confirm">{{ text_checkout_confirm }}</h4></summary>
       <div class="panel-collapse collapse-confirm" id="collapse-checkout_confirm">
         {# Payment method #}
       </div>
-    </div>
+    </details>
 	</div>
 </main>
 {{ content_bottom }}
@@ -266,6 +267,14 @@ function handleErrors(result, form_with_errors) {
 	[].forEach.call(document.querySelectorAll('.has-error'), function(el) {
     el.classList.remove('has-error');
 	});
+  // Remove ARIA attributes for previous errors
+	[].forEach.call(document.querySelectorAll('[aria-invalid="true"]'), function(el) {
+    el.removeAttribute('aria-invalid');
+	});
+	[].forEach.call(document.querySelectorAll('[aria-errormessage]'), function(el) {
+    el.removeAttribute('aria-errormessage');
+	});
+
   console.log(result);
   if ('error' in result) {
     let errors_object = result.error;
@@ -277,11 +286,14 @@ function handleErrors(result, form_with_errors) {
         console.log(i, errors_object[i]);
         let error_input = form_with_errors.querySelector('[name='+i+']');
         if (error_input) {
+          // Set ARIA ittributes to invalid fields
+          error_input.setAttribute('aria-invalid', true);
+          error_input.setAttribute('aria-errormessage', 'error_label_'+i);
           let error_input_group = error_input.parentElement.classList.contains('form-group') ? error_input.parentElement : false;
           if (error_input_group) {
             error_input_group.classList.add('has-error');
           }
-          error_input.insertAdjacentHTML('afterend', '<div class="text-danger">' + errors_object[i] + '</div>')
+          error_input.insertAdjacentHTML('afterend', '<div id="error_label_'+i+'" class="text-danger">' + errors_object[i] + '</div>')
         } else {
           console.log('input not found:', 'input name=['+i+']');
         }

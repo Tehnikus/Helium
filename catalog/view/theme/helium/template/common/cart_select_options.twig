@@ -3,7 +3,7 @@
 <div class="row">
   <div class="left-side">
   {% if image %}
-    <figure class="main-image">
+    <figure role="img" aria-label="{{ name }}" class="main-image">
       <img loading="lazy" src="{{ image }}" title="{{ name }}" alt="{{ name }}" />
     </figure>
   {% endif %}
