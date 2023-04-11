@@ -174,8 +174,16 @@ class ControllerAccountWishList extends Controller {
 		}
 
 		foreach ($results as $key => $result) {
+			$product_id = '';
+			if (is_array($result) && isset($result['product_id'])) {
+				$product_id = (int)$result['product_id'];
+			} elseif (is_string($result)) {
+				$product_id = (int)$result;
+			} else {
+				return;
+			}
 			// $results[$key] = Array ( [customer_id] => 3 [product_id] => 1 [date_added] => 2023-04-08 17:52:26 );
-			$product_info = $this->model_catalog_product->getProduct($result['product_id']);
+			$product_info = $this->model_catalog_product->getProduct($product_id);
 
 			if ($product_info) {
 				if ($product_info['image']) {
@@ -216,7 +224,7 @@ class ControllerAccountWishList extends Controller {
 					'remove'     => $this->url->link('account/wishlist', 'remove=' . $product_info['product_id'])
 				);
 			} else {
-				$this->model_account_wishlist->deleteWishlist($result['product_id']);
+				$this->model_account_wishlist->deleteWishlist($product_id);
 			}
 		}
 
