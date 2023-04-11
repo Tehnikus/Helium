@@ -39,9 +39,7 @@ function sendReview(t) {
 	);
 }
 
-function quickorder(form) {
 
-}
 
 // function horizontalScroll(element) {
 // 	element.addEventListener("wheel", (event) => {
@@ -144,6 +142,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	mainMenu();
 	countdown(d);
 
+	// TODO Move this to it's function
 	let pagination = document.querySelector('main ul.pagination');
 	if (!!pagination) {
 		let load_more_btn = createElm({
@@ -553,49 +552,10 @@ function scrollslider() {
   })
 }
 scrollslider();
-// const container = document.querySelector(".container");
-// const content = document.querySelectorAll(".content");
-// const scrollLeft = document.getElementById("scroll-left");
-// const scrollRight = document.getElementById("scroll-right");
-// scrollLeft.addEventListener("click", () => {
-//   let currentContent = document.querySelector(
-//     ".content:not(:first-child):not(:last-child)"
-//   );
-//   if (currentContent) {
-//     currentContent.previousElementSibling.scrollIntoView({
-//       behavior: "smooth",
-//       block: "nearest",
-//       inline: "start",
-//     });
-//   } else {
-//     container.lastElementChild.scrollIntoView({
-//       behavior: "smooth",
-//       block: "nearest",
-//       inline: "start",
-//     });
-//   }
-// });
-// scrollRight.addEventListener("click", () => {
-//   let currentContent = document.querySelector(
-//     ".content:not(:first-child):not(:last-child)"
-//   );
-//   if (currentContent) {
-//     currentContent.nextElementSibling.scrollIntoView({
-//       behavior: "smooth",
-//       block: "nearest",
-//       inline: "start",
-//     });
-//   } else {
-//     container.firstElementChild.scrollIntoView({
-//       behavior: "smooth",
-//       block: "nearest",
-//       inline: "start",
-//     });
-//   }
-// });
+
 
 // Clicks handling
-document.addEventListener('click', function(e){
+document.addEventListener('click', function(e) {
 	/* Agree to Terms */
 	// Кто блядь завернул ссылку с классом в отдельный тег <b>? Рукожопы ебаные.
 	agree_links = document.querySelectorAll('.agree');
@@ -643,14 +603,10 @@ document.addEventListener('click', function(e){
 
 	// Dropdowns
 	// Очень-очень сильное колдунство
-	[].forEach.call(document.getElementsByClassName('dropdown-toggle'), function(el) {
+	[].forEach.call(document.querySelectorAll('.dropdown-toggle, [data-accordion-target]'), function(el) {
 		if (el.contains(e.target) || el == e.target) {
-			if (el.classList.contains('main-menu-trigger')) {
-				accordion(el, false);
-			} else {
-				accordion(el, true);
-			}
-			animated_icon = el.querySelector('.nav-icon-1');
+			accordion(el, true);
+			animated_icon = el.querySelector('.icon');
 			if(!!animated_icon) {
 				animated_icon.classList.toggle('open');
 			}
@@ -658,7 +614,98 @@ document.addEventListener('click', function(e){
 	})
 });
 
+// TODO Add required querySelectors for the rest of accordions
+// DONE Add ARIA attributes for accordions
+// TODO Close all accordions
+// TODO Trap focus inside accordion
+class Accordion {
+	constructor(el) {
+	  this.el = el;
+	  el.ariaExpanded = false;
+	  el.ariaHasPopup = true;
+	//   console.log(el.ariaExpanded, el.ariaHasPopup)
+	  this.summary = el.querySelector('summary');
+	  this.content = el.querySelector('.content');
+  
+	  this.animation = null;
+	  this.isClosing = false;
+	  this.isExpanding = false;
+	  this.summary.addEventListener('click', (e) => this.onClick(e));
+	}
+  
+	onClick(e) {
+	  e.preventDefault();
+	  this.el.style.overflow = 'hidden';
+	  if (this.isClosing || !this.el.open) {
+		this.open();
+	  } else if (this.isExpanding || this.el.open) {
+		this.shrink();
+	  }
+	}
+  
+	shrink() {
+	  this.isClosing = true;
+	  this.el.ariaExpanded = false;
+	  console.log(this.el);
 
+	  const startHeight = `${this.el.offsetHeight}px`;
+	  const endHeight = `${this.summary.offsetHeight}px`;
+	  
+	  if (this.animation) {
+		this.animation.cancel();
+	  }
+	  
+	  // Start a WAAPI animation
+	  this.animation = this.el.animate({
+		height: [startHeight, endHeight]
+	  }, {
+		duration: 400,
+		easing: 'ease-out'
+	  });
+	  
+	  this.animation.onfinish = () => this.onAnimationFinish(false);
+	  this.animation.oncancel = () => this.isClosing = false;
+	}
+  
+	open() {
+	  this.el.style.height = `${this.el.offsetHeight}px`;
+	  this.el.open = true;
+	  window.requestAnimationFrame(() => this.expand());
+	}
+  
+	expand() {
+		this.el.ariaExpanded = true;
+		console.log(this.el);
+	  this.isExpanding = true;
+	  const startHeight = `${this.el.offsetHeight}px`;
+	  const endHeight = `${this.summary.offsetHeight + this.content.offsetHeight}px`;
+	  
+	  if (this.animation) {
+		this.animation.cancel();
+	  }
+	  
+	  this.animation = this.el.animate({
+		height: [startHeight, endHeight]
+	  }, {
+		duration: 400,
+		easing: 'ease-out'
+	  });
+	  this.animation.onfinish = () => this.onAnimationFinish(true);
+	  this.animation.oncancel = () => this.isExpanding = false;
+	}
+  
+	onAnimationFinish(open) {
+	  this.el.open = open;
+	  this.animation = null;
+	  this.isClosing = false;
+	  this.isExpanding = false;
+	  this.el.style.height = this.el.style.overflow = '';
+	}
+  }
+  
+  document.querySelectorAll('details').forEach((el) => {
+	new Accordion(el);
+  });
 
 function accordion(toggler = null, close_all = false) {
 	let target = toggler.parentElement.querySelector('.dropdown-menu') || document.querySelector('[data-openedby="'+toggler.dataset.target+'"]') || toggler.href.split('#')[1];
@@ -681,37 +728,53 @@ function accordion(toggler = null, close_all = false) {
 	}
 }
 
+// TODO Add aria attributes to menu items
 function mainMenu() {
 	// TODO Set tabindex="-1" for all elements except active
 	let main_menu = document.getElementById('main-menu');
 	let categories_with_children = main_menu.querySelectorAll('li[data-category-id]');
 	[].forEach.call(categories_with_children, function(c) {
 		let child_ul = main_menu.querySelector('ul[data-parent="'+ c.dataset.categoryId +'"]');
+		child_ul.setAttribute('aria-expanded', false);
 		let button_forward = createElm({
 			type: 'button', 
-			attrs: {'class':'menu-forward', 'aria-label': js_lang.openlist },
+			attrs: {'class':'menu-forward', 'aria-label': js_lang.openlist, 'aria-haspopup': 'menu' },
 			events: {'click': () => {
 				child_ul.classList.add('open');
+				// Set opened child menu focusable
 				child_ul.inert = false;
-				console.log(child_ul);
+				// Set parent menu unfocusable
+				c.parentElement.inert = true;
+				// c.setAttribute('tabindex', '-1');
+				child_ul.setAttribute('aria-expanded', true);
+				
+				console.log(c.parentElement);
 				setTimeout(() => {
 					child_ul.firstChild.focus();
-				}, 500);
+				}, 400);
 			}}
 		});
 		c.appendChild(button_forward);
-
 	});
+	// Process all child menus
 	[].forEach.call(main_menu.querySelectorAll('ul:not([data-parent="0"])'), p => {
+		// Set child menus unfocusable on page load
 		p.inert = true;
-		let back_text =  main_menu.querySelector('li[data-category-id="'+p.dataset.parent+'"]');
+		let parent_menu = main_menu.querySelector('li[data-category-id="'+p.dataset.parent+'"]');
 		let button_back = createElm({
 			type: 'button', 
 			attrs: {'class':'menu-back'},
-			props: {'innerText': back_text ? back_text.querySelector('a').innerText : js_lang.back_to},
+			props: {'innerText': parent_menu ? parent_menu.querySelector('a').innerText : js_lang.back_to},
 			events: {'click': () => {
 				p.classList.remove('open');
 				p.inert = true;
+				parent_menu.parentElement.inert = false;
+				console.log(parent_menu.parentElement);
+				p.setAttribute('aria-expanded', false);
+				setTimeout(() => {
+					parent_menu.querySelector('a').focus();
+				}, 400);
+
 			}}
 		});
 		p.insertAdjacentElement('afterbegin', button_back);
@@ -1183,6 +1246,7 @@ let mwindow = {
 		}
 		if (t == 'toast') {
 			modal.style.cssText = 'position:fixed;top:20px;right:20px;z-index:100';
+			modal.setAttribute('role', 'alertdialog');
 			let alltoasts = document.getElementsByClassName('toast');
 			// Find last toast and set top position underneath previous
 			if (typeof(alltoasts[alltoasts.length - 1]) !== 'undefined') {
@@ -1210,6 +1274,7 @@ let mwindow = {
 		function recalcPositions() {
 			let alltoasts = document.getElementsByClassName('toast');
 			if (typeof(alltoasts) !== 'undefined') {
+				// TODO Change for []
 				Array.prototype.forEach.call(alltoasts, function(el, key) {
 					if (key > 0) {
 						el.style.top = alltoasts[key - 1].offsetHeight + alltoasts[key - 1].offsetTop + 10 + 'px';
@@ -1237,7 +1302,8 @@ function countdown(element) {
 			for (const key in t) {
 				let time = createElm({
 					attrs: {
-						class:'time ' + key
+						class:'time ' + key,
+						'role': 'timer'
 					},
 					nest: {
 						1: {type:'span', attrs:{class:'span_'+key}, props:{'innerText': t[key]}},
@@ -1268,14 +1334,15 @@ function countdown(element) {
 		return t
 	}
 }
-
+// TODO Maybe make this as a separate class?
 let timeout = null;
 function searchFunction () {
 	clearTimeout(timeout);
-	search_input = document.getElementById('search-input');
+	let search_input = document.getElementById('search-input');
+	let inner_search = document.getElementById('search-results');
+	let search_input_group = document.getElementById('search');
 	let data = search_input.value;
 	let url = 'index.php?route=product/search/find';
-	let inner_search = document.getElementById('search-results');
 	let response;
 	timeout = setTimeout(function () {
 		console.log(data);
@@ -1299,11 +1366,17 @@ function searchFunction () {
 	if (data.length < 1) {
 		inner_search.classList.remove('some-results');
 	}
-	document.addEventListener('click', function(e){
-		if ((e.target !== search_input) && (inner_search.contains(e.target) == false)) {
-			inner_search.classList.remove('some-results');
-		}
+	// Add event listeners
+	// If click or focus outside search results or search input
+	// Then close search
+	['click', 'focusin'].forEach(h => {
+		document.addEventListener(h, function(e){
+			if ((search_input_group.contains(e.target) == false) && (inner_search.contains(e.target) == false)) {
+				inner_search.classList.remove('some-results');
+			}
+		});
 	});
+
 	search_input.addEventListener('focusin', function(){
 		if (typeof(response) == 'object' && Object.keys(response).length !== 0) {
 			inner_search.classList.add('some-results');
