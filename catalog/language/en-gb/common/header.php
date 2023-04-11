@@ -32,6 +32,6 @@ $_['text_hours']                    = 'hours';
 $_['text_mins']                     = 'mins';
 $_['text_secs']                     = 'secs';
 $_['text_close']                    = 'Close';
-$_['text_openlist']                 = 'Open list';
+$_['text_openlist']                 = 'Open subcategories list';
 $_['text_back_to']                  = 'Back to list';       
 
