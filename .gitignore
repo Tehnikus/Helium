@@ -14,3 +14,5 @@ image/*.*
 *.cpuprofile
 .vscode/extensions.json
 .vscode/settings.json
+catalog/view/theme/helium/js/slider.html
+
