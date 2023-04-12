@@ -170,7 +170,6 @@ class ControllerCommonCart extends Controller {
 			$product = $this->model_catalog_product->getProduct($product_id);
 			$data = array();
 			// JSON object to calculate product price when option is selected or quantity discounts present
-			$data['json_prices'][$product_id] = array();
 
 			$data['product_id'] = $product_id;
 			$data['name'] = $product['name'];
@@ -185,7 +184,6 @@ class ControllerCommonCart extends Controller {
 			// Prices
 			if ($this->customer->isLogged() || !$this->config->get('config_customer_price')) {
 				$data['price'] = $this->currency->format($this->tax->calculate($product['price'], $product['tax_class_id'], $this->config->get('config_tax')), $this->session->data['currency']);
-				$data['json_prices'][$product_id]['base_price'] = (float)$product['price'];
 			} else {
 				$data['price'] = false;
 			}
@@ -193,7 +191,6 @@ class ControllerCommonCart extends Controller {
 			// Special prices
 			if (!is_null($product['special']) && (float)$product['special'] >= 0) {
 				$data['special'] = $this->currency->format($this->tax->calculate($product['special'], $product['tax_class_id'], $this->config->get('config_tax')), $this->session->data['currency']);
-				$data['json_prices'][$product_id]['base_price'] = (float)$product['special'];
 				$tax_price = (float)$product['special'];
 			} else {
 				$data['special'] = false;
@@ -215,12 +212,6 @@ class ControllerCommonCart extends Controller {
 					'quantity' => $discount['quantity'],
 					'price'    => $this->currency->format($this->tax->calculate($discount['price'], $product['tax_class_id'], $this->config->get('config_tax')), $this->session->data['currency'])
 				);
-
-				// JSON quantity discount prices
-				$data[$product_id]['discounts']['json_prices'][] = array(
-					'quantity' 			=> (int)$discount['quantity'],
-					'discount_price' 	=> (float)$discount['price']
-				);
 			}
 
 			if ($product['minimum']) {
@@ -231,7 +222,8 @@ class ControllerCommonCart extends Controller {
 
 			// Options
 			$data['options'] = array();
-			foreach ($this->model_catalog_product->getProductOptions($product_id) as $option) {
+			$options = $this->model_catalog_product->getProductOptions($product_id);
+			foreach ($options as $option) {
 				$product_option_value_data = array();
 
 				foreach ($option['product_option_value'] as $option_value) {
@@ -260,14 +252,6 @@ class ControllerCommonCart extends Controller {
 							'price_prefix'            => $option_value['price_prefix'],
 							'default_option'		  => $option_value['default_option']
 						);
-
-						// JSON option prices
-						if ($price_value) {
-							$data['json_prices'][$product_id]['options'][] = array(
-								'option_id' 		=> (int)$option_value['option_value_id'],
-								'option_price' 		=> $option_value['price_prefix'].$price_value,
-							);
-						}
 					}
 				}
 
@@ -282,11 +266,37 @@ class ControllerCommonCart extends Controller {
 					'default_option_isset' => $option['default_option_isset']
 				);
 			}
-			$data['json_prices'] = (json_encode($data['json_prices']));
+
+			$json_prices = array();
+			// $json_prices['product_id_'.$product_id] = array();
+			if ($this->customer->isLogged() || !$this->config->get('config_customer_price')) {
+				$json_prices['product_id_'.$product_id]['base_price'] = round((float)$product['price'], 2);
+			}
+			if (!is_null($product['special']) && (float)$product['special'] >= 0) {
+				$json_prices['product_id_'.$product_id]['base_price'] = round((float)$product['special'], 2);
+			}
+			foreach ($discounts as $discount) {
+				$json_prices['product_id_'.$product_id]['discounts'][] = array(
+					'quantity' 			=> (int)$discount['quantity'],
+					'discount_price' 	=> round((float)$discount['price'], 2)
+				);
+			}
+			foreach ($options as $option) {
+				foreach ($option['product_option_value'] as $option_value) {
+					if ($option_value['price'] > 0) {
+						$json_prices['product_id_'.$product_id]['options'][] = array(
+							'option_id' 		=> (int)$option_value['option_value_id'],
+							'option_price' 		=> $option_value['price_prefix'].round((float)$option_value['price'], 2),
+						);
+					}
+				}
+			}
+			$data['json_prices'] = json_encode($json_prices);
 
 			echo($this->load->view('common/cart_select_options', $data));
 		} else {
 			echo('product ID not set');
+			return;
 		}
 	}
 }
