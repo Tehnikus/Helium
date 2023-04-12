@@ -2,6 +2,7 @@
 class ControllerCommonCart extends Controller {
 	public function displayCart() {
 		$this->load->language('common/cart');
+		$this->load->language('product/product');
 
 		// Totals
 		$this->load->model('setting/extension');
@@ -144,6 +145,7 @@ class ControllerCommonCart extends Controller {
 	// Отображение корзины в Header
 	public function index() {
 		$this->load->language('common/cart');
+		$this->load->language('product/product');
 		if ($this->cart->countProducts() !== null && $this->cart->countProducts() > 0) {
 			$data['product_count'] = $this->cart->countProducts();
 			$data['total_cart'] = $this->currency->format($this->cart->getTotal(), $this->session->data['currency']);
@@ -165,7 +167,8 @@ class ControllerCommonCart extends Controller {
 			$this->load->model('catalog/product');
 			$this->load->model('tool/image');
 			$this->load->language('common/cart');
-
+			$this->load->language('product/product');
+			
 			$product_id = (int)$this->request->post['product_id'];
 			$product = $this->model_catalog_product->getProduct($product_id);
 			$data = array();

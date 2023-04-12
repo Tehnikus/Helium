@@ -10,13 +10,14 @@
         name="option[{{ option.product_option_id }}]" 
         class="form-control product-option"
         onchange="animatePrice(this[this.selectedIndex])"
-        >
+      >
         <option value="">{{ text_select }}</option>
         {% for option_value in option.product_option_value %}
           <option 
             {# class="" #}
             value="{{ option_value.product_option_value_id }}" 
             data-base-price="{{ base_price }}"
+            data-product-id="{{ product_id }}"
             {% if option_value.price_value %}
               data-option-price="{{ option_value.price_value }}"
             {% endif %}
@@ -45,6 +46,7 @@
             type="radio" 
             id="product_option_{{option_value.product_option_value_id}}" 
             data-base-price="{{ base_price }}"
+            data-product-id="{{ product_id }}"
             oninput="animatePrice(this)"
             {% if option_value.price_value %}
               data-option-price="({{ option_value.price_value }})"
@@ -88,8 +90,9 @@
             class="product-option" 
             id="product_option_{{option_value.product_option_value_id}}" 
             type="checkbox" 
-            oninput="animatePrice(this)"
             data-base-price="{{ base_price }}"
+            data-product-id="{{ product_id }}"
+            oninput="animatePrice(this)"
             {% if option_value.price_value %}
               data-option-price="({{ option_value.price_value }})"
             {% endif %}

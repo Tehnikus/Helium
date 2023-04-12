@@ -1,7 +1,6 @@
 {{ header }}
 {% include 'helium/template/common/breadcrumbs.twig' %}
 <main role="main" id="product">
-  {{ json_prices }}
   {{ content_top }}
   <hgroup>
     {# Заголовок #}
@@ -69,7 +68,7 @@
               <span id="js_product_id_{{ product_id }}" class="price-regular">{{ text_price }} {{ price }}</span>
             {% else %}
               <span  class="price-old">{{ price }}</span>
-              <span id="js_product_id_{{ pr0duct_id }}" class="price-new" >{{ special }}</span>
+              <span id="js_product_id_{{ product_id }}" class="price-new" >{{ special }}</span>
             {% endif %}
           </p>
 
@@ -82,14 +81,14 @@
           {% endif %}
 
           {% if discounts %}
-            <div class="flex wrap">
             {% for discount in discounts %}
-              <p class="flex justify-between flex-1-0-100" data-discount-date-end="{{ discount.discount_date_end }}">
-                <span>{{ discount.quantity }}{{ text_discount }}</span>
+            <div class="quantity_discounts">
+              <span class="discount">
+                {{ discount.quantity }}{{ text_discount }}
                 <span class="price-new">{{ discount.price }}</span>
-              </p>
-            {% endfor %}
+              </span>
             </div>
+            {% endfor %}
           {% endif %}
         </div>
       {% endif %}
@@ -118,12 +117,14 @@
       <div class="form-group">
         <label for="input-quantity">{{ entry_qty }}</label>
         <input 
-          type="number" 
-          name="quantity" 
-          value="{{ minimum }}" 
-          size="2" 
-          id="input-quantity js_input_quantity" 
-          class="form-control" 
+          type="number"
+          name="quantity"
+          value="{{ minimum }}"
+          size="2"
+          id="input-quantity js_input_quantity"
+          class="form-control"
+          data-product-id="{{ product_id }}"
+          data-base-price="{{ price_value }}"
           oninput="animatePrice(this)"
         />
         <input type="hidden" name="product_id" value="{{ product_id }}" />

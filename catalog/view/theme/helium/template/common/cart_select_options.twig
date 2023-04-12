@@ -1,5 +1,4 @@
 <h1 class="product-name">{{ name }}</h1>
-{{ json_prices }}
 <div class="row">
   <div class="left-side">
   {% if image %}
@@ -44,9 +43,15 @@
 
         {% if discounts %}
           {% for discount in discounts %}
-            <span class="discount">{{ discount.quantity }}{{ text_discount }}{{ discount.price }}</span>
+          <div class="quantity_discounts">
+            <span class="discount">
+              {{ discount.quantity }}{{ text_discount }}
+              <span class="price-new">{{ discount.price }}</span>
+            </span>
+          </div>
           {% endfor %}
         {% endif %}
+        
       </div>
     {% endif %}
       <div class="btn-group">
