@@ -1,4 +1,5 @@
   <div class="flex flex-column">
+    <fieldset>
     <h2>{{ text_new_customer }}</h2>
     <p>{{ text_checkout }}</p>
     <div class="form-control">
@@ -23,8 +24,10 @@
     {% endif %}
     <p>{{ text_register_account }}</p>
     <button type="button" id="button-account" class="primary">{{ button_continue }}</button>
+    </fieldset>
   </div>
   <div class="flex flex-column">
+    <fieldset>
     <h2>{{ text_returning_customer }}</h2>
     <p>{{ text_i_am_returning_customer }}</p>
     <div class="form-group">
@@ -37,4 +40,5 @@
     </div>
       <button type="button" id="button-login" class="primary">{{ button_login }}</button>
       <a class="button" href="{{ forgotten }}">{{ text_forgotten }}</a>
+      </fieldset>
   </div>

@@ -235,13 +235,20 @@ async function saveForm(saved_form_id) {
 
 // Universal request form method
 // @method_name is the name of php file to be requested
-// parent element containing collapse must have id matching ('collapse-'+method_name)
+// parent element containing collapse must have class matching ('collapse-'+method_name)
 function getForm(method_name) {
   fetch('index.php?route=checkout/'+method_name,{method: "POST"})
   .then((r) => {return r.text();})
   .then((body) => {
     let step = document.querySelector('.collapse-'+method_name)
     step.innerHTML = body;
+    let details = step.closest('details');
+    if (details.Accordion) {
+      details.Accordion.open();
+      console.log('true');
+    } else {
+      details.open;
+    }
     let country_select = step.querySelector('[name="country_id"]');
     let zone_select = step.querySelector('[name="zone_id"]');
     if (!!country_select && !!zone_select) {

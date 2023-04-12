@@ -1,5 +1,5 @@
 <h1 class="product-name">{{ name }}</h1>
-<div class="row">
+<div class="row" data-product-id="{{ product_id }}" data-json-prices={{json_prices}}>
   <div class="left-side">
   {% if image %}
     <figure role="img" aria-label="{{ name }}" class="main-image">
@@ -13,24 +13,26 @@
       {% endif %}
       <div class="form-group">
         <label for="input-quantity">{{ entry_qty }}</label>
+
         <input 
-          type="number" 
-          name="quantity" 
-          value="{{ minimum }}" 
+          type="number"
+          name="quantity"
+          value="{{ minimum }}"
+          min="{{ minimum }}"
           size="2" 
           id="input-quantity" 
           class="form-control" 
-          oninput="animatePrice(this)"
+          oninput="animatePrice()"
         />
         <input type="hidden" name="product_id" value="{{ product_id }}" />
       </div>
       {% if price %}
       <div class="prices">
         {% if not special %}
-          <span class="price-regular">{{ text_price }} {{ price }}</span>
+          <span id="js_product_id_{{ product_id }}" class="price-regular">{{ text_price }} {{ price }}</>
         {% else %}
           <span class="price-old">{{ price }}</span>
-          <span class="price-special">{{ special }}</span>
+          <span id="js_product_id_{{ product_id }}" class="price-special">{{ special }}</span>
         {% endif %}
 
         {% if tax %}
@@ -46,7 +48,7 @@
           <div class="quantity_discounts">
             <span class="discount">
               {{ discount.quantity }}{{ text_discount }}
-              <span class="price-new">{{ discount.price }}</span>
+              <span data-quantity="{{ discount.quantity }}" class="price-new">{{ discount.price }}</span>
             </span>
           </div>
           {% endfor %}

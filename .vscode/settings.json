@@ -1,4 +1,5 @@
 {
     "svg.preview.background": "transparent",
-    "php.version": "v8.1"
+    "php.version": "v8.1",
+    "editor.linkedEditing": true
 }

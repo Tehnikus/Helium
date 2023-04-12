@@ -17,8 +17,11 @@
   <link rel="stylesheet preload" as="style" href="catalog/view/theme/helium/css/stylesheet.css" media="screen" />
   <link rel="stylesheet preload" as="style" href="catalog/view/theme/helium/css/common.css" media="screen" />
   <link rel="stylesheet preload" as="style" href="catalog/view/theme/helium/css/fontello.css" media="screen" />
-  <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
-  <link rel="preconnect" href="https://fonts.googleapis.com"crossorigin>
+  {# <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin> #}
+  {# <link rel="preconnect" href="https://fonts.googleapis.com"crossorigin> #}
+  <link rel='preconnect' href='https://fonts.gstatic.com' crossorigin>
+  <link rel='preload' as='style' href='https://fonts.googleapis.com/css2?family=Roboto|Roboto+Condensed:wght@500&display=swap'>
+  <link rel='stylesheet' href='https://fonts.googleapis.com/css2?family=Roboto|Roboto+Condensed:wght@500&display=swap'>
   {% if logo %}
   <link rel="preload" as="image" href="{{ logo }}">
   {% endif %}
