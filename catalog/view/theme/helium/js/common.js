@@ -142,6 +142,19 @@ document.addEventListener('DOMContentLoaded', function() {
 	mainMenu();
 	countdown(d);
 
+	document.onkeydown = function(evt) {
+		evt = evt || window.event;
+		var isEscape = false;
+		if ("key" in evt) {
+			isEscape = (evt.key === "Escape" || evt.key === "Esc");
+		} else {
+			isEscape = (evt.keyCode === 27);
+		}
+		if (isEscape) {
+			Accordion.closeAllAccordions();
+		}
+	};
+
 	// TODO Move this to it's function
 	let pagination = document.querySelector('main ul.pagination');
 	if (!!pagination) {
@@ -325,8 +338,24 @@ var cart = {
 					var url = 'index.php?route=common/cart/displayAdditionalModal';
 					var data = 'product_id=' + product_id;
 					ajax(url, data, function(response) {
-						dialog.create('<span class="h3">'+options+'</span>'+response);
-					},null,null,null,'POST','text',true);
+						console.log(response);
+						dialog.create('<span class="h3">'+options+'</span>'+response.data);
+						// if ('script' in response) {
+							// let new_script = document.createElement("script");
+							// new_script.type = 'application/ld+json';
+							// new_script.text = response.script;
+							// console.log(new_script);
+							// document.head.appendChild(new_script);
+							// eval(response.script);
+
+
+							// myScript.addEventListener("load", scriptLoaded, false);
+
+							// function scriptLoaded() {
+							// 	console.log("Script is ready to rock and roll!");
+							// }
+						// }
+					},null,null,null,'POST','json',true);
 				}
 			},
 			null,null,null,'POST','JSON',true
@@ -620,92 +649,107 @@ document.addEventListener('click', function(e) {
 // TODO Trap focus inside accordion
 class Accordion {
 	constructor(el) {
-	  this.el = el;
-	  el.ariaExpanded = false;
-	  el.ariaHasPopup = true;
-	//   console.log(el.ariaExpanded, el.ariaHasPopup)
-	  this.summary = el.querySelector('summary');
-	  this.content = el.querySelector('.content');
-  
-	  this.animation = null;
-	  this.isClosing = false;
-	  this.isExpanding = false;
-	  this.summary.addEventListener('click', (e) => this.onClick(e));
-	}
-  
-	onClick(e) {
-	  e.preventDefault();
-	  this.el.style.overflow = 'hidden';
-	  if (this.isClosing || !this.el.open) {
-		this.open();
-	  } else if (this.isExpanding || this.el.open) {
-		this.shrink();
-	  }
-	}
-  
-	shrink() {
-	  this.isClosing = true;
-	  this.el.ariaExpanded = false;
-	  console.log(this.el);
+		this.el = el;
+		el.ariaExpanded = false;
+		el.ariaHasPopup = true;
+		el.Accordion = this;
+		this.summary = el.querySelector('summary') || document.getElementById(el.dataset.accordionTarget);
+		let content = el.querySelector('.content') || document.getElementById(el.dataset.accordionTarget) || el.nextElementSibling;
+		this.content = content;
+		  console.log(this.content);
 
-	  const startHeight = `${this.el.offsetHeight}px`;
-	  const endHeight = `${this.summary.offsetHeight}px`;
-	  
-	  if (this.animation) {
-		this.animation.cancel();
-	  }
-	  
-	  // Start a WAAPI animation
-	  this.animation = this.el.animate({
-		height: [startHeight, endHeight]
-	  }, {
-		duration: 400,
-		easing: 'ease-out'
-	  });
-	  
-	  this.animation.onfinish = () => this.onAnimationFinish(false);
-	  this.animation.oncancel = () => this.isClosing = false;
+		this.animation = null;
+		this.isClosing = false;
+		this.isExpanding = false;
+		this.summary.addEventListener('click', (e) => this.onClick(e));
 	}
-  
+
+	onClick(e) {
+		e.preventDefault();
+		this.el.style.overflow = 'hidden';
+		if (this.isClosing || !this.el.open) {
+			this.open();
+		} else if (this.isExpanding || this.el.open) {
+			this.shrink();
+		}
+	}
+
+	shrink() {
+		this.isClosing = true;
+		this.el.ariaExpanded = false;
+		// console.log(this.el);
+
+		const startHeight = `${this.el.offsetHeight}px`;
+		const endHeight = `${this.summary.offsetHeight}px`;
+
+		if (this.animation) {
+			this.animation.cancel();
+		}
+
+		// Start a WAAPI animation
+		this.animation = this.el.animate({
+			height: [startHeight, endHeight]
+		}, {
+			duration: 400,
+			easing: 'ease-out'
+		});
+
+		this.animation.onfinish = () => this.onAnimationFinish(false);
+		this.animation.oncancel = () => this.isClosing = false;
+	}
+
 	open() {
-	  this.el.style.height = `${this.el.offsetHeight}px`;
-	  this.el.open = true;
-	  window.requestAnimationFrame(() => this.expand());
+		this.el.style.height = `${this.el.offsetHeight}px`;
+		this.el.open = true;
+		window.requestAnimationFrame(() => this.expand());
 	}
-  
+
 	expand() {
 		this.el.ariaExpanded = true;
-		console.log(this.el);
-	  this.isExpanding = true;
-	  const startHeight = `${this.el.offsetHeight}px`;
-	  const endHeight = `${this.summary.offsetHeight + this.content.offsetHeight}px`;
-	  
-	  if (this.animation) {
-		this.animation.cancel();
-	  }
-	  
-	  this.animation = this.el.animate({
-		height: [startHeight, endHeight]
-	  }, {
-		duration: 400,
-		easing: 'ease-out'
-	  });
-	  this.animation.onfinish = () => this.onAnimationFinish(true);
-	  this.animation.oncancel = () => this.isExpanding = false;
+		// console.log(this.el);
+		this.isExpanding = true;
+		const startHeight = `${this.el.offsetHeight}px`;
+		if (!this.content) {
+			return;
+		}
+		const endHeight = `${this.summary.offsetHeight + this.content.offsetHeight}px`;
+
+		if (this.animation) {
+			this.animation.cancel();
+		}
+
+		this.animation = this.el.animate({
+			height: [startHeight, endHeight]
+		}, {
+			duration: 400,
+			easing: 'cubic-bezier(0.87, 0, 0.13, 1)'
+		});
+		this.animation.onfinish = () => this.onAnimationFinish(true);
+		this.animation.oncancel = () => this.isExpanding = false;
 	}
-  
+
 	onAnimationFinish(open) {
-	  this.el.open = open;
-	  this.animation = null;
-	  this.isClosing = false;
-	  this.isExpanding = false;
-	  this.el.style.height = this.el.style.overflow = '';
+		this.el.open = open;
+		this.animation = null;
+		this.isClosing = false;
+		this.isExpanding = false;
+		this.el.style.height = this.el.style.overflow = '';
 	}
-  }
+	static closeAllAccordions() {
+		const accordions = document.querySelectorAll('details, [data-accordion-target]');
+		accordions.forEach((accordion) => {
+			const instance = accordion.Accordion;
+			if (instance && instance.el.open) {
+				instance.shrink();
+			}
+		});
+	}
+}
   
-  document.querySelectorAll('details').forEach((el) => {
+document.querySelectorAll('details, [data-accordion-target]').forEach((el) => {
+	console.log(el);
 	new Accordion(el);
-  });
+});
 
 function accordion(toggler = null, close_all = false) {
 	let target = toggler.parentElement.querySelector('.dropdown-menu') || document.querySelector('[data-openedby="'+toggler.dataset.target+'"]') || toggler.href.split('#')[1];
@@ -728,9 +772,9 @@ function accordion(toggler = null, close_all = false) {
 	}
 }
 
-// TODO Add aria attributes to menu items
+// DONE Add aria attributes to menu items
 function mainMenu() {
-	// TODO Set tabindex="-1" for all elements except active
+	// DONE Set inert (unfocusable) for all elements except active
 	let main_menu = document.getElementById('main-menu');
 	let categories_with_children = main_menu.querySelectorAll('li[data-category-id]');
 	[].forEach.call(categories_with_children, function(c) {
@@ -1182,7 +1226,7 @@ let dialog = {
 		let a;
 		a = createElm({
 			type: 'dialog',
-			attrs: {'class': ''},
+			attrs: {'class': '', 'role':'dialog'},
 			events: {
 				'close': (e) => {console.log('closed', e)},
 				'click': (e) => {
@@ -1274,8 +1318,8 @@ let mwindow = {
 		function recalcPositions() {
 			let alltoasts = document.getElementsByClassName('toast');
 			if (typeof(alltoasts) !== 'undefined') {
-				// TODO Change for []
-				Array.prototype.forEach.call(alltoasts, function(el, key) {
+				// DONE Change for []
+				[].forEach.call(alltoasts, function(el, key) {
 					if (key > 0) {
 						el.style.top = alltoasts[key - 1].offsetHeight + alltoasts[key - 1].offsetTop + 10 + 'px';
 					} else {
@@ -1480,9 +1524,52 @@ function searchFunction () {
 // }
 
 
+// DONE add price animation when product has quantity discount
+function animatePrice() {
+	const js_prices = document.querySelector('[data-json-prices]').dataset.jsonPrices;
+	price_list = JSON.parse(js_prices);
+	const product = document.querySelector('[data-product-id]');
+	const product_id = product.dataset.productId;
+	const price_block = document.querySelector('#js_product_id_'+product_id+' .price-value');
+	let base_price, start, end;
 
-function animatePrice(element) {
-	console.log(element);
+	// Start
+	let options = product.querySelectorAll('input:checked, select');
+	let qty = product.querySelector('input[name="quantity"]').value;
+	start = parseFloat(price_block.innerText);
+	base_price = price_list[product_id].base_price;
+	end = base_price;
+	// Quantity discounts
+	if ('discounts' in price_list[product_id]) {
+		for (key in price_list[product_id].discounts) {
+			// console.log(key);
+			if (qty >= key) {
+				end = parseFloat(price_list[product_id].discounts[key]);
+			}
+		}
+	}
+	// Option prices
+	options.forEach(option => {
+		for (let o in price_list[product_id].options) {
+			if (option.value in price_list[product_id].options[o]) {
+				end =  parseFloat(end) + parseFloat(price_list[product_id].options[o][option.value]);
+				
+				// Animate quantity discount price list upon choosing different options with price values
+				let discount_prices = document.querySelectorAll('[data-quantity]');
+				discount_prices.forEach(dp => {
+					let price_value = dp.querySelector('.price-value');
+					for (key in price_list[product_id].discounts) {
+						if (key == dp.dataset.quantity) {
+							let start = parseFloat(price_value.innerText);
+							let end = parseFloat(price_list[product_id].discounts[key]) + parseFloat(price_list[product_id].options[o][option.value]);
+							animateValue(price_value, start, end, 300);
+						}
+					}
+				})
+			}
+		}
+	})
+	animateValue(price_block, start, end, 300);
 }
 
 // Animate price change
@@ -1499,22 +1586,6 @@ function animateValue(obj, start, end, duration) {
 	  	}
 	};
 	window.requestAnimationFrame(step);
-}
-// TODO add price animation when product has quantity discount
-let product_options = document.getElementsByClassName('product-option');
-if (product_options.length > 0) {
-	for (var i = 0; i < product_options.length; i++) {
-		element = product_options[i];
-		product_options[i].addEventListener('input', function(e) {
-			let prices = e.target[e.target.selectedIndex] ? e.target[e.target.selectedIndex].dataset : e.target.dataset;
-			if (prices.optionPrice) {
-				let price_block = document.querySelector('.prices.h1 .price-value');
-				let start = parseFloat(prices.basePrice);
-				let end = start + parseFloat(prices.optionPrice);
-				animateValue(price_block, start, end, 300);
-			}
-		})
-	}
 }
 
 

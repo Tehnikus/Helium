@@ -9,19 +9,14 @@
         id="input-option_{{ option.product_option_id }}" 
         name="option[{{ option.product_option_id }}]" 
         class="form-control product-option"
-        onchange="animatePrice(this[this.selectedIndex])"
+        onchange="animatePrice()"
       >
         <option value="">{{ text_select }}</option>
         {% for option_value in option.product_option_value %}
           <option 
             {# class="" #}
             value="{{ option_value.product_option_value_id }}" 
-            data-base-price="{{ base_price }}"
-            data-product-id="{{ product_id }}"
-            {% if option_value.price_value %}
-              data-option-price="{{ option_value.price_value }}"
-            {% endif %}
-            {# Выбор опции по умолчанию #}
+            {# Default selected option #}
             {% if option.default_option_isset == 'true' %}
               {% if option_value.default_option %} selected {% endif %}
             {% else %}
@@ -45,12 +40,7 @@
             class="product-option" 
             type="radio" 
             id="product_option_{{option_value.product_option_value_id}}" 
-            data-base-price="{{ base_price }}"
-            data-product-id="{{ product_id }}"
-            oninput="animatePrice(this)"
-            {% if option_value.price_value %}
-              data-option-price="({{ option_value.price_value }})"
-            {% endif %}
+            oninput="animatePrice()"
             name="option[{{ option.product_option_id }}]" 
             value="{{ option_value.product_option_value_id }}"
             {# Выбор опции по умолчанию #}
@@ -90,12 +80,7 @@
             class="product-option" 
             id="product_option_{{option_value.product_option_value_id}}" 
             type="checkbox" 
-            data-base-price="{{ base_price }}"
-            data-product-id="{{ product_id }}"
-            oninput="animatePrice(this)"
-            {% if option_value.price_value %}
-              data-option-price="({{ option_value.price_value }})"
-            {% endif %}
+            oninput="animatePrice()"
             name="option[{{ option.product_option_id }}][]" 
             value="{{ option_value.product_option_value_id }}" 
             {# Выбор опции по умолчанию #}

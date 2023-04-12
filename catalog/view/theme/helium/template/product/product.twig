@@ -1,7 +1,8 @@
 {{ header }}
 {% include 'helium/template/common/breadcrumbs.twig' %}
-<main role="main" id="product">
+<main role="main" id="product" data-product-id="{{ product_id }}" data-json-prices={{ json_prices }} >
   {{ content_top }}
+  
   <hgroup>
     {# Заголовок #}
     <h1 class="product-name">{{ heading_title }}</h1>
@@ -85,7 +86,7 @@
             <div class="quantity_discounts">
               <span class="discount">
                 {{ discount.quantity }}{{ text_discount }}
-                <span class="price-new">{{ discount.price }}</span>
+                <span data-quantity="{{ discount.quantity }}" class="price-new">{{ discount.price }}</span>
               </span>
             </div>
             {% endfor %}
@@ -120,12 +121,11 @@
           type="number"
           name="quantity"
           value="{{ minimum }}"
+          min="{{ minimum }}"
           size="2"
-          id="input-quantity js_input_quantity"
+          id="input-quantity"
           class="form-control"
-          data-product-id="{{ product_id }}"
-          data-base-price="{{ price_value }}"
-          oninput="animatePrice(this)"
+          oninput="animatePrice()"
         />
         <input type="hidden" name="product_id" value="{{ product_id }}" />
       </div>
@@ -214,9 +214,6 @@
       {% endfor %} 
     </div>
   {% endif %}
-  <script type="text/javascript">
-    let json_prices = {{ json_prices }}
-  </script>
 </main>
 {{ content_bottom }}
 {# <script type="text/javascript"><!--
