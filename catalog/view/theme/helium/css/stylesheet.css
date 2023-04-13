@@ -943,6 +943,13 @@ dialog::backdrop {
 	}
 }
 
+[data-accordion] {
+    position: absolute;
+    top: 100%;
+    overflow: hidden;
+    z-index: 1;
+    height: 0;
+}
 
 
 
@@ -1693,7 +1700,7 @@ input[type="radio"]:disabled, input[type="radio"]:disabled+label {
 
 /* --------------------------- */
 /* ------- Dropdowns ------- */
-.collapse {
+/* .collapse {
     display: none!important;
     transform-origin: top;
     animation: dropdown .2s ease-out;
@@ -1703,9 +1710,9 @@ input[type="radio"]:disabled, input[type="radio"]:disabled+label {
     display: block!important;
     transform-origin: top;
     animation: dropdown .2s ease-out;
-}
+} */
 
-.dropdown, #form-language, #form-currency, #cart-header-button {
+/* .dropdown, #form-language, #form-currency, #cart-header-button {
     position: relative;
 }
 
@@ -1715,9 +1722,9 @@ input[type="radio"]:disabled, input[type="radio"]:disabled+label {
     top: 100%;
     padding-left: 0;
     z-index: 1;
-}
+} */
 
-@keyframes dropdown {
+/* @keyframes dropdown {
     0% {
         opacity: 0;
         transform: scaleY(0);
@@ -1728,7 +1735,7 @@ input[type="radio"]:disabled, input[type="radio"]:disabled+label {
     100% {
         transform: scaleY(1);
     }
-}
+} */
 /* --------------------------- */
 
 

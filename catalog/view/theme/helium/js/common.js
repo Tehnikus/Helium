@@ -2,42 +2,10 @@ const d = document;
 const w = document.window;
 const favicon = document.querySelector("link[rel~='icon']");
 let filter_button = document.getElementById('button-filter');
-let review_button = d.getElementById('write-review');
 
 
-if (!!review_button) {
-	review_button.addEventListener('click', () => {
-		ajax(
-			'index.php?route='+review_button.dataset.type+'/displayReviewModal',
-			'entity_id='+review_button.dataset.id,
-			function(c) {
-			mwindow.create('dialog', c);
-		}, null,null,null,"POST","text",true);
-	});
-}
 
 
-// АЯКС отправка отзыва о товаре
-function sendReview(t) {
-	// Получаем форму, превращаем данные в строку вида:
-	// &name='Вася'&review='ололо'
-	let review_form = document.getElementById('form-review');
-	let review = new URLSearchParams(new FormData(review_form)).toString();
-	let review_url = 'index.php?route='+t.dataset.type+'/sendReview&entity_id=' + t.dataset.id;
-	ajax(review_url, review,
-		function(r) {
-			if (r.error) {
-				mwindow.create('toast', r.error, 'error');
-			}
-			if (r.success) {
-				mwindow.create('toast', r.success, 'success');
-				// Убираем форму
-				review_form.parentElement.removeChild(review_form);
-			}
-		},
-		null,null,null,'POST','JSON',true
-	);
-}
 
 
 
@@ -142,18 +110,19 @@ document.addEventListener('DOMContentLoaded', function() {
 	mainMenu();
 	countdown(d);
 
-	document.onkeydown = function(evt) {
-		evt = evt || window.event;
-		var isEscape = false;
-		if ("key" in evt) {
-			isEscape = (evt.key === "Escape" || evt.key === "Esc");
-		} else {
-			isEscape = (evt.keyCode === 27);
-		}
-		if (isEscape) {
-			Accordion.closeAllAccordions();
-		}
-	};
+	// Close all accordions on ESC key
+	// document.onkeydown = function(evt) {
+	// 	evt = evt || window.event;
+	// 	var isEscape = false;
+	// 	if ("key" in evt) {
+	// 		isEscape = (evt.key === "Escape" || evt.key === "Esc");
+	// 	} else {
+	// 		isEscape = (evt.keyCode === 27);
+	// 	}
+	// 	if (isEscape) {
+	// 		Accordion.closeAllAccordions();
+	// 	}
+	// };
 
 	// TODO Move this to it's function
 	let pagination = document.querySelector('main ul.pagination');
@@ -600,6 +569,28 @@ document.addEventListener('click', function(e) {
 		}
 	}
 
+	// Show "write review" modal window
+	// Both for products and blog articles
+	let review_button = d.getElementById('write-review');
+	if (!!review_button) {
+		review_button.addEventListener('click', () => {
+			ajax(
+				'index.php?route='+review_button.dataset.type+'/displayReviewModal',
+				'entity_id='+review_button.dataset.id,
+				function(c) {
+				mwindow.create('dialog', c);
+			}, null,null,null,"POST","text",true);
+
+			// fetch(
+			// 	'index.php?route='+review_button.dataset.type+'/displayReviewModal',
+			// 	{method: "POST", body: 'entity_id='+review_button.dataset.id})
+			// .then((r) => {return r.text();})
+			// .then((body) => {
+			// 	dialog.create(body);
+			// });
+		});
+	}
+
 	// Аякс загрузка отзывов на странице товара
 	// DONE исправить, добавить нужные классы к HTML
 	if (e.target.tagName.toLowerCase() === 'a' && e.target.href.indexOf('review&product') != '-1') {
@@ -632,198 +623,146 @@ document.addEventListener('click', function(e) {
 
 	// Dropdowns
 	// Очень-очень сильное колдунство
-	[].forEach.call(document.querySelectorAll('.dropdown-toggle, [data-accordion-target]'), function(el) {
-		if (el.contains(e.target) || el == e.target) {
-			accordion(el, true);
-			animated_icon = el.querySelector('.icon');
-			if(!!animated_icon) {
-				animated_icon.classList.toggle('open');
-			}
-		}
-	})
+	// [].forEach.call(document.querySelectorAll('.dropdown-toggle, [data-accordion-target]'), function(el) {
+	// 	if (el.contains(e.target) || el == e.target) {
+	// 		accordion(el, true);
+	// 		animated_icon = el.querySelector('.icon');
+	// 		if(!!animated_icon) {
+	// 			animated_icon.classList.toggle('open');
+	// 		}
+	// 	}
+	// })
 });
 
-// TODO Add required querySelectors for the rest of accordions
-// DONE Add ARIA attributes for accordions
-// TODO Close all accordions
-// TODO Trap focus inside accordion
-class Accordion {
-	constructor(el) {
-		this.el = el;
-		el.ariaExpanded = false;
-		el.ariaHasPopup = true;
-		el.Accordion = this;
-		this.summary = el.querySelector('summary') || document.getElementById(el.dataset.accordionTarget);
-		let content = el.querySelector('.content') || document.getElementById(el.dataset.accordionTarget) || el.nextElementSibling;
-		this.content = content;
-		  console.log(this.content);
+// class Accordion {
+// 	constructor(el) {
+// 		this.el = el;
+// 		el.ariaExpanded = false;
+// 		el.ariaHasPopup = true;
+// 		el.Accordion = this;
+// 		this.summary = el.querySelector('summary') || document.getElementById(el.dataset.accordionTarget);
+// 		let content = el.querySelector('.content') || document.getElementById(el.dataset.accordionTarget) || el.nextElementSibling;
+// 		this.content = content;
+// 		  console.log(this.content);
 
-		this.animation = null;
-		this.isClosing = false;
-		this.isExpanding = false;
-		this.summary.addEventListener('click', (e) => this.onClick(e));
-	}
+// 		this.animation = null;
+// 		this.isClosing = false;
+// 		this.isExpanding = false;
+// 		this.summary.addEventListener('click', (e) => this.onClick(e));
+// 	}
 
-	onClick(e) {
-		e.preventDefault();
-		this.el.style.overflow = 'hidden';
-		if (this.isClosing || !this.el.open) {
-			this.open();
-		} else if (this.isExpanding || this.el.open) {
-			this.shrink();
-		}
-	}
+// 	onClick(e) {
+// 		e.preventDefault();
+// 		this.el.style.overflow = 'hidden';
+// 		if (this.isClosing || !this.el.open) {
+// 			this.open();
+// 		} else if (this.isExpanding || this.el.open) {
+// 			this.shrink();
+// 		}
+// 	}
 
-	shrink() {
-		this.isClosing = true;
-		this.el.ariaExpanded = false;
-		// console.log(this.el);
+// 	shrink() {
+// 		this.isClosing = true;
+// 		this.el.ariaExpanded = false;
+// 		// console.log(this.el);
 
-		const startHeight = `${this.el.offsetHeight}px`;
-		const endHeight = `${this.summary.offsetHeight}px`;
+// 		const startHeight = `${this.el.offsetHeight}px`;
+// 		const endHeight = `${this.summary.offsetHeight}px`;
 
-		if (this.animation) {
-			this.animation.cancel();
-		}
+// 		if (this.animation) {
+// 			this.animation.cancel();
+// 		}
 
-		// Start a WAAPI animation
-		this.animation = this.el.animate({
-			height: [startHeight, endHeight]
-		}, {
-			duration: 400,
-			easing: 'ease-out'
-		});
+// 		// Start a WAAPI animation
+// 		this.animation = this.el.animate({
+// 			height: [startHeight, endHeight]
+// 		}, {
+// 			duration: 400,
+// 			easing: 'ease-out'
+// 		});
 
-		this.animation.onfinish = () => this.onAnimationFinish(false);
-		this.animation.oncancel = () => this.isClosing = false;
-	}
+// 		this.animation.onfinish = () => this.onAnimationFinish(false);
+// 		this.animation.oncancel = () => this.isClosing = false;
+// 	}
 
-	open() {
-		this.el.style.height = `${this.el.offsetHeight}px`;
-		this.el.open = true;
-		window.requestAnimationFrame(() => this.expand());
-	}
+// 	open() {
+// 		this.el.style.height = `${this.el.offsetHeight}px`;
+// 		this.el.open = true;
+// 		window.requestAnimationFrame(() => this.expand());
+// 	}
 
-	expand() {
-		this.el.ariaExpanded = true;
-		// console.log(this.el);
-		this.isExpanding = true;
-		const startHeight = `${this.el.offsetHeight}px`;
-		if (!this.content) {
-			return;
-		}
-		const endHeight = `${this.summary.offsetHeight + this.content.offsetHeight}px`;
+// 	expand() {
+// 		this.el.ariaExpanded = true;
+// 		// console.log(this.el);
+// 		this.isExpanding = true;
+// 		const startHeight = `${this.el.offsetHeight}px`;
+// 		if (!this.content) {
+// 			return;
+// 		}
+// 		const endHeight = `${this.summary.offsetHeight + this.content.offsetHeight}px`;
 
-		if (this.animation) {
-			this.animation.cancel();
-		}
+// 		if (this.animation) {
+// 			this.animation.cancel();
+// 		}
 
-		this.animation = this.el.animate({
-			height: [startHeight, endHeight]
-		}, {
-			duration: 400,
-			easing: 'cubic-bezier(0.87, 0, 0.13, 1)'
-		});
-		this.animation.onfinish = () => this.onAnimationFinish(true);
-		this.animation.oncancel = () => this.isExpanding = false;
-	}
+// 		this.animation = this.el.animate({
+// 			height: [startHeight, endHeight]
+// 		}, {
+// 			duration: 400,
+// 			easing: 'cubic-bezier(0.87, 0, 0.13, 1)'
+// 		});
+// 		this.animation.onfinish = () => this.onAnimationFinish(true);
+// 		this.animation.oncancel = () => this.isExpanding = false;
+// 	}
 
-	onAnimationFinish(open) {
-		this.el.open = open;
-		this.animation = null;
-		this.isClosing = false;
-		this.isExpanding = false;
-		this.el.style.height = this.el.style.overflow = '';
-	}
-	static closeAllAccordions() {
-		const accordions = document.querySelectorAll('details, [data-accordion-target]');
-		accordions.forEach((accordion) => {
-			const instance = accordion.Accordion;
-			if (instance && instance.el.open) {
-				instance.shrink();
-			}
-		});
-	}
-}
+// 	onAnimationFinish(open) {
+// 		this.el.open = open;
+// 		this.animation = null;
+// 		this.isClosing = false;
+// 		this.isExpanding = false;
+// 		this.el.style.height = this.el.style.overflow = '';
+// 	}
+// 	static closeAllAccordions() {
+// 		const accordions = document.querySelectorAll('details, [data-accordion-target]');
+// 		accordions.forEach((accordion) => {
+// 			const instance = accordion.Accordion;
+// 			if (instance && instance.el.open) {
+// 				instance.shrink();
+// 			}
+// 		});
+// 	}
+// }
   
-document.querySelectorAll('details, [data-accordion-target]').forEach((el) => {
-	console.log(el);
-	new Accordion(el);
-});
+// document.querySelectorAll('details, [data-accordion-target]').forEach((el) => {
+// 	console.log(el);
+// 	new Accordion(el);
+// });
 
-function accordion(toggler = null, close_all = false) {
-	let target = toggler.parentElement.querySelector('.dropdown-menu') || document.querySelector('[data-openedby="'+toggler.dataset.target+'"]') || toggler.href.split('#')[1];
-	if (close_all == true || toggler == null) {
-		[].forEach.call(document.getElementsByClassName('collapse-in'), function(e) {
-			if(e !== target) {
-				toggle_menu(e);
-			}
-		})
-	}
-	if (!!target) {
-		toggle_menu(target);
-	} else {
-		console.log('Target menu not found in element', toggler);
-	}
-	function toggle_menu(el) {
-		['collapse', 'collapse-in'].forEach(function(c) {
-			el.classList.toggle(c)
-		});
-	}
-}
 
-// DONE Add aria attributes to menu items
-function mainMenu() {
-	// DONE Set inert (unfocusable) for all elements except active
-	let main_menu = document.getElementById('main-menu');
-	let categories_with_children = main_menu.querySelectorAll('li[data-category-id]');
-	[].forEach.call(categories_with_children, function(c) {
-		let child_ul = main_menu.querySelector('ul[data-parent="'+ c.dataset.categoryId +'"]');
-		child_ul.setAttribute('aria-expanded', false);
-		let button_forward = createElm({
-			type: 'button', 
-			attrs: {'class':'menu-forward', 'aria-label': js_lang.openlist, 'aria-haspopup': 'menu' },
-			events: {'click': () => {
-				child_ul.classList.add('open');
-				// Set opened child menu focusable
-				child_ul.inert = false;
-				// Set parent menu unfocusable
-				c.parentElement.inert = true;
-				// c.setAttribute('tabindex', '-1');
-				child_ul.setAttribute('aria-expanded', true);
-				
-				console.log(c.parentElement);
-				setTimeout(() => {
-					child_ul.firstChild.focus();
-				}, 400);
-			}}
-		});
-		c.appendChild(button_forward);
-	});
-	// Process all child menus
-	[].forEach.call(main_menu.querySelectorAll('ul:not([data-parent="0"])'), p => {
-		// Set child menus unfocusable on page load
-		p.inert = true;
-		let parent_menu = main_menu.querySelector('li[data-category-id="'+p.dataset.parent+'"]');
-		let button_back = createElm({
-			type: 'button', 
-			attrs: {'class':'menu-back'},
-			props: {'innerText': parent_menu ? parent_menu.querySelector('a').innerText : js_lang.back_to},
-			events: {'click': () => {
-				p.classList.remove('open');
-				p.inert = true;
-				parent_menu.parentElement.inert = false;
-				console.log(parent_menu.parentElement);
-				p.setAttribute('aria-expanded', false);
-				setTimeout(() => {
-					parent_menu.querySelector('a').focus();
-				}, 400);
 
-			}}
-		});
-		p.insertAdjacentElement('afterbegin', button_back);
-	})
-}
+
+// function accordion(toggler = null, close_all = false) {
+// 	let target = toggler.parentElement.querySelector('.dropdown-menu') || document.querySelector('[data-openedby="'+toggler.dataset.target+'"]') || toggler.href.split('#')[1];
+// 	if (close_all == true || toggler == null) {
+// 		[].forEach.call(document.getElementsByClassName('collapse-in'), function(e) {
+// 			if(e !== target) {
+// 				toggle_menu(e);
+// 			}
+// 		})
+// 	}
+// 	if (!!target) {
+// 		toggle_menu(target);
+// 	} else {
+// 		console.log('Target menu not found in element', toggler);
+// 	}
+// 	function toggle_menu(el) {
+// 		['collapse', 'collapse-in'].forEach(function(c) {
+// 			el.classList.toggle(c)
+// 		});
+// 	}
+// }
+
+
 
 // Main menu function
 // Appends open and close buttons to list of categories
@@ -880,41 +819,7 @@ function mainMenu() {
 // 	}
 // }
 
-// Load more
-// DONE Fix so it works on every pagination, not only product list
-function loadMore() {
-	let pagination = document.querySelector('main ul.pagination');
-	if (!!pagination) {
-		active_pages = pagination.querySelectorAll('li.active');
-		var last = active_pages[active_pages.length - 1];
-		next_page = last.nextElementSibling;
-		if (!next_page.nextElementSibling.classList.contains('page')) {
-			d.getElementById('load-more-btn').disabled = true;
-		}
-		if (!!next_page) {
-			next_href = next_page.getElementsByTagName('a')[0];
-			if (!!next_href && typeof(next_href.href) !== 'undefined' && (typeof(next_href.attributes.rel) == 'undefined' || next_href.attributes.rel.value !== ('next' || 'last'))) {
-				ajax(next_href.href, null, function(resp){
-					var div = document.createElement('div');
-					div.innerHTML = resp;
-					var blocks = div.querySelectorAll('main .miniature, .js-product-review');
-					for (let index = 0; index < blocks.length; index++) {
-						const block = blocks[index];
-						document.querySelector('main .product.grid, main .article.grid, #js-reviews').insertAdjacentElement('beforeend', block);
-						countdown(block)
-					}
-					var next_text = next_href.innerText;
-					next_page.innerHTML = '<span>'+next_text+'</span>';
-					next_page.classList.add('active');
-				}, null, null, null, 'GET', 'text', true);
-			} else {
-				document.querySelectorAll('[rel="next"], [rel="last"]').forEach(function (e) {
-					e.classList.add('hidden');
-				});
-			}
-		}
-	}
-}
+
 
 
 
@@ -1145,12 +1050,14 @@ function login() {
 // Works perfectly - don't touch //
 // ///////////////////////////// //
 
+
 // Mobile menu render
 // Find all div.mobile_menu,
-// create corresponding button,
-// order buttons by data-order,
-// add icon from data-icon
-// button name from data-block-name
+// create corresponding button in fixed botton panel,
+// order buttons by [data-order],
+// add icon from data-icon,
+// button name copied from elements [data-block-name]
+// Maybe change .mobile-menu to [data-block-name] here and in CSS to keep code cleaner?
 function mobileMenu() {
 	// Blocks to be shown or hidden
 	let mb = d.getElementsByClassName('mobile_menu');
@@ -1193,6 +1100,7 @@ function mobileMenu() {
 
 
 // Create multilevel DOM elements from Javascript Object
+// Proudly present :)
 function createElm({type, styles, attrs, props, events, nest}) {
 	let [eType, eStyle,eAttr, eProps, eHandlers] = [type || 'div', styles || {}, attrs || {}, props || {}, events || {}];
 	let el = document.createElement(eType);
@@ -1230,6 +1138,7 @@ let dialog = {
 			events: {
 				'close': (e) => {console.log('closed', e)},
 				'click': (e) => {
+					// Click outside the dialog
 					if (e.target.contains(a)) {
 						dialog.close()
 					}
@@ -1237,18 +1146,23 @@ let dialog = {
 			},
 			nest: [
 				{attrs: {'class':'modal_content'},
+				// Inner content. If typeof object (JSON or DOM) use outer HTML that parses it into HTML 
 				props:{'innerHTML': (typeof(content) == 'object' ? content.outerHTML : content)}},
+				// Close button
 				{type: 'button', attrs: {'class':'close_modal','aria-label':js_lang.close}, events: {'click': (e) => {dialog.close(e)}}},
 			]
 		});
+		// Append dialog to document
 		document.body.insertAdjacentElement('beforeend', a);
+		// Open dialog
 		a.showModal();
 		return;
 	},
 	close: () => {
 		let b = document.getElementsByTagName('dialog');
 		for (let i = 0; i < b.length; i++) {
-			console.log(b[i]);
+			// Here animations can be added
+			// console.log(b[i]);
 			b[i].close();
 			document.body.removeChild(b[i]);
 		}
@@ -1259,7 +1173,42 @@ let dialog = {
 	}
 }
 
-
+// Load more
+// Renders "Load more" button that requests next page on every pagination
+// DONE Fix so it works on every pagination, not only product list
+function loadMore() {
+	let pagination = document.querySelector('main ul.pagination');
+	if (!!pagination) {
+		active_pages = pagination.querySelectorAll('li.active');
+		var last = active_pages[active_pages.length - 1];
+		next_page = last.nextElementSibling;
+		if (!next_page.nextElementSibling.classList.contains('page')) {
+			d.getElementById('load-more-btn').disabled = true;
+		}
+		if (!!next_page) {
+			next_href = next_page.getElementsByTagName('a')[0];
+			if (!!next_href && typeof(next_href.href) !== 'undefined' && (typeof(next_href.attributes.rel) == 'undefined' || next_href.attributes.rel.value !== ('next' || 'last'))) {
+				ajax(next_href.href, null, function(resp){
+					var div = document.createElement('div');
+					div.innerHTML = resp;
+					var blocks = div.querySelectorAll('main .miniature, .js-product-review');
+					for (let index = 0; index < blocks.length; index++) {
+						const block = blocks[index];
+						document.querySelector('main .product.grid, main .article.grid, #js-reviews').insertAdjacentElement('beforeend', block);
+						countdown(block)
+					}
+					var next_text = next_href.innerText;
+					next_page.innerHTML = '<span>'+next_text+'</span>';
+					next_page.classList.add('active');
+				}, null, null, null, 'GET', 'text', true);
+			} else {
+				document.querySelectorAll('[rel="next"], [rel="last"]').forEach(function (e) {
+					e.classList.add('hidden');
+				});
+			}
+		}
+	}
+}
 
 
 let mwindow = {
@@ -1431,27 +1380,27 @@ function searchFunction () {
 
 // ----------------- Не нужно ------------------- //
 
-
-	// let category_description = document.querySelector('.category-description');
-	// if (!!category_description && category_description.scrollHeight > 200) {
-	// 	let expand_btn = createElm({type:'button', attrs: {'class':'expand_button'}, props: {'innerHTML': js_lang.expand}});
-	// 	expand_btn.addEventListener('click', function() {
-	// 		let h = category_description.style.maxHeight;
-	// 		if ( h == '') {
-	// 			category_description.style.maxHeight = category_description.scrollHeight+'px';
-	// 			expand_btn.innerText = js_lang.collapse;
-	// 		} else {
-	// 			if(h !== '200px') {
-	// 				category_description.style.maxHeight = '200px';
-	// 				expand_btn.innerText = js_lang.expand;
-	// 			} else {
-	// 				category_description.style.maxHeight = category_description.scrollHeight+'px';
-	// 				expand_btn.innerText = js_lang.collapse;
-	// 			}
-	// 		}
-	// 	});
-	// 	category_description.insertAdjacentElement('afterend', expand_btn);
-	// }
+// Collapse and expand caregory description
+// let category_description = document.querySelector('.category-description');
+// if (!!category_description && category_description.scrollHeight > 200) {
+// 	let expand_btn = createElm({type:'button', attrs: {'class':'expand_button'}, props: {'innerHTML': js_lang.expand}});
+// 	expand_btn.addEventListener('click', function() {
+// 		let h = category_description.style.maxHeight;
+// 		if ( h == '') {
+// 			category_description.style.maxHeight = category_description.scrollHeight+'px';
+// 			expand_btn.innerText = js_lang.collapse;
+// 		} else {
+// 			if(h !== '200px') {
+// 				category_description.style.maxHeight = '200px';
+// 				expand_btn.innerText = js_lang.expand;
+// 			} else {
+// 				category_description.style.maxHeight = category_description.scrollHeight+'px';
+// 				expand_btn.innerText = js_lang.collapse;
+// 			}
+// 		}
+// 	});
+// 	category_description.insertAdjacentElement('afterend', expand_btn);
+// }
 
 	// ** FADE OUT FUNCTION **
 // function fadeOut(el, callback) {
@@ -1506,22 +1455,6 @@ function searchFunction () {
 // 	}
 // }
 
-
-// Сериализация форм для отправки аяксом
-// function serialize (data) {
-// 	let obj = {};
-// 	for (let [key, value] of data) {
-// 		if (obj[key] !== undefined) {
-// 			if (!Array.isArray(obj[key])) {
-// 				obj[key] = [obj[key]];
-// 			}
-// 			obj[key].push(value);
-// 		} else {
-// 			obj[key] = value;
-// 		}
-// 	}
-// 	return obj;
-// }
 
 
 // DONE add price animation when product has quantity discount
@@ -1588,7 +1521,27 @@ function animateValue(obj, start, end, duration) {
 	window.requestAnimationFrame(step);
 }
 
-
+// АЯКС отправка отзыва о товаре
+function sendReview(t) {
+	// Получаем форму, превращаем данные в строку вида:
+	// &name='Вася'&review='ололо'
+	let review_form = document.getElementById('form-review');
+	let review = new URLSearchParams(new FormData(review_form)).toString();
+	let review_url = 'index.php?route='+t.dataset.type+'/sendReview&entity_id=' + t.dataset.id;
+	ajax(review_url, review,
+		function(r) {
+			if (r.error) {
+				mwindow.create('toast', r.error, 'error');
+			}
+			if (r.success) {
+				mwindow.create('toast', r.success, 'success');
+				// Убираем форму
+				review_form.parentElement.removeChild(review_form);
+			}
+		},
+		null,null,null,'POST','JSON',true
+	);
+}
 
 
 
@@ -1626,3 +1579,235 @@ elements_list.forEach((a) => {
 		}
 	}
 })
+
+// Main menu
+// Adds buttons in the main megamenu
+// Next button shows child categories list
+// Prev button closes child and shows parent list  
+// DONE Add aria attributes to menu items
+
+function mainMenu() {
+	// DONE Set inert (unfocusable) for all elements except active
+	let main_menu = document.getElementById('main-menu');
+	let categories_with_children = main_menu.querySelectorAll('li[data-category-id]');
+	[].forEach.call(categories_with_children, function(c) {
+		let child_ul = main_menu.querySelector('ul[data-parent="'+ c.dataset.categoryId +'"]');
+		child_ul.setAttribute('aria-expanded', false);
+		let button_forward = createElm({
+			type: 'button', 
+			attrs: {'class':'menu-forward', 'aria-label': js_lang.openlist, 'aria-haspopup': 'menu' },
+			events: {'click': () => {
+				child_ul.classList.add('open');
+				// Set opened child menu focusable
+				child_ul.inert = false;
+				// Set parent menu unfocusable
+				c.parentElement.inert = true;
+				// c.setAttribute('tabindex', '-1');
+				child_ul.setAttribute('aria-expanded', true);
+				
+				console.log(c.parentElement);
+				setTimeout(() => {
+					child_ul.firstChild.focus();
+				}, 400);
+			}}
+		});
+		c.appendChild(button_forward);
+	});
+	// Process all child menus
+	[].forEach.call(main_menu.querySelectorAll('ul:not([data-parent="0"])'), p => {
+		// Set child menus unfocusable on page load
+		p.inert = true;
+		let parent_menu = main_menu.querySelector('li[data-category-id="'+p.dataset.parent+'"]');
+		let button_back = createElm({
+			type: 'button', 
+			attrs: {'class':'menu-back'},
+			props: {'innerText': parent_menu ? parent_menu.querySelector('a').innerText : js_lang.back_to},
+			events: {'click': () => {
+				p.classList.remove('open');
+				p.inert = true;
+				parent_menu.parentElement.inert = false;
+				console.log(parent_menu.parentElement);
+				p.setAttribute('aria-expanded', false);
+				setTimeout(() => {
+					parent_menu.querySelector('a').focus();
+				}, 400);
+
+			}}
+		});
+		p.insertAdjacentElement('afterbegin', button_back);
+	})
+}
+
+// DONE Add required querySelectors for the rest of accordions
+// DONE Add ARIA attributes for accordions
+// DONE Close all accordions
+// TODO Trap focus inside accordion
+class Accordion {
+	constructor(el) {
+		this.el = el;
+		// Add ARIA attributes
+		el.ariaExpanded = false;
+		el.ariaHasPopup = true;
+		// This is needed for global listener to close all accordions on ESC key
+		el.Accordion = this;
+
+		this.animation = null;
+		this.isClosing = false;
+		this.isExpanding = false;
+
+
+		// Check if current element is details or regular something else
+		if (this.el.tagName == 'DETAILS') {
+			this.external_content = false;
+			this.toggler = el.querySelector('summary');
+			this.content = this.toggler.nextElementSibling;
+		} else {
+			this.external_content = true;
+			this.toggler = el;
+			this.content = document.querySelector('[data-accordion="'+el.dataset.accordionTarget+'"]');
+		}
+		this.toggler.addEventListener('click', (e) => this.onClick(e));
+		document.onkeydown = function(evt) {
+			evt = evt || window.event;
+			var isEscape = false;
+			if ("key" in evt) {
+				isEscape = (evt.key === "Escape" || evt.key === "Esc");
+			} else {
+				isEscape = (evt.keyCode === 27);
+			}
+			if (isEscape) {
+				Accordion.closeAllAccordions();
+			}
+		};
+	}
+
+	onClick(e) {
+		e.preventDefault();
+		this.content.style.overflow = 'hidden';
+		// Join el and content
+		// Where el represents details tag
+		// And content - any external div, if accordion is not details
+		if (this.isClosing || (!this.el.open && !this.content.open)) {
+			this.open();
+
+		} else if (this.isExpanding || (this.el.open || this.content.open)) {
+			window.requestAnimationFrame(() => this.shrink());
+		}
+	}
+
+	open() {
+		if (this.external_content) {
+			this.content.style.height = `${this.content.offsetHeight}px`;
+			this.content.open = true;
+		} else {
+			this.el.style.height = `${this.el.offsetHeight}px`;
+			this.el.open = true;
+		}
+		window.requestAnimationFrame(() => this.expand());
+	}
+
+	expand() {
+		let startHeight, endHeight;
+
+		if (this.external_content) {
+			this.content.ariaExpanded = true;
+			startHeight = `${this.content.offsetHeight}px`; // Current content height (i.e. if button pressed on half-way closing)
+			endHeight = `${this.content.firstElementChild.offsetHeight}px`; // Height of the inner content
+		} else {
+			this.el.ariaExpanded = true;
+			startHeight = `${this.el.offsetHeight}px`;
+			endHeight = `${this.toggler.offsetHeight + this.content.offsetHeight}px`;
+		}
+		let animation_style = {duration: 400, easing: 'cubic-bezier(0.87, 0, 0.13, 1)'};
+		let animation_direction = {height: [startHeight, endHeight]};
+		this.isExpanding = true;
+		
+		if (!this.content) {
+			return;
+		}
+
+		if (this.animation) {
+			this.animation.cancel();
+		}
+
+		// Different elements animation
+		if (this.external_content) {
+			this.animation = this.content.animate(animation_direction, animation_style);
+		} else {
+			this.animation = this.el.animate(animation_direction, animation_style);
+		}
+
+		this.animation.onfinish = () => this.onAnimationFinish(true);
+		this.animation.oncancel = () => this.isExpanding = false;
+	}
+
+	shrink() {
+		
+		this.isClosing = true;
+		// If content is external add aria-epanded to content, not to the element itself
+		let startHeight, endHeight;
+		if (this.external_content) {
+			this.content.ariaExpanded = false;
+			startHeight = `${this.content.offsetHeight}px`;
+			endHeight = `0px`;
+		} else {
+			this.el.ariaExpanded = false;
+			startHeight = `${this.el.offsetHeight}px`;
+			endHeight = `${this.toggler.offsetHeight}px`;
+		}
+
+		if (this.animation) {
+			this.animation.cancel();
+		}
+
+		// Start a WAAPI animation
+		if (this.external_content) {
+			this.animation = this.content.animate({
+				height: [startHeight, endHeight]
+			}, {
+				duration: 400,
+				easing: 'ease-out'
+			});
+		} else {
+			this.animation = this.el.animate({
+				height: [startHeight, endHeight]
+			}, {
+				duration: 400,
+				easing: 'ease-out'
+			});
+		}
+
+		this.animation.onfinish = () => this.onAnimationFinish(false);
+		this.animation.oncancel = () => this.isClosing = false;
+	}
+
+	onAnimationFinish(open) {
+		this.animation = null;
+		this.isClosing = false;
+		this.isExpanding = false;
+		if (this.external_content) {
+			this.content.open = open;
+			if (open) {
+				this.content.style.height = `${this.content.firstElementChild.offsetHeight}px`;
+			} else {
+				this.content.style.height = '0px';
+			}
+			this.content.style.overflow = '';
+		} else {
+			this.el.open = open;
+			this.el.style.height = this.el.style.overflow = '';
+		}
+	}
+	static closeAllAccordions() {
+		const accordions = document.querySelectorAll('details, [data-accordion-target]');
+		accordions.forEach((accordion) => {
+			const instance = accordion.Accordion;
+			if (instance && (instance.el.open || instance.content.open)) {
+				instance.shrink();
+			}
+		});
+	}
+}
+document.querySelectorAll('details, [data-accordion-target]').forEach((el) => {
+	new Accordion(el);
+});
