@@ -4,11 +4,12 @@
 {# Выпадающий список #}
   {% if option.type == 'select' %}
     <div class="form-group{% if option.required %} required {% endif %}">
-      <h4 for="input-option_{{ option.product_option_id }}">{{ option.name }}</h4>
+      <span class="h4">{{ option.name }}</span>
       <select 
         id="input-option_{{ option.product_option_id }}" 
         name="option[{{ option.product_option_id }}]" 
         class="form-control product-option"
+        
         onchange="animatePrice()"
       >
         <option value="">{{ text_select }}</option>
@@ -31,7 +32,7 @@
   {% if option.type == 'radio' %}
   {# Радио кнопки #}
   <div class="form-group {% if option.required %} required {% endif %}">
-    <h4>{{ option.name }}</h4>
+    <span class="h4">{{ option.name }}</span>
     <div id="input-option_{{ option.product_option_id }}">
       {% for option_value in option.product_option_value %}
         <div class="form-control" role="radiogroup">
@@ -43,6 +44,7 @@
             oninput="animatePrice()"
             name="option[{{ option.product_option_id }}]" 
             value="{{ option_value.product_option_value_id }}"
+            
             {# Выбор опции по умолчанию #}
             {% if option.default_option_isset == 'true' %}
               {% if option_value.default_option %}checked{% endif %}
@@ -72,7 +74,7 @@
   {% if option.type == 'checkbox' %}
   {# Чекбоксы #}
   <div class="form-group{% if option.required %} required {% endif %}">
-    <h4>{{ option.name }}</h4>
+    <span class="h4">{{ option.name }}</span>
     <div id="input-option_{{ option.product_option_id }}"> 
       {% for option_value in option.product_option_value %}
         <div class="form-control">
@@ -83,6 +85,7 @@
             oninput="animatePrice()"
             name="option[{{ option.product_option_id }}][]" 
             value="{{ option_value.product_option_value_id }}" 
+            
             {# Выбор опции по умолчанию #}
             {% if option.default_option_isset == 'true' %}
               {% if option_value.default_option %}checked{% endif %}
