@@ -14,23 +14,23 @@
 
   {# TODO Change all divs to details #}
   <details aria-labelledby="title_login_or_register">
-    <summary><h4 id="title_login_or_register" class="panel-title">{{ text_checkout_option }}</h4></summary>
-    <div class="content collapse-login" id="collapse-login">
+    <summary><h4 id="title_login_or_register">{{ text_checkout_option }}</h4></summary>
+    <div class="collapse-login" id="collapse-login">
       {# Login or register form #}
     </div>
   </details>
     
     {% if not logged and account != 'guest' %}
       <details aria-labelledby="title_guest_checkout">
-        <summary><h4 id="title_guest_checkout" class="panel-title">{{ text_checkout_account }}</h4></summary>
-        <div class="panel-collapse collapse-payment_address collapse-guest collapse-register" id="collapse-payment_address">
+        <summary><h4 id="title_guest_checkout">{{ text_checkout_account }}</h4></summary>
+        <div class="collapse-payment_address collapse-guest collapse-register" id="collapse-payment_address">
           {# payment address #}
         </div>
       </details>
     {% else %}
       <details aria-labelledby="title_payment_address">
         <summary><h4 id="title_payment_address">{{ text_checkout_payment_address }}</h4></summary>
-        <div class="panel-collapse collapse-payment_address collapse-guest collapse-register" id="collapse-payment_address">
+        <div class="collapse-payment_address collapse-guest collapse-register" id="collapse-payment_address">
           {# payment address #}
         </div>
       </details>
@@ -39,14 +39,14 @@
     {% if shipping_required %}
       <details aria-labelledby="title_shipping_address">
         <summary><h4 id="title_shipping_address">{{ text_checkout_shipping_address }}</h4></summary>
-        <div class="panel-collapse collapse-shipping_address" id="collapse-shipping_address">
+        <div class="collapse-shipping_address" id="collapse-shipping_address">
           {# Shipping address #}
         </div>
       </details>
 
       <details aria-labelledby="title_shipping_method">
         <summary><h4 id="title_shipping_method">{{ text_checkout_shipping_method }}</h4></summary>
-        <div class="panel-collapse collapse-shipping_method" id="collapse-shipping_method">
+        <div class="collapse-shipping_method" id="collapse-shipping_method">
           {# Shipping method #}
         </div>
       </details>
@@ -54,14 +54,14 @@
 
     <details aria-labelledby="title_payment_method">
       <summary><h4 id="title_payment_method">{{ text_checkout_payment_method }}</h4></summary>
-      <div class="panel-collapse collapse-payment_method" id="collapse-payment_method">
+      <div class="collapse-payment_method" id="collapse-payment_method">
         {# Payment method #}
       </div>
     </details>
 
     <details aria-labelledby="title_confirm">
       <summary><h4 id="title_confirm">{{ text_checkout_confirm }}</h4></summary>
-      <div class="panel-collapse collapse-confirm" id="collapse-checkout_confirm">
+      <div class="collapse-confirm" id="collapse-checkout_confirm">
         {# Payment method #}
       </div>
     </details>
@@ -300,7 +300,7 @@ function handleErrors(result, form_with_errors) {
           if (error_input_group) {
             error_input_group.classList.add('has-error');
           }
-          error_input.insertAdjacentHTML('afterend', '<div id="error_label_'+i+'" class="text-danger">' + errors_object[i] + '</div>')
+          error_input.insertAdjacentHTML('afterend', '<span role="alert" id="error_label_'+i+'" class="text-danger">' + errors_object[i] + '</span>')
         } else {
           console.log('input not found:', 'input name=['+i+']');
         }
@@ -516,9 +516,9 @@ function getZones(country_id, zone_input_id) {
 // 					var element = $('#input-payment-' + i.replace('_', '-'));
 
 // 					if ($(element).parent().hasClass('input-group')) {
-// 						$(element).parent().after('<div class="text-danger">' + json['error'][i] + '</div>');
+// 						$(element).parent().after('<span class="text-danger">' + json['error'][i] + '</div>');
 // 					} else {
-// 						$(element).after('<div class="text-danger">' + json['error'][i] + '</div>');
+// 						$(element).after('<span class="text-danger">' + json['error'][i] + '</div>');
 // 					}
 // 				}
 
@@ -653,9 +653,9 @@ function getZones(country_id, zone_input_id) {
 //               var element = $('#input-payment-' + i.replace('_', '-'));
 
 //               if ($(element).parent().hasClass('input-group')) {
-//                 $(element).parent().after('<div class="text-danger">' + json['error'][i] + '</div>');
+//                 $(element).parent().after('<span class="text-danger">' + json['error'][i] + '</div>');
 //               } else {
-//                 $(element).after('<div class="text-danger">' + json['error'][i] + '</div>');
+//                 $(element).after('<span class="text-danger">' + json['error'][i] + '</div>');
 //               }
 //             }
 //             // Highlight any found errors
@@ -753,9 +753,9 @@ function getZones(country_id, zone_input_id) {
 // 					var element = $('#input-shipping-' + i.replace('_', '-'));
 
 // 					if ($(element).parent().hasClass('input-group')) {
-// 						$(element).parent().after('<div class="text-danger">' + json['error'][i] + '</div>');
+// 						$(element).parent().after('<span class="text-danger">' + json['error'][i] + '</div>');
 // 					} else {
-// 						$(element).after('<div class="text-danger">' + json['error'][i] + '</div>');
+// 						$(element).after('<span class="text-danger">' + json['error'][i] + '</div>');
 // 					}
 // 				}
 
@@ -841,9 +841,9 @@ function getZones(country_id, zone_input_id) {
 //               var element = $('#input-shipping-' + i.replace('_', '-'));
 
 //               if ($(element).parent().hasClass('input-group')) {
-//                 $(element).parent().after('<div class="text-danger">' + json['error'][i] + '</div>');
+//                 $(element).parent().after('<span class="text-danger">' + json['error'][i] + '</div>');
 //               } else {
-//                 $(element).after('<div class="text-danger">' + json['error'][i] + '</div>');
+//                 $(element).after('<span class="text-danger">' + json['error'][i] + '</div>');
 //               }
 //             }
 
