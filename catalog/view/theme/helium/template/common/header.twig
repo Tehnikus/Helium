@@ -88,16 +88,18 @@
           <span class="hidden-md">{{ text_account }}</span>
         </button>
         <div id="account_menu" data-accordion="account">
-          {% if logged %}
-            <a class="button" title="{{ text_account }}" href="{{ account }}"><span class=>{{ text_account }}</a>
-            <a class="button" title="{{ text_order }}" href="{{ order }}">{{ text_order }}</a>
-            <a class="button" title="{{ text_transaction }}" href="{{ transaction }}">{{ text_transaction }}</a>
-            <a class="button" title="{{ text_download }}" href="{{ download }}">{{ text_download }}</a>
-            <a class="button" title="{{ text_logout }}" href="{{ logout }}">{{ text_logout }}</a>
-          {% else %}
-            <a class="button" title="{{ text_register }}" href="{{ register }}">{{ text_register }}</a>
-            <a class="button" title="{{ text_login }}" href="{{ login }}">{{ text_login }}</a>
-          {% endif %}
+          <div>
+            {% if logged %}
+              <a class="button" title="{{ text_account }}" href="{{ account }}"><span class=>{{ text_account }}</a>
+              <a class="button" title="{{ text_order }}" href="{{ order }}">{{ text_order }}</a>
+              <a class="button" title="{{ text_transaction }}" href="{{ transaction }}">{{ text_transaction }}</a>
+              <a class="button" title="{{ text_download }}" href="{{ download }}">{{ text_download }}</a>
+              <a class="button" title="{{ text_logout }}" href="{{ logout }}">{{ text_logout }}</a>
+            {% else %}
+              <a class="button" title="{{ text_register }}" href="{{ register }}">{{ text_register }}</a>
+              <a class="button" title="{{ text_login }}" href="{{ login }}">{{ text_login }}</a>
+            {% endif %}
+          </div>
         </div>
       </div>
       <button aria-haspopup="dialog" id="wishlist-total" title="{{ text_wishlist }}" aria-label="{{ text_wishlist }}"><i class="icon-heart"></i> <span class="hidden-md"> {{ text_wishlist_count }} </span></button>
