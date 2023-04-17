@@ -50,6 +50,7 @@ $_['button_submit']         = 'Submit';
 $_['button_guest']          = 'Guest Checkout';
 $_['button_view']           = 'View';
 $_['button_voucher']        = 'Apply Gift Certificate';
+$_['ok']                    = 'OK';
 $_['button_upload']         = 'Upload File';
 $_['button_reward']         = 'Apply Points';
 $_['button_quote']          = 'Get Quotes';
