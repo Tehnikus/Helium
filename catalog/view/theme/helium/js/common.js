@@ -1298,7 +1298,7 @@ function mainMenu() {
 		child_ul.setAttribute('aria-expanded', false);
 		let button_forward = createElm({
 			type: 'button', 
-			attrs: {'class':'menu-forward', 'aria-label': js_lang.openlist, 'aria-haspopup': 'menu' },
+			attrs: {'class':'menu-forward', 'role':'button','aria-label': js_lang.openlist, 'aria-haspopup': 'true' },
 			events: {'click': () => {
 				child_ul.classList.add('open');
 				// Set opened child menu focusable
@@ -1323,7 +1323,7 @@ function mainMenu() {
 		let parent_menu = main_menu.querySelector('li[data-category-id="'+p.dataset.parent+'"]');
 		let button_back = createElm({
 			type: 'button', 
-			attrs: {'class':'menu-back'},
+			attrs: {'class':'menu-back', 'role':'button', 'aria-label': parent_menu ? parent_menu.querySelector('a').innerText : js_lang.back_to, 'aria-haspopup': 'true'},
 			props: {'innerText': parent_menu ? parent_menu.querySelector('a').innerText : js_lang.back_to},
 			events: {'click': () => {
 				p.classList.remove('open');
@@ -1348,8 +1348,8 @@ class Accordion {
 	constructor(el) {
 		this.el = el;
 		// Add ARIA attributes
-		el.ariaExpanded = false;
-		el.ariaHasPopup = true;
+		// el.ariaExpanded = false;
+		// el.ariaHasPopup = '';
 		// This is needed for global listener to close all accordions on ESC key
 		el.Accordion = this;
 
@@ -1368,6 +1368,9 @@ class Accordion {
 			this.toggler = el;
 			this.content = document.querySelector('[data-accordion="'+el.dataset.accordionTarget+'"]');
 		}
+		el.setAttribute('aria-haspopup', 'true');
+		el.setAttribute('aria-controls', this.content.id);
+		
 		this.toggler.addEventListener('click', (e) => this.onClick(e));
 		document.onkeydown = function(evt) {
 			evt = evt || window.event;
