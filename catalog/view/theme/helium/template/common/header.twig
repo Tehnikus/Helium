@@ -19,9 +19,9 @@
   <link rel="stylesheet preload" as="style" href="catalog/view/theme/helium/css/fontello.css" media="screen" />
   {# <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin> #}
   {# <link rel="preconnect" href="https://fonts.googleapis.com"crossorigin> #}
-  <link rel='preconnect' href='https://fonts.gstatic.com' crossorigin>
+  {# <link rel='preconnect' href='https://fonts.gstatic.com' crossorigin>
   <link rel='preload' as='style' href='https://fonts.googleapis.com/css2?family=Roboto|Roboto+Condensed:wght@500&display=swap'>
-  <link rel='stylesheet' href='https://fonts.googleapis.com/css2?family=Roboto|Roboto+Condensed:wght@500&display=swap'>
+  <link rel='stylesheet' href='https://fonts.googleapis.com/css2?family=Roboto|Roboto+Condensed:wght@500&display=swap'> #}
   {% if logo %}
   <link rel="preload" as="image" href="{{ logo }}">
   {% endif %}
@@ -83,20 +83,20 @@
       {{ language }}
       <a class="phone button" href="tel:{{ telephone }}" rel="phone" title="{{ text_phones }}" aria-label="{{ text_phones }}"><i class="icon-phone"></i><span class="hidden-md">{{ telephone }}</span></a>
       <div class="account-menu dropdown">
-        <button type="button" title="{{ text_account }}" aria-label="{{ text_account }}" class="account dropdown-toggle">
+        <button data-accordion-target="account" type="button" title="{{ text_account }}" aria-label="{{ text_account }}">
           <i class="icon-user"></i>
           <span class="hidden-md">{{ text_account }}</span>
         </button>
-        <div class="dropdown-menu collapse">
+        <div id="account_menu" data-accordion="account">
           {% if logged %}
-          <a class="button" title="{{ text_account }}" href="{{ account }}"><span class=>{{ text_account }}</a>
-          <a class="button" title="{{ text_order }}" href="{{ order }}">{{ text_order }}</a>
-          <a class="button" title="{{ text_transaction }}" href="{{ transaction }}">{{ text_transaction }}</a>
-          <a class="button" title="{{ text_download }}" href="{{ download }}">{{ text_download }}</a>
-          <a class="button" title="{{ text_logout }}" href="{{ logout }}">{{ text_logout }}</a>
+            <a class="button" title="{{ text_account }}" href="{{ account }}"><span class=>{{ text_account }}</a>
+            <a class="button" title="{{ text_order }}" href="{{ order }}">{{ text_order }}</a>
+            <a class="button" title="{{ text_transaction }}" href="{{ transaction }}">{{ text_transaction }}</a>
+            <a class="button" title="{{ text_download }}" href="{{ download }}">{{ text_download }}</a>
+            <a class="button" title="{{ text_logout }}" href="{{ logout }}">{{ text_logout }}</a>
           {% else %}
-          <a class="button" title="{{ text_register }}" href="{{ register }}">{{ text_register }}</a>
-          <a class="button" title="{{ text_login }}" href="{{ login }}">{{ text_login }}</a>
+            <a class="button" title="{{ text_register }}" href="{{ register }}">{{ text_register }}</a>
+            <a class="button" title="{{ text_login }}" href="{{ login }}">{{ text_login }}</a>
           {% endif %}
         </div>
       </div>

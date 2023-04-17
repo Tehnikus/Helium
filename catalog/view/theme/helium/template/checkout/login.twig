@@ -1,44 +1,42 @@
-  <div class="flex flex-column">
+  <div class="grid">
     <fieldset>
-    <h2>{{ text_new_customer }}</h2>
-    <p>{{ text_checkout }}</p>
-    <div class="form-control">
-      {% if account == 'register' %}
-        <input type="radio" name="account" id="register-checkout" value="register" checked="checked" />
-        <label for="register-checkout">{{ text_register }}</label>
-      {% else %}
-        <input type="radio" name="account" id="register-checkout" value="register" />
-        <label for="register-checkout">{{ text_register }}</label>
+      <h2>{{ text_new_customer }}</h2>
+      <p>{{ text_checkout }}</p>
+      <div class="form-control">
+        {% if account == 'register' %}
+          <input type="radio" name="account" id="register-checkout" value="register" checked="checked" />
+          <label for="register-checkout">{{ text_register }}</label>
+        {% else %}
+          <input type="radio" name="account" id="register-checkout" value="register" />
+          <label for="register-checkout">{{ text_register }}</label>
+        {% endif %}
+      </div>
+      {% if checkout_guest %}
+      <div class="form-control">
+        {% if account == 'guest' %}
+          <input type="radio" name="account" id="guest-checkout" value="guest" checked="checked" />
+          <label for="guest-checkout">{{ text_guest }}</label>
+        {% else %}
+          <input type="radio" name="account" id="guest-checkout" value="guest" />
+          <label for="guest-checkout">{{ text_guest }}</label>
+        {% endif %}
+      </div>
       {% endif %}
-    </div>
-    {% if checkout_guest %}
-    <div class="form-control">
-      {% if account == 'guest' %}
-        <input type="radio" name="account" id="guest-checkout" value="guest" checked="checked" />
-        <label for="guest-checkout">{{ text_guest }}</label>
-      {% else %}
-        <input type="radio" name="account" id="guest-checkout" value="guest" />
-        <label for="guest-checkout">{{ text_guest }}</label>
-      {% endif %}
-    </div>
-    {% endif %}
-    <p>{{ text_register_account }}</p>
-    <button type="button" id="button-account" class="primary">{{ button_continue }}</button>
+      <p>{{ text_register_account }}</p>
+      <button type="button" id="button-account" class="primary">{{ button_continue }}</button>
     </fieldset>
-  </div>
-  <div class="flex flex-column">
     <fieldset>
-    <h2>{{ text_returning_customer }}</h2>
-    <p>{{ text_i_am_returning_customer }}</p>
-    <div class="form-group">
-      <label for="input-email">{{ entry_email }}</label>
-      <input type="text" name="email" value="" placeholder="{{ entry_email }}" id="input-email" />
-    </div>
-    <div class="form-group">
-      <label for="input-password">{{ entry_password }}</label>
-      <input type="password" name="password" value="" placeholder="{{ entry_password }}" id="input-password" />
-    </div>
+      <h2>{{ text_returning_customer }}</h2>
+      <p>{{ text_i_am_returning_customer }}</p>
+      <div class="form-group">
+        <label for="input-email">{{ entry_email }}</label>
+        <input type="text" name="email" value="" placeholder="{{ entry_email }}" id="input-email" />
+      </div>
+      <div class="form-group">
+        <label for="input-password">{{ entry_password }}</label>
+        <input type="password" name="password" value="" placeholder="{{ entry_password }}" id="input-password" />
+      </div>
       <button type="button" id="button-login" class="primary">{{ button_login }}</button>
       <a class="button" href="{{ forgotten }}">{{ text_forgotten }}</a>
-      </fieldset>
+    </fieldset>
   </div>

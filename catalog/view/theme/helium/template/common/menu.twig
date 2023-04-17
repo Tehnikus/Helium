@@ -3,7 +3,7 @@
     type="button"
     id="main-menu-trigger"
     class="primary main-menu-trigger"
-    aria-role="menu"
+    role="button"
     aria-haspopup="menu"
     aria-label="{{ text_category }}"
     data-accordion-target="main-menu"
@@ -23,23 +23,20 @@
       {{ text_category }}
     </span>
   </button>
-  <div id="main-menu" aria-haspopup="menu" class="dropdown-menu collapse">
-    <div class="menu-inner">
-      <div class="menu">
-        {% for parent, category in categories %}
-          {# {{ category | json_encode(constant('JSON_UNESCAPED_UNICODE')) }} #}
-          <ul aria-role="menu" data-parent="{{ parent }}">
-            {% for child in category %}
-              <li {% if child.children_count > 0 %} data-category-id="{{ child.category_id }}" {%  endif %}>
-                <a role="menuitem" href="{{ child.href }}">{{ child.name }}</a>
-                <span class="product_count">{{child.product_count}}</span>
-              </li>
-            {% endfor %}
-          </ul>
+
+  <div aria-label="{{ text_category }}" data-accordion="main-menu" id="main-menu" class="menu">
+    {% for parent, category in categories %}
+      <ul role="menu" data-parent="{{ parent }}">
+        {% for child in category %}
+          <li role="menuitem" {% if child.children_count > 0 %} data-category-id="{{ child.category_id }}" {%  endif %}>
+            <a href="{{ child.href }}">{{ child.name }}</a>
+            <span role="status" class="product_count">{{child.product_count}}</span>
+          </li>
         {% endfor %}
-      </div>
-    </div>
+      </ul>
+    {% endfor %}
   </div>
+
 
 
   {# Build recursive nested list #}

@@ -46,43 +46,39 @@
         {% for location in locations %}
         <div class="panel panel-default">
           <div class="panel-heading">
-            <h4 class="panel-title"><a href="#collapse-location{{ location.location_id }}" class="accordion-toggle" data-toggle="collapse" data-parent="#accordion">{{ location.name }} <i class="icon-chevron-down"></i></a></h4>
+            <h4>{{ location.name }}</h4>
           </div>
-          <div class="panel-collapse collapse" id="collapse-location{{ location.location_id }}">
-            <div class="panel-body">
-              <div class="row">
-                {% if location.image %}
-                <div class="col-sm-3"><img loading="lazy" src="{{ location.image }}" alt="{{ location.name }}" title="{{ location.name }}" class="img-thumbnail" /></div>
+            <div class="row">
+              {% if location.image %}
+              <div class="col-sm-3"><img loading="lazy" src="{{ location.image }}" alt="{{ location.name }}" title="{{ location.name }}" class="img-thumbnail" /></div>
+              {% endif %}
+              <div class="col-sm-3"><strong>{{ location.name }}</strong><br/>
+                <address>
+                {{ location.address }}
+                </address>
+                {% if location.geocode %}
+                <a href="https://maps.google.com/maps?q={{ location.geocode|url_encode }}&hl={{ geocode_hl }}&t=m&z=15" target="_blank" class="btn btn-info"><i class="icon-location"></i> {{ button_map }}</a>
                 {% endif %}
-                <div class="col-sm-3"><strong>{{ location.name }}</strong><br/>
-                  <address>
-                  {{ location.address }}
-                  </address>
-                  {% if location.geocode %}
-                  <a href="https://maps.google.com/maps?q={{ location.geocode|url_encode }}&hl={{ geocode_hl }}&t=m&z=15" target="_blank" class="btn btn-info"><i class="icon-location"></i> {{ button_map }}</a>
-                  {% endif %}
-                </div>
-                <div class="col-sm-3"> <strong>{{ text_telephone }}</strong><br/>
-                  {{ location.telephone }}<br/>
-                  <br/>
-                  {% if location.fax %}
-                  <strong>{{ text_fax }}</strong><br/>
-                  {{ location.fax }}
-                  {% endif %}
-                </div>
-                <div class="col-sm-3">
-                  {% if location.open %}
-                  <strong>{{ text_open }}</strong><br/>
-                  {{ location.open }}<br/>
-                  <br/>
-                  {% endif %}
-                  {% if location.comment %}
-                  <strong>{{ text_comment }}</strong><br/>
-                  {{ location.comment }}
-                  {% endif %}
-                </div>
               </div>
-            </div>
+              <div class="col-sm-3"> <strong>{{ text_telephone }}</strong><br/>
+                {{ location.telephone }}<br/>
+                <br/>
+                {% if location.fax %}
+                <strong>{{ text_fax }}</strong><br/>
+                {{ location.fax }}
+                {% endif %}
+              </div>
+              <div class="col-sm-3">
+                {% if location.open %}
+                <strong>{{ text_open }}</strong><br/>
+                {{ location.open }}<br/>
+                <br/>
+                {% endif %}
+                {% if location.comment %}
+                <strong>{{ text_comment }}</strong><br/>
+                {{ location.comment }}
+                {% endif %}
+              </div>
           </div>
         </div>
         {% endfor %}
@@ -96,7 +92,7 @@
             <div class="col-sm-10">
               <input type="text" name="name" value="{{ name }}" id="input-name" />
               {% if error_name %}
-              <div class="text-danger">{{ error_name }}</div>
+              <span class="text-danger">{{ error_name }}</div>
               {% endif %}
             </div>
           </div>
@@ -112,7 +108,7 @@
               enterkeyhint="next"
             />
             {% if error_email %}
-              <div class="text-danger">{{ error_email }}</div>
+              <span class="text-danger">{{ error_email }}</div>
             {% endif %} 
           </div>
           <div class="form-group required">
@@ -120,7 +116,7 @@
             <div class="col-sm-10">
               <textarea name="enquiry" rows="10" id="input-enquiry" class="form-control">{{ enquiry }}</textarea>
               {% if error_enquiry %}
-              <div class="text-danger">{{ error_enquiry }}</div>
+              <span class="text-danger">{{ error_enquiry }}</div>
               {% endif %}
             </div>
           </div>
