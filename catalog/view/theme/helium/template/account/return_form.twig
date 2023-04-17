@@ -94,8 +94,16 @@
             {% endif %}
           </div>
           <div class="form-group">
-            <input type="date" name="date_ordered" value="{{ date_ordered }}" placeholder="{{ entry_date_ordered }}" data-date-format="YYYY-MM-DD" id="input-date-ordered" />
             <label for="input-date-ordered">{{ entry_date_ordered }}</label>
+            <input 
+              type="date" 
+              name="date_ordered" 
+              value="{{ date_ordered }}" 
+              placeholder="{{ entry_date_ordered }}" 
+              data-date-format="YYYY-MM-DD" 
+              id="input-date-ordered"
+              step="1"
+            />
           </div>
         </fieldset>
         <fieldset>
@@ -105,7 +113,7 @@
             <input type="text" name="product" value="{{ product }}" placeholder="{{ entry_product }}" id="input-product" />
             <input type="hidden" name="product_id" value="{{ product_id }}" />
             {% if error_product %}
-            <span class="text-danger">{{ error_product }}</div>
+              <span class="text-danger">{{ error_product }}</div>
             {% endif %}
           </div>
           <div class="form-group required">
@@ -188,10 +196,4 @@
 </main>
 {{ content_bottom }}
 {{ column_right }}
-<script type="text/javascript"><!--
-// $('.date').datetimepicker({
-// 	language: '{{ datepicker }}',
-// 	pickTime: false
-// });
-//--></script> 
 {{ footer }} 
