@@ -1370,6 +1370,7 @@ class Accordion {
 		}
 		el.setAttribute('aria-haspopup', 'true');
 		el.setAttribute('aria-controls', this.content.id);
+		this.content.inert = true;
 		
 		this.toggler.addEventListener('click', (e) => this.onClick(e));
 		document.onkeydown = function(evt) {
@@ -1409,6 +1410,7 @@ class Accordion {
 			this.el.open = true;
 		}
 		window.requestAnimationFrame(() => this.expand());
+		this.content.inert = false;
 	}
 
 	expand() {
@@ -1476,6 +1478,7 @@ class Accordion {
 
 		this.animation.onfinish = () => this.onAnimationFinish(false);
 		this.animation.oncancel = () => this.isClosing = false;
+		this.content.inert = true;
 	}
 
 	onAnimationFinish(open) {
