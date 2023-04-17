@@ -45,7 +45,7 @@
           minlength="3" maxlength="32"
         />
         {% if error_firstname %}
-          <div class="text-danger">{{ error_firstname }}</div>
+          <span class="text-danger">{{ error_firstname }}</div>
         {% endif %}
       </div>
 
@@ -63,7 +63,7 @@
           minlength="3" maxlength="32"
         />
         {% if error_lastname %}
-          <div class="text-danger">{{ error_lastname }}</div>
+          <span class="text-danger">{{ error_lastname }}</div>
         {% endif %}
       </div>
 
@@ -79,7 +79,7 @@
           enterkeyhint="next"
         />
         {% if error_email %}
-          <div class="text-danger">{{ error_email }}</div>
+          <span class="text-danger">{{ error_email }}</div>
         {% endif %} 
       </div>
 
@@ -96,7 +96,7 @@
           minlength="3" maxlength="32"
         />
         {% if error_telephone %}
-          <div class="text-danger">{{ error_telephone }}</div>
+          <span class="text-danger">{{ error_telephone }}</div>
         {% endif %} 
       </div>
           
@@ -153,7 +153,7 @@
           
           </select>
           {% if error_custom_field[custom_field.custom_field_id] %}
-          <div class="text-danger">{{ error_custom_field[custom_field.custom_field_id] }}</div>
+          <span class="text-danger">{{ error_custom_field[custom_field.custom_field_id] }}</div>
           {% endif %} </div>
       </div>
       {% endif %}
@@ -175,7 +175,7 @@
             </div>
             {% endfor %} </div>
           {% if error_custom_field[custom_field.custom_field_id] %}
-          <div class="text-danger">{{ error_custom_field[custom_field.custom_field_id] }}</div>
+          <span class="text-danger">{{ error_custom_field[custom_field.custom_field_id] }}</div>
           {% endif %} </div>
       </div>
       {% endif %}
@@ -195,7 +195,7 @@
               {% endif %} </div>
             {% endfor %} </div>
           {% if error_custom_field[custom_field.custom_field_id] %}
-          <div class="text-danger">{{ error_custom_field[custom_field.custom_field_id] }}</div>
+          <span class="text-danger">{{ error_custom_field[custom_field.custom_field_id] }}</div>
           {% endif %} </div>
       </div>
       {% endif %}
@@ -205,7 +205,7 @@
         <div class="col-sm-10">
           <input type="text" name="custom_field[{{ custom_field.location }}][{{ custom_field.custom_field_id }}]" value="{% if register_custom_field[custom_field.custom_field_id] %}{{ register_custom_field[custom_field.custom_field_id] }}{% else %}{{ custom_field.value }}{% endif %}" placeholder="{{ custom_field.name }}" id="input-custom-field{{ custom_field.custom_field_id }}" />
           {% if error_custom_field[custom_field.custom_field_id] %}
-          <div class="text-danger">{{ error_custom_field[custom_field.custom_field_id] }}</div>
+          <span class="text-danger">{{ error_custom_field[custom_field.custom_field_id] }}</div>
           {% endif %} </div>
       </div>
       {% endif %}
@@ -215,7 +215,7 @@
         <div class="col-sm-10">
           <textarea name="custom_field[{{ custom_field.location }}][{{ custom_field.custom_field_id }}]" rows="5" placeholder="{{ custom_field.name }}" id="input-custom-field{{ custom_field.custom_field_id }}" class="form-control">{% if register_custom_field[custom_field.custom_field_id] %}{{ register_custom_field[custom_field.custom_field_id] }}{% else %}{{ custom_field.value }}{% endif %}</textarea>
           {% if error_custom_field[custom_field.custom_field_id] %}
-          <div class="text-danger">{{ error_custom_field[custom_field.custom_field_id] }}</div>
+          <span class="text-danger">{{ error_custom_field[custom_field.custom_field_id] }}</div>
           {% endif %} </div>
       </div>
       {% endif %}
@@ -226,7 +226,7 @@
           <button type="button" id="button-custom-field{{ custom_field.custom_field_id }}" class="button"><i class="fa fa-upload"></i> {{ button_upload }}</button>
           <input type="hidden" name="custom_field[{{ custom_field.location }}][{{ custom_field.custom_field_id }}]" value="{% if register_custom_field[custom_field.custom_field_id] %}  {{ register_custom_field[custom_field.custom_field_id] }} {% endif %}" />
           {% if error_custom_field[custom_field.custom_field_id] %}
-          <div class="text-danger">{{ error_custom_field[custom_field.custom_field_id] }}</div>
+          <span class="text-danger">{{ error_custom_field[custom_field.custom_field_id] }}</div>
           {% endif %}</div>
       </div>
       {% endif %}
@@ -240,7 +240,7 @@
             <button type="button" class="button"><i class="icon-calendar"></i></button>
             </span></div>
           {% if error_custom_field[custom_field.custom_field_id] %}
-          <div class="text-danger">{{ error_custom_field[custom_field.custom_field_id] }}</div>
+          <span class="text-danger">{{ error_custom_field[custom_field.custom_field_id] }}</div>
           {% endif %} </div>
       </div>
       {% endif %}
@@ -254,7 +254,7 @@
             <button type="button" class="button"><i class="icon-calendar"></i></button>
             </span></div>
           {% if error_custom_field[custom_field.custom_field_id] %}
-          <div class="text-danger">{{ error_custom_field[custom_field.custom_field_id] }}</div>
+          <span class="text-danger">{{ error_custom_field[custom_field.custom_field_id] }}</div>
           {% endif %} </div>
       </div>
       {% endif %}
@@ -268,7 +268,7 @@
             <button type="button" class="button"><i class="icon-calendar"></i></button>
             </span></div>
           {% if error_custom_field[custom_field.custom_field_id] %}
-          <div class="text-danger">{{ error_custom_field[custom_field.custom_field_id] }}</div>
+          <span class="text-danger">{{ error_custom_field[custom_field.custom_field_id] }}</div>
           {% endif %} </div>
       </div>
       {% endif %}
@@ -344,7 +344,7 @@
         <div class="col-sm-10">
           <input type="text" name="cheque" value="{{ cheque }}" placeholder="{{ entry_cheque }}" id="input-cheque" />
           {% if error_cheque %}
-          <div class="text-danger">{{ error_cheque }}</div>
+          <span class="text-danger">{{ error_cheque }}</div>
           {% endif %} </div>
       </div>
       <div class="form-group payment required" id="payment-paypal">
@@ -352,7 +352,7 @@
         <div class="col-sm-10">
           <input type="text" name="paypal" value="{{ paypal }}" placeholder="{{ entry_paypal }}" id="input-paypal" />
           {% if error_paypal %}
-          <div class="text-danger">{{ error_paypal }}</div>
+          <span class="text-danger">{{ error_paypal }}</div>
           {% endif %} </div>
       </div>
       <div class="payment" id="payment-bank">
@@ -379,7 +379,7 @@
           <div class="col-sm-10">
             <input type="text" name="bank_account_name" value="{{ bank_account_name }}" placeholder="{{ entry_bank_account_name }}" id="input-bank-account-name" />
             {% if error_bank_account_name %}
-            <div class="text-danger">{{ error_bank_account_name }}</div>
+            <span class="text-danger">{{ error_bank_account_name }}</div>
             {% endif %} </div>
         </div>
         <div class="form-group required">
@@ -387,7 +387,7 @@
           <div class="col-sm-10">
             <input type="text" name="bank_account_number" value="{{ bank_account_number }}" placeholder="{{ entry_bank_account_number }}" id="input-bank-account-number" />
             {% if error_bank_account_number %}
-            <div class="text-danger">{{ error_bank_account_number }}</div>
+            <span class="text-danger">{{ error_bank_account_number }}</div>
             {% endif %} </div>
         </div>
         {% for custom_field in custom_fields %}
@@ -447,7 +447,7 @@
           
             </select>
             {% if error_custom_field[custom_field.custom_field_id] %}
-            <div class="text-danger">{{ error_custom_field[custom_field.custom_field_id] }}</div>
+            <span class="text-danger">{{ error_custom_field[custom_field.custom_field_id] }}</div>
             {% endif %} </div>
         </div>
         {% endif %}
@@ -467,7 +467,7 @@
                 {% endif %} </div>
               {% endfor %} </div>
             {% if error_custom_field[custom_field.custom_field_id] %}
-            <div class="text-danger">{{ error_custom_field[custom_field.custom_field_id] }}</div>
+            <span class="text-danger">{{ error_custom_field[custom_field.custom_field_id] }}</div>
             {% endif %} </div>
         </div>
         {% endif %}
@@ -486,7 +486,7 @@
                 {% endif %} </div>
               {% endfor %} </div>
             {% if error_custom_field[custom_field.custom_field_id] %}
-            <div class="text-danger">{{ error_custom_field[custom_field.custom_field_id] }}</div>
+            <span class="text-danger">{{ error_custom_field[custom_field.custom_field_id] }}</div>
             {% endif %} </div>
         </div>
         {% endif %}
@@ -496,7 +496,7 @@
           <div class="col-sm-10">
             <input type="text" name="custom_field[{{ custom_field.location }}][{{ custom_field.custom_field_id }}]" value="{% if register_custom_field[custom_field.custom_field_id] %}{{ register_custom_field[custom_field.custom_field_id] }}{% else %}{{ custom_field.value }}{% endif %}" placeholder="{{ custom_field.name }}" id="input-custom-field{{ custom_field.custom_field_id }}" />
             {% if error_custom_field[custom_field.custom_field_id] %}
-            <div class="text-danger">{{ error_custom_field[custom_field.custom_field_id] }}</div>
+            <span class="text-danger">{{ error_custom_field[custom_field.custom_field_id] }}</div>
             {% endif %} </div>
         </div>
         {% endif %}
@@ -506,7 +506,7 @@
           <div class="col-sm-10">
             <textarea name="custom_field[{{ custom_field.location }}][{{ custom_field.custom_field_id }}]" rows="5" placeholder="{{ custom_field.name }}" id="input-custom-field{{ custom_field.custom_field_id }}" class="form-control">{% if register_custom_field[custom_field.custom_field_id] %}{{ register_custom_field[custom_field.custom_field_id] }}{% else %}{{ custom_field.value }}{% endif %}</textarea>
             {% if error_custom_field[custom_field.custom_field_id] %}
-            <div class="text-danger">{{ error_custom_field[custom_field.custom_field_id] }}</div>
+            <span class="text-danger">{{ error_custom_field[custom_field.custom_field_id] }}</div>
             {% endif %} </div>
         </div>
         {% endif %}
@@ -517,7 +517,7 @@
             <button type="button" id="button-custom-field{{ custom_field.custom_field_id }}" class="button"><i class="fa fa-upload"></i> {{ button_upload }}</button>
             <input type="hidden" name="custom_field[{{ custom_field.location }}][{{ custom_field.custom_field_id }}]" value="{% if register_custom_field[custom_field.custom_field_id] %}  {{ register_custom_field[custom_field.custom_field_id] }} {% endif %}" />
             {% if error_custom_field[custom_field.custom_field_id] %}
-            <div class="text-danger">{{ error_custom_field[custom_field.custom_field_id] }}</div>
+            <span class="text-danger">{{ error_custom_field[custom_field.custom_field_id] }}</div>
             {% endif %} </div>
         </div>
         {% endif %}
@@ -531,7 +531,7 @@
               <button type="button" class="button"><i class="icon-calendar"></i></button>
               </span></div>
             {% if error_custom_field[custom_field.custom_field_id] %}
-            <div class="text-danger">{{ error_custom_field[custom_field.custom_field_id] }}</div>
+            <span class="text-danger">{{ error_custom_field[custom_field.custom_field_id] }}</div>
             {% endif %} </div>
         </div>
         {% endif %}
@@ -545,7 +545,7 @@
               <button type="button" class="button"><i class="icon-calendar"></i></button>
               </span></div>
             {% if error_custom_field[custom_field.custom_field_id] %}
-            <div class="text-danger">{{ error_custom_field[custom_field.custom_field_id] }}</div>
+            <span class="text-danger">{{ error_custom_field[custom_field.custom_field_id] }}</div>
             {% endif %} </div>
         </div>
         {% endif %}
@@ -559,7 +559,7 @@
               <button type="button" class="button"><i class="icon-calendar"></i></button>
               </span></div>
             {% if error_custom_field[custom_field.custom_field_id] %}
-            <div class="text-danger">{{ error_custom_field[custom_field.custom_field_id] }}</div>
+            <span class="text-danger">{{ error_custom_field[custom_field.custom_field_id] }}</div>
             {% endif %} </div>
         </div>
         {% endif %}
@@ -573,7 +573,7 @@
         <div class="col-sm-10">
           <input type="password" name="password" value="{{ password }}" placeholder="{{ entry_password }}" id="input-password" />
           {% if error_password %}
-          <div class="text-danger">{{ error_password }}</div>
+          <span class="text-danger">{{ error_password }}</div>
           {% endif %} </div>
       </div>
       <div class="form-group required">
@@ -581,7 +581,7 @@
         <div class="col-sm-10">
           <input type="password" name="confirm" value="{{ confirm }}" placeholder="{{ entry_confirm }}" id="input-confirm" />
           {% if error_confirm %}
-          <div class="text-danger">{{ error_confirm }}</div>
+          <span class="text-danger">{{ error_confirm }}</div>
           {% endif %} </div>
       </div>
     </fieldset>
@@ -709,7 +709,7 @@ $('button[id^=\'button-custom-field\']').on('click', function() {
 					$(node).parent().find('.text-danger').remove();
 
 					if (json['error']) {
-						$(node).parent().find('input').after('<div class="text-danger">' + json['error'] + '</div>');
+						$(node).parent().find('input').after('<span class="text-danger">' + json['error'] + '</div>');
 					}
 
 					if (json['success']) {

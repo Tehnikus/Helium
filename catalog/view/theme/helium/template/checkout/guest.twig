@@ -569,7 +569,7 @@ $('#collapse-payment-address button[id^=\'button-payment-custom-field\']').on('c
 					$(node).parent().find('.text-danger').remove();
 
 					if (json['error']) {
-						$(node).parent().find('input[name^=\'custom_field\']').after('<div class="text-danger">' + json['error'] + '</div>');
+						$(node).parent().find('input[name^=\'custom_field\']').after('<span class="text-danger">' + json['error'] + '</div>');
 					}
 
 					if (json['success']) {

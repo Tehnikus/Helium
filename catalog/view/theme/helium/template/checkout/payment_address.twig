@@ -338,7 +338,7 @@ $('#collapse-payment-address button[id^=\'button-payment-custom-field\']').on('c
 					$(element).parent().find('.text-danger').remove();
 
 					if (json['error']) {
-						$(element).parent().find('input[name^=\'custom_field\']').after('<div class="text-danger">' + json['error'] + '</div>');
+						$(element).parent().find('input[name^=\'custom_field\']').after('<span class="text-danger">' + json['error'] + '</div>');
 					}
 
 					if (json['success']) {
