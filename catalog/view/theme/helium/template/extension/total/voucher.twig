@@ -1,18 +1,16 @@
-<h4 class="panel-title">
-  <a href="#collapse-voucher" data-toggle="collapse" data-parent="#accordion" class="accordion-toggle">
-    {{ heading_title }} <i class="icon-chevron-down"></i>
-  </a>
-</h4>
-<div id="collapse-voucher" class="panel-collapse collapse">
-  <div class="form-group">
-    <label for="input-voucher">{{ entry_voucher }}</label>
-    <div class="input-group">
-      <input type="text" name="voucher" value="{{ voucher }}" placeholder="{{ entry_voucher }}" id="input-voucher" />
-      <button type="submit" id="button-voucher" class="primary">{{ button_voucher }}</button>
+<details aria-labelledby="enter_voucher">
+  <summary><h4 id="enter_voucher">{{ heading_title }}</h4></summary>
+    <div class="form-group">
+      <label for="input-voucher">{{ your_voucher }}</label>
+      <div class="input-group">
+        <input type="text" name="voucher" value="{{ voucher }}" placeholder="{{ entry_voucher }}" id="input-voucher" />
+        <button type="submit" id="button-voucher" class="primary">{{ ok }}</button>
+      </div>
+      <span>{{ entry_voucher }}</span>
     </div>
-    <span>{{ entry_voucher }}</span>
   </div>
-</div>
+</details>
+
       <script type="text/javascript">
 	  
 		// fetch('index.php?route=extension/total/voucher/voucher',{method: "POST"})
