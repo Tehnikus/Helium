@@ -677,7 +677,8 @@ fieldset {
 	color: var(--danger);
 	font-weight: 600;
 }
-.form-group .text-danger {
+/* Text that follows input group or form group - eggog message or some explanation */
+.input-group + span , .form-group + span {
 	grid-column: span 2;
 }
 legend {
