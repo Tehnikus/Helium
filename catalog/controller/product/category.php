@@ -722,7 +722,7 @@ class ControllerProductCategory extends Controller {
 			$data['heading_title'] = $data['name'];
 		}
 
-		$this->document->setDescription($data['meta_description']);
+		$this->document->setDescription($data['meta_description'] ? $data['meta_description'] : substr(strip_tags($data['description']), 0, 140).'...');
 		$this->document->setKeywords($data['meta_keyword']);
 	}
 }
