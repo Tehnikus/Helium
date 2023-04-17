@@ -110,20 +110,6 @@ document.addEventListener('DOMContentLoaded', function() {
 	mainMenu();
 	countdown(d);
 
-	// Close all accordions on ESC key
-	// document.onkeydown = function(evt) {
-	// 	evt = evt || window.event;
-	// 	var isEscape = false;
-	// 	if ("key" in evt) {
-	// 		isEscape = (evt.key === "Escape" || evt.key === "Esc");
-	// 	} else {
-	// 		isEscape = (evt.keyCode === 27);
-	// 	}
-	// 	if (isEscape) {
-	// 		Accordion.closeAllAccordions();
-	// 	}
-	// };
-
 	// TODO Move this to it's function
 	let pagination = document.querySelector('main ul.pagination');
 	if (!!pagination) {
@@ -309,21 +295,7 @@ var cart = {
 					ajax(url, data, function(response) {
 						console.log(response);
 						dialog.create('<span class="h3">'+options+'</span>'+response.data);
-						// if ('script' in response) {
-							// let new_script = document.createElement("script");
-							// new_script.type = 'application/ld+json';
-							// new_script.text = response.script;
-							// console.log(new_script);
-							// document.head.appendChild(new_script);
-							// eval(response.script);
-
-
-							// myScript.addEventListener("load", scriptLoaded, false);
-
-							// function scriptLoaded() {
-							// 	console.log("Script is ready to rock and roll!");
-							// }
-						// }
+						
 					},null,null,null,'POST','json',true);
 				}
 			},
@@ -621,203 +593,7 @@ document.addEventListener('click', function(e) {
 		login();
 	}
 
-	// Dropdowns
-	// Очень-очень сильное колдунство
-	// [].forEach.call(document.querySelectorAll('.dropdown-toggle, [data-accordion-target]'), function(el) {
-	// 	if (el.contains(e.target) || el == e.target) {
-	// 		accordion(el, true);
-	// 		animated_icon = el.querySelector('.icon');
-	// 		if(!!animated_icon) {
-	// 			animated_icon.classList.toggle('open');
-	// 		}
-	// 	}
-	// })
 });
-
-// class Accordion {
-// 	constructor(el) {
-// 		this.el = el;
-// 		el.ariaExpanded = false;
-// 		el.ariaHasPopup = true;
-// 		el.Accordion = this;
-// 		this.summary = el.querySelector('summary') || document.getElementById(el.dataset.accordionTarget);
-// 		let content = el.querySelector('.content') || document.getElementById(el.dataset.accordionTarget) || el.nextElementSibling;
-// 		this.content = content;
-// 		  console.log(this.content);
-
-// 		this.animation = null;
-// 		this.isClosing = false;
-// 		this.isExpanding = false;
-// 		this.summary.addEventListener('click', (e) => this.onClick(e));
-// 	}
-
-// 	onClick(e) {
-// 		e.preventDefault();
-// 		this.el.style.overflow = 'hidden';
-// 		if (this.isClosing || !this.el.open) {
-// 			this.open();
-// 		} else if (this.isExpanding || this.el.open) {
-// 			this.shrink();
-// 		}
-// 	}
-
-// 	shrink() {
-// 		this.isClosing = true;
-// 		this.el.ariaExpanded = false;
-// 		// console.log(this.el);
-
-// 		const startHeight = `${this.el.offsetHeight}px`;
-// 		const endHeight = `${this.summary.offsetHeight}px`;
-
-// 		if (this.animation) {
-// 			this.animation.cancel();
-// 		}
-
-// 		// Start a WAAPI animation
-// 		this.animation = this.el.animate({
-// 			height: [startHeight, endHeight]
-// 		}, {
-// 			duration: 400,
-// 			easing: 'ease-out'
-// 		});
-
-// 		this.animation.onfinish = () => this.onAnimationFinish(false);
-// 		this.animation.oncancel = () => this.isClosing = false;
-// 	}
-
-// 	open() {
-// 		this.el.style.height = `${this.el.offsetHeight}px`;
-// 		this.el.open = true;
-// 		window.requestAnimationFrame(() => this.expand());
-// 	}
-
-// 	expand() {
-// 		this.el.ariaExpanded = true;
-// 		// console.log(this.el);
-// 		this.isExpanding = true;
-// 		const startHeight = `${this.el.offsetHeight}px`;
-// 		if (!this.content) {
-// 			return;
-// 		}
-// 		const endHeight = `${this.summary.offsetHeight + this.content.offsetHeight}px`;
-
-// 		if (this.animation) {
-// 			this.animation.cancel();
-// 		}
-
-// 		this.animation = this.el.animate({
-// 			height: [startHeight, endHeight]
-// 		}, {
-// 			duration: 400,
-// 			easing: 'cubic-bezier(0.87, 0, 0.13, 1)'
-// 		});
-// 		this.animation.onfinish = () => this.onAnimationFinish(true);
-// 		this.animation.oncancel = () => this.isExpanding = false;
-// 	}
-
-// 	onAnimationFinish(open) {
-// 		this.el.open = open;
-// 		this.animation = null;
-// 		this.isClosing = false;
-// 		this.isExpanding = false;
-// 		this.el.style.height = this.el.style.overflow = '';
-// 	}
-// 	static closeAllAccordions() {
-// 		const accordions = document.querySelectorAll('details, [data-accordion-target]');
-// 		accordions.forEach((accordion) => {
-// 			const instance = accordion.Accordion;
-// 			if (instance && instance.el.open) {
-// 				instance.shrink();
-// 			}
-// 		});
-// 	}
-// }
-  
-// document.querySelectorAll('details, [data-accordion-target]').forEach((el) => {
-// 	console.log(el);
-// 	new Accordion(el);
-// });
-
-
-
-
-// function accordion(toggler = null, close_all = false) {
-// 	let target = toggler.parentElement.querySelector('.dropdown-menu') || document.querySelector('[data-openedby="'+toggler.dataset.target+'"]') || toggler.href.split('#')[1];
-// 	if (close_all == true || toggler == null) {
-// 		[].forEach.call(document.getElementsByClassName('collapse-in'), function(e) {
-// 			if(e !== target) {
-// 				toggle_menu(e);
-// 			}
-// 		})
-// 	}
-// 	if (!!target) {
-// 		toggle_menu(target);
-// 	} else {
-// 		console.log('Target menu not found in element', toggler);
-// 	}
-// 	function toggle_menu(el) {
-// 		['collapse', 'collapse-in'].forEach(function(c) {
-// 			el.classList.toggle(c)
-// 		});
-// 	}
-// }
-
-
-
-// Main menu function
-// Appends open and close buttons to list of categories
-// function mainMenu() {
-// 	let main_menu = document.getElementById('main-menu');
-// 	let ul = main_menu.getElementsByClassName('top-level');
-
-// 	[].forEach.call(ul, function(e) {
-// 		renderMenuButtons(e);
-// 	});
-
-// 	function renderMenuButtons(ul) {
-// 		let nested_uls = ul.querySelectorAll('li > ul');
-// 		for (const nested_ul in nested_uls) {
-// 			if (nested_uls.hasOwnProperty(nested_ul)) {
-// 				const el = nested_uls[nested_ul];
-// 				// render toggle buttons
-// 				let inner_text = el.parentElement.querySelector('a').innerText;
-// 				let open_button = createElm({
-// 					type: 'button',
-// 					attrs: {'class': 'menu-toggle', 'aria-label':js_lang.openlist}
-// 				});
-// 				let back_button = createElm({
-// 					type: 'button',
-// 					attrs: {'class': 'menu-back', 'aria-label':js_lang.back_to+' '+inner_text},
-// 					props: {'innerText': inner_text}
-// 				});
-
-
-// 				// Toggle visibility and scrolling classes
-// 				[open_button, back_button].forEach(function(button) {
-// 					button.addEventListener('click', function() {
-// 						// remove scrolling ability for other elements than visible one so they do not overlap
-// 						for (const other_uls in nested_uls) {
-// 							if (nested_uls.hasOwnProperty(other_uls)) {
-// 								const element = nested_uls[other_uls];
-// 								// element.scrollTop = 0;
-// 								element.classList.remove('scrollable');
-// 							}
-// 						}
-// 						// Then slide into view target ul and add scrolling ability to it
-// 						['open', 'scrollable'].map(each_class => el.classList.toggle(each_class));
-// 						// Toggle scrolling ability on back action on parent list element
-// 						if (!el.classList.contains('open')) {
-// 							console.log(el.parentElement.parentElement);
-// 							el.parentElement.parentElement.classList.add('scrollable');
-// 						}
-// 					})
-// 				});
-// 				el.insertAdjacentElement('beforeBegin', open_button);
-// 				el.insertAdjacentElement('afterBegin', back_button);
-// 			}
-// 		}
-// 	}
-// }
 
 
 
@@ -1378,84 +1154,6 @@ function searchFunction () {
 }
 
 
-// ----------------- Не нужно ------------------- //
-
-// Collapse and expand caregory description
-// let category_description = document.querySelector('.category-description');
-// if (!!category_description && category_description.scrollHeight > 200) {
-// 	let expand_btn = createElm({type:'button', attrs: {'class':'expand_button'}, props: {'innerHTML': js_lang.expand}});
-// 	expand_btn.addEventListener('click', function() {
-// 		let h = category_description.style.maxHeight;
-// 		if ( h == '') {
-// 			category_description.style.maxHeight = category_description.scrollHeight+'px';
-// 			expand_btn.innerText = js_lang.collapse;
-// 		} else {
-// 			if(h !== '200px') {
-// 				category_description.style.maxHeight = '200px';
-// 				expand_btn.innerText = js_lang.expand;
-// 			} else {
-// 				category_description.style.maxHeight = category_description.scrollHeight+'px';
-// 				expand_btn.innerText = js_lang.collapse;
-// 			}
-// 		}
-// 	});
-// 	category_description.insertAdjacentElement('afterend', expand_btn);
-// }
-
-	// ** FADE OUT FUNCTION **
-// function fadeOut(el, callback) {
-//     el.style.opacity = 1;
-//     (function fade() {
-//         if ((el.style.opacity -= .1) < 0) {
-// 			el.style.display = "none";
-// 			document.body.removeChild(el);
-// 			callback;
-//         } else {
-// 			requestAnimationFrame(fade);
-//         }
-// 	})();
-// };
-
-// // ** FADE IN FUNCTION **
-// function fadeIn(el, display) {
-//     el.style.opacity = 0;
-//     el.style.display = display || "block";
-//     (function fade() {
-//         var val = parseFloat(el.style.opacity);
-//         if (!((val += .1) > 1)) {
-//             el.style.opacity = val;
-//             requestAnimationFrame(fade);
-//         }
-// 	})();
-// };
-
-
-
-// // var transitionEnd = whichTransitionEvent();
-// // element.addEventListener(transitionEnd, theFunctionToInvoke, false);
-
-// // function theFunctionToInvoke(){
-// // // set margin of div here
-// // }
-// // Wait until transition ends
-// function whichTransitionEvent(){
-// 	var t;
-// 	var el = document.createElement('fakeelement');
-// 	var transitions = {
-// 	  'transition':'transitionend',
-// 	  'OTransition':'oTransitionEnd',
-// 	  'MozTransition':'transitionend',
-// 	  'WebkitTransition':'webkitTransitionEnd'
-// 	}
-
-// 	for(t in transitions){
-// 		if( el.style[t] !== undefined ){
-// 			return transitions[t];
-// 		}
-// 	}
-// }
-
-
 
 // DONE add price animation when product has quantity discount
 function animatePrice() {
@@ -1474,52 +1172,57 @@ function animatePrice() {
 	end = base_price;
 	// Quantity discounts
 	if ('discounts' in price_list[product_id]) {
-		for (key in price_list[product_id].discounts) {
-			// console.log(key);
-			if (qty >= key) {
-				end = parseFloat(price_list[product_id].discounts[key]);
+		for (discount_qty in price_list[product_id].discounts) {
+			if (qty >= discount_qty) {
+				end = parseFloat(price_list[product_id].discounts[discount_qty]);
 			}
 		}
 	}
 	// Option prices
 	options.forEach(option => {
+		let option_id = option.value;
+		// Foreach option in product dataset
 		for (let o in price_list[product_id].options) {
-			if (option.value in price_list[product_id].options[o]) {
-				end =  parseFloat(end) + parseFloat(price_list[product_id].options[o][option.value]);
-				
-				// Animate quantity discount price list upon choosing different options with price values
-				let discount_prices = document.querySelectorAll('[data-quantity]');
-				discount_prices.forEach(dp => {
-					let price_value = dp.querySelector('.price-value');
-					for (key in price_list[product_id].discounts) {
-						if (key == dp.dataset.quantity) {
-							let start = parseFloat(price_value.innerText);
-							let end = parseFloat(price_list[product_id].discounts[key]) + parseFloat(price_list[product_id].options[o][option.value]);
-							animateValue(price_value, start, end, 300);
-						}
-					}
-				})
+			if (option_id in price_list[product_id].options[o]) {
+				end =  parseFloat(end) + parseFloat(price_list[product_id].options[o][option_id]);
 			}
 		}
-	})
+	});
 	animateValue(price_block, start, end, 300);
+	// Animate quantity discount price list upon choosing different options with price values
+	let discount_prices = document.querySelectorAll('[data-quantity]');
+	discount_prices.forEach(dp => {
+		let start, end;
+		let price_value = dp.querySelector('.price-value');
+		start = parseFloat(price_value.innerText);
+		end = price_list[product_id].discounts[dp.dataset.quantity];
+		options.forEach(option => {
+			let option_id = option.value;
+			for (let o in price_list[product_id].options) {
+				if (option_id in price_list[product_id].options[o]) {
+					end =  parseFloat(end) + parseFloat(price_list[product_id].options[o][option_id]);
+				}
+			}
+		})
+		animateValue(price_value, start, end, 300);
+	})
+	// Animate price change
+	// const obj = document.getElementById("value");
+	// animateValue(obj, 100, 4000, 300);
+	function animateValue(obj, start, end, duration) {
+		let startTimestamp = null;
+		const step = (timestamp) => {
+			  if (!startTimestamp) startTimestamp = timestamp;
+			  const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+			  obj.innerHTML =  Math.round(((progress * (end - start) + start) + Number.EPSILON) * 100) / 100;
+			  if (progress < 1) {
+				window.requestAnimationFrame(step);
+			  }
+		};
+		window.requestAnimationFrame(step);
+	}
 }
 
-// Animate price change
-// const obj = document.getElementById("value");
-// animateValue(obj, 100, 4000, 300);
-function animateValue(obj, start, end, duration) {
-	let startTimestamp = null;
-	const step = (timestamp) => {
-	  	if (!startTimestamp) startTimestamp = timestamp;
-	  	const progress = Math.min((timestamp - startTimestamp) / duration, 1);
-	  	obj.innerHTML =  Math.round(((progress * (end - start) + start) + Number.EPSILON) * 100) / 100;
-	  	if (progress < 1) {
-			window.requestAnimationFrame(step);
-	  	}
-	};
-	window.requestAnimationFrame(step);
-}
 
 // АЯКС отправка отзыва о товаре
 function sendReview(t) {
@@ -1641,7 +1344,6 @@ function mainMenu() {
 // DONE Add required querySelectors for the rest of accordions
 // DONE Add ARIA attributes for accordions
 // DONE Close all accordions
-// TODO Trap focus inside accordion
 class Accordion {
 	constructor(el) {
 		this.el = el;
@@ -1718,7 +1420,7 @@ class Accordion {
 			startHeight = `${this.el.offsetHeight}px`;
 			endHeight = `${this.toggler.offsetHeight + this.content.offsetHeight}px`;
 		}
-		let animation_style = {duration: 400, easing: 'cubic-bezier(0.87, 0, 0.13, 1)'};
+		let animation_style = {duration: 300, easing: 'cubic-bezier(0.87, 0, 0.13, 1)'};
 		let animation_direction = {height: [startHeight, endHeight]};
 		this.isExpanding = true;
 		
@@ -1755,6 +1457,8 @@ class Accordion {
 			startHeight = `${this.el.offsetHeight}px`;
 			endHeight = `${this.toggler.offsetHeight}px`;
 		}
+		let animation_style = {duration: 300, easing: 'cubic-bezier(0.87, 0, 0.13, 1)'};
+		let animation_direction = {height: [startHeight, endHeight]};
 
 		if (this.animation) {
 			this.animation.cancel();
@@ -1762,19 +1466,9 @@ class Accordion {
 
 		// Start a WAAPI animation
 		if (this.external_content) {
-			this.animation = this.content.animate({
-				height: [startHeight, endHeight]
-			}, {
-				duration: 400,
-				easing: 'ease-out'
-			});
+			this.animation = this.content.animate(animation_direction, animation_style);
 		} else {
-			this.animation = this.el.animate({
-				height: [startHeight, endHeight]
-			}, {
-				duration: 400,
-				easing: 'ease-out'
-			});
+			this.animation = this.el.animate(animation_direction, animation_style);
 		}
 
 		this.animation.onfinish = () => this.onAnimationFinish(false);
