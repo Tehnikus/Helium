@@ -2,7 +2,7 @@
   <div class="alert alert-warning alert-dismissible"><i class="fa fa-exclamation-circle"></i> {{ error_warning }}</div>
 {% endif %}
 {% if shipping_methods %}
-  <form action="index.php?route=checkout/shipping_method/save" method="post" id="shipping_method" class="grid">
+  <form action="index.php?route=checkout/shipping_method/save" method="post" id="shipping_method">
     <fieldset>
       <legend>{{ text_shipping_method }}</legend>
       {% for shipping_method in shipping_methods %}
