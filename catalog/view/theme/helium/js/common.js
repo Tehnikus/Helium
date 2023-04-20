@@ -39,13 +39,12 @@ let filter_button = document.getElementById('button-filter');
 
 function showCompareModal() {
 	ajax('index.php?route=product/compare/showCompareModal',null,function(c) {
-		mwindow.create('dialog', c);
+		dialog.create(c);
 	}, null,null,null,"GET","text",true);
 }
 function showWhishlistModal() {
 	ajax('index.php?route=account/wishlist/showWishlistModal',null,function(c) {
-		console.log(c);
-		mwindow.create('dialog', c);
+		dialog.create(c);
 	}, null,null,null,"GET","text",true);
 }
 
@@ -293,9 +292,7 @@ var cart = {
 					var url = 'index.php?route=common/cart/displayAdditionalModal';
 					var data = 'product_id=' + product_id;
 					ajax(url, data, function(response) {
-						console.log(response);
 						dialog.create('<span class="h3">'+options+'</span>'+response.data);
-						
 					},null,null,null,'POST','json',true);
 				}
 			},
@@ -344,7 +341,6 @@ var cart = {
 			ajax('index.php?route=common/cart/info', null, function(n) {
 				document.getElementById('cart').innerHTML = n;
 			},null,null,null,"GET","text",true);
-			// console.log(r);
 		})
 		// $.ajax({
 		// 	url: 'index.php?route=checkout/cart/remove',
@@ -376,7 +372,7 @@ var cart = {
 	},
 	'showModal': function(){
 		ajax('index.php?route=common/cart/modal',null,function(c) {
-			mwindow.create('dialog', c);
+			dialog.create(c);
 		}, null,null,null,"GET","text",true);
 	}
 }
@@ -434,9 +430,7 @@ var wishlist = {
 		var url = 'index.php?route=account/wishlist/add';
 		var data = 'product_id=' + product_id;
 		ajax(url, data, function(r) {
-			console.dir(r);
-			mwindow.create('dialog', r['table']);
-
+			dialog.create(r['table']);
 			document.querySelector('#wishlist-total').innerHTML = r['total'];
 		},null,null,null,"POST","json",true);
 	},
@@ -444,9 +438,7 @@ var wishlist = {
 		var url = 'index.php?route=account/wishlist/remove';
 		var data = 'product_id=' + product_id;
 		ajax(url, data, function(r) {
-			console.dir(r);
 			mwindow.create('toast', r['remove'], 'success');
-
 			document.querySelector('#wishlist-total').innerHTML = r['total'];
 		},null,null,null,"POST","json",true);
 	},
@@ -457,8 +449,7 @@ var compare = {
 		var url = 'index.php?route=product/compare/add';
 		var data = 'product_id=' + product_id;
 		ajax(url, data, function(r) {
-			console.dir(r);
-			mwindow.create('dialog', r['table']);
+			dialog.create(r['table']);
 			document.querySelector('#compare-total').innerHTML = r['total'];
 		},null,null,null,"POST","json",true);
 	},
@@ -535,7 +526,7 @@ document.addEventListener('click', function(e) {
 			if (agree_link.contains(e.target) && agree_link.href !== null) {
 				e.preventDefault();
 				ajax(agree_link.href, null, function(r){
-					mwindow.create('dialog', r, 'warning');
+					dialog.create(r);
 				},null,null,null,'GET','html',true);
 			}
 		}
@@ -550,7 +541,7 @@ document.addEventListener('click', function(e) {
 				'index.php?route='+review_button.dataset.type+'/displayReviewModal',
 				'entity_id='+review_button.dataset.id,
 				function(c) {
-				mwindow.create('dialog', c);
+				dialog.create(c);
 			}, null,null,null,"POST","text",true);
 
 			// fetch(
@@ -1114,7 +1105,6 @@ function searchFunction () {
 	let url = 'index.php?route=product/search/find';
 	let response;
 	timeout = setTimeout(function () {
-		console.log(data);
 		ajax(url, 'search='+data,
 			function(r) {
 				if (!!r && Object.keys(r).length !== 0) {
@@ -1308,7 +1298,6 @@ function mainMenu() {
 				// c.setAttribute('tabindex', '-1');
 				child_ul.setAttribute('aria-expanded', true);
 				
-				console.log(c.parentElement);
 				setTimeout(() => {
 					child_ul.firstChild.focus();
 				}, 400);
@@ -1329,7 +1318,6 @@ function mainMenu() {
 				p.classList.remove('open');
 				p.inert = true;
 				parent_menu.parentElement.inert = false;
-				console.log(parent_menu.parentElement);
 				p.setAttribute('aria-expanded', false);
 				setTimeout(() => {
 					parent_menu.querySelector('a').focus();
