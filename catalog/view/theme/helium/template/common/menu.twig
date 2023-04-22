@@ -1,40 +1,42 @@
 {% if categories %}
-  <button 
-    type="button"
-    id="main-menu-trigger"
-    class="primary main-menu-trigger"
-    role="button"
-    aria-haspopup="menu"
-    aria-label="{{ text_category }}"
-    data-accordion-target="main-menu"
-  >
-    <div class="icon menu-icon">
-      <span></span>
-      <span></span>
-      <span></span>
-      <span></span>
-      <span></span>
-      <span></span>
-      <span></span>
-      <span></span>
-      <span></span>
-    </div>
-    <span class="hidden-md">
-      {{ text_category }}
-    </span>
-  </button>
+  <div class="relative">
+    <button 
+      type="button"
+      id="main-menu-trigger"
+      class="primary main-menu-trigger"
+      role="button"
+      aria-haspopup="menu"
+      aria-label="{{ text_category }}"
+      data-accordion-target="main-menu"
+    >
+      <div class="icon menu-icon">
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+      <span class="hidden-md">
+        {{ text_category }}
+      </span>
+    </button>
 
-  <div aria-label="{{ text_category }}" data-accordion="main-menu" id="main-menu" class="menu">
-    {% for parent, category in categories %}
-      <ul role="menu" data-parent="{{ parent }}">
-        {% for child in category %}
-          <li role="menuitem" {% if child.children_count > 0 %} data-category-id="{{ child.category_id }}" {%  endif %}>
-            <a href="{{ child.href }}">{{ child.name }}</a>
-            <span role="status" class="product_count">{{child.product_count}}</span>
-          </li>
-        {% endfor %}
-      </ul>
-    {% endfor %}
+    <div aria-label="{{ text_category }}" data-accordion="main-menu" id="main-menu" class="menu">
+      {% for parent, category in categories %}
+        <ul role="menu" data-parent="{{ parent }}">
+          {% for child in category %}
+            <li role="menuitem" {% if child.children_count > 0 %} data-category-id="{{ child.category_id }}" {%  endif %}>
+              <a href="{{ child.href }}">{{ child.name }}</a>
+              <span role="status" class="product_count">{{child.product_count}}</span>
+            </li>
+          {% endfor %}
+        </ul>
+      {% endfor %}
+    </div>
   </div>
 
 
