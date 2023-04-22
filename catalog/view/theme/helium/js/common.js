@@ -7,8 +7,6 @@ let filter_button = document.getElementById('button-filter');
 
 
 
-
-
 // function horizontalScroll(element) {
 // 	element.addEventListener("wheel", (event) => {
 // 		event.preventDefault();
@@ -105,9 +103,11 @@ document.addEventListener('click', function(e) {
 // }
 
 document.addEventListener('DOMContentLoaded', function() {
-	mobileMenu();
-	mainMenu();
-	countdown(d);
+	mobileMenu(); // Buttons at the bottom of page
+	mainMenu(); // render buttons, aria attributes and titles for main menu
+	countdown(d); // Countdown to the ent of discounts
+	stickyHeader(); // Sticky header
+
 
 	// TODO Move this to it's function
 	let pagination = document.querySelector('main ul.pagination');
@@ -1300,7 +1300,7 @@ function mainMenu() {
 				
 				setTimeout(() => {
 					child_ul.firstChild.focus();
-				}, 400);
+				}, 300);
 			}}
 		});
 		c.appendChild(button_forward);
@@ -1499,3 +1499,13 @@ class Accordion {
 document.querySelectorAll('details, [data-accordion-target]').forEach((el) => {
 	new Accordion(el);
 });
+
+// Simple and glitchless sticky header
+// Adapts to logo dimensions
+// No event listeners
+function stickyHeader() {
+	let h = document.getElementById('js_header');
+	let oh = h.offsetHeight;
+	let ih = document.getElementById('js_nav_main').offsetHeight;
+	h.style.cssText = "position: sticky; z-index: 1; top:"+ -(oh - ih) + "px;";
+}
