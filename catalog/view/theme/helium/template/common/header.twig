@@ -14,9 +14,8 @@
   {% if description %}<meta name="description" content="{{ description }}" />{% endif %}
   {% if robots %}  <meta name="robots" content="{{ robots }}" /><meta name="googlebot" content="{{ robots }}">{% endif %}
   {% if keywords %}<meta name="keywords" content="{{ keywords }}" />{% endif %}
-  {# <link rel="stylesheet preload" as="style" href="catalog/view/theme/helium/css/stylesheet.css" media="screen" /> #}
+  <link rel="stylesheet preload" as="style" href="catalog/view/theme/helium/css/stylesheet.css" media="screen" />
   <link rel="stylesheet preload" as="style" href="catalog/view/theme/helium/css/common.css" media="screen" />
-  {# <link rel="stylesheet preload" as="style" href="catalog/view/theme/helium/css/neccessary.css" media="screen" /> #}
   <link rel="stylesheet preload" as="style" href="catalog/view/theme/helium/css/fontello.css" media="screen" />
   {# <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin> #}
   {# <link rel="preconnect" href="https://fonts.googleapis.com"crossorigin> #}
@@ -68,8 +67,8 @@
 </head>
 
 <body>
-<header id="js_header">
-  <nav id="nav_top">
+<header>
+  <nav id="top">
     <div role="presentation" class="logo">
       {% if logo %}
         <a href="{{ home }}">
@@ -107,7 +106,7 @@
       <button aria-haspopup="dialog" id="compare-total" title="{{ text_compare }}" aria-label="{{ text_compare }}"><i class="icon-compare"></i><span class="hidden-md">{{ text_compare_count }}</span></button>
     </div>
   </nav>
-  <nav id="js_nav_main">
+  <nav id="main">
     {{ menu }}
     <div class="search">
       {{ search }}
