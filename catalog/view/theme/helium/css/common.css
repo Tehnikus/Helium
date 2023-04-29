@@ -342,13 +342,19 @@ hgroup > * {
 legend {
 	font-weight:600;
 	text-transform: uppercase;
+	background: #fff;
+	top: -4px;
+	box-shadow: 0 0 3px var(--color-1);
+	border-radius: calc(var(--radius) * 0.7);
+	padding: 5px;
 }
 fieldset {
-	border:2px solid var(--color-1);
+	box-shadow: 0 0 3px var(--color-1);
 	padding:10px;
 	display: flex;
 	flex-direction: column;
-    margin: 1rem 0;
+	margin: 1rem 0;
+	border: none;
 }
 /* If input is not in .form-group */
 fieldset>input, fieldset>select {
@@ -359,16 +365,19 @@ fieldset>input, fieldset>select {
 .uppercase, .module .h3 {text-transform: uppercase}
 .relative {position:relative}
 .hidden-md {display: none;}
+
 h1,h2,h3,h4,h5,h6,
 .h1,.h2,.h3,.h4,.h5,.h6 {
     margin:0;
     width: 100%;
-    font-family: 'Roboto Condensed', sans-serif;
     padding: 0 0 .5rem 0;
 }
 /* Fonts */
-.pagination, .breadcrumbs, .contents {
+h1,h2,h3,h4,h5,h6,
+.h1,.h2,.h3,.h4,.h5,.h6,
+.pagination, .breadcrumbs, .contents, span.product-flag {
     font-family: 'Roboto Condensed';
+    line-height: 1;
 }
 
 
@@ -419,6 +428,7 @@ dialog:focus {box-shadow: 0 0 5px var(--color-1);}
 dialog::backdrop {
     /* backdrop-filter: blur(5px); */
 	animation: blur-in 500ms forwards; /* Important */
+    background: #0003; /* Firefox does not support dialog::backdrop blur, so let it be just color*/
 }
 
 @keyframes blur-in {
@@ -496,14 +506,26 @@ span.product_count {min-width: 24px;  height: 24px;  text-align: center;  border
 .pagination {align-items: center;}
 
 /* Components - buttons */
-button, .button, a.button, a.primary {
+button, .button {
     border-radius: var(--radius);
     text-align: center;
     background: var(--bg-button);
     color: var(--color-text-button);
     justify-content: center;
     align-items: center;
-    
+    position: relative;
+}
+a.button.primary,
+a.primary,
+button.primary {
+    background-image: var(--gardient);
+    text-transform: uppercase;
+    transition: background-position .2s;
+    background-size: 200% auto;
+    color: white;            
+    /* box-shadow: inset 1px 1px 2px 1px #9e9eefc7, inset -1px -1px 1px 1px #3339; */
+    flex: 1; /* Grow primary button in button group */
+    user-select: none;
 }
 button:disabled,
 input:disabled,
@@ -514,20 +536,23 @@ textarea:disabled {
     background: var(--bg-button-disabled);
     color: var(--color-text-muted);
 }
-
-a.button.primary,
-a.primary,
-button.primary {
-    background-image: var(--gardient);
-    text-align: center;
-    text-transform: uppercase;
-    transition: background-position .2s;
-    background-size: 200% auto;
-    color: white;            
-    /* box-shadow: inset 1px 1px 2px 1px #9e9eefc7, inset -1px -1px 1px 1px #3339; */
-    flex: 1; /* Grow primary button in button group */
-    user-select: none;
+.primary:hover {
+    /* background-image: linear-gradient(to right, #4776E6 0%, #8E54E9  51%, #4776E6  100%); */
+    background-position: right center; /* change the direction of the change here */
+    color: #fff;
+    text-decoration: none;
 }
+.primary:active {
+    box-shadow: inset 1px 1px 4px 1px #2a2a3ac7, inset -1px -1px 1px 1px #53535682;
+}
+.primary:focus {
+    box-shadow: inset 0 0 0 3px #00000090;
+}
+.primary[disabled], a.primary[disabled] {
+    background: #777;
+}
+
+
 
 /* Button group */
 .btn-group {gap: 1rem}
@@ -543,21 +568,6 @@ button.primary {
 
 
 
-button.primary:hover {
-    /* background-image: linear-gradient(to right, #4776E6 0%, #8E54E9  51%, #4776E6  100%); */
-    background-position: right center; /* change the direction of the change here */
-    color: #fff;
-    text-decoration: none;
-}
-button.primary:active {
-    box-shadow: inset 1px 1px 4px 1px #2a2a3ac7, inset -1px -1px 1px 1px #53535682;
-}
-button.primary:focus {
-    box-shadow: inset 0 0 0 3px #00000090;
-}
-button.primary[disabled], a.primary[disabled] {
-    background: #777;
-}
 
 
 
@@ -616,9 +626,27 @@ Each item needs a flex-grow and flex-shrink value of 0. The flex-basis property 
 /* Braedcrumbs scrolling */
 .breadcrumbs.scroll-x {list-style-type: none; margin:-1rem 0; padding: 0;}
 /* Mobile buttons scrolling */
-.mobile_buttons.scroll-x {position: fixed;bottom: 0;left: 0;right: 0;gap: 0.3rem;padding: 0.3rem;background: var(--bg-main-blocks);}
-.mobile_buttons.scroll-x button {display: flex;flex-direction: column;width: 20%;flex: 1 0 auto!important;}
-
+.mobile_buttons.scroll-x {position: fixed;bottom: 0;left: 0;right: 0;gap: 0.3rem;padding: 0.3rem;background: var(--bg-main-blocks);z-index: 1;}
+.mobile_button {display: flex;flex-direction: column;width: 20%;flex: 1 0 auto!important;}
+.mobile_menu {
+    justify-content: center;
+    position: fixed;
+    z-index: 1;
+    bottom: 4.5rem;
+    left: 1rem;
+    right: 1rem;
+    /* top: 1rem; */
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    background: var(--bg-main-blocks);
+    transform: translateX(calc(1rem + 110%));
+    transition: var(--time);
+    z-index: 2;
+    backdrop-filter: blur(5px);
+}
+.mobile_menu.open {
+    transform: translateX(0%);
+}
 
 /* SCROLL X FOR COLUMNS, CHILD ELEMENT ALWAYS 100% WIDTH */
 /* .scroll-x {
@@ -643,7 +671,7 @@ Each item needs a flex-grow and flex-shrink value of 0. The flex-basis property 
 
 /* Product flags */
 .flags {position: absolute; top: 0; left: 0; width: 0;}
-span.product-flag {background: #777;margin: 6px 0 0 -6px;padding: 2px 7px;border-radius: calc(var(--radius) * .7);color: #eaeaea;font-size: 0.8rem;white-space: nowrap;display: inline-block;opacity: .6;transition: opacity var(--time);text-shadow: 0px 0px 3px #111;box-shadow: 0 0 5px #555;font-family: 'Roboto Condensed'; background-size: 400% 400%; animation: gradient 5s ease infinite;}
+span.product-flag {background: #777;margin: 6px 0 0 -6px;padding: 2px 7px;border-radius: calc(var(--radius) * .7);color: #eaeaea;font-size: 0.8rem;white-space: nowrap;display: inline-block;opacity: .6;transition: opacity var(--time);text-shadow: 0px 0px 3px #111;box-shadow: 0 0 5px #555;background-size: 400% 400%; animation: gradient 5s ease infinite; text-transform: uppercase;}
 span.product-flag i::before     {font-size: 1rem;}
 span.product-flag.wishlist      {background-image: linear-gradient(92deg, #cd3232, #a12727)}
 span.product-flag.sale          {background-image: linear-gradient(92deg, #dd320b, #c28d1a)}
@@ -779,7 +807,14 @@ input#input-quantity {
     ::-webkit-scrollbar-track {background:transparent;border-radius:6px}
     ::-webkit-scrollbar-thumb {background:var(--scrollbar-thumb);border-radius:6px}
     ::-webkit-scrollbar-thumb:hover {background:var(--scrollbar-thumb-hover)}
-    body, #main-menu ul {scrollbar-color:var(--scrollbar-thumb) var(--bg-body); scrollbar-width:thin; scrollbar-gutter:stable both-edges; -webkit-scrollbar-gutter:stable both-edges;}
+    body, #main-menu ul, .scroll-x, .category-description, select, #search-results, dialog {
+        scrollbar-color:var(--scrollbar-thumb) transparent; 
+        scrollbar-width:thin; 
+        scrollbar-gutter:stable; 
+        -webkit-scrollbar-gutter:stable;
+        -webkit-overflow-scrolling: touch;
+        scroll-behavior:smooth;
+    }
     
     /* Subcategories - dispplay as grid */
     .subcategories.grid {grid-auto-flow: initial}
@@ -803,11 +838,3 @@ input#input-quantity {
 
     .mobile_buttons {display: none;}
 }
-/* @media screen and (max-width:820px) {
-    body {padding: 0;}
-    main {order: 2}
-    aside#column-left {order: 3;}
-    aside {width: min(100%, 820px)}
-    aside {background: #aaa;}
-    main, aside {min-width: 100%}
-}  */
