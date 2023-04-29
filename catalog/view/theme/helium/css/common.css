@@ -423,7 +423,7 @@ details[disabled], details[disabled] summary {color: var(--color-text-muted);poi
 
 
 /* Dialogs */
-dialog {border: none;box-shadow: 0 0 5px #333;}
+dialog {border: none;box-shadow: 0 0 5px #333; position: fixed;}
 dialog:focus {box-shadow: 0 0 5px var(--color-1);}
 dialog::backdrop {
     /* backdrop-filter: blur(5px); */
