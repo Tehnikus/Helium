@@ -1,7 +1,7 @@
 {% if products %}
 <div class="module featured-category">
-  <sapn class="h3">{{ heading_title }}</span>
-  <div class="module-product-list">
+  <span class="h3">{{ heading_title }}</span>
+  <div class="scroll-x">
   {% for product in products %}
     {% include 'helium/template/product/product_miniature.twig' with {product: product} %}
   {% endfor %}   
