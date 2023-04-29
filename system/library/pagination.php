@@ -91,8 +91,8 @@ class Pagination {
 		}
 
 		if ($page < $num_pages) {
-			$output .= '<li><a rel="next" href="' . str_replace('{page}', $page + 1, $this->url) . '">' . $this->text_next . '</a></li>';
-			$output .= '<li><a rel="last" href="' . str_replace('{page}', $num_pages, $this->url) . '">' . $this->text_last . '</a></li>';
+			$output .= '<li><a class="button" rel="next" href="' . str_replace('{page}', $page + 1, $this->url) . '">' . $this->text_next . '</a></li>';
+			$output .= '<li><a class="button" rel="last" href="' . str_replace('{page}', $num_pages, $this->url) . '">' . $this->text_last . '</a></li>';
 		}
 
 		$output .= '</ul>';
