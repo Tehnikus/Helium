@@ -4,9 +4,9 @@
   {{ content_top }}
   
   <hgroup>
-    {# Заголовок #}
+    {# Header #}
     <h1 class="product-name">{{ heading_title }}</h1>
-    {# Содержание #}
+    {# Page contents #}
     <ul class="contents scroll-x">
       {% if description %}
         <li><a href="{{ share }}#description" title="{{ tab_description }}">{{ tab_description }}</a></li>
@@ -27,11 +27,11 @@
   </hgroup>
 
   <div class="flex justify-between">
-    {# Картинки #}
+    {# Images gallery #}
     {% if thumb or images %}
-      {% include 'helium/template/common/images_gallery.twig' with {thumb:thumb, images:images, class:'product-image'} %}
+      {% include 'helium/template/common/images_gallery.twig' with {thumb:thumb, images:images, class:'relative'} %}
     {% endif %}
-    {# Теги #}
+    {# Product tags #}
     {% if tags %}
     <p>
       {{ text_tags }}
@@ -45,7 +45,7 @@
     </p>
     {% endif %}
 
-    {# Краткая информация #}
+    {# Short infos #}
     <div class="infos">
       {% if manufacturer %}
         <div class="manufacturer-info"><span>{{ text_manufacturer }}</span> <a href="{{ manufacturers }}">{{ manufacturer }}</a></div>
@@ -61,7 +61,7 @@
       {% endif %}
     
 
-      {# Цены #}
+      {# Prices #}
       {% if price %}
         <div class="prices-block" >
           <p class="prices h1" data-special-date-end="{{ special_date_end }}">
@@ -95,12 +95,12 @@
       {% endif %}
 
     <div>
-      {# Опции товара #}
+      {# Product options #}
       {% if options %}
         {% include 'helium/template/product/product_page_options.twig' with {options: options, base_price:base_price} %}
       {% endif %}
 
-      {# Регулярные платежи #}
+      {# Recurring payments #}
       {% if recurrings %}
         <span class="h3">{{ text_payment_recurring }}</span>
         <div class="form-group required">
@@ -114,7 +114,7 @@
         </div>
       {% endif %}
 
-      {# Кнопки купить #}
+      {# Buy buttons #}
       <div class="form-group">
         <label for="input-quantity">{{ entry_qty }}</label>
         <input 
@@ -156,12 +156,8 @@
     </div>
   </div>
 
-
-
-
-
   <article role="article" class="content">
-    {# Описание товара #}
+    {# Product description #}
     {% if description %}
       <span class="h1">{{ tab_description }}</span>
       <div id="description">
@@ -169,7 +165,7 @@
       </div>
     {% endif %}
 
-    {# Таблица характеристик #}
+    {# Feature table #}
     {% if attribute_groups %}
       <span class="h1">{{ tab_attribute }}</span>
       <div id="specification">
@@ -196,7 +192,7 @@
       </div>
     {% endif %}
 
-    {# Отзывы #}
+    {# Reviews #}
     {% if review_status %}
       <span class="h1">{{ tab_review }}</span>
       <div id="reviews">
