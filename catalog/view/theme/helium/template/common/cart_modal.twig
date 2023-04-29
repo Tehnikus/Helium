@@ -31,7 +31,7 @@
         <td class="text-right cart-qty"> &times; {{ product.quantity }}</td>
         <td class="text-right">{{ product.total }}</td>
         <td class="text-center cart-remove">
-          <button type="button" onclick="cart.remove('{{ product.cart_id }}');" title="{{ button_remove }}" class="danger btn-cart-remove"></button>
+          <button type="button" onclick="cart.remove('{{ product.cart_id }}');" title="{{ button_remove }}" class="close"></button>
         </td>
       </tr>
       {% endfor %}
@@ -42,7 +42,7 @@
         <td class="text-right">x&nbsp;1</td>
         <td class="text-right">{{ voucher.amount }}</td>
         <td class="text-center text-danger">
-          <button type="button" onclick="voucher.remove('{{ voucher.key }}');" title="{{ button_remove }}" class="danger btn-cart-remove"></button>
+          <button type="button" onclick="voucher.remove('{{ voucher.key }}');" title="{{ button_remove }}" class="close"></button>
         </td>
       </tr>
       {% endfor %}
@@ -58,17 +58,12 @@
       </table>
 
       <p class="text-right">
-        <a href="{{ cart }}">
-          <strong>
-            <i class="fa fa-shopping-cart"></i> 
-            {{ text_cart }}
-          </strong>
+        <a class="button" href="{{ cart }}">
+          {{ text_cart }}
         </a>
-        <a href="{{ checkout }}">
-          <strong>
-            <i class="icon-share"></i> 
-            {{ text_checkout }}
-          </strong>
+        <a class="button primary" href="{{ checkout }}">
+          <i class="icon-cart"></i> 
+          {{ text_checkout }}
         </a>
       </p>
     </div>

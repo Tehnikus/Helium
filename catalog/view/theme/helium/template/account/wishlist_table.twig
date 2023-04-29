@@ -32,7 +32,7 @@
             <td class="text-right">
                 <button type="button" onclick="cart.add('{{ product.product_id }}');" data-toggle="tooltip" title="{{ button_cart }}" class="primary"><i class="icon-cart"></i></button>
               
-                <button {# href="{{ product.remove }}" #} onclick="wishlist.remove('{{ product.product_id }}');" title="{{ button_remove }}" class="danger btn-cart-remove"></button></td>
+                <button {# href="{{ product.remove }}" #} onclick="wishlist.remove('{{ product.product_id }}');" title="{{ button_remove }}" class="close"></button></td>
           </tr>
           {% endfor %}
             </tbody>
