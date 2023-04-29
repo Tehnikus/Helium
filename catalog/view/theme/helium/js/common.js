@@ -858,7 +858,7 @@ function mobileMenu() {
 			btns[mb[k].dataset.order] = btn;
 		}
 		let menu = {
-			attrs: {'class': 'mobile_buttons'},
+			attrs: {'class': 'mobile_buttons scroll-x'},
 			nest: btns
 		};
 		document.body.insertAdjacentElement('beforeend', createElm(menu));
