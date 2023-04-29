@@ -293,10 +293,11 @@ nav, footer, main, aside > div, [data-accordion] {
 header              {order: 0}
 nav                 {order: 1}
 main                {order: 2}
-aside#column-left   {order: 3}
-aside#column-right  {order: 4}
-footer              {order: 5}
-.mobile_buttons     {order: 6}
+#content-bottom     {order: 3}
+aside#column-left   {order: 4}
+aside#column-right  {order: 5}
+footer              {order: 6}
+.mobile_buttons     {order: 10}
 
 .mobile_buttons.scroll-x {
     position: fixed;
@@ -364,6 +365,11 @@ h1,h2,h3,h4,h5,h6,
     font-family: 'Roboto Condensed', sans-serif;
     padding: 0 0 .5rem 0;
 }
+/* Fonts */
+.pagination, .breadcrumbs, .contents {
+    font-family: 'Roboto Condensed';
+}
+
 
 h1,.h1 {font-size: 1.55rem;}
 h2,.h2 {font-size: 1.3rem;}
@@ -457,8 +463,8 @@ span.product_count {min-width: 24px;  height: 24px;  text-align: center;  border
 /* Compinents - Alerts */
 .alert-danger {background: #ff9e9e;padding: 1rem;border: 2px solid #ff7575;color: #800008;border-radius: var(--radius)}
 .alert-success {background: #55e43f;padding: 1rem;border: 2px solid #53c774;color: green;border-radius: var(--radius)}
-
-
+/* Components - Pagination */
+.pagination {align-items: center;}
 
 /* Components - buttons */
 button, .button, a.button, a.primary {
@@ -489,7 +495,7 @@ button.primary {
     transition: background-position .2s;
     background-size: 200% auto;
     color: white;            
-    box-shadow: inset 1px 1px 2px 1px #9e9eefc7, inset -1px -1px 1px 1px #3339;
+    /* box-shadow: inset 1px 1px 2px 1px #9e9eefc7, inset -1px -1px 1px 1px #3339; */
     flex: 1; /* Grow primary button in button group */
 }
 
@@ -565,14 +571,15 @@ Each item needs a flex-grow and flex-shrink value of 0. The flex-basis property 
     max-width: 100%;
     overflow-x: auto;
     scroll-snap-type:x mandatory;
-    gap: 1rem;
+    /* gap: 1rem; */
     will-change: scroll-position;
 }
 .scroll-x > * {
     display: flex;
-    flex: 0 1 auto!important;
+    /* flex: 0 1 auto!important; */
     scroll-snap-align: center;
     max-width: 100%;
+    margin: 0 1rem;
 }
 
 
@@ -728,6 +735,7 @@ input#input-quantity {
     /* Ordering */
     aside#column-left {order: 2;}
     main {order: 3}
+    #content-bottom     {order: 4}
     
     /*  Scrollbar  */
     ::-webkit-scrollbar {height:10px;width:10px}
