@@ -54,7 +54,7 @@
     --color-1-dark:     hsl(var(--h), calc(var(--s) - 10%), calc(var(--l) + var(--darken)));
 
     --color-red: rgb(192, 1, 1);
-
+    --danger:rgb(192, 77, 1);
 
     --gardient: linear-gradient(to right, var(--color-1) 0%, var(--color-5)  51%, var(--color-2)  100%);
     --gardient-2: linear-gradient(to right, var(--color-1) 0%, var(--color-2)  25%, var(--color-3)  50%, var(--color-4) 80%, var(--color-5)  100%);
@@ -82,7 +82,7 @@ button,.button,input[type=button],input[type=checkbox],input[type=radio],input[t
 
 /* Links */
 a {text-decoration:none;color:var(--color-1);border-radius: var(--radius);display: inline-block;background: transparent; transition: color var(--time) var(--style);}
-a:hover, a:hover *, a:focus {text-decoration:none;color: var(--color-1-dark)}
+a:hover, a:focus {text-decoration:none;color: var(--color-1-dark)}
 a:focus {outline: none;box-shadow: 0 0 0 2px var(--color-3)}
 a[disabled] {pointer-events: none}
 a.button:hover {text-decoration: none}
@@ -145,10 +145,24 @@ form {
 	place-content: center;
 }
 
+.form-group {display: flex;flex: 1;align-items: center; padding: 0.5rem;  border-radius: var(--radius); flex-wrap: wrap; }
+.form-group label {flex: 1 1 auto;max-width: 8rem;}
+.form-group input, .form-group select {flex: 1;}
+.has-error {
+	box-shadow: inset 0 0 0 2px var(--danger);
+	transition: all var(--time);
+    margin: .5rem;
+}
+.form-group.has-error {
+	background: rgb(192 77 1 / 4%);
+}
 
-/* Text that follows input group or form group - eggog message or some explanation */
-.input-group + span , .form-group + span {
-	grid-column: span 2;
+/* Text that follows input group or form group - error message or some explanation */
+.input-group span , .form-group span {
+	flex: 1 0 100%;
+    width: 100%;
+    flex-wrap: wrap;
+    padding: .5rem 0 0;
 }
 
 .form-control {
@@ -287,8 +301,6 @@ nav, footer, main, aside > div, [data-accordion], .miniature, details, dialog {
 nav, footer, main, aside > div, [data-accordion] {
     padding: 1rem;
 }
-
-
 /* Ordering -  mobile */
 header              {order: 0}
 nav                 {order: 1}
@@ -326,7 +338,7 @@ hgroup > * {
 }
 
 /* Typography */
-
+/* Fieldsete and legends */
 legend {
 	font-weight:600;
 	text-transform: uppercase;
@@ -334,10 +346,13 @@ legend {
 fieldset {
 	border:2px solid var(--color-1);
 	padding:10px;
-	gap: 0.7rem;
 	display: flex;
 	flex-direction: column;
     margin: 1rem 0;
+}
+/* If input is not in .form-group */
+fieldset>input, fieldset>select {
+    margin: .5rem;
 }
 
 /* Headers */
@@ -369,6 +384,7 @@ b,h1,h2,h3,h4,h5,h6,strong,th {
     font-weight:600
 }
 
+/* Components */
 /* Components - Accrodion */
 [data-accordion] {
     position: absolute;
@@ -390,7 +406,6 @@ summary {border: 2px solid transparent;outline: none;padding:.5rem;margin:0;disp
 /* Headers in summary */
 details>summary>* {padding: 0;}
 details>summary:first-child::before {content: "\2BC8";padding-right: .5rem;}
-
 details[open]>summary::before {content: "\2BC6";padding-right: .5rem;}
 summary:focus {border-color: var(--color-1);}
 details>:not(summary) {margin: 1rem}
@@ -398,7 +413,35 @@ summary::-webkit-details-marker {color:#363636;color:var(--color-text-button)}
 details[disabled], details[disabled] summary {color: var(--color-text-muted);pointer-events: none;}
 
 
-/* Components */
+/* Dialogs */
+dialog {border: none;box-shadow: 0 0 5px #333;}
+dialog:focus {box-shadow: 0 0 5px var(--color-1);}
+dialog::backdrop {
+    /* backdrop-filter: blur(5px); */
+	animation: blur-in 500ms forwards; /* Important */
+}
+
+@keyframes blur-in {
+	from {
+		background-color: #00000000;
+		backdrop-filter: blur(0px);
+	}
+	to {
+		background-color: #00000050;
+		backdrop-filter: blur(5px);
+	}
+}
+
+button.close {width: 40px;
+    height: 40px;
+    position: absolute;
+    top: 5px;
+    right: 5px;}
+button.close:after {
+	content: "\00d7";
+	width: 100%;
+    font-size: 2rem;
+}
 
 
 /* Main menu */
@@ -483,6 +526,7 @@ button.primary {
     color: white;            
     /* box-shadow: inset 1px 1px 2px 1px #9e9eefc7, inset -1px -1px 1px 1px #3339; */
     flex: 1; /* Grow primary button in button group */
+    user-select: none;
 }
 
 /* Button group */
@@ -565,7 +609,7 @@ Each item needs a flex-grow and flex-shrink value of 0. The flex-basis property 
     /* flex: 0 1 auto!important; */
     scroll-snap-align: center;
     max-width: 100%;
-    margin: 0 .5rem;
+    margin: .5rem;
 }
 /* Max width for products and blog articles in scroll container */
 .scroll-x article {max-width: min(20rem, 100%);}
@@ -590,7 +634,6 @@ Each item needs a flex-grow and flex-shrink value of 0. The flex-basis property 
 
 
 /* Product and blog miniature */
-
 /* Padding for short description */
 .miniature .infos {padding: 1rem;text-align: justify}
 /* Grow infos, so miniatures are always the same height */
@@ -626,8 +669,8 @@ span.product-flag.new           {background-image: linear-gradient(92deg, #48b76
 .time {display:flex;flex-direction:column;align-items:center;margin:0 1rem}
 .miniature .timer {position:absolute}
 .miniature .time > span:first-child {font-size:1.5rem}
-
-
+/* Product quantity */
+input[name="quantity"] {max-width: 80px;}
 
 
 

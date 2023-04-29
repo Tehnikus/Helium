@@ -916,7 +916,7 @@ let dialog = {
 				// Inner content. If typeof object (JSON or DOM) use outer HTML that parses it into HTML 
 				props:{'innerHTML': (typeof(content) == 'object' ? content.outerHTML : content)}},
 				// Close button
-				{type: 'button', attrs: {'class':'close_modal','aria-label':js_lang.close}, events: {'click': (e) => {dialog.close(e)}}},
+				{type: 'button', attrs: {'class':'close','aria-label':js_lang.close}, events: {'click': (e) => {dialog.close(e)}}},
 			]
 		});
 		// Append dialog to document
@@ -996,7 +996,7 @@ let mwindow = {
 		let modal = createElm({
 			attrs: {'class': 'modal_window ' + t + ' '+ r, 'aria-modal':'true'},
 			nest: {
-				1: {type: 'button', attrs: {'id':'focus','class':'close_modal','aria-label':js_lang.close}, events: {'click': function(e) {mwindow.close(e)}}},
+				1: {type: 'button', attrs: {'id':'focus','class':'close','aria-label':js_lang.close}, events: {'click': function(e) {mwindow.close(e)}}},
 				2: {attrs: {'class':'modal_content'},props:{'innerHTML': (typeof(content) == 'object' ? content.outerHTML : content)}},
 			}
 		});
