@@ -225,9 +225,9 @@ input[type="radio"]:disabled, input[type="radio"]:disabled+label {
 
 /* Breadcrumbs */
 
-.breadcrumbs li:not(:last-child):after {content: "\203A";padding: 1rem 0}
-.breadcrumbs li> * {padding: 0.5rem;white-space: nowrap;margin: 0.5rem}
-
+.breadcrumbs li:not(:last-child):after {content: "\203A";margin: 1rem 0;}
+.breadcrumbs li> * {padding: 0.5rem;white-space: nowrap;margin: 0.5rem;color: #000;}
+.breadcrumbs li {margin: 0}
 
 
 /* Blocks with gap */
