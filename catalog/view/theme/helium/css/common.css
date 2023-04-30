@@ -384,7 +384,7 @@ fieldset>input, fieldset>select {
 
 /* Headers */
 .uppercase, .module .h3 {text-transform: uppercase}
-.relative {position:relative}
+.relative, .module {position:relative}
 .hidden-md {display: none;}
 
 h1,h2,h3,h4,h5,h6,
@@ -642,6 +642,10 @@ Each item needs a flex-grow and flex-shrink value of 0. The flex-basis property 
     max-width: 100%;
     margin: .5rem;
 }
+/* Slider scroll buttons */
+.module button.scroll_left {position: absolute;right: 45px;top: 5px;width:35px; height:35px}
+.module button.scroll_right {position: absolute;right: 5px;top: 5px;width:35px; height:35px}
+
 /* Max width for products and blog articles in scroll container */
 .scroll-x article {max-width: min(20rem, 100%);}
 /* Braedcrumbs scrolling */
