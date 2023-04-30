@@ -466,7 +466,7 @@ function scrollslider() {
 	[].forEach.call(document.getElementsByClassName(containers_class), c => {
 		
 		// Get timer from container dataset
-		let time = c.dataset.time || 1500;
+		let time = c.dataset.time || 4000;
 		let timer = setInterval(() => {
 			scrollRight();
 		}, time);
