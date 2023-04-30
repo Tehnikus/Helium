@@ -21,11 +21,7 @@ class Pagination {
 	public $text_next = '&gt;';
 	public $text_prev = '&lt;';
 
-	/**
-     * 
-     *
-     * @return	text
-     */
+
 	public function render() {
 		$total = $this->total;
 
