@@ -1,6 +1,9 @@
 <?php
 
 
+/**
+ * Summary of ModelCatalogProduct
+ */
 class ModelCatalogProduct extends Model {
 
 	public	$allowed_sort_data = array(
@@ -56,7 +59,8 @@ class ModelCatalogProduct extends Model {
 		)
 	);
 
-	public function updateViewed($product_id) {
+	// Update product views
+	public function updateViewed(int $product_id) {
 		$this->db->query("
 			UPDATE " . DB_PREFIX . "product 
 			SET 
@@ -66,7 +70,9 @@ class ModelCatalogProduct extends Model {
 	}
 
 	// DONE Add viewed products
-	public function addViewedProduct($product_id) {
+	// Add viewed product_id to session
+	// return void
+	public function addViewedProduct(int $product_id) {
 		if (!isset($this->session->data['viewed'])) {
 			$this->session->data['viewed'] = array();
 		}
@@ -84,6 +90,11 @@ class ModelCatalogProduct extends Model {
 	// DONE Добавить информацию о сравнении товарах
 	// DONE Split to different functions so caching control would be easier
 	// DONE Move flags render to separate function so it is available on any page where needed
+
+	// Query single product from DB
+	// @product_id = int
+	// return array() || false
+	// Used only in $this->getProduct($product_id)
 	public function renderProduct($product_id) {
 		if (is_array($product_id)) {
 			$product_id = implode(',', $product_id);
@@ -273,7 +284,11 @@ class ModelCatalogProduct extends Model {
 		}
 	}
 
-	public function getProduct($product_id) {
+	// Get product data and cache if needed
+	// @product_id = int
+	// return array()
+	// Returns the same as $this->renderProduct($product_id) only refers to cache if needed
+	public function getProduct(int $product_id) {
 		// if ($this->config->get('cache_products')) {
 		if (true) {
 			$cache_name = 'product.'.(int)$this->config->get('config_store_id').'.'.(int)$this->config->get('config_language_id').'.'.(int)$product_id;
@@ -296,9 +311,10 @@ class ModelCatalogProduct extends Model {
 	}
 
 	// Render product flags
-	// $product - single product array with all it's data: prices, specials etc.
-	// $category_id - the category, where to look static data - best rewiews or bestsellers
-	// If it is not the category scope, use $main_category of product 
+	// @product - single product array with all it's data: prices, specials etc.
+	// @category_id - the category, where to look static data - best rewiews or bestsellers
+	// If it is not the category scope, uses $main_category of product
+	// return array() with translated flags types
 	public function renderFlags($product, $category_id = null)
 	{
 		// Dynamic user interaction part - viewed, compared, wishlisted
@@ -387,7 +403,13 @@ class ModelCatalogProduct extends Model {
 		return $product_flags_data;
 	}
 
-	public function prepareProductList($products, $category_scope = null) {
+
+	// Prepare all product data to display
+	// @products = array() with products data that was queried before
+	// @category_scope = (int)$category_id, used to determine scope of bestsellers and bestreviews - if set, by category_id or if not set, by default product category
+	// return array() with all product data ready to display
+	// 
+	public function prepareProductList(array $products, int $category_scope = null) {
 		$this->load->language('product/product');
 		$this->load->model('tool/image');
 		// $products = $this->getProducts($filter);
@@ -479,7 +501,8 @@ class ModelCatalogProduct extends Model {
 		return $data;
 	}
 
-	// Получение списка товаров в соответствии с фильтром и сортировкой
+	// Get product ids according to filter
+	// return array() of product ids
 	public function getProducts($data = array()) 
 	{
 		// DONE Добавить дату начала и окончания скидки
