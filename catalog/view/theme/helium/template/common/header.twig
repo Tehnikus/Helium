@@ -14,7 +14,7 @@
   {% if description %}<meta name="description" content="{{ description }}" />{% endif %}
   {% if robots %}  <meta name="robots" content="{{ robots }}" /><meta name="googlebot" content="{{ robots }}">{% endif %}
   {% if keywords %}<meta name="keywords" content="{{ keywords }}" />{% endif %}
-  <link rel="stylesheet preload" as="style" href="catalog/view/theme/helium/css/stylesheet.css" media="screen" />
+  {# <link rel="  <link rel="stylesheet preload" as="style" href="catalog/view/theme/helium/css/stylesheet.css" media="screen" /> #}
   <link rel="stylesheet preload" as="style" href="catalog/view/theme/helium/css/common.css" media="screen" />
   <link rel="stylesheet preload" as="style" href="catalog/view/theme/helium/css/fontello.css" media="screen" />
   {# <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin> #}
@@ -22,6 +22,10 @@
   {# <link rel='preconnect' href='https://fonts.gstatic.com' crossorigin>
   <link rel='preload' as='style' href='https://fonts.googleapis.com/css2?family=Roboto|Roboto+Condensed:wght@500&display=swap'>
   <link rel='stylesheet' href='https://fonts.googleapis.com/css2?family=Roboto|Roboto+Condensed:wght@500&display=swap'> #}
+
+
+  <link rel="preload" href="catalog/view/theme/helium/css/fonts/Robotocondensed.woff2" as="font" type="font/woff2" crossorigin>
+
   {% if logo %}
   <link rel="preload" as="image" href="{{ logo }}">
   {% endif %}
@@ -67,8 +71,8 @@
 </head>
 
 <body>
-<header>
-  <nav id="top">
+<header id="js_header">
+  <nav id="nav_top">
     <div role="presentation" class="logo">
       {% if logo %}
         <a href="{{ home }}">
@@ -106,7 +110,7 @@
       <button aria-haspopup="dialog" id="compare-total" title="{{ text_compare }}" aria-label="{{ text_compare }}"><i class="icon-compare"></i><span class="hidden-md">{{ text_compare_count }}</span></button>
     </div>
   </nav>
-  <nav id="main">
+  <nav id="js_nav_main">
     {{ menu }}
     <div class="search">
       {{ search }}
@@ -116,7 +120,3 @@
     </div>
   </nav>
 </header>
-
-
-
-
