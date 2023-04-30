@@ -546,8 +546,9 @@ function scrollslider() {
 				clearInterval(timer);
 			});
 		});
-		// If container is not hovered, touched or focused - start animation
-		['mouseleave', 'focusout', 'touchend'].forEach(f => {
+		// If container is not hovered or focused - start animation
+		// No 'touchend' listener, because if user interacts with block, it's expected that block stays in same condition that it was left
+		['mouseleave', 'focusout'].forEach(f => {
 			c.addEventListener(f, () => {
 				// Check if container does not have focus inside - like click on button or screen reader focus
 				if (!c.matches(':focus-within')) {
