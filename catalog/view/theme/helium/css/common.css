@@ -758,7 +758,8 @@ input[name="quantity"] {max-width: 80px;}
     grid-template-columns: repeat(auto-fill, minmax(21rem, 1fr));
     will-change: contents;
 }
-
+/* Blog article mimature */
+.article-infos {justify-content:space-between;display:flex;padding:.5rem;}
 
 
 /* Pages */

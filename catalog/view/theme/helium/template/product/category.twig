@@ -13,8 +13,8 @@
 <main role="main" id="main">
   <h1 class="uppercase">{{ heading_title }}</h1>
   {% if filter_links %}
+  <span>{{ text_pupular_search }}</span>
   <div class="scroll-x">
-    <span>{{ text_pupular_search }}</span>
     {% for filter_link in filter_links %}
       <a class="button" title="{{ filter_link.name }} " href="{{filter_link.url}}">{{filter_link.name}}</a>
     {% endfor %}
