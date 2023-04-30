@@ -123,7 +123,7 @@ body > * {background:var(--background-blocks);padding: var(--padding);}
 #content-top{order:0}
 aside#column-left {order:1;max-width:max(20%, 360px);}
 main {flex:1;order:2;}
-aside#column-right {order:4; fmax-width: max(20%, 360px);}
+aside#column-right {order:4; max-width: max(20%, 360px);}
 #content-bottom{order:4}
 header, footer {flex: 1 0 100%;}
 footer {column-gap: 1rem;order: 6;}
@@ -585,13 +585,13 @@ label {
 	user-select: none;
 	cursor: pointer;
 }
-button, .button,
+/* button, .button,
 input:not([type=checkbox]):not([type=radio]),
 input[type=range],
 select,
 textarea {
 	-webkit-appearance:none
-}
+} */
 textarea {
 	display:block;
 	margin-right:0;
@@ -1637,9 +1637,7 @@ form {
     align-items: center;
 	transition: color var(--animation-duration);
 }
-.form-control:focus-within {
-	/* color: var(--primary-color); */
-}
+
   
 input[type="checkbox"], input[type="radio"] {
 	/* Add if not using autoprefixer */
