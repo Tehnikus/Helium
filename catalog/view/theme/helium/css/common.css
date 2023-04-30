@@ -661,8 +661,8 @@ Each item needs a flex-grow and flex-shrink value of 0. The flex-basis property 
 .module button.scroll_left {position: absolute;right: 45px;top: 5px;width:35px; height:35px}
 .module button.scroll_right {position: absolute;right: 5px;top: 5px;width:35px; height:35px}
 
-/* Max width for products and blog articles in scroll container */
-.scroll-x article {max-width: min(20rem, 100%);}
+/* Max width for products and blog articles in scroll container - accounting flags, that are offset a little to the left */
+.scroll-x article {max-width: min(20rem, calc(100% - 0.7rem)); margin: 1rem;}
 /* Braedcrumbs scrolling */
 .breadcrumbs.scroll-x {list-style-type: none; margin:-1rem 0; padding: 0;}
 /* Mobile buttons scrolling */
@@ -855,6 +855,10 @@ input#input-quantity {
         -webkit-scrollbar-gutter:stable;
         -webkit-overflow-scrolling: touch;
         scroll-behavior:smooth;
+    }
+    /* Remove unnecesary scrollbar-gutter */
+    .scroll-x {
+        scrollbar-gutter: initial;
     }
     
     /* Subcategories - dispplay as grid */
