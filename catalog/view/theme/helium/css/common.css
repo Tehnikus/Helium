@@ -103,8 +103,8 @@ button,.button,input[type=button],input[type=checkbox],input[type=radio],input[t
 
 /* Links */
 a {text-decoration:none;color:var(--color-1);border-radius: var(--radius);display: inline-block;background: transparent; transition: color var(--time) var(--style);}
-a:hover, a:focus {text-decoration:none;color: var(--color-1-dark)}
-a:focus {outline: none;box-shadow: 0 0 0 2px var(--color-3)}
+a:hover, a:focus {text-decoration:none; color: var(--color-1-dark)}
+
 a[disabled] {pointer-events: none}
 a.button:hover {text-decoration: none}
 
@@ -241,7 +241,8 @@ input[type="checkbox"]::before, input[type="radio"]::before {
 input[type="checkbox"]:checked::before, input[type="radio"]:checked::before {
 	transform: scale(1);
 }
-  
+
+/* Separate outline focus for custom checkboxes and radios */
 input[type="checkbox"]:focus, input[type="radio"]:focus {
 	outline: max(2px, 0.15em) solid var(--color-2);
 	outline-offset: max(2px, 0.15em);
@@ -432,20 +433,20 @@ details {display:flex;flex-direction:column;align-items:flex-start;margin:0;over
 details[open] {padding:0}
 details>:last-child {margin-bottom:0}
 details[open] summary {margin-bottom:0}
-summary {border: 2px solid transparent;outline: none;padding:.5rem;margin:0;display: flex;align-items: center;border-radius: var(--radius);}
+summary {border: none;outline: none;padding:.5rem;margin:0;display: flex;align-items: center;border-radius: var(--radius);}
 /* Headers in summary */
 details>summary>* {padding: 0;}
 details>summary:first-child::before {content: "\2BC8";padding-right: .5rem;}
 details[open]>summary::before {content: "\2BC6";padding-right: .5rem;}
-summary:focus {border-color: var(--color-1);}
+
 details>:not(summary) {margin: 1rem}
 summary::-webkit-details-marker {color:#363636;color:var(--color-text-button)}
 details[disabled], details[disabled] summary {color: var(--color-text-muted);pointer-events: none;}
 
 
 /* Dialogs */
-dialog {border: none;box-shadow: 0 0 5px #333; position: fixed;}
-dialog:focus {box-shadow: 0 0 5px var(--color-1);}
+dialog {border: none; outline: transparent; box-shadow: 0 0 5px #333; position: fixed;}
+
 dialog::backdrop {
     /* backdrop-filter: blur(5px); */
 	animation: blur-in 500ms forwards; /* Important */
@@ -563,16 +564,29 @@ textarea:disabled {
     color: #fff;
     text-decoration: none;
 }
-.primary:active {
-    box-shadow: inset 1px 1px 4px 1px #2a2a3ac7, inset -1px -1px 1px 1px #53535682;
-}
-.primary:focus {
-    box-shadow: inset 0 0 0 3px #00000090;
+button:active, .button:active, .primary:active {
+    box-shadow: inset 2px 2px 6px 3px #0002, inset -2px -2px 6px 3px #2222;
 }
 .primary[disabled], a.primary[disabled] {
     background: #777;
 }
 
+
+/* Focusable elements */
+a:focus, button:focus, .button:focus, summary:focus, dialog:focus, input:focus, select:focus, textarea:focus, div:focus, article:focus {
+    border-color: transparent;
+    border: none;
+    outline: 2px solid var(--color-3);
+}
+.input-group>*:focus {
+    outline-offset: -2px; /* To prevent overflowing outlines in button groups */
+}
+a:focus {
+    outline-offset: 2px;
+}
+a.button:focus {
+    outline-offset: 0;
+}
 
 
 /* Button group */
@@ -634,6 +648,7 @@ Each item needs a flex-grow and flex-shrink value of 0. The flex-basis property 
     scroll-snap-type:x mandatory;
     /* gap: 1rem; */
     will-change: scroll-position;
+    border-radius: var(--radius);
 }
 .scroll-x > * {
     display: flex;
@@ -665,13 +680,14 @@ Each item needs a flex-grow and flex-shrink value of 0. The flex-basis property 
     box-shadow: var(--shadow);
     background: var(--bg-main-blocks);
     transform: translateX(calc(1rem + 110%));
-    transition: var(--time);
+    transition: var(--time) var(--style);
     z-index: 2;
     backdrop-filter: blur(5px);
 }
 .mobile_menu.open {
     transform: translateX(0%);
 }
+
 
 /* SCROLL X FOR COLUMNS, CHILD ELEMENT ALWAYS 100% WIDTH */
 /* .scroll-x {
@@ -748,7 +764,7 @@ input[name="quantity"] {max-width: 80px;}
 /* Pages */
 /* Category */
 /* Category - scrollable description */
-main .category-description {overflow-y:auto;max-height:200px;position:relative;width:100%}
+main .category-description {overflow-y:auto;max-height:200px;position:relative;width:100%;border-radius: var(--radius);}
 /* Subcategory */
 .subcategory {
     text-align: center;
@@ -860,6 +876,5 @@ input#input-quantity {
         justify-content: unset;
         text-align: left;
     }
-
     .mobile_buttons {display: none;}
 }
