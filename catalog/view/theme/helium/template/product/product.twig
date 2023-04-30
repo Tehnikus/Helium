@@ -204,7 +204,7 @@
   {# Сопутствующие товары #}
   {% if related_products %}
     <span class="h1">{{ text_related }}</span>
-    <div id="related" class="scroll-x">
+    <div id="related" class="scroll-x js_scroll">
       {% for product in related_products %}
         {% include 'helium/template/product/product_miniature.twig' with {product: product} %}
       {% endfor %} 

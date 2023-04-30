@@ -1,7 +1,7 @@
 {% if articles %}
   <div class="module featured-articles">
     <span class="h3">{{ heading_title }}</span>
-    <div class="scroll-x">
+    <div class="scroll-x js_scroll">
     {% for article in articles %} 
       {% include 'helium/template/blog/article_miniature.twig' with {article: article} %}
     {% endfor %}  
