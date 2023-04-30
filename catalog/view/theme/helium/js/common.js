@@ -459,74 +459,94 @@ var compare = {
 }
 
 function scrollslider() {
-  const containers_class = 'scroll-x';
-  const slides_class = 'miniature';
-  const scrollbehaviour = {behavior: "smooth",block: "nearest",inline: "nearest"};
+	const containers_class = 'js_scroll';
+	const slides_class = 'miniature';
+	
 
-  [].forEach.call(document.getElementsByClassName(containers_class), c => {
-	console.log(c);
-    let observer = new IntersectionObserver(onIntersection, {
-      root: c,      // default is the viewport
-      threshold: .5 // percentage of target's visible area. Triggers "onIntersection"
-    });
-    function onIntersection(slides, opts) {
-      slides.forEach(entry => {
-        entry.target.classList.toggle('visible', entry.isIntersecting)
-      })
-    }
-    [].forEach.call(c.getElementsByClassName(slides_class), s => {
-      observer.observe(s);
-    });
-	function scrollLeft() {
-	let visible_slide = c.querySelector('article.visible');
-	if (visible_slide.previousElementSibling) {
-		let scrollAmount = visible_slide.previousElementSibling.offsetWidth;
-		c.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
-	} else {
-		let scrollAmount = c.scrollWidth;
-		c.scrollBy({ left: scrollAmount, behavior: 'smooth' });
-	}
-	}
-
-	function scrollRight() {
-	let visible_slide = c.querySelector('article.visible');
-	if (visible_slide.nextElementSibling) {
-		let scrollAmount = visible_slide.nextElementSibling.offsetWidth;
-		c.scrollBy({ left: scrollAmount, behavior: 'smooth' });
-	} else {
-		let scrollAmount = c.scrollWidth;
-		c.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
-	}
-	}
-
-    ['left', 'right'].forEach(b => {
-      button = createElm({type: 'button', attrs: {'class': 'scroll_'+b}, props:{innerHTML: '<i class="icon-chevron-'+b+'"></i>'}});
-      if (b == 'left') {
-        button.addEventListener('click', (e) => {
-          scrollLeft();
-        })
-      }
-      if (b == 'right') {
-        button.addEventListener('click', (e) => {
-          scrollRight()
-        })
-      }
-      c.insertAdjacentElement('beforebegin', button);
-    })
-    let intervalId = setInterval(() => {
-		scrollRight();
-	}, 1500);
-  
-	c.addEventListener('mouseenter', () => {
-		clearInterval(intervalId);
-	});
-  
-	c.addEventListener('mouseleave', () => {
-		intervalId = setInterval(() => {
+	[].forEach.call(document.getElementsByClassName(containers_class), c => {
+		
+		// Get timer from container dataset
+		let time = c.dataset.time || 1500;
+		let timer = setInterval(() => {
 			scrollRight();
-		}, 1500);
-	});
-  })
+		}, time);
+
+		console.log(c);
+		let observer = new IntersectionObserver(onIntersection, {
+			root: c,      // default is the viewport
+			threshold: .9 // percentage of target's visible area. Triggers "onIntersection"
+		});
+		function onIntersection(slides, opts) {
+			slides.forEach(entry => {
+				// Set class to visible slide
+				entry.target.classList.toggle('visible', entry.isIntersecting)
+			})
+		}
+		[].forEach.call(c.children, s => {
+			observer.observe(s);
+		});
+
+		function scrollLeft() {
+			let visible_slide = Array.from(c.querySelectorAll('.visible')).shift();
+			if (visible_slide.previousElementSibling) {
+				let scrollAmount = visible_slide.previousElementSibling.offsetWidth;
+				c.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+			} else {
+				let scrollAmount = c.scrollWidth;
+				c.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+			}
+		}
+
+		function scrollRight() {
+			let visible_slide = Array.from(c.querySelectorAll('.visible')).pop();
+			if (visible_slide.nextElementSibling) {
+				let scrollAmount = visible_slide.nextElementSibling.offsetWidth;
+				c.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+			} else {
+				let scrollAmount = c.scrollWidth;
+				c.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+			}
+		}
+
+		// Add control buttons
+		['left', 'right'].forEach(b => {
+
+			button = createElm({
+				type: 'button',
+				attrs: { 'class': 'scroll_' + b },
+				props: { innerHTML: '<i class="icon-chevron-' + b + '"></i>' },
+				events: {
+					'click': () => { b === 'left' ? scrollLeft() : scrollRight() },
+					// stop if controls are focused or hovered
+					'mouseenter': () => { clearInterval(timer) },
+					'focus': () => { clearInterval(timer) },
+					// Else start again
+					'mouseleave': () => { timer = setInterval(() => {scrollRight(); }, time); },
+					'blur': () => { timer = setInterval(() => {scrollRight(); }, time); },
+				}
+			});
+			c.insertAdjacentElement('beforebegin', button);
+		});
+
+		// If container hovered, touched or focused - stop animation
+		['mouseenter', 'focus', 'touchstart'].forEach(e => {
+			c.addEventListener(e, () => {
+				clearInterval(timer);
+			});
+		});
+		// If container is not hovered, touched or focused - start animation
+		['mouseleave', 'focusout', 'touchend'].forEach(f => {
+			c.addEventListener(f, () => {
+				// If container does not have focus inside - like click on button or screen reader focus
+				if (!c.matches(':focus-within')) {
+					timer = setInterval(() => {
+						scrollRight();
+					}, time);
+				}
+			});
+		})
+
+	})
 }
 scrollslider();
 
