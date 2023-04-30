@@ -107,6 +107,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	mainMenu(); // render buttons, aria attributes and titles for main menu
 	countdown(d); // Countdown to the ent of discounts
 	stickyHeader(); // Sticky header
+	scrollslider(); // Sliders everywhere
 
 
 	// TODO Move this to it's function
@@ -458,23 +459,20 @@ var compare = {
 	}
 }
 
+// Micro slider with smooth animations and native touch
 function scrollslider() {
 	const containers_class = 'js_scroll';
-	const slides_class = 'miniature';
-	
-
 	[].forEach.call(document.getElementsByClassName(containers_class), c => {
-		
+
 		// Get timer from container dataset
 		let time = c.dataset.time || 4000;
 		let timer = setInterval(() => {
 			scrollRight();
 		}, time);
 
-		console.log(c);
 		let observer = new IntersectionObserver(onIntersection, {
-			root: c,      // default is the viewport
-			threshold: .9 // percentage of target's visible area. Triggers "onIntersection"
+			root: c,      // Default is the viewport
+			threshold: .9 // Percentage of target's visible area. Triggers "onIntersection". Not 1, because slide may be fractionally visible
 		});
 		function onIntersection(slides, opts) {
 			slides.forEach(entry => {
@@ -487,24 +485,36 @@ function scrollslider() {
 		});
 
 		function scrollLeft() {
+			// Select first visible slide if multilpe visibe
 			let visible_slide = Array.from(c.querySelectorAll('.visible')).shift();
-			if (visible_slide.previousElementSibling) {
-				let scrollAmount = visible_slide.previousElementSibling.offsetWidth;
-				c.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
-			} else {
-				let scrollAmount = c.scrollWidth;
-				c.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+			if(visible_slide) {
+				if (visible_slide.previousElementSibling) {
+					// Calculate each time so dimensins change won't affect
+					let scrollAmount = visible_slide.previousElementSibling.offsetWidth;
+					// Scroll back if next slide present
+					c.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+				} else {
+					// Else scroll all the way to end
+					let scrollAmount = c.scrollWidth;
+					c.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+				}
 			}
 		}
 
 		function scrollRight() {
+			// Select last visible slide if multilpe visibe
 			let visible_slide = Array.from(c.querySelectorAll('.visible')).pop();
-			if (visible_slide.nextElementSibling) {
-				let scrollAmount = visible_slide.nextElementSibling.offsetWidth;
-				c.scrollBy({ left: scrollAmount, behavior: 'smooth' });
-			} else {
-				let scrollAmount = c.scrollWidth;
-				c.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+			if(visible_slide) {
+				if (visible_slide.nextElementSibling) {
+					// Calculate each time so dimensins change won't affect
+					let scrollAmount = visible_slide.nextElementSibling.offsetWidth;
+					// Scroll forward if next slide present
+					c.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+				} else {
+					// Else scroll all the way to begin
+					let scrollAmount = c.scrollWidth;
+					c.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+				}
 			}
 		}
 
@@ -515,12 +525,14 @@ function scrollslider() {
 				type: 'button',
 				attrs: { 'class': 'scroll_' + b },
 				props: { innerHTML: '<i class="icon-chevron-' + b + '"></i>' },
+				// Add some events
 				events: {
+					// Clicks
 					'click': () => { b === 'left' ? scrollLeft() : scrollRight() },
-					// stop if controls are focused or hovered
+					// Stop slider if controls are focused or hovered
 					'mouseenter': () => { clearInterval(timer) },
 					'focus': () => { clearInterval(timer) },
-					// Else start again
+					// Else start slider again
 					'mouseleave': () => { timer = setInterval(() => {scrollRight(); }, time); },
 					'blur': () => { timer = setInterval(() => {scrollRight(); }, time); },
 				}
@@ -537,7 +549,7 @@ function scrollslider() {
 		// If container is not hovered, touched or focused - start animation
 		['mouseleave', 'focusout', 'touchend'].forEach(f => {
 			c.addEventListener(f, () => {
-				// If container does not have focus inside - like click on button or screen reader focus
+				// Check if container does not have focus inside - like click on button or screen reader focus
 				if (!c.matches(':focus-within')) {
 					timer = setInterval(() => {
 						scrollRight();
@@ -545,10 +557,9 @@ function scrollslider() {
 				}
 			});
 		})
-
 	})
 }
-scrollslider();
+
 
 
 // Clicks handling
