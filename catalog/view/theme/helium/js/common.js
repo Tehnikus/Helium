@@ -459,11 +459,12 @@ var compare = {
 }
 
 function scrollslider() {
-  let containers_class = 'module-product-list';
-  let slides_class = 'miniature';
-  let scrollbehaviour = {behavior: "smooth",block: "nearest",inline: "nearest"};
+  const containers_class = 'scroll-x';
+  const slides_class = 'miniature';
+  const scrollbehaviour = {behavior: "smooth",block: "nearest",inline: "nearest"};
 
   [].forEach.call(document.getElementsByClassName(containers_class), c => {
+	console.log(c);
     let observer = new IntersectionObserver(onIntersection, {
       root: c,      // default is the viewport
       threshold: .5 // percentage of target's visible area. Triggers "onIntersection"
@@ -476,22 +477,27 @@ function scrollslider() {
     [].forEach.call(c.getElementsByClassName(slides_class), s => {
       observer.observe(s);
     });
-    function scrollLeft() {
-      var visible_slide = c.querySelector('article.visible');
-      if (visible_slide.previousElementSibling) {
-        visible_slide.previousElementSibling.scrollIntoView(scrollbehaviour);
-      } else {
-        c.lastElementChild.scrollIntoView(scrollbehaviour);
-      }
-    }
-    function scrollRight() {
-      var visible_slide = c.querySelector('article.visible');
-      if (visible_slide.nextElementSibling) {
-        visible_slide.nextElementSibling.scrollIntoView(scrollbehaviour);
-      } else {
-        c.firstElementChild.scrollIntoView(scrollbehaviour);
-      }
-    }
+	function scrollLeft() {
+	let visible_slide = c.querySelector('article.visible');
+	if (visible_slide.previousElementSibling) {
+		let scrollAmount = visible_slide.previousElementSibling.offsetWidth;
+		c.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+	} else {
+		let scrollAmount = c.scrollWidth;
+		c.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+	}
+	}
+
+	function scrollRight() {
+	let visible_slide = c.querySelector('article.visible');
+	if (visible_slide.nextElementSibling) {
+		let scrollAmount = visible_slide.nextElementSibling.offsetWidth;
+		c.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+	} else {
+		let scrollAmount = c.scrollWidth;
+		c.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+	}
+	}
 
     ['left', 'right'].forEach(b => {
       button = createElm({type: 'button', attrs: {'class': 'scroll_'+b}, props:{innerHTML: '<i class="icon-chevron-'+b+'"></i>'}});
@@ -507,9 +513,19 @@ function scrollslider() {
       }
       c.insertAdjacentElement('beforebegin', button);
     })
-    // setInterval(() => {
-    //   scrollRight();
-    // }, 1500);
+    let intervalId = setInterval(() => {
+		scrollRight();
+	}, 1500);
+  
+	c.addEventListener('mouseenter', () => {
+		clearInterval(intervalId);
+	});
+  
+	c.addEventListener('mouseleave', () => {
+		intervalId = setInterval(() => {
+			scrollRight();
+		}, 1500);
+	});
   })
 }
 scrollslider();
@@ -857,6 +873,29 @@ function mobileMenu() {
 			};
 			btns[mb[k].dataset.order] = btn;
 		}
+		let catalog_btn  = {
+			type: 'button',
+			attrs: {'class':'mobile_button button', 'aria-label':"Menu"},
+			props: {
+				'innerHTML':'<i class="icon-cart"></i><span>Menu</span>',
+				'dataset' : {'accordionTarget':'main-menu'}
+			},
+		};
+		let cart_btn  = {
+			type: 'button',
+			attrs: {'class':'mobile_button button', 'aria-label':"Cart"},
+			props: {
+				'innerHTML':'<i class="icon-cart"></i><span>Cart</span>',
+			},
+			events: {
+				click: function(){
+					cart.showModal();
+				}
+			}
+		};
+		console.log(btns);
+		btns[9] = catalog_btn;
+		btns[10] = cart_btn;
 		let menu = {
 			attrs: {'class': 'mobile_buttons scroll-x'},
 			nest: btns
@@ -921,6 +960,7 @@ let dialog = {
 		});
 		// Append dialog to document
 		document.body.insertAdjacentElement('beforeend', a);
+		document.body.style.cssText = 'overscroll-behavior: contain;'
 		// Open dialog
 		a.showModal();
 		return;
@@ -933,6 +973,7 @@ let dialog = {
 			b[i].close();
 			document.body.removeChild(b[i]);
 		}
+		document.body.style.cssText = '';
 		// [].forEach.call(document.getElementsByTagName('dialog'), function(f) {
 		// 	f.cancel();
 		// 	document.body.removeChild(f);
@@ -1243,6 +1284,7 @@ function sendReview(t) {
 // Find all elements by ID, class or queryselector and bind event listeners on them
 let elements_list = [
 	{name: '#cart-header-button',  	e:'click',	func:cart.showModal},
+	{name: '#cart-mobile-button',  	e:'click',	func:cart.showModal},
 	{name: '#compare-total',        e:'click',	func:showCompareModal},
 	{name: '#wishlist-total',       e:'click',	func:showWhishlistModal},
 	{name: '#search-input',         e:'input',	func:searchFunction},
