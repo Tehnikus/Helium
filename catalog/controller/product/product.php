@@ -288,56 +288,11 @@ class ControllerProductProduct extends Controller {
 			$data['share'] = $this->url->link('product/product', 'product_id=' . (int)$this->request->get['product_id']);
 			$data['attribute_groups'] = $this->model_catalog_product->getProductAttributes($this->request->get['product_id']);
 			
+			// Related products
 			$data['related_products'] = array();
 			$related_products = $this->model_catalog_product->getProductRelated($this->request->get['product_id']);
+			$data['related_products'] = $this->model_catalog_product->prepareProductList($related_products, (int)$product_info['main_category']);
 
-			foreach ($related_products as $related_product) {
-				if ($related_product['image']) {
-					$image = $this->model_tool_image->resize($related_product['image'], $this->config->get('image_product_width'), $this->config->get('image_product_height'));
-				} else {
-					$image = $this->model_tool_image->resize('no_image.webp', $this->config->get('image_product_width'), $this->config->get('image_product_height'));
-				}
-
-				if ($this->customer->isLogged() || !$this->config->get('config_customer_price')) {
-					$price = $this->currency->format($this->tax->calculate($related_product['price'], $related_product['tax_class_id'], $this->config->get('config_tax')), $this->session->data['currency']);
-				} else {
-					$price = false;
-				}
-
-				if (!is_null($related_product['special']) && (float)$related_product['special'] >= 0) {
-					$special = $this->currency->format($this->tax->calculate($related_product['special'], $related_product['tax_class_id'], $this->config->get('config_tax')), $this->session->data['currency']);
-					$tax_price = (float)$related_product['special'];
-				} else {
-					$special = false;
-					$tax_price = (float)$related_product['price'];
-				}
-	
-				if ($this->config->get('config_tax')) {
-					$tax = $this->currency->format($tax_price, $this->session->data['currency']);
-				} else {
-					$tax = false;
-				}
-
-				if ($this->config->get('config_review_status')) {
-					$rating = (int)$related_product['rating'];
-				} else {
-					$rating = false;
-				}
-
-				$data['related_products'][] = array(
-					'product_id'  => $related_product['product_id'],
-					'thumb'       => $image,
-					'name'        => $related_product['name'],
-					'description' => utf8_substr(trim(strip_tags(html_entity_decode($related_product['description'], ENT_QUOTES, 'UTF-8'))), 0, $this->config->get('theme_' . $this->config->get('config_theme') . '_product_description_length')) . '..',
-					'price'       => $price,
-					'special'     => $special,
-					'tax'         => $tax,
-					'minimum'     => $related_product['minimum'] > 0 ? $related_product['minimum'] : 1,
-					'rating'      => $rating,
-					'reviews'     => $related_product['reviews'],
-					'href'        => $this->url->link('product/product', 'product_id=' . $related_product['product_id'])
-				);
-			}
 
 			$data['tags'] = array();
 
