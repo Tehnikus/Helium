@@ -9,19 +9,19 @@
     {# Page contents #}
     <ul class="contents scroll-x">
       {% if description %}
-        <li><a href="{{ share }}#description" title="{{ tab_description }}">{{ tab_description }}</a></li>
+        <li><a class="button" href="{{ share }}#description" title="{{ tab_description }}">{{ tab_description }}</a></li>
       {% endif %}
       {% if thumb %}
-        <li><a href="{{ share }}#photos" title="{{ tab_photos }}">{{ tab_photos }}</a></li>
+        <li><a class="button" href="{{ share }}#photos" title="{{ tab_photos }}">{{ tab_photos }}</a></li>
       {% endif %}
       {% if attribute_groups %}
-        <li><a href="{{ share }}#specification" title="{{ tab_attribute }}">{{ tab_attribute }}</a></li>
+        <li><a class="button" href="{{ share }}#specification" title="{{ tab_attribute }}">{{ tab_attribute }}</a></li>
       {% endif %}
       {% if review_status %}
-        <li><a href="{{ share }}#reviews" title="{{ tab_review }}">{{ tab_review }}</a></li>
+        <li><a class="button" href="{{ share }}#reviews" title="{{ tab_review }}">{{ tab_review }}</a></li>
       {% endif %}
       {% if products %}
-        <li><a href="{{ share }}#related" title="{{ text_related }}">{{ text_related }} ({{products|length}})</a></li>
+        <li><a class="button" href="{{ share }}#related" title="{{ text_related }}">{{ text_related }} ({{products|length}})</a></li>
       {% endif %}
     </ul>
   </hgroup>
@@ -204,7 +204,7 @@
   {# Сопутствующие товары #}
   {% if related_products %}
     <span class="h1">{{ text_related }}</span>
-    <div id="related" class="module-product-list">
+    <div id="related" class="scroll-x">
       {% for product in related_products %}
         {% include 'helium/template/product/product_miniature.twig' with {product: product} %}
       {% endfor %} 
