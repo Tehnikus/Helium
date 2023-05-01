@@ -51,13 +51,16 @@ class ModelCatalogProduct extends Model {
 		'optgroup_weight' => array(
 			'ASC' => array(
 				'p.weight',
-				
 			),
 			'DESC' => array(
 				'p.weight',
 			),
 		)
 	);
+
+	public function getSorts() {
+		return $this->allowed_sort_data;
+	}
 
 	// Update product views
 	public function updateViewed(int $product_id) {
@@ -1321,5 +1324,16 @@ class ModelCatalogProduct extends Model {
 		
 		$query = $this->db->query($sql);
 		return $query->rows;
+	}
+
+	function searchArrayForKeyValue($array, $key, $value) {
+		foreach ($array as $optgroup) {
+			foreach ($optgroup as $sortDirection => $fields) {
+				if (in_array($value, $fields) && $sortDirection == $key) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 }
