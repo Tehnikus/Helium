@@ -22,7 +22,7 @@
     --color-text-button: #111;
     /* Fancy things */
     --radius: calc(1rem * .5);
-    --shadow: 0 0 3px 3px #3333;
+    
     /* Scrollbar colors */
     --scrollbar-thumb: #999;
     --scrollbar-thumb-hover: #777;
@@ -61,6 +61,7 @@
 
     --icon-height: 1.3rem;
 
+    --blocks-shadow: 0 0 3px 3px #3333;
     --inputs-shadow: 0 0 8px #3333;
 
 }
@@ -426,7 +427,7 @@ b,h1,h2,h3,h4,h5,h6,strong,th {
     padding: 0;
 }
 [data-accordion][aria-expanded="true"] {
-    box-shadow: var(--shadow);
+    box-shadow: var(--blocks-shadow);
 }
 /* Details - related to accordion */
 details {display:flex;flex-direction:column;align-items:flex-start;margin:0;overflow:hidden}
@@ -477,7 +478,7 @@ button.close:after {
 
 
 /* Main menu */
-#main-menu .menu {position: relative;overflow: hidden;height: 50vh;scrollbar-gutter: auto;background: #fff;box-shadow: var(--shadow);border-radius: var(--radius)}
+#main-menu .menu {position: relative;overflow: hidden;height: 50vh;scrollbar-gutter: auto;background: #fff;box-shadow: var(--blocks-shadow);border-radius: var(--radius)}
 #main-menu ul {transition: var(--style) var(--time);background: #fff;margin: 0;padding: .2rem;overflow-y: auto;height: 50vh}
 #main-menu li {list-style-type: none;margin: .1rem 0;padding: 0;display: grid;grid-template-columns: 300px 40px 40px;align-items: center;grid-template-rows: 50px}
 #main-menu a {padding: .5rem}
@@ -512,7 +513,7 @@ span.product_count {min-width: 24px;  height: 24px;  text-align: center;  border
 
 /* Components - Search  */
 #search, .search, #search-input {flex: 1}
-#search #search-results.some-results {max-height: 80vh; box-shadow: var(--shadow); height: auto; transition: var(--style) var(--time); padding: 1rem .5rem 0 1rem; backdrop-filter: blur(10px)}
+#search #search-results.some-results {max-height: 80vh; box-shadow: var(--blocks-shadow); height: auto; transition: var(--style) var(--time); padding: 1rem .5rem 0 1rem; backdrop-filter: blur(10px)}
 #search #search-results {position: absolute; left: 0; top: 100%; width: 100%; z-index: 1; background-color: var(--bg-main-blocks); max-height: 0; overflow-y: auto; border-radius: var(--radius); padding: 0; transition: var(--style) var(--time); will-change: contents; backdrop-filter: blur(0px);}
 /* Shrink timer in search results */
 #search-results .timer {padding: .5rem  0;}
@@ -578,8 +579,8 @@ a:focus, button:focus, .button:focus, summary:focus, dialog:focus, input:focus, 
     border: none;
     outline: 2px solid var(--color-3);
 }
-.input-group>*:focus {
-    outline-offset: -2px; /* To prevent overflowing outlines in button groups */
+.input-group>*:not(:last-child):focus {
+    margin-right: 2px; /* Prevent overflowing outlines in button groups */
 }
 a:focus {
     outline-offset: 2px;
@@ -594,7 +595,6 @@ a.button:focus {
 
 /* Input groups, Button groups */
 .input-group, .btn-group {display:flex;flex-direction:row;flex-wrap:nowrap;align-items:center;}
-
 .input-group {box-shadow: var(--inputs-shadow); border-radius: var(--radius);}
 .input-group > * {box-shadow: none;}
 /* Round corners on input groups */
@@ -825,7 +825,7 @@ input#input-quantity {
         right: 1rem;
         /* top: 1rem; */
         border-radius: var(--radius);
-        box-shadow: var(--shadow);
+        box-shadow: var(--blocks-shadow);
         background: var(--bg-main-blocks);
         transform: translateX(calc(1rem + 110%));
         transition: var(--time) var(--style);
