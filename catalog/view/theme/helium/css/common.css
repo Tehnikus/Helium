@@ -117,11 +117,7 @@ input,select {display:block}
 [type=radio] {
     display:initial
 }
-input,
-select,
-textarea {
-    background: var(--bg-inputs);
-}
+
 
 button, .button, a.button, a.primary,
 input,
@@ -139,6 +135,7 @@ textarea {
     max-width: 100%;
     box-shadow: var(--inputs-shadow);
 }
+optgroup {font-style: normal; font-weight: 600;}
 button, .button, a.button, a.primary,
 input,
 select,
@@ -177,6 +174,22 @@ form {
 }
 .form-group.has-error {
 	background: rgb(192 77 1 / 4%);
+}
+
+/* Focusable elements */
+a:focus, button:focus, .button:focus, summary:focus, dialog:focus, input:focus, select:focus, textarea:focus, div:focus, article:focus {
+    border-color: transparent;
+    border: none;
+    outline: 2px solid var(--color-3);
+}
+.input-group>*:not(:last-child):focus {
+    margin-right: 2px; /* Prevent overflowing outlines in button groups */
+}
+a:focus {
+    outline-offset: 2px;
+}
+a.button:focus {
+    outline-offset: 0;
 }
 
 /* Text that follows input group or form group - error message or some explanation */
@@ -245,7 +258,7 @@ input[type="checkbox"]:checked::before, input[type="radio"]:checked::before {
 
 /* Separate outline focus for custom checkboxes and radios */
 input[type="checkbox"]:focus, input[type="radio"]:focus {
-	outline: max(2px, 0.15em) solid var(--color-2);
+	outline: max(2px, 0.15em) solid var(--color-3);
 	outline-offset: max(2px, 0.15em);
 }
   
@@ -314,11 +327,16 @@ figcaption {
 .alert-danger, .alert-success,
 
 img, video,
-input, select, textarea, fieldset,
+input, textarea, fieldset, select,
 nav, footer, main, aside > div, [data-accordion], .miniature, details, dialog {
     background: var(--bg-main-blocks);
     border-radius: var(--radius);
     position: relative;
+}
+/* Separate background for select with svg chevron */
+select {
+	background: var(--bg-inputs) url("data:image/svg+xml;charset=utf-8,<svg xmlns='http://www.w3.org/2000/svg' height='63' width='117' fill='%23161f27'><path d='M115 2c-1-2-4-2-5 0L59 53 7 2a4 4 0 00-5 5l54 54 2 2 3-2 54-54c2-1 2-4 0-5z'/></svg>") calc(100% - 12px) 50%/12px no-repeat;
+	padding-right:35px;
 }
 /* Padding for main blocks */
 nav, footer, main, aside > div, [data-accordion] {
@@ -446,7 +464,7 @@ details[disabled], details[disabled] summary {color: var(--color-text-muted);poi
 
 
 /* Dialogs */
-dialog {border: none; outline: transparent; box-shadow: 0 0 5px #333; position: fixed;}
+dialog {border: none; outline: transparent; box-shadow: 0 0 5px #333; position: fixed; scrollbar-gutter: auto!important; /* Hide scrollbar gutter on dialog */}
 
 dialog::backdrop {
     /* backdrop-filter: blur(5px); */
@@ -573,21 +591,7 @@ button:active, .button:active, .primary:active {
 }
 
 
-/* Focusable elements */
-a:focus, button:focus, .button:focus, summary:focus, dialog:focus, input:focus, select:focus, textarea:focus, div:focus, article:focus {
-    border-color: transparent;
-    border: none;
-    outline: 2px solid var(--color-3);
-}
-.input-group>*:not(:last-child):focus {
-    margin-right: 2px; /* Prevent overflowing outlines in button groups */
-}
-a:focus {
-    outline-offset: 2px;
-}
-a.button:focus {
-    outline-offset: 0;
-}
+
 
 
 /* Button group */
