@@ -1,64 +1,29 @@
 <?php
 class ControllerExtensionModuleFilter extends Controller {
-	public	$allowed_sort_data = array(
-		'optgroup_default' => array(
-			'ASC' => array(
-				'p.sort_order',
-			)
-		),
-		'optgroup_popular' => array(
-			'ASC' => array(
-				'p.returned',
-			),
-			'DESC' => array(
-				'p.sold',
-				'p.viewed',
-				'p.date_added',
-				'p.date_modified',
-				'p.rating',
-				'p.points',
-				'p.quantity',
-				'discounts',
-			),
-		),
-		'optgroup_price' => array(
-			'ASC' => array(
-				'p.price',
-				'price_to_weight',
-			),
-			'DESC' => array(
-				'p.price',
-				'price_to_weight',
-			)
-		),
-
-		'optgroup_name' => array(
-			'ASC' => array(
-				'pd.name',
-				'p.model',
-			),
-			'DESC' => array(
-				'pd.name',
-				'p.model',
-			),
-		),
-		'optgroup_weight' => array(
-			'ASC' => array(
-				'p.weight',
-				
-			),
-			'DESC' => array(
-				
-				'p.weight',
-			),
-		)
-	);
 	public function index() {
+
 		if (isset($this->request->get['path'])) {
 			$parts = explode('_', (string)$this->request->get['path']);
 		} else {
 			$parts = array();
 		}
+
+		$sort =  $this->request->get['sort'];
+		$order = $this->request->get['order'];
+
+		$this->load->model('catalog/product');
+		$allowed_sort_data = $this->model_catalog_product->getSorts();
+
+		// Sanitize input data
+		if ($this->searchArrayForKeyValue($allowed_sort_data, $order, $sort)) {
+			$data['sort']  = $sort;
+			$data['order'] = $order;
+		} else {
+			$data['sort']  = 'p.sort_order';
+			$data['order'] = 'ASC';	
+		}
+
+
 
 		$category_id = end($parts);
 
@@ -128,15 +93,15 @@ class ControllerExtensionModuleFilter extends Controller {
 					// 	'url'  => $this->url->link('product/category', 'path=13' . '&filter=4'),
 					// );
 				}
-				$data['sorts'] = $this->renderSorts();
+				$data['sorts'] = $this->renderSorts($allowed_sort_data);
 				return $this->load->view('extension/module/filter', $data);
 			}
 		}
 	}
 
-	public function renderSorts() {
+	public function renderSorts($sort_data) {
 		$sorts = [];
-		foreach ($this->allowed_sort_data as $optgroup_name => $optgroup) {
+		foreach ($sort_data as $optgroup_name => $optgroup) {
 			$sorts[$optgroup_name] = array(
 				'name' => $this->language->get($optgroup_name),
 				'values' => array(),
@@ -144,7 +109,7 @@ class ControllerExtensionModuleFilter extends Controller {
 			
 			foreach ($optgroup as $order2 => $sort2) {
 				foreach ($sort2 as $sort_order2) {
-					if (in_array($sort_order2, $this->allowed_sort_data[$optgroup_name][$order2])) {
+					if (in_array($sort_order2, $sort_data[$optgroup_name][$order2])) {
 						$value = $sort_order2.'-'.$order2;
 						$text = $this->language->get($value);
 						$href = $this->url->link('product/category', 'path=' . $this->request->get['path'] . '&sort='.$sort_order2.'&order='.$order2);
@@ -170,5 +135,15 @@ class ControllerExtensionModuleFilter extends Controller {
 			}
 		}
 		return $sorts;
+	}
+	function searchArrayForKeyValue($array, $key, $value) {
+		foreach ($array as $optgroup) {
+			foreach ($optgroup as $sortDirection => $fields) {
+				if (in_array($value, $fields) && $sortDirection == $key) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 }
