@@ -668,25 +668,7 @@ Each item needs a flex-grow and flex-shrink value of 0. The flex-basis property 
 /* Mobile buttons scrolling */
 .mobile_buttons.scroll-x {position: fixed;bottom: 0;left: 0;right: 0;gap: 0.3rem;padding: 0.3rem;background: var(--bg-main-blocks);z-index: 1;}
 .mobile_button {display: flex;flex-direction: column;width: 20%;flex: 1 0 auto!important;}
-.mobile_menu {
-    justify-content: center;
-    position: fixed;
-    z-index: 1;
-    bottom: 4.5rem;
-    left: 1rem;
-    right: 1rem;
-    /* top: 1rem; */
-    border-radius: var(--radius);
-    box-shadow: var(--shadow);
-    background: var(--bg-main-blocks);
-    transform: translateX(calc(1rem + 110%));
-    transition: var(--time) var(--style);
-    z-index: 2;
-    backdrop-filter: blur(5px);
-}
-.mobile_menu.open {
-    transform: translateX(0%);
-}
+
 
 
 /* SCROLL X FOR COLUMNS, CHILD ELEMENT ALWAYS 100% WIDTH */
@@ -833,6 +815,27 @@ input#input-quantity {
 
 /* Media query for desktops */
 /* 64rem = 1024px */
+@media (max-width: 63.99rem) {
+    .mobile_menu {
+        justify-content: center;
+        position: fixed;
+        z-index: 1;
+        bottom: 4.5rem;
+        left: 1rem;
+        right: 1rem;
+        /* top: 1rem; */
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        background: var(--bg-main-blocks);
+        transform: translateX(calc(1rem + 110%));
+        transition: var(--time) var(--style);
+        z-index: 2;
+        backdrop-filter: blur(5px);
+    }
+    .mobile_menu.open {
+        transform: translateX(0%);
+    }
+}
 @media (min-width: 64rem) {
     body {
         flex-direction: row;
