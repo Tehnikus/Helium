@@ -8,8 +8,13 @@ class ControllerExtensionModuleFilter extends Controller {
 			$parts = array();
 		}
 
-		$sort =  $this->request->get['sort'];
-		$order = $this->request->get['order'];
+		if (isset($this->request->get['sort']) && isset($this->request->get['order'])) {
+			$sort  = $this->request->get['sort'];
+			$order = $this->request->get['order'];
+		} else {
+			$sort  = 'p.sort_order';
+			$order =  'ASC';
+		}
 
 		$this->load->model('catalog/product');
 		$allowed_sort_data = $this->model_catalog_product->getSorts();
@@ -42,10 +47,6 @@ class ControllerExtensionModuleFilter extends Controller {
 
 			if (isset($this->request->get['order'])) {
 				$url .= '&order=' . $this->request->get['order'];
-			}
-
-			if (isset($this->request->get['limit'])) {
-				$url .= '&limit=' . $this->request->get['limit'];
 			}
 
 			$data['action'] = str_replace('&amp;', '&', $this->url->link('product/category', 'path=' . $this->request->get['path'] . $url));
@@ -107,21 +108,41 @@ class ControllerExtensionModuleFilter extends Controller {
 				'values' => array(),
 			);
 			
-			foreach ($optgroup as $order2 => $sort2) {
-				foreach ($sort2 as $sort_order2) {
-					if (in_array($sort_order2, $sort_data[$optgroup_name][$order2])) {
-						$value = $sort_order2.'-'.$order2;
+			foreach ($optgroup as $order_direction => $sorting_values_array) {
+				foreach ($sorting_values_array as $sort_value) {
+					if (in_array($sort_value, $sort_data[$optgroup_name][$order_direction])) {
+						$value = $sort_value.'-'.$order_direction;
 						$text = $this->language->get($value);
-						$href = $this->url->link('product/category', 'path=' . $this->request->get['path'] . '&sort='.$sort_order2.'&order='.$order2);
+						if ($sort_value === 'p.sort_order' && $order_direction === 'ASC') {
+							// If sort is default - set canonical link of the category
+							$href = $this->url->link('product/category', 'path=' . $this->request->get['path']);
+						} else {
+							// Else add sorting data to strings
+							$href = $this->url->link('product/category', 'path=' . $this->request->get['path'] . '&sort='.$sort_value.'&order='.$order_direction);
+						}
 						
 						// DONE Add filter conditions to sorting
 						if (isset($this->request->get['filter'])) {
-							$href .= '&filter='.$this->request->get['filter'];
+
+							// Clear filter from anything except numbers and commas
+							$filter = $this->request->get['filter'];
+							$filter = preg_replace('/[^\\d,]+/', '', $filter);
+							$filter = explode(',', $filter);
+							foreach ($filter as $k => $string) {
+								$strings[$k] = (int) $string;
+							}
+							asort($strings);
+							$strings = array_unique(array_filter($strings));
+							$filter = implode(',', $strings);
+							// Join filter to sorting href
+							$href .= '&filter='.$filter;
 						}
 						
 						// DONE Add page request to sorting
 						if (isset($this->request->get['page'])) {
-							$href .= '&page='.$this->request->get['page'];
+							// Cast as (int) so no side data put into request
+							$page = (int)$this->request->get['page'];
+							$href .= '&page='.(int)$page;
 						}
 		
 						$sorts[$optgroup_name]['values'][] = array(
@@ -129,7 +150,6 @@ class ControllerExtensionModuleFilter extends Controller {
 							'value' => $value,
 							'href'  => $href,
 						);
-						// echo('$_[\''.$value.'\'] = \''.$text.'\';<br/>');
 					}
 				}
 			}

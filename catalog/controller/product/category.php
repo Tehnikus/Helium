@@ -2,77 +2,6 @@
 
 class ControllerProductCategory extends Controller {
 
-	public	$allowed_sort_data = array(
-		'pd.name',
-		'p.model',
-		'p.quantity',
-		'p.price',
-		'discounts',
-		'p.rating',
-		'p.sort_order',
-		'p.date_added',
-		'p.date_modified',
-		'p.viewed',
-		'p.sold',
-		'p.returned',
-		'p.points',
-		'p.weight',
-		'price_to_weight'
-	);
-	// TODO Check if sort corresponds order
-	// public	$allowed_sort_data2 = array(
-	// 	'optgroup_default' => array(
-	// 		'ASC' => array(
-	// 			'p.sort_order',
-	// 		)
-	// 	),
-	// 	'optgroup_popular' => array(
-	// 		'ASC' => array(
-	// 			'p.returned',
-	// 		),
-	// 		'DESC' => array(
-	// 			'p.sold',
-	// 			'p.viewed',
-	// 			'p.date_added',
-	// 			'p.date_modified',
-	// 			'p.rating',
-	// 			'p.points',
-	// 			'p.quantity',
-	// 			'discounts',
-	// 		),
-	// 	),
-	// 	'optgroup_price' => array(
-	// 		'ASC' => array(
-	// 			'p.price',
-	// 			'price_to_weight',
-	// 		),
-	// 		'DESC' => array(
-	// 			'p.price',
-	// 			'price_to_weight',
-	// 		)
-	// 	),
-
-	// 	'optgroup_name' => array(
-	// 		'ASC' => array(
-	// 			'pd.name',
-	// 			'p.model',
-	// 		),
-	// 		'DESC' => array(
-	// 			'pd.name',
-	// 			'p.model',
-	// 		),
-	// 	),
-	// 	'optgroup_weight' => array(
-	// 		'ASC' => array(
-	// 			'p.weight',
-				
-	// 		),
-	// 		'DESC' => array(
-				
-	// 			'p.weight',
-	// 		),
-	// 	)
-	// );
 	
 	public $noindex_follow_requests = array(
 		'filter',
@@ -133,18 +62,31 @@ class ControllerProductCategory extends Controller {
 			$filter = '';
 		}
 
-		// Sanitize sort request
-		if (isset($this->request->get['sort']) && (in_array($this->request->get['sort'], $this->allowed_sort_data))) {
-			$sort = $this->request->get['sort'];
-		} else {
-			$sort = 'p.sort_order';
-		}
 
-		// Sanitize order request
-		if (isset($this->request->get['order']) && ($this->request->get['order'] == 'ASC' || $this->request->get['order'] == 'DESC')) {
+		if (isset($this->request->get['sort']) && isset($this->request->get['order'])) {
+			$sort  = $this->request->get['sort'];
 			$order = $this->request->get['order'];
 		} else {
-			$order = 'ASC';
+			$sort  = 'p.sort_order';
+			$order =  'ASC';
+		}
+
+		// Sanitize order and sort input data
+		$allowed_sort_data = $this->model_catalog_product->getSorts();
+		if ($this->searchArrayForKeyValue($allowed_sort_data, $order, $sort) === true) {
+			if (isset($this->request->get['sort']) && isset($this->request->get['order'])) {
+				$sort  = $this->request->get['sort'];
+				$order = $this->request->get['order'];
+			} else {
+				$sort  = 'p.sort_order';
+				$order =  'ASC';
+			}
+		} else {
+			$sort  = '';
+			$order = '';
+			// $this->response->addHeader($this->request->server['SERVER_PROTOCOL'] . ' 404 Not Found');
+			// return $this->response->setOutput($this->load->view('error/not_found', $data));
+			$this->response->redirect($this->url->link('product/category', 'path=' . $category_id), 301);
 		}
 
 		// Sanitize page request
@@ -260,15 +202,6 @@ class ControllerProductCategory extends Controller {
 			}
 
 			if ($sort !== '' && $sort !== 'p.sort_order') {
-				// foreach ($data['sorts'] as $sort_value) {
-				// 	if (
-				// 		(str_contains($sort_value['href'], $sort)) && 
-				// 		(str_contains($sort_value['href'], $order))
-				// 		) {
-				// 		$sort_heading = $sort_value['text'];
-				// 	}
-				// }
-				// p.points-DESC
 				$sort_heading = $this->language->get($sort.'-'.$order);
 				if (isset($sort_heading)) {
 
@@ -354,15 +287,15 @@ class ControllerProductCategory extends Controller {
 
 			$data['continue'] = $this->url->link('common/home');
 
-			$this->response->addHeader($this->request->server['SERVER_PROTOCOL'] . ' 404 Not Found');
-
+			
 			$data['column_left'] = $this->load->controller('common/column_left');
 			$data['column_right'] = $this->load->controller('common/column_right');
 			$data['content_top'] = $this->load->controller('common/content_top');
 			$data['content_bottom'] = $this->load->controller('common/content_bottom');
 			$data['footer'] = $this->load->controller('common/footer');
 			$data['header'] = $this->load->controller('common/header');
-
+			
+			$this->response->addHeader($this->request->server['SERVER_PROTOCOL'] . ' 404 Not Found');
 			$this->response->setOutput($this->load->view('error/not_found', $data));
 		}
 	}
@@ -724,5 +657,16 @@ class ControllerProductCategory extends Controller {
 
 		$this->document->setDescription($data['meta_description'] ? $data['meta_description'] : substr(strip_tags($data['description']), 0, 140).'...');
 		$this->document->setKeywords($data['meta_keyword']);
+	}
+
+	function searchArrayForKeyValue($array, $key, $value) {
+		foreach ($array as $optgroup) {
+			foreach ($optgroup as $sortDirection => $fields) {
+				if (in_array($value, $fields) && $sortDirection == $key) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 }

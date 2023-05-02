@@ -1,43 +1,41 @@
-<div tabindex="0" class="module filter mobile_menu" data-block-name="{{ heading_title }}" data-icon="icon-filter" data-order="1">
+<div class="module filter mobile_menu" data-block-name="{{ heading_title }}" data-icon="icon-filter" data-order="1">
   <span class="h3">{{ heading_title }}</span>
-    
-      <div class="sort">
-        <label for="input-sort">{{ text_sort }}</label>
-        <select id="input-sort" onchange="location = this.value;">
-          {% for optgroup in sorts %}
-            
-            <optgroup label="{{ optgroup.name }}">
-              {% for values in optgroup.values %}
-                {% if values.value == '%s-%s'|format(sort, order) %}
-                  <option value="{{ values.href }}" selected="selected">{{ values.text }}</option>
-                {% else %}
-                  <option value="{{ values.href }}">{{ values.text }}</option>
-                {% endif %}
-              {% endfor %}
-            </optgroup>
+  {# Sorting select #}
+  <div class="sort">
+    <label for="input-sort">{{ text_sort }}</label>
+    <select id="input-sort" onchange="location = this.value;">
+      {% for optgroup in sorts %}
+        <optgroup label="{{ optgroup.name }}">
+          {% for values in optgroup.values %}
+            {% if values.value == '%s-%s'|format(sort, order) %}
+              <option value="{{ values.href }}" selected="selected">{{ values.text }}</option>
+            {% else %}
+              <option value="{{ values.href }}">{{ values.text }}</option>
+            {% endif %}
           {% endfor %}
-        </select>
+        </optgroup>
+      {% endfor %}
+    </select>
+  </div>
+  {# Filter inputs #}
+  {% for filter_group in filter_groups %} 
+    <div id="filter-group_{{ filter_group.filter_group_id }}">
+      <span class="h4">{{ filter_group.name }}</span>
+      {# Пустое значение для радиокнопок #}
+      {% if filter_group.filter_type == 'radio' %}
+        <div class="form-control" role="radiogroup">
+          <input role="radio" id="filter_{{ filter.filter_id }}" type="{{ filter_group.filter_type }}" name="filter[]" value="0" checked="checked"/>
+          <label for="filter_{{ filter.filter_id }}">{{ all }}</label>
         </div>
-
-
-    {% for filter_group in filter_groups %} 
-      <div id="filter-group_{{ filter_group.filter_group_id }}">
-        <span class="h4">{{ filter_group.name }}</span>
-        {# Пустое значение для радиокнопок #}
-        {% if filter_group.filter_type == 'radio' %}
-          <div class="form-control" role="radiogroup">
-            <input role="radio" id="filter_{{ filter.filter_id }}" type="{{ filter_group.filter_type }}" name="filter[]" value="0" checked="checked"/>
-            <label for="filter_{{ filter.filter_id }}">{{ all }}</label>
-          </div>
-        {% endif %}
-        {% for filter in filter_group.filter %}
-          <div class="form-control">
-            <input role="checkbox" id="filter_{{ filter.filter_id }}" type="{{ filter_group.filter_type }}" name="filter[]" value="{{ filter.filter_id }}" {% if filter.filter_id in filter_category %}checked="checked"{% endif %}/>
-            <label for="filter_{{ filter.filter_id }}">{{ filter.name }}</label>
-          </div>
-        {% endfor %}
-      </div>
-    {% endfor %}
+      {% endif %}
+      {% for filter in filter_group.filter %}
+        <div class="form-control">
+          <input role="checkbox" id="filter_{{ filter.filter_id }}" type="{{ filter_group.filter_type }}" name="filter[]" value="{{ filter.filter_id }}" {% if filter.filter_id in filter_category %}checked="checked"{% endif %}/>
+          <label for="filter_{{ filter.filter_id }}">{{ filter.name }}</label>
+        </div>
+      {% endfor %}
+    </div>
+  {% endfor %}
   <button type="button" id="button-filter" class="primary">{{ button_filter }}</button>
 </div>
 {# TODO здесь сделать форму, чтобы можно было пользоваться фильтром без JS - это для гугла #}
