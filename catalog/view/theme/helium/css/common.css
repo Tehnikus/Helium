@@ -595,7 +595,7 @@ textarea:disabled {
     color: #fff;
     text-decoration: none;
 }
-button:active, .button:active, .primary:active {
+button:active, .button:active, .primary:active, button.active {
     box-shadow: inset 2px 2px 6px 3px #0002, inset -2px -2px 6px 3px #2222;
 }
 .primary[disabled], a.primary[disabled] {
@@ -690,9 +690,21 @@ aside>div.module{display: flex; flex-direction: column;}
 .breadcrumbs.scroll-x {list-style-type: none; margin:-1rem 0; padding: 0}
 /* Mobile buttons scrolling */
 .mobile_buttons.scroll-x {position: fixed;bottom: 0;left: 0;right: 0;gap: 0.3rem;padding: 0.3rem;background: var(--bg-main-blocks);z-index: 1}
-.mobile_button {display: flex;flex-direction: column;width: 20%;flex: 1 0 auto!important}
 
-
+.mobile_button {
+    display: flex;
+    flex-direction: column;
+    width: 20%;
+    flex: 1 0 auto!important;
+    white-space: normal;
+    padding: 0.2rem;
+    margin: 0.1rem;
+}
+.mobile_button span {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    max-width: 100%;
+}
 
 /* SCROLL X FOR COLUMNS, CHILD ELEMENT ALWAYS 100% WIDTH */
 /* .scroll-x {
