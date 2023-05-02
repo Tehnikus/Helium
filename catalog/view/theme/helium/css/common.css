@@ -675,6 +675,9 @@ Each item needs a flex-grow and flex-shrink value of 0. The flex-basis property 
 }
 /* Aside modules */
 aside>div.module{display: flex; flex-direction: column;}
+/* Filter */
+.filter>.sort {display: flex;flex-direction: column;}
+.filter>div[id^='filter_group_'], .filter>.sort {padding: 0 0 1rem 0;}
 /* Slider scroll buttons */
 .module button.scroll_left {position: absolute;right: 45px;top: 5px;width:35px; height:35px}
 .module button.scroll_right {position: absolute;right: 5px;top: 5px;width:35px; height:35px}

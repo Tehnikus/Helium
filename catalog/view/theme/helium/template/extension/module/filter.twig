@@ -2,7 +2,7 @@
   <span class="h3">{{ heading_title }}</span>
   {# Sorting select #}
   <div class="sort">
-    <label for="input-sort">{{ text_sort }}</label>
+    <label for="input-sort" class="h4">{{ text_sort }}</label>
     <select id="input-sort" onchange="location = this.value;">
       {% for optgroup in sorts %}
         <optgroup label="{{ optgroup.name }}">
@@ -19,7 +19,7 @@
   </div>
   {# Filter inputs #}
   {% for filter_group in filter_groups %} 
-    <div id="filter-group_{{ filter_group.filter_group_id }}">
+    <div id="filter_group_{{ filter_group.filter_group_id }}">
       <span class="h4">{{ filter_group.name }}</span>
       {# Пустое значение для радиокнопок #}
       {% if filter_group.filter_type == 'radio' %}
