@@ -165,7 +165,7 @@ form {
     display: grid;
     place-content: center;
 }
-
+label {cursor:pointer}
 .form-group {display: flex;flex: 1;align-items: center; padding: 0.5rem;  border-radius: var(--radius); flex-wrap: wrap; }
 .form-group label {flex: 1 1 auto;max-width: 8rem}
 .form-group input, .form-group select {flex: 1}
@@ -673,6 +673,8 @@ Each item needs a flex-grow and flex-shrink value of 0. The flex-basis property 
     max-width: 100%;
     margin: .5rem;
 }
+/* Remove unnecesary scrollbar-gutter on horizontal scrolling blocks */
+.scroll-x {scrollbar-gutter: initial;}
 /* Aside modules */
 aside>div.module{display: flex; flex-direction: column;}
 /* Filter */
@@ -782,12 +784,9 @@ main .category-description {overflow-y:auto;max-height:200px;position:relative;w
 
 
 /* Product page */
-.star-on {
-    color: orange;
-}
-.star-off {
-    color: grey;
-}
+/* Rating on popup dialog */
+.star-on {color: orange;}
+.star-off {color: grey;}
 .rating {
     text-align: center;
     display: flex;
@@ -824,7 +823,6 @@ main .category-description {overflow-y:auto;max-height:200px;position:relative;w
 .rating input:focus ~ label,
 .rating label:hover {
     color: rgb(255, 166, 0);
-    cursor: pointer;
 }
 .rating label:before, .rating label::after {
     display: none;
@@ -833,6 +831,9 @@ input#input-quantity {
     text-align: center;
 }
 
+.product_top #photos, .product_top .infos {
+    display: flex; flex-direction: column;
+}
 
 /* Media query for desktops */
 /* 64rem = 1024px */
@@ -858,6 +859,12 @@ input#input-quantity {
     }
 }
 @media (min-width: 64rem) {
+    main#product .product_top {
+        display: flex;
+        justify-content: space-between;
+    }
+    ul.contents.scroll-x {justify-content: end;}
+    .product_top #photos, .product_top .infos {max-width: 50%;}
     body {
         flex-direction: row;
         flex: 1;
@@ -881,10 +888,8 @@ input#input-quantity {
         -webkit-overflow-scrolling: touch;
         scroll-behavior:smooth;
     }
-    /* Remove unnecesary scrollbar-gutter */
-    .scroll-x {
-        scrollbar-gutter: initial;
-    }
+    /* Remove unnecesary scrollbar-gutter on horizontal scrolling blocks */
+    .scroll-x {scrollbar-gutter: initial;}
     
     /* Subcategories - dispplay as grid */
     .subcategories.grid {grid-auto-flow: initial}
