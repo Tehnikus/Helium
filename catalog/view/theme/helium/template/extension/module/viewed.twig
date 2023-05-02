@@ -1,0 +1,10 @@
+{% if products %}
+  <div class="module viewed-products" data-block-name="{{ heading_title }}" data-icon="icon-eye" data-order="3">
+    <span class="h3">{{ heading_title }}</span>
+    <div class="scroll-x js_scroll">
+    {% for product in products %}
+      {% include 'helium/template/product/product_miniature.twig' with {product: product} %}
+    {% endfor %}   
+    </div>
+  </div>
+ {% endif %}
