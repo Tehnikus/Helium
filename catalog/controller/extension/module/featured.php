@@ -2,10 +2,7 @@
 class ControllerExtensionModuleFeatured extends Controller {
 	public function index($setting) {
 		$this->load->language('extension/module/featured');
-
 		$this->load->model('catalog/product');
-
-		$this->load->model('tool/image');
 
 		$products = array();
 
