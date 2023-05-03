@@ -12,6 +12,9 @@
 {% include 'helium/template/common/breadcrumbs.twig' %}
 <main role="main" id="main">
   <h1 class="uppercase">{{ heading_title }}</h1>
+  {% if rating and review_count %}
+    {% include 'helium/template/common/rating_stars.twig' with {rating: rating, count: review_count} %}
+  {% endif %} 
   {% if filter_links %}
   <span>{{ text_pupular_search }}</span>
   <div class="scroll-x">
