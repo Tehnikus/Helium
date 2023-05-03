@@ -54,7 +54,7 @@ document.addEventListener('click', function(e) {
 		for (let index = 0; index < filter_inputs.length; index++) {
 			const f = filter_inputs[index].value;
 			if (f !== "0") {
-			filter.push(f);
+				filter.push(f);
 			}
 		}
 		if (filter.length > 0) {
@@ -550,6 +550,8 @@ function scrollslider() {
 		// No 'touchend' listener, because if user interacts with block, it's expected that block stays in same condition that it was left
 		['mouseleave', 'focusout'].forEach(f => {
 			c.addEventListener(f, () => {
+				// TODO: fix event listeners
+				console.log(c.matches(':focus-within'));
 				// Check if container does not have focus inside - like click on button or screen reader focus
 				if (!c.matches(':focus-within')) {
 					timer = setInterval(() => {
@@ -1136,7 +1138,8 @@ function countdown(element) {
 				let time = createElm({
 					attrs: {
 						class:'time ' + key,
-						'role': 'timer'
+						'role': 'timer',
+						'aria-live': 'off'
 					},
 					nest: {
 						1: {type:'span', attrs:{class:'span_'+key}, props:{'innerText': t[key]}},

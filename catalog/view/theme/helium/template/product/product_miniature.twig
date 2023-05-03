@@ -37,7 +37,7 @@
 
     </div>
     <div class="btn-group">
-      <button type="button" aria-haspopup="dialog" class="add-to-cart primary" {% if product.price_value and product.price_value != 0 %} onclick="cart.add('{{ product.product_id }}', '{{ product.minimum }}');" {% else %} disabled {% endif %}><i class="icon-cart"></i> <span>{{ button_cart }}</span></button>
+      <button type="button" aria-haspopup="dialog" class="add-to-cart primary" title="{{ button_cart }} {{ product.name }}" {% if product.price_value and product.price_value != 0 %} onclick="cart.add('{{ product.product_id }}', '{{ product.minimum }}');" {% else %} disabled {% endif %}><i class="icon-cart"></i> <span>{{ button_cart }}</span></button>
       <button type="button" aria-haspopup="dialog" class="wishlist" title="{{ button_wishlist }}" onclick="wishlist.add('{{ product.product_id }}');"><i class="icon-heart"></i></button>
       <button type="button" aria-haspopup="dialog" class="compare" title="{{ button_compare }}" onclick="compare.add('{{ product.product_id }}');"><i class="icon-compare"></i></button>
     </div>
