@@ -16,6 +16,8 @@ $_['text_none']             = ' --- Не обрано --- ';
 $_['text_select']           = ' --- Виберіть --- ';
 $_['text_all_zones']        = 'Всі зони';
 $_['text_pagination']       = 'Показано з %d по %d із %d (%d сторінок)';
+$_['aria_rating_label']     = 'Оцінка'; 
+$_['aria_review_count_label'] = 'відгуків';
 $_['text_loading']          = 'Завантаження...';
 $_['text_no_results']       = 'Немає даних!';
 

@@ -14,7 +14,10 @@ $_['text_no']               = 'Нет';
 $_['text_none']             = ' --- Не выбрано --- ';
 $_['text_select']           = ' --- Выберите --- ';
 $_['text_all_zones']        = 'Все зоны';
-$_['text_pagination']       = 'Показано с <span class="from">%d</span> по <span class="to">%d</span> из %d товаров, (страниц: %d)';
+$_['text_pagination']       = 'Показано с <span class="from">%s</span> по <span class="to">%d</span> из %s товаров, (страниц: %d)';
+$_['aria_rating_label']     = 'Оценка'; 
+$_['aria_review_count_label'] = 'отзывов';
+
 $_['text_loading']          = 'Загрузка...';
 $_['text_no_results']       = 'Нет данных!';
 $_['button_address_add']    = 'Добавить адрес';
