@@ -478,7 +478,7 @@ class ControllerProductSearch extends Controller {
 			$products = $this->model_catalog_product->searchProducts($search_string);
 			
 			$results = array(
-				'attrs' => array('class' => 'search_results'),
+				'attrs' => array('class' => 'search_results', 'aria-live' => 'true', 'aria-relevant' => 'additions'),
 				'nest' => array(
 					'products' => array(
 						'attrs' => array('class' => 'product grid')
@@ -561,7 +561,8 @@ class ControllerProductSearch extends Controller {
 				// Ratings
 				if (isset($product['rating']) && $product['rating'] !== false && $product['rating'] > 0) {
 					$rating = array(
-						'attrs' => array('class' => 'rating')
+						'attrs' => array('class' => 'rating'),
+						'props' => array('role' =>'presentation')
 					);
 					$i = 1;
 					while ($i <= 5) {
