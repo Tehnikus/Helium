@@ -29,7 +29,7 @@ class ModelCatalogCategory extends Model {
 				) AS review_count,
 				
 				(SELECT 
-						SUM(p.rating) / SUM(p.review_count) 
+						TRUNCATE(SUM(p.rating) / SUM(p.review_count), 2)
 					FROM " . DB_PREFIX . "product p 
 					LEFT JOIN " . DB_PREFIX . "product_to_category p2c
 					ON p2c.category_id = c.category_id
