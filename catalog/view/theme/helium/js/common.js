@@ -108,6 +108,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	countdown(d); // Countdown to the ent of discounts
 	stickyHeader(); // Sticky header
 	scrollslider(); // Sliders everywhere
+	anchorNav(); // Focus on hastag navigation element
 
 
 	// TODO Move this to it's function
@@ -1585,4 +1586,20 @@ function stickyHeader() {
 	let oh = h.offsetHeight;
 	let ih = document.getElementById('js_nav_main').offsetHeight;
 	h.style.cssText = "position: sticky; z-index: 1; top:"+ -(oh - ih) + "px;";
+}
+// Focus on hash tag navigation element
+function anchorNav() {
+	let contents = document.querySelector('.contents');
+	if (!!contents) {
+		let links = contents.querySelectorAll('a');
+		[].forEach.call(links, (a) => {
+			// console.log(document.querySelector(a.hash), document.querySelector(a.hash).offsetTop);
+			a.addEventListener('click', (e)=>{
+				// e.preventDefault();
+				// document.querySelector(a.hash).scrollIntoView();
+				// window.scrollTo(0, document.querySelector(a.hash).offsetTop);
+				document.querySelector(a.hash).focus();
+			})
+		})
+	}
 }

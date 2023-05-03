@@ -381,7 +381,7 @@ hgroup > * {
 }
 
 /* Typography */
-
+ul {margin: 0}
 /* Tables */
 table {border-collapse:collapse;margin-bottom:10px;width:100%;table-layout:fixed}
 table caption, td, th {text-align:left}
@@ -782,11 +782,19 @@ input[name="quantity"] {max-width: 80px}
 /* Pages */
 /* Category */
 /* Category - scrollable description */
-main .category-description {overflow-y:auto;max-height:200px;position:relative;width:100%;border-radius: var(--radius)}
+main #category_description {overflow-y:auto;max-height:200px;position:relative;width:100%;border-radius: var(--radius)}
 span.price-new {color: var(--danger); font-weight: 600;}
 .short-description {flex: 1}
 span.price-old {color: var(--color-text-muted);font-size: 1rem}
 .price-old .price-value {text-decoration: line-through; text-decoration-color: var(--color-text);}
+hgroup h1 {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    align-self: center;
+    white-space: nowrap;
+}
+
 /* Subcategory */
 .subcategory {
     text-align: center;
@@ -880,7 +888,7 @@ input#input-quantity {
         display: flex;
         justify-content: space-between;
     }
-    ul.contents.scroll-x {justify-content: end;}
+    ul.contents.scroll-x {/* justify-content: end; */}
     .product_top #photos, .product_top .infos {max-width: 50%;}
     body {
         flex-direction: row;
@@ -927,5 +935,11 @@ input#input-quantity {
         justify-content: unset;
         text-align: left;
     }
+    .wrapper {
+        justify-content: end;
+        display: flex
+    }
+    hgroup h1 {flex: 0}
+
     .mobile_buttons {display: none}
 }
