@@ -783,6 +783,10 @@ input[name="quantity"] {max-width: 80px}
 /* Category */
 /* Category - scrollable description */
 main .category-description {overflow-y:auto;max-height:200px;position:relative;width:100%;border-radius: var(--radius)}
+span.price-new {color: var(--danger); font-weight: 600;}
+.short-description {flex: 1}
+span.price-old {color: var(--color-text-muted);font-size: 1rem}
+.price-old .price-value {text-decoration: line-through; text-decoration-color: var(--color-text);}
 /* Subcategory */
 .subcategory {
     text-align: center;
@@ -869,6 +873,7 @@ input#input-quantity {
     .mobile_menu.open {
         transform: translateX(0%);
     }
+    p {text-align: justify} /* Prettyfy text on narrow screens */
 }
 @media (min-width: 64rem) {
     main#product .product_top {
