@@ -11,7 +11,7 @@ class ControllerExtensionModuleViewed extends Controller {
 		}
 
 		if (isset($this->session->data['viewed'])) {
-			$products = $this->session->data['viewed'];
+			$products = array_reverse($this->session->data['viewed'], false);
 			foreach ($products as $product_id) {
 				$product_list[] = $this->model_catalog_product->getProduct($product_id);
 			}
