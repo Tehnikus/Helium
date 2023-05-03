@@ -38,6 +38,13 @@ $_['text_empty']            = 'No product match :(';
 $_['text_reviews']          = 'Reviews: %s';
 $_['text_compare']          = 'Compare (%s)';
 
+// Page contents
+$_['tab_description']       = 'Description';
+$_['tab_pupular_search']    = 'Popular';
+$_['tab_products']          = 'Products';
+$_['tab_filter']            = 'Refine';
+$_['tab_featured']          = 'Featured';
+
 // Entry
 $_['entry_search']          = 'Search';
 $_['entry_description']     = 'Search in product description';

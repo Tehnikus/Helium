@@ -11,20 +11,42 @@
 
 {% include 'helium/template/common/breadcrumbs.twig' %}
 <main role="main" id="main">
-  <h1 class="uppercase">{{ heading_title }}</h1>
-  {% if rating and review_count %}
-    {% include 'helium/template/common/rating_stars.twig' with {rating: rating, count: review_count} %}
-  {% endif %} 
+  <hgroup>
+    <h1 class="uppercase">{{ heading_title }}
+    {% if rating and review_count %}
+      {% include 'helium/template/common/rating_stars.twig' with {rating: rating, count: review_count} %}
+    {% endif %}
+    </h1>
+    <div class="wrapper">
+      <ul class="contents scroll-x">
+        {% if description %}
+          <li><a class="button" href="{{ category_link }}#category_description" title="{{ tab_description }}">{{ tab_description }}</a></li>
+        {% endif %}
+        {% if filter_links %}
+          <li><a class="button" href="{{ category_link }}#popular_links" title="{{ tab_pupular_search }}">{{ tab_pupular_search }}</a></li>
+        {% endif %}
+        {% if products %}
+          <li><a class="button" href="{{ category_link }}#products" title="{{ tab_products }}">{{ tab_products }}</a></li>
+        {% endif %}
+        {% if filter_products %}
+          <li><a class="button" href="{{ category_link }}#filter" title="{{ tab_filter }}">{{ tab_filter }}</a></li>
+        {% endif %}
+        {% if featured %}
+          <li><a class="button" href="{{ category_link }}#featured" title="{{ tab_featured }}">{{ tab_featured }}</a></li>
+        {% endif %}
+      </ul>
+    </div>
+  </hgroup>
   {% if filter_links %}
   <span>{{ text_pupular_search }}</span>
-  <div class="scroll-x">
+  <div id="popular_links" class="scroll-x">
     {% for filter_link in filter_links %}
       <a class="button" title="{{ filter_link.name }} " href="{{filter_link.url}}">{{filter_link.name}}</a>
     {% endfor %}
   </div>
   {% endif %}
   {% if description %}
-    <article role="article" class="category-description">{{ description }}</article>
+    <article role="article" id="category_description">{{ description }}</article>
   {% endif %}
   {{ content_top }}
   {% if categories %}
@@ -43,28 +65,9 @@
 
   {% if products %}
     {# {{ sorts | json_encode(constant('JSON_UNESCAPED_UNICODE')) }} #}
-    {# <div class="row category-sort">
-      <div class="form-group">
-        <label for="input-sort">{{ text_sort }}</label>
-        <select id="input-sort" class="form-control" onchange="location = this.value;">
-          {% for optgroup in sorts %}
-            
-            <optgroup label="{{ optgroup.name }}">
-              {% for values in optgroup.values %}
-                {% if values.value == '%s-%s'|format(sort, order) %}
-                  <option value="{{ values.href }}" selected="selected">{{ values.text }}</option>
-                {% else %}
-                  <option value="{{ values.href }}">{{ values.text }}</option>
-                {% endif %}
-              {% endfor %}
-            </optgroup>
-          {% endfor %}
-        </select>
-      </div>
-    </div> #}
 
     {# Список товаров #}
-    <div class="product grid"> 
+    <div id="products" class="product grid"> 
     {% for product in products %}
       {% include 'helium/template/product/product_miniature.twig' with {product: product} %}
     {% endfor %} 

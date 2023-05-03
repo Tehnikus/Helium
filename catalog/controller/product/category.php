@@ -103,9 +103,6 @@ class ControllerProductCategory extends Controller {
 			$limit = $this->config->get('theme_' . $this->config->get('config_theme') . '_product_limit');
 		}
 
-
-
-		// Secure data before it goes to DB
 		$filter_data = array(
 			'filter_category_id' => (int)$category_id,
 			'filter_filter'      => $filter,
@@ -114,7 +111,7 @@ class ControllerProductCategory extends Controller {
 			'start'              => ((int)$page - 1) * (int)$limit,
 			'limit'              => (int)$limit
 		);
-		// $filter_data = $this->securePostData($filter_data);
+		
 
 		if ($this->model_catalog_category->categoryExists($filter_data['filter_category_id'])) {
 		
@@ -248,8 +245,6 @@ class ControllerProductCategory extends Controller {
 			$pagination->url = $this->url->link('product/category', 'path=' . $this->request->get['path'] . $url . '&page={page}');
 			$data['pagination'] = $pagination->render();
 
-
-
 			// Results text after product list
 			$data['results'] = sprintf(
 				$this->language->get('text_pagination'), 
@@ -257,11 +252,12 @@ class ControllerProductCategory extends Controller {
 				((($page - 1) * $limit) > ($data['offer_count'] - $limit)) ? $data['offer_count'] : ((($page - 1) * $limit) + $limit), $data['offer_count'], ceil($data['offer_count'] / $limit)
 			);
 
-
-
 			$data['sort'] = $sort;
 			$data['order'] = $order;
 			$data['limit'] = $limit;
+
+			$category_link = (empty($_SERVER['HTTPS']) ? 'http' : 'https') . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+			$data['category_link'] = $category_link;
 
 			$data['continue'] = $this->url->link('common/home');
 
@@ -313,7 +309,6 @@ class ControllerProductCategory extends Controller {
 			$data['breadcrumbs']      = $this->renderBreadcrumbs($category_id);
 			$data['filter_links']     = $this->renderFilterLinksList($category_id);
 			$data['categories'] 	  = $this->renderChildCategories($category_id);
-			// $data['products_total']   = $this->model_catalog_product->getTotalProducts($filter_data);
 
 			$this->cache->set($cache_name, $data);
 		}
@@ -338,7 +333,6 @@ class ControllerProductCategory extends Controller {
 					);
 					$subcategory_product_count = $this->model_catalog_product->getTotalProducts($filter_data);
 				}
-
 
 				// Изображение дочерней категории
 				// DONE - добавить картинку no_image.webp
