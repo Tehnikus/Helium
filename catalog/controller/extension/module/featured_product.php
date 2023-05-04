@@ -42,53 +42,6 @@ class ControllerExtensionModuleFeaturedProduct extends Controller {
 
 			$data['products'] = $this->model_catalog_product->prepareProductList($results, null);
 			
-			// foreach ($results as $product) {
-
-			// 	if ($product) {
-			// 		if ($product['image']) {
-			// 			$image = $this->model_tool_image->resize($product['image'], $this->config->get('image_product_width'), $this->config->get('image_product_height'));
-			// 		} else {
-			// 			$image = $this->model_tool_image->resize('no_image.webp', $this->config->get('image_product_width'), $this->config->get('image_product_height'));
-			// 		}
-
-			// 		if ($this->customer->isLogged() || !$this->config->get('config_customer_price')) {
-			// 			$price = $this->currency->format($this->tax->calculate($product['price'], $product['tax_class_id'], $this->config->get('config_tax')), $this->session->data['currency']);
-			// 		} else {
-			// 			$price = false;
-			// 		}
-
-			// 		if ((float)$product['special']) {
-			// 			$special = $this->currency->format($this->tax->calculate($product['special'], $product['tax_class_id'], $this->config->get('config_tax')), $this->session->data['currency']);
-			// 		} else {
-			// 			$special = false;
-			// 		}
-
-			// 		if ($this->config->get('config_tax')) {
-			// 			$tax = $this->currency->format((float)$product['special'] ? $product['special'] : $product['price'], $this->session->data['currency']);
-			// 		} else {
-			// 			$tax = false;
-			// 		}
-
-			// 		if ($this->config->get('config_review_status')) {
-			// 			$rating = $product['rating'];
-			// 		} else {
-			// 			$rating = false;
-			// 		}
-					
-
-			// 		$data['products'][] = array(
-			// 			'product_id'  => $product['product_id'],
-			// 			'thumb'       => $image,
-			// 			'name'        => $product['name'],
-			// 			'description' => utf8_substr(strip_tags(html_entity_decode($product['description'], ENT_QUOTES, 'UTF-8')), 0, $this->config->get('theme_' . $this->config->get('config_theme') . '_product_description_length')) . '..',
-			// 			'price'       => $price,
-			// 			'special'     => $special,
-			// 			'tax'         => $tax,
-			// 			'rating'      => $rating,
-			// 			'href'        => $this->url->link('product/product', 'product_id=' . $product['product_id'])
-			// 		);
-			// 	}
-			// }
 		}
 		
 		return $this->load->view('extension/module/featured_product', $data);
