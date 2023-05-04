@@ -12,11 +12,12 @@
 {% include 'helium/template/common/breadcrumbs.twig' %}
 <main role="main" id="main">
   <hgroup>
-    <h1 class="uppercase">{{ heading_title }}
-    {% if rating and review_count %}
-      {% include 'helium/template/common/rating_stars.twig' with {rating: rating, count: review_count} %}
-    {% endif %}
-    </h1>
+    <div class="title">
+      <h1 class="uppercase">{{ heading_title }}</h1>
+      {% if rating and review_count %}
+        {% include 'helium/template/common/rating_stars.twig' with {rating: rating, count: review_count} %}
+      {% endif %}
+    </div>
     <div class="wrapper">
       <ul class="contents scroll-x">
         {% if description %}
@@ -28,11 +29,11 @@
         {% if products %}
           <li><a class="button" href="{{ category_link }}#products" title="{{ tab_products }}">{{ tab_products }}</a></li>
         {% endif %}
-        {% if filter_products %}
-          <li><a class="button" href="{{ category_link }}#filter" title="{{ tab_filter }}">{{ tab_filter }}</a></li>
+        {% if filter_count %}
+          <li class="hidden-md"><a class="button" href="{{ category_link }}#filter" title="{{ tab_filter }}">{{ tab_filter }}</a></li>
         {% endif %}
         {% if featured %}
-          <li><a class="button" href="{{ category_link }}#featured" title="{{ tab_featured }}">{{ tab_featured }}</a></li>
+          <li><a class="button" href="{{ category_link }}#featured_category" title="{{ tab_featured }}">{{ tab_featured }}</a></li>
         {% endif %}
       </ul>
     </div>

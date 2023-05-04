@@ -45,12 +45,18 @@ class ModelCatalogCategory extends Model {
                  	WHERE p2c.category_id = c.category_id
                  	AND p.status = 1
 				) AS offer_count,
-				
+
 				(SELECT 
 						COUNT(*) 
-					FROM oc_category_filter cf
+					FROM " . DB_PREFIX . "category_filter cf
 					WHERE cf.category_id = c.category_id
-				) AS filter_count
+				) AS filter_count,
+
+				(SELECT 
+						COUNT(*) 
+					FROM " . DB_PREFIX . "product_related_wb pr
+					WHERE pr.category_id = c.category_id
+				) AS featured
 
 			FROM " . DB_PREFIX . "category c 
 			LEFT JOIN " . DB_PREFIX . "category_description cd 
@@ -228,10 +234,10 @@ class ModelCatalogCategory extends Model {
 				SUM(DISTINCT(p.review_count)) AS review_count,
 				(SUM(DISTINCT(p.rating)) / SUM(DISTINCT(p.review_count))) AS rating
 			
-			FROM oc_product p 
+			FROM " . DB_PREFIX . "product p 
 			
-			LEFT JOIN oc_product_filter pf ON p.product_id = pf.product_id
-			LEFT JOIN oc_filter_page_description fpd ON fpd.filters = '".$filters."'
+			LEFT JOIN " . DB_PREFIX . "product_filter pf ON p.product_id = pf.product_id
+			LEFT JOIN " . DB_PREFIX . "filter_page_description fpd ON fpd.filters = '".$filters."'
 			WHERE p.product_id = pf.product_id 
 				AND pf.filter_id IN(".$filters.")
 				AND fpd.language_id = ".$language_id."

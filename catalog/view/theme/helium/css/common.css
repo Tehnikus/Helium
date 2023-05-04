@@ -92,7 +92,10 @@ textarea {
 }
 textarea:not([cols]) {
     width:100%;
+    max-width: 100%;
     margin: 0 0 1rem 0;
+    overflow-x: hidden;
+    white-space: normal;
 }
 textarea:not([rows]) {
     min-height:40px;
@@ -162,10 +165,12 @@ input[type=submit]:hover {
 
 /* Forms */
 form {
-    display: grid;
-    place-content: center;
+    /* display: grid; */
+    /* place-content: center; */
+    /* grid-template-rows: 1fr; */
+    /* max-width: 100%; */
 }
-label {cursor:pointer}
+label {cursor:pointer; user-select: none;}
 .form-group {display: flex;flex: 1;align-items: center; padding: 0.5rem;  border-radius: var(--radius); flex-wrap: wrap; }
 .form-group label {flex: 1 1 auto;max-width: 8rem}
 .form-group input, .form-group select {flex: 1}
@@ -379,14 +384,14 @@ hgroup > * {
 }
 
 /* Typography */
-ul {margin: 0}
+ul {margin: 0; padding: 0;}
 /* Tables */
 table {border-collapse:collapse;margin-bottom:10px;width:100%;table-layout:fixed}
 table caption, td, th {text-align:left}
 td,th {padding:6px;vertical-align:top;word-wrap:break-word}
 thead {border-bottom:1px solid var(--border);font-weight: 600;}
 tfoot {border-top:1px solid var(--border)}
-tbody tr:nth-child(2n) {background-color:var(--bg-body)}
+tbody tr:nth-child(2n) {background-color:var(--bg-main-blocks)}
 .text-right {text-align: right}
 .text-left {text-align: left}
 
@@ -416,7 +421,7 @@ fieldset>input, fieldset>select {
 /* Headers */
 .uppercase, hgroup, .module .h3 {text-transform: uppercase}
 .relative, .module {position:relative}
-.hidden-md {display: none}
+.hidden-md {display: none!important}
 
 h1,h2,h3,h4,h5,h6,
 .h1,.h2,.h3,.h4,.h5,.h6 {
@@ -676,8 +681,8 @@ Each item needs a flex-grow and flex-shrink value of 0. The flex-basis property 
 /* Aside modules */
 aside>div.module{display: flex; flex-direction: column;}
 /* Filter */
-.filter>.sort {display: flex;flex-direction: column;}
-.filter>div[id^='filter_group_'], .filter>.sort {padding: 0 0 1rem 0;}
+#filter>.sort {display: flex;flex-direction: column;}
+#filter>div[id^='filter_group_'], #filter>.sort {padding: 0 0 1rem 0;}
 /* Slider scroll buttons */
 .module button.scroll_left {position: absolute;right: 45px;top: 5px;width:35px; height:35px}
 .module button.scroll_right {position: absolute;right: 5px;top: 5px;width:35px; height:35px}
@@ -687,7 +692,7 @@ aside>div.module{display: flex; flex-direction: column;}
 /* Braedcrumbs scrolling */
 .breadcrumbs.scroll-x {list-style-type: none; margin:-1rem 0; padding: 0}
 /* Mobile buttons scrolling */
-.mobile_buttons.scroll-x {position: fixed;bottom: 0;left: 0;right: 0;gap: 0.3rem;padding: 0.3rem;background: var(--bg-main-blocks);z-index: 1}
+.mobile_buttons.scroll-x {position: fixed;bottom: 0;left: 0;right: 0;gap: 0.3rem;padding: 0.3rem;background: var(--bg-main-blocks);z-index: 1; display: flex;}
 
 .mobile_button {
     display: flex;
@@ -790,7 +795,6 @@ hgroup h1 {
     flex-direction: column;
     align-items: center;
     align-self: center;
-    white-space: nowrap;
 }
 
 /* Subcategory */
@@ -827,6 +831,7 @@ hgroup h1 {
     font-size: 45px;
     overflow:hidden;
     flex-direction: row-reverse;
+    max-width: 100%;
 }
 .rating input {
     float: right;
@@ -885,6 +890,12 @@ input#input-quantity {
         justify-content: center;
     }
 }
+@media (max-height: 896px) {
+    .mobile_menu .short-description {
+        display: none;
+    }
+}
+
 @media (min-width: 64rem) {
     main#product .product_top {
         display: flex;
@@ -907,7 +918,7 @@ input#input-quantity {
     ::-webkit-scrollbar-track {background:transparent;border-radius:6px}
     ::-webkit-scrollbar-thumb {background:var(--scrollbar-thumb);border-radius:6px}
     ::-webkit-scrollbar-thumb:hover {background:var(--scrollbar-thumb-hover)}
-    body, #main-menu ul, .scroll-x, .category-description, select, #search-results, dialog {
+    body, #main-menu ul, .scroll-x, #category_description, select, #search-results, dialog {
         scrollbar-color:var(--scrollbar-thumb) transparent; 
         scrollbar-width:thin; 
         scrollbar-gutter:stable; 
@@ -937,11 +948,12 @@ input#input-quantity {
         justify-content: unset;
         text-align: left;
     }
-    .wrapper {
+    hgroup .wrapper {
         display: flex;
         justify-content: end
     }
-    hgroup h1 {flex: 0}
+    hgroup .title {flex: 0}
+    hgroup h1 {white-space: nowrap;}
 
     .mobile_buttons {display: none}
 }

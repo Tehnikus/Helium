@@ -5,25 +5,33 @@
   
   <hgroup>
     {# Header #}
-    <h1 class="product-name">{{ heading_title }}</h1>
-    {# Page contents #}
-    <ul class="contents scroll-x">
-      {% if description %}
-        <li><a class="button" href="{{ share }}#description" title="{{ tab_description }}">{{ tab_description }}</a></li>
-      {% endif %}
-      {% if thumb %}
-        <li><a class="button" href="{{ share }}#photos" title="{{ tab_photos }}">{{ tab_photos }}</a></li>
-      {% endif %}
-      {% if attribute_groups %}
-        <li><a class="button" href="{{ share }}#specification" title="{{ tab_attribute }}">{{ tab_attribute }}</a></li>
-      {% endif %}
+    <div class="title">
+      <h1 class="product-name">{{ heading_title }}</h1>
+      {# Rating stars display #}
       {% if review_status %}
-        <li><a class="button" href="{{ share }}#reviews" title="{{ tab_review }}">{{ tab_review }}</a></li>
+        {% include 'helium/template/common/rating_stars.twig' with {rating: rating, count:reviews} %}
       {% endif %}
-      {% if products %}
-        <li><a class="button" href="{{ share }}#related" title="{{ text_related }}">{{ text_related }} ({{products|length}})</a></li>
-      {% endif %}
-    </ul>
+    </div>
+    {# Page contents #}
+    <div class="wrapper">
+      <ul class="contents scroll-x">
+        {% if description %}
+          <li><a class="button" href="{{ share }}#description" title="{{ tab_description }}">{{ tab_description }}</a></li>
+        {% endif %}
+        {% if thumb %}
+          <li><a class="button" href="{{ share }}#photos" title="{{ tab_photos }}">{{ tab_photos }}</a></li>
+        {% endif %}
+        {% if attribute_groups %}
+          <li><a class="button" href="{{ share }}#specification" title="{{ tab_attribute }}">{{ tab_attribute }}</a></li>
+        {% endif %}
+        {% if review_status %}
+          <li><a class="button" href="{{ share }}#reviews" title="{{ tab_review }}">{{ tab_review }}</a></li>
+        {% endif %}
+        {% if products %}
+          <li><a class="button" href="{{ share }}#related" title="{{ text_related }}">{{ text_related }} ({{products|length}})</a></li>
+        {% endif %}
+      </ul>
+    </div>
   </hgroup>
 
   <div class="product_top">
@@ -94,65 +102,60 @@
         </div>
       {% endif %}
 
-    <div>
-      {# Product options #}
-      {% if options %}
-        {% include 'helium/template/product/product_page_options.twig' with {options: options, base_price:base_price} %}
-      {% endif %}
-
-      {# Recurring payments #}
-      {% if recurrings %}
-        <span class="h3">{{ text_payment_recurring }}</span>
-        <div class="form-group required">
-          <select name="recurring_id" class="form-control">
-            <option value="">{{ text_select }}</option>
-            {% for recurring in recurrings %}
-            <option value="{{ recurring.recurring_id }}">{{ recurring.name }}</option>
-            {% endfor %}
-          </select>
-          <div class="help-block" id="recurring-description"></div>
-        </div>
-      {% endif %}
-
-      {# Buy buttons #}
-      <div class="form-group">
-        <label for="input-quantity">{{ entry_qty }}</label>
-        <input 
-          type="number"
-          name="quantity"
-          value="{{ minimum }}"
-          min="{{ minimum }}"
-          size="2"
-          id="input-quantity"
-          class="form-control"
-          oninput="animatePrice()"
-        />
-        <input type="hidden" name="product_id" value="{{ product_id }}" />
-      </div>
-      <div class="btn-group">
-        <button type="button" id="button-cart" onclick="cart.add({{product_id}})" title="{{ button_cart }}" class="add-to-cart primary">{{ button_cart }}</button>
-      </div>
-      <div class="btn-group">
-        <button type="button" class="wishlist" title="{{ button_wishlist }}" onclick="wishlist.add('{{ product_id }}');"><i class="icon-heart"></i></button>
-        <button type="button" class="compare" title="{{ button_compare }}" onclick="compare.add('{{ product_id }}');"><i class="icon-compare"></i></button>
-        {% if review_guest %}
-          <button type="button" data-id="{{ product_id }}" data-type="product/product" id="write-review"><i class="icon-edit"></i>{{ text_write }}</button>
-        {% else %}
-          {{ text_login }}
+      <div>
+        {# Product options #}
+        {% if options %}
+          {% include 'helium/template/product/product_page_options.twig' with {options: options, base_price:base_price} %}
         {% endif %}
-        
-      </div>
-      {% if minimum > 1 %}
-        <div class="alert alert-info"><i class="icon-info"></i> 
-          {{ text_minimum }}
-        </div>
-      {% endif %}
-    </div>
 
-    {# Rating stars display #}
-    {% if review_status %}
-      {% include 'helium/template/common/rating_stars.twig' with {rating: rating, count:reviews} %}
-    {% endif %}
+        {# Recurring payments #}
+        {% if recurrings %}
+          <span class="h3">{{ text_payment_recurring }}</span>
+          <div class="form-group required">
+            <select name="recurring_id" class="form-control">
+              <option value="">{{ text_select }}</option>
+              {% for recurring in recurrings %}
+              <option value="{{ recurring.recurring_id }}">{{ recurring.name }}</option>
+              {% endfor %}
+            </select>
+            <div class="help-block" id="recurring-description"></div>
+          </div>
+        {% endif %}
+
+        {# Buy buttons #}
+        <div class="form-group">
+          <label for="input-quantity">{{ entry_qty }}</label>
+          <input 
+            type="number"
+            name="quantity"
+            value="{{ minimum }}"
+            min="{{ minimum }}"
+            size="2"
+            id="input-quantity"
+            class="form-control"
+            oninput="animatePrice()"
+          />
+          <input type="hidden" name="product_id" value="{{ product_id }}" />
+        </div>
+        <div class="btn-group">
+          <button type="button" id="button-cart" onclick="cart.add({{product_id}})" title="{{ button_cart }}" class="add-to-cart primary">{{ button_cart }}</button>
+        </div>
+        <div class="btn-group">
+          <button type="button" class="wishlist" title="{{ button_wishlist }}" onclick="wishlist.add('{{ product_id }}');"><i class="icon-heart"></i></button>
+          <button type="button" class="compare" title="{{ button_compare }}" onclick="compare.add('{{ product_id }}');"><i class="icon-compare"></i></button>
+          {% if review_guest %}
+            <button type="button" data-id="{{ product_id }}" data-type="product/product" id="write-review"><i class="icon-edit"></i>{{ text_write }}</button>
+          {% else %}
+            {{ text_login }}
+          {% endif %}
+          
+        </div>
+        {% if minimum > 1 %}
+          <div class="alert alert-info"><i class="icon-info"></i> 
+            {{ text_minimum }}
+          </div>
+        {% endif %}
+      </div>
     </div>
   </div>
 
