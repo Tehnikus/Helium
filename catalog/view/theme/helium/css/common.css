@@ -288,9 +288,7 @@ header, footer, main, aside, nav, nav > div, hgroup {
     gap:1rem;
 }
 
-hgroup {
-    text-transform: uppercase;
-}
+
 
 footer, main, aside > div, [data-accordion] {
     overflow: hidden;
@@ -416,7 +414,7 @@ fieldset>input, fieldset>select {
 }
 
 /* Headers */
-.uppercase, .module .h3 {text-transform: uppercase}
+.uppercase, hgroup, .module .h3 {text-transform: uppercase}
 .relative, .module {position:relative}
 .hidden-md {display: none}
 
@@ -882,6 +880,10 @@ input#input-quantity {
         transform: translateX(0%);
     }
     p {text-align: justify} /* Prettyfy text on narrow screens */
+    .wrapper {
+        display: flex;
+        justify-content: center;
+    }
 }
 @media (min-width: 64rem) {
     main#product .product_top {
@@ -936,8 +938,8 @@ input#input-quantity {
         text-align: left;
     }
     .wrapper {
-        justify-content: end;
-        display: flex
+        display: flex;
+        justify-content: end
     }
     hgroup h1 {flex: 0}
 
