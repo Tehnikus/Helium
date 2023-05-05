@@ -394,7 +394,7 @@ class ControllerProductProduct extends Controller {
 	// Display review modal window 
 	public function displayReviewModal() {
 		$this->load->language('product/product');
-		$data['entity_id'] = (int)$this->request->post['entity_id'];
+		$data['entity_id'] = (int)$this->request->get['entity_id'];
 		$data['type'] = 'product/product';
 		$this->response->setOutput($this->load->view('common/review_form', $data));
 	}
