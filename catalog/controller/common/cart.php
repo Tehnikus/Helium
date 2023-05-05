@@ -312,4 +312,7 @@ class ControllerCommonCart extends Controller {
 			return;
 		}
 	}
+	public function fetchProductCount() {
+		echo($this->cart->countProducts());
+	}
 }
