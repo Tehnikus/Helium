@@ -465,6 +465,7 @@ function scrollslider() {
 	const containers_class = 'js_scroll';
 	[].forEach.call(document.getElementsByClassName(containers_class), c => {
 
+
 		// Get timer from container dataset
 		let time = c.dataset.time || 4000;
 		let timer = setInterval(() => {
@@ -535,7 +536,7 @@ function scrollslider() {
 					'focus': () => { clearInterval(timer) },
 					// Else start slider again
 					'mouseleave': () => { timer = setInterval(() => {scrollRight(); }, time); },
-					'blur': () => { timer = setInterval(() => {scrollRight(); }, time); },
+					// 'blur': () => { timer = setInterval(() => {scrollRight(); }, time); },
 				}
 			});
 			c.insertAdjacentElement('beforebegin', button);
@@ -547,12 +548,15 @@ function scrollslider() {
 				clearInterval(timer);
 			});
 		});
+		if (document.activeElement === c) {
+			console.log(c);
+		}
 		// If container is not hovered or focused - start animation
 		// No 'touchend' listener, because if user interacts with block, it's expected that block stays in same condition that it was left
 		['mouseleave', 'focusout'].forEach(f => {
 			c.addEventListener(f, () => {
 				// TODO: fix event listeners
-				console.log(c.matches(':focus-within'));
+				// console.log(c.matches(':focus-within'));
 				// Check if container does not have focus inside - like click on button or screen reader focus
 				if (!c.matches(':focus-within')) {
 					timer = setInterval(() => {
@@ -589,25 +593,30 @@ document.addEventListener('click', function(e) {
 
 	// Show "write review" modal window
 	// Both for products and blog articles
-	let review_button = d.getElementById('write-review');
-	if (!!review_button) {
-		review_button.addEventListener('click', () => {
-			ajax(
-				'index.php?route='+review_button.dataset.type+'/displayReviewModal',
-				'entity_id='+review_button.dataset.id,
-				function(c) {
-				dialog.create(c);
-			}, null,null,null,"POST","text",true);
-
-			// fetch(
+	// let review_button = d.getElementById('write-review');
+	// if (!!review_button) {
+		// review_button.addEventListener('click', () => {
+			// ajax(
 			// 	'index.php?route='+review_button.dataset.type+'/displayReviewModal',
-			// 	{method: "POST", body: 'entity_id='+review_button.dataset.id})
-			// .then((r) => {return r.text();})
-			// .then((body) => {
-			// 	dialog.create(body);
-			// });
-		});
-	}
+			// 	'entity_id='+review_button.dataset.id,
+			// 	function(c) {
+			// 		console.log(c);
+			// 		dialog.create(c);
+			// }, null,null,null,"POST","text",true);
+		// console.log('index.php?route='+review_button.dataset.type+'/displayReviewModal&entity_id='+review_button.dataset.id);
+
+			// fetch('index.php?route='+review_button.dataset.type+'/displayReviewModal&entity_id='+review_button.dataset.id,
+			// 	{
+			// 		method: "POST", 
+			// 		// body: 'entity_id='+review_button.dataset.id
+			// 	})
+			// 	.then((r) => {return r.text();})
+			// 	.then((resp) => {
+			// 		// console.log(resp);
+			// 		dialog.create(resp);
+			// 	});
+		// });
+	// }
 
 	// Аякс загрузка отзывов на странице товара
 	// DONE исправить, добавить нужные классы к HTML
@@ -932,7 +941,6 @@ function mobileMenu() {
 				}
 			}
 		};
-		console.log(btns);
 		btns[9] = catalog_btn;
 		btns[10] = cart_btn;
 		let menu = {
@@ -1177,7 +1185,7 @@ function countdown(element) {
 }
 // TODO Maybe make this as a separate class?
 let timeout = null;
-function searchFunction () {
+const searchFunction = (el) => {
 	clearTimeout(timeout);
 	let search_input = document.getElementById('search-input');
 	let inner_search = document.getElementById('search-results');
@@ -1322,45 +1330,93 @@ function sendReview(t) {
 
 
 // Find all elements by ID, class or queryselector and bind event listeners on them
-let elements_list = [
-	{name: '#cart-header-button',  	e:'click',	func:cart.showModal},
-	{name: '#cart-mobile-button',  	e:'click',	func:cart.showModal},
-	{name: '#compare-total',        e:'click',	func:showCompareModal},
-	{name: '#wishlist-total',       e:'click',	func:showWhishlistModal},
-	{name: '#search-input',         e:'input',	func:searchFunction},
-]
-elements_list.forEach((a) => {
-	let element = false;
-	let q = a.name.slice(0, 1);
-	if (q == '#') {
-		element = document.getElementById(a.name.substring(1));
-	} else if (q == '.') {
-		element = document.getElementsByClassName(a.name.substring(1));
-	} else {
-		element = document.querySelectorAll(a.name);
-	}
+// let elements_list = [
+// 	{name: '#cart-header-button',  	e:'click',	func:cart.showModal},
+// 	{name: '#cart-mobile-button',  	e:'click',	func:cart.showModal},
+// 	{name: '#compare-total',        e:'click',	func:showCompareModal},
+// 	{name: '#wishlist-total',       e:'click',	func:showWhishlistModal},
+// 	{name: '#search-input',         e:'input',	func:searchFunction},
+// ]
+// elements_list.forEach((a) => {
+// 	let element = false;
+// 	let q = a.name.slice(0, 1);
+// 	if (q == '#') {
+// 		element = document.getElementById(a.name.substring(1));
+// 	} else if (q == '.') {
+// 		element = document.getElementsByClassName(a.name.substring(1));
+// 	} else {
+// 		element = document.querySelectorAll(a.name);
+// 	}
 
-	if (!!element) {
-		if (element.length === undefined) {
-			element.addEventListener(a.e, function(ev) {
-				a.func(ev)
-			})
-		} else {
-			for (var i = 0; i < element.length; i++) {
-				element[i].addEventListener(a.e, function(ev) {
-					a.func(ev);
-				})
-			}
-		}
-	}
-})
+// 	if (!!element) {
+// 		if (element.length === undefined) {
+// 			element.addEventListener(a.e, function(ev) {
+// 				a.func(ev)
+// 			})
+// 		} else {
+// 			for (var i = 0; i < element.length; i++) {
+// 				element[i].addEventListener(a.e, function(ev) {
+// 					a.func(ev);
+// 				})
+// 			}
+// 		}
+// 	}
+// })
+
+
+
+
+
+// Data driven event handler
+function handle(evt) {
+	const origin = evt.target.closest("[data-action]");
+	return origin &&
+		actions[evt.type] &&
+		actions[evt.type][origin.dataset.action] &&
+		actions[evt.type][origin.dataset.action](origin, evt) ||
+		true;
+}
+
+// const firstElemHandler = (elem, evt) =>
+// 	elem.textContent = `You ${evt.type === "click" ? "clicked" : "touched"}!`;
+const reviewModal = (el, ev) => {
+	fetch('index.php?route='+el.dataset.type+'/displayReviewModal&entity_id=' + el.dataset.id,
+	{
+		method: "POST",
+		// body: 'entity_id='+el.dataset.id
+		// body: {'entity_id': el.dataset.id},
+	})
+	.then((r) => {return r.text();})
+	.then((resp) => {
+		console.log(resp);
+		dialog.create(resp);
+	});
+}
+
+// List of functions
+// event: function
+const actions = {
+	// 
+	click: {
+		reviewModal,
+	},
+	input: {
+		searchFunction,
+	},
+};
+// Add event listener to document
+Object.keys(actions).forEach(key => document.addEventListener(key, handle));
+
+
+
+
+
 
 // Main menu
 // Adds buttons in the main megamenu
 // Next button shows child categories list
 // Prev button closes child and shows parent list  
 // DONE Add aria attributes to menu items
-
 function mainMenu() {
 	// DONE Set inert (unfocusable) for all elements except active
 	let main_menu = document.getElementById('main-menu');
@@ -1606,9 +1662,12 @@ function anchorNav() {
 
 			a.addEventListener('click', (e)=>{
 				e.preventDefault();
-				window.scrollTo(0, offset);
 				window.location.hash = a.hash;
+				window.scrollTo(0, offset);
 				document.querySelector(a.hash).focus();
+				// if (!document.querySelector(a.hash).matches(':focus-within')) {
+				// 	a.focus();
+				// }
 			})
 		})
 	}
