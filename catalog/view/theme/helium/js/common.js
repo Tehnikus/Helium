@@ -582,6 +582,10 @@ document.addEventListener('click', function(e) {
 			}
 		}
 	}
+	let main_menu_btn = document.getElementById('main-menu-trigger');
+	if (main_menu_btn.contains(e.target)) {
+		main_menu_btn.getElementsByClassName('menu-icon')[0].classList.toggle('open');
+	}
 
 	// Show "write review" modal window
 	// Both for products and blog articles
@@ -1594,10 +1598,16 @@ function anchorNav() {
 		let links = contents.querySelectorAll('a');
 		[].forEach.call(links, (a) => {
 			// console.log(document.querySelector(a.hash), document.querySelector(a.hash).offsetTop);
+
+			let bodyRect = document.body.getBoundingClientRect();
+			let elemRect = document.querySelector(a.hash).getBoundingClientRect();
+			let h = document.getElementById('js_nav_main').offsetHeight;
+			let offset  = elemRect.top - bodyRect.top - h - 16; // minus 1rem
+
 			a.addEventListener('click', (e)=>{
-				// e.preventDefault();
-				// document.querySelector(a.hash).scrollIntoView();
-				// window.scrollTo(0, document.querySelector(a.hash).offsetTop);
+				e.preventDefault();
+				window.scrollTo(0, offset);
+				window.location.hash = a.hash;
 				document.querySelector(a.hash).focus();
 			})
 		})
