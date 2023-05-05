@@ -1392,7 +1392,6 @@ const cart_add = (el, ev) => {
 // List of functions
 // event: function
 const actions = {
-	// 
 	click: {
 		reviewModal,
 		cart_add
@@ -1639,9 +1638,9 @@ document.querySelectorAll('details, [data-accordion-target]').forEach((el) => {
 // Adapts to logo dimensions
 // No event listeners
 function stickyHeader() {
-	let h = document.getElementById('js_header');
-	let oh = h.offsetHeight;
-	let ih = document.getElementById('js_nav_main').offsetHeight;
+	const h = document.getElementById('js_header'),
+		oh = h.offsetHeight,
+	    ih = document.getElementById('js_nav_main').offsetHeight;
 	h.style.cssText = "position: sticky; z-index: 1; top:"+ -(oh - ih) + "px;";
 }
 // Focus on hash tag navigation element
@@ -1651,10 +1650,10 @@ function anchorNav() {
 		let links = contents.querySelectorAll('a');
 		[].forEach.call(links, (a) => {
 			a.addEventListener('click', (e)=>{
-				let bodyRect = document.body.getBoundingClientRect();
-				let elemRect = document.querySelector(a.hash).getBoundingClientRect();
-				let h = document.getElementById('js_nav_main').offsetHeight;
-				let offset  = elemRect.top - bodyRect.top - h - 16; // minus 1rem
+				const bodyRect = document.body.getBoundingClientRect(),
+					elemRect = document.querySelector(a.hash).getBoundingClientRect(),
+				    h = document.getElementById('js_nav_main').offsetHeight,
+				    offset  = elemRect.top - bodyRect.top - h - 16; // minus 1rem
 				e.preventDefault();
 				window.location.hash = a.hash;
 				window.scrollTo(0, offset);

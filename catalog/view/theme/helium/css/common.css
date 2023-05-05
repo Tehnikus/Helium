@@ -71,7 +71,7 @@ body {font-family:system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxy
     background:var(--gardient-2);margin: 0 auto;width: 100%;max-width: 100%;overflow-x:hidden;display: flex;flex-wrap:wrap;gap:1rem;padding:0}
 
 /* Responsive images and videos */
-img,video {max-width: 100%;height: auto}
+img,video,iframe[src*="youtube"] {max-width: 100%;height: auto}
 /* Unstyled lists */
 .list-unstyled {padding: 0; margin: 0; list-style-type: none}
 /* Normalize appearence */

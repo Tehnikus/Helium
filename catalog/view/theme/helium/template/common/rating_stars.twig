@@ -1,22 +1,22 @@
+{% if rating > 0 %}
 <div aria-label="{{ aria_rating_label }} {{ rating }}, {{ aria_review_count_label }} {{ count }}" title="{{ aria_rating_label }} {{ rating }}, {{ aria_review_count_label }} {{ count }}">
   <div class="rating" role="presentation">
-    {% if rating > 0 %}
-      {% for i in 1..5 %}
-        {% if rating >= i %}
-          <i class="icon-star"></i>
+    {% for i in 1..5 %}
+      {% if rating >= i %}
+        <i class="icon-star"></i>
+      {% else %}
+        {%if rating -  i < 0 %}
+          <i class="icon-star-half"></i>
         {% else %}
-          {%if rating -  i < 0 %}
-            <i class="icon-star-half"></i>
-          {% else %}
-            <i class="icon-star-empty"></i>
-          {% endif %}
+          <i class="icon-star-empty"></i>
         {% endif %}
-      {% endfor %} 
-    {% endif %}
+      {% endif %}
+    {% endfor %}
     {% if count is defined and count > 0 %}
       <span class="reviews-count">({{ count }})</span>
     {% endif %}
   </div>
 </div>
+{% endif %}
 
 
