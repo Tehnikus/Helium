@@ -1,6 +1,6 @@
 const d = document;
 const w = document.window;
-const favicon = document.querySelector("link[rel~='icon']");
+
 let filter_button = document.getElementById('button-filter');
 
 
@@ -652,44 +652,35 @@ document.addEventListener('click', function(e) {
 
 
 
-
-
-// TODO Исправить так, чтобы количество товаров задавалось при загрузке страницы
+// DONE Set icon on pare load
+fetch('index.php?route=common/cart/fetchProductCount').then(r => {return r.text()}).then(resp => { setIcon(resp)})
 function setIcon(productCount) {
-	if (typeof(favicon) !== 'undefined' && favicon !== null) {
-		// var favicon = document.getElementById('favicon');
-		// let favicon = document.querySelector("link[rel~='icon']");
-		let faviconSize = 16;
-
-		let canvas = document.createElement('canvas');
-		canvas.width = faviconSize;
-		canvas.height = faviconSize;
-
-		let context = canvas.getContext('2d');
-		let img = document.createElement('img');
-		img.src = favicon.href;
-
-
-		img.onload = () => {
-			// Draw Original Favicon as Background
-			context.drawImage(img, 0, 0, faviconSize, faviconSize);
-
-			// Draw Notification Circle
-			context.beginPath();
-			context.arc( canvas.width - faviconSize / 3 , faviconSize / 3, faviconSize / 3, 0, 2*Math.PI);
-			context.fillStyle = '#FF0000';
-			context.fill();
-
-			// Draw Notification Number
-			context.font = '10px "helvetica", sans-serif';
-			context.textAlign = "center";
-			context.textBaseline = "middle";
-			context.fillStyle = '#FFFFFF';
-			context.fillText(productCount, canvas.width - faviconSize / 3, faviconSize / 3);
-
-			// Replace favicon
-			favicon.href = canvas.toDataURL('image/png');
-		};
+	const favicon = document.querySelector("link[rel~='icon']");
+	console.log(productCount, favicon);
+	if (productCount === '0' || (typeof(favicon) === 'undefined' && favicon == null)) {return}
+	let faviconSize = 16;
+	let canvas = document.createElement('canvas');
+	canvas.width = faviconSize;
+	canvas.height = faviconSize;
+	let context = canvas.getContext('2d');
+	let img = document.createElement('img');
+	img.src = favicon.href;
+	img.onload = () => {
+		// Draw Original Favicon as Background
+		context.drawImage(img, 0, 0, faviconSize, faviconSize);
+		// Draw Notification Circle
+		context.beginPath();
+		context.arc( canvas.width - faviconSize / 3 , faviconSize / 3, faviconSize / 3, 0, 2*Math.PI);
+		context.fillStyle = '#FF0000';
+		context.fill();
+		// Draw Notification Number
+		context.font = '10px "helvetica", sans-serif';
+		context.textAlign = "center";
+		context.textBaseline = "middle";
+		context.fillStyle = '#FFFFFF';
+		context.fillText(productCount, canvas.width - faviconSize / 3, faviconSize / 3);
+		// Replace favicon
+		favicon.href = canvas.toDataURL('image/png');
 	}
 };
 
@@ -1386,11 +1377,16 @@ const reviewModal = (el, ev) => {
 		// body: 'entity_id='+el.dataset.id
 		// body: {'entity_id': el.dataset.id},
 	})
-	.then((r) => {return r.text();})
-	.then((resp) => {
-		console.log(resp);
+	.then(r => {return r.text();})
+	.then(resp => {
+		// console.log(resp);
 		dialog.create(resp);
 	});
+}
+
+const cart_add = (el, ev) => {
+	console.log(el, ev);
+	cart.add(el.dataset.productId);
 }
 
 // List of functions
@@ -1399,6 +1395,7 @@ const actions = {
 	// 
 	click: {
 		reviewModal,
+		cart_add
 	},
 	input: {
 		searchFunction,
