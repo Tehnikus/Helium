@@ -10,16 +10,13 @@ class ControllerExtensionModuleViewed extends Controller {
 			$setting['limit'] = 10;
 		}
 
-		if (isset($this->session->data['viewed'])) {
+		if (isset($this->session->data['viewed']) && !empty($this->session->data['viewed'])) {
 			$products = array_reverse($this->session->data['viewed'], false);
+			$products = array_splice($products, (int)$setting['limit']);
 			foreach ($products as $product_id) {
 				$product_list[] = $this->model_catalog_product->getProduct($product_id);
 			}
 			$data['products'] = $this->model_catalog_product->prepareProductList($product_list, null);
-		}
-		
-
-		if (!empty($products)) {
 			return $this->load->view('extension/module/viewed', $data);
 		}
 	}
