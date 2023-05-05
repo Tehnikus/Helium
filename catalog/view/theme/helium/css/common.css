@@ -863,8 +863,9 @@ input#input-quantity {
 }
 
 /* Media query for desktops */
+/* 63.938rem = 1023px */
 /* 64rem = 1024px */
-@media (max-width: 63.99rem) {
+@media (max-width: 63.938rem) {
     .mobile_menu {
         justify-content: center;
         position: fixed;
@@ -889,7 +890,11 @@ input#input-quantity {
         display: flex;
         justify-content: center;
     }
+    dialog {
+        width: 100%;
+    }
 }
+/* Hide product short descriptions in mobile blocks on small screens so block fits vertically without overflow */
 @media (max-height: 896px) {
     .mobile_menu .short-description {
         display: none;
@@ -901,7 +906,7 @@ input#input-quantity {
         display: flex;
         justify-content: space-between;
     }
-    ul.contents.scroll-x {/* justify-content: end; */}
+    /* ul.contents.scroll-x {justify-content: end} */
     .product_top #photos, .product_top .infos {max-width: 50%;}
     body {
         flex-direction: row;
@@ -940,7 +945,7 @@ input#input-quantity {
         flex: 0 0 max(21rem, 20%);
         max-width: max(21rem, 20%);
     }
-    .hidden-md {display: initial}
+    .hidden-md {display: initial!important}
 
     hgroup > * {
         width: 50%;
@@ -955,5 +960,6 @@ input#input-quantity {
     hgroup .title {flex: 0}
     hgroup h1 {white-space: nowrap;}
 
-    .mobile_buttons {display: none}
+    .mobile_buttons {display: none!important}
+    dialog {width: 800px;}
 }
