@@ -1650,21 +1650,15 @@ function anchorNav() {
 	if (!!contents) {
 		let links = contents.querySelectorAll('a');
 		[].forEach.call(links, (a) => {
-			// console.log(document.querySelector(a.hash), document.querySelector(a.hash).offsetTop);
-
-			let bodyRect = document.body.getBoundingClientRect();
-			let elemRect = document.querySelector(a.hash).getBoundingClientRect();
-			let h = document.getElementById('js_nav_main').offsetHeight;
-			let offset  = elemRect.top - bodyRect.top - h - 16; // minus 1rem
-
 			a.addEventListener('click', (e)=>{
+				let bodyRect = document.body.getBoundingClientRect();
+				let elemRect = document.querySelector(a.hash).getBoundingClientRect();
+				let h = document.getElementById('js_nav_main').offsetHeight;
+				let offset  = elemRect.top - bodyRect.top - h - 16; // minus 1rem
 				e.preventDefault();
 				window.location.hash = a.hash;
 				window.scrollTo(0, offset);
 				document.querySelector(a.hash).focus();
-				// if (!document.querySelector(a.hash).matches(':focus-within')) {
-				// 	a.focus();
-				// }
 			})
 		})
 	}
