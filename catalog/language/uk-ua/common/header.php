@@ -34,5 +34,9 @@ $_['text_secs']             = 'сек';
 $_['text_close']            = 'Закрити';
 $_['text_openlist']         = 'Відкрити список підкатегорій';
 $_['text_back_to']          = 'Назад до списку';
+$_['text_cart_button']      = 'Кошик';
+$_['text_menu_button']      = 'Меню';
+$_['right']            = 'Вперед';
+$_['left']             = 'Назад';
 
 

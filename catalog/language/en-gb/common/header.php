@@ -35,3 +35,7 @@ $_['text_close']                    = 'Close';
 $_['text_openlist']                 = 'Open subcategories list';
 $_['text_back_to']                  = 'Back to list';       
 
+$_['text_cart_button']      = 'Cart';
+$_['text_menu_button']      = 'Menu';
+$_['right']            = 'Forward';
+$_['left']             = 'Back';
