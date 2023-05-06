@@ -3,12 +3,7 @@
     <link rel="preload" as="image" href="{{ thumb }}">
     <figure class="image">
       <a role="img" aria-label="{{ heading_title }}" class="thumbnail" href="{{ popup }}" title="{{ heading_title }}">
-        <img 
-          loading="lazy" 
-          src="{{ thumb }}" 
-          title="{{ heading_title }}" 
-          alt="{{ heading_title }}" 
-        />
+        <img loading="lazy" src="{{ thumb }}" title="{{ heading_title }}" alt="{{ heading_title }}" />
       </a>
     <figcaption>{{ heading_title }}</figcaption>
     </figure>
@@ -17,13 +12,7 @@
     <div class="scroll-x">
       {% for image in images %}
         <a role="img" aria-label="{{ heading_title }}" class="thumbnail" href="{{ image.popup }}" title="{{ heading_title }}"> 
-          <img 
-            loading="lazy" 
-            data-large-img="{{ image.thumb }}" 
-            src="{{ image.thumb }}" 
-            title="{{ heading_title }}" 
-            alt="{{ heading_title }}" 
-          />
+          <img loading="lazy" data-large-img="{{ image.thumb }}" src="{{ image.thumb }}" title="{{ heading_title }}" alt="{{ heading_title }}" />
         </a>
       {% endfor %}
     </div>
@@ -34,5 +23,5 @@
       <span class="product-flag {{ type }}"> {{ flag }} </span>
       {% endfor %}
     </div>
-    {% endif %}
+  {% endif %}
 </div>
