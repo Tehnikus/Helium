@@ -35,16 +35,7 @@ let filter_button = document.getElementById('button-filter');
 
 
 
-function showCompareModal() {
-	ajax('index.php?route=product/compare/showCompareModal',null,function(c) {
-		dialog.create(c);
-	}, null,null,null,"GET","text",true);
-}
-function showWhishlistModal() {
-	ajax('index.php?route=account/wishlist/showWishlistModal',null,function(c) {
-		dialog.create(c);
-	}, null,null,null,"GET","text",true);
-}
+
 
 // TODO :)
 document.addEventListener('click', function(e) {
@@ -109,6 +100,9 @@ document.addEventListener('DOMContentLoaded', function() {
 	stickyHeader(); // Sticky header
 	scrollslider(); // Sliders everywhere
 	anchorNav(); // Focus on hastag navigation element
+
+	// Set product count on favicon on page load 
+	fetch('index.php?route=common/cart/fetchProductCount').then(r => {return r.text()}).then(resp => { setIcon(resp)})
 
 
 	// TODO Move this to it's function
@@ -464,29 +458,30 @@ var compare = {
 function scrollslider() {
 	const containers_class = 'js_scroll';
 	[].forEach.call(document.getElementsByClassName(containers_class), c => {
-
-
 		// Get timer from container dataset
 		let time = c.dataset.time || 4000;
 		let timer = setInterval(() => {
 			scrollRight();
 		}, time);
-
+		// Observe slides visibility
 		let observer = new IntersectionObserver(onIntersection, {
 			root: c,      // Default is the viewport
 			threshold: .9 // Percentage of target's visible area. Triggers "onIntersection". Not 1, because slide may be fractionally visible
 		});
+
+		// Set class to visible slide
 		function onIntersection(slides, opts) {
 			slides.forEach(entry => {
-				// Set class to visible slide
 				entry.target.classList.toggle('visible', entry.isIntersecting)
 			})
 		}
+		// Observe slides
 		[].forEach.call(c.children, s => {
 			observer.observe(s);
 		});
-
+		// Scroll left
 		function scrollLeft() {
+			// clearInterval(timer);
 			// Select first visible slide if multilpe visibe
 			let visible_slide = Array.from(c.querySelectorAll('.visible')).shift();
 			if(visible_slide) {
@@ -502,8 +497,9 @@ function scrollslider() {
 				}
 			}
 		}
-
+		// Scroll right
 		function scrollRight() {
+			// clearInterval(timer);
 			// Select last visible slide if multilpe visibe
 			let visible_slide = Array.from(c.querySelectorAll('.visible')).pop();
 			if(visible_slide) {
@@ -522,10 +518,9 @@ function scrollslider() {
 
 		// Add control buttons
 		['left', 'right'].forEach(b => {
-
-			button = createElm({
+			const button = createElm({
 				type: 'button',
-				attrs: { 'class': 'scroll_' + b },
+				attrs: {'class': 'scroll_' + b, 'aria-label':js_lang[b], 'title':js_lang[b]},
 				props: { innerHTML: '<i class="icon-chevron-' + b + '"></i>' },
 				// Add some events
 				events: {
@@ -548,20 +543,25 @@ function scrollslider() {
 				clearInterval(timer);
 			});
 		});
-		if (document.activeElement === c) {
-			console.log(c);
-		}
+		[].forEach.call(c.children, (s) =>{
+			s.addEventListener('focusin', () => {
+				// Scroll into view
+				clearInterval(timer);
+				// s.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+			})
+		});
 		// If container is not hovered or focused - start animation
 		// No 'touchend' listener, because if user interacts with block, it's expected that block stays in same condition that it was left
 		['mouseleave', 'focusout'].forEach(f => {
 			c.addEventListener(f, () => {
 				// TODO: fix event listeners
-				// console.log(c.matches(':focus-within'));
 				// Check if container does not have focus inside - like click on button or screen reader focus
 				if (!c.matches(':focus-within')) {
 					timer = setInterval(() => {
 						scrollRight();
 					}, time);
+				} else {
+					clearInterval(timer);
 				}
 			});
 		})
@@ -591,32 +591,6 @@ document.addEventListener('click', function(e) {
 		main_menu_btn.getElementsByClassName('menu-icon')[0].classList.toggle('open');
 	}
 
-	// Show "write review" modal window
-	// Both for products and blog articles
-	// let review_button = d.getElementById('write-review');
-	// if (!!review_button) {
-		// review_button.addEventListener('click', () => {
-			// ajax(
-			// 	'index.php?route='+review_button.dataset.type+'/displayReviewModal',
-			// 	'entity_id='+review_button.dataset.id,
-			// 	function(c) {
-			// 		console.log(c);
-			// 		dialog.create(c);
-			// }, null,null,null,"POST","text",true);
-		// console.log('index.php?route='+review_button.dataset.type+'/displayReviewModal&entity_id='+review_button.dataset.id);
-
-			// fetch('index.php?route='+review_button.dataset.type+'/displayReviewModal&entity_id='+review_button.dataset.id,
-			// 	{
-			// 		method: "POST", 
-			// 		// body: 'entity_id='+review_button.dataset.id
-			// 	})
-			// 	.then((r) => {return r.text();})
-			// 	.then((resp) => {
-			// 		// console.log(resp);
-			// 		dialog.create(resp);
-			// 	});
-		// });
-	// }
 
 	// Аякс загрузка отзывов на странице товара
 	// DONE исправить, добавить нужные классы к HTML
@@ -653,10 +627,8 @@ document.addEventListener('click', function(e) {
 
 
 // DONE Set icon on pare load
-fetch('index.php?route=common/cart/fetchProductCount').then(r => {return r.text()}).then(resp => { setIcon(resp)})
 function setIcon(productCount) {
 	const favicon = document.querySelector("link[rel~='icon']");
-	console.log(productCount, favicon);
 	if (productCount === '0' || (typeof(favicon) === 'undefined' && favicon == null)) {return}
 	let faviconSize = 16;
 	let canvas = document.createElement('canvas');
@@ -914,23 +886,18 @@ function mobileMenu() {
 		}
 		let catalog_btn  = {
 			type: 'button',
-			attrs: {'class':'mobile_button button', 'aria-label':"Menu"},
+			attrs: {'class':'mobile_button button', 'aria-label':js_lang.text_menu_button, 'data-action':'toggleMainMenu'},
 			props: {
-				'innerHTML':'<i class="icon-cart"></i><span>Menu</span>',
+				'innerHTML':'<i class="icon-cart"></i><span>'+js_lang.text_menu_button+'</span>',
 				'dataset' : {'accordionTarget':'main-menu'}
 			},
 		};
 		let cart_btn  = {
 			type: 'button',
-			attrs: {'class':'mobile_button button', 'aria-label':"Cart"},
+			attrs: {'class':'mobile_button button', 'aria-label':js_lang.text_cart_button, 'data-action':'cartShowModal'},
 			props: {
-				'innerHTML':'<i class="icon-cart"></i><span>Cart</span>',
+				'innerHTML':'<i class="icon-cart"></i><span>'+js_lang.text_cart_button+'</span>',
 			},
-			events: {
-				click: function(){
-					cart.showModal();
-				}
-			}
 		};
 		btns[9] = catalog_btn;
 		btns[10] = cart_btn;
@@ -993,12 +960,12 @@ let dialog = {
 				// Inner content. If typeof object (JSON or DOM) use outer HTML that parses it into HTML 
 				props:{'innerHTML': (typeof(content) == 'object' ? content.outerHTML : content)}},
 				// Close button
-				{type: 'button', attrs: {'class':'close','aria-label':js_lang.close}, events: {'click': (e) => {dialog.close(e)}}},
+				{type: 'button', attrs: {'class':'close','aria-label':js_lang.close, 'title':js_lang.close}, events: {'click': (e) => {dialog.close(e)}}},
 			]
 		});
 		// Append dialog to document
 		document.body.insertAdjacentElement('beforeend', a);
-		document.body.style.cssText = 'overscroll-behavior: contain;'
+		document.body.style.cssText = 'overflow: hidden;'
 		// Open dialog
 		a.showModal();
 		return;
@@ -1030,6 +997,10 @@ function loadMore() {
 		next_page = last.nextElementSibling;
 		if (!next_page.nextElementSibling.classList.contains('page')) {
 			d.getElementById('load-more-btn').disabled = true;
+			document.querySelectorAll('[rel="next"], [rel="last"]').forEach(function (e) {
+				e.style.cssText = 'display:none'
+				
+			});
 		}
 		if (!!next_page) {
 			next_href = next_page.getElementsByTagName('a')[0];
@@ -1047,10 +1018,6 @@ function loadMore() {
 					next_page.innerHTML = '<span>'+next_text+'</span>';
 					next_page.classList.add('active');
 				}, null, null, null, 'GET', 'text', true);
-			} else {
-				document.querySelectorAll('[rel="next"], [rel="last"]').forEach(function (e) {
-					e.classList.add('hidden');
-				});
 			}
 		}
 	}
@@ -1322,11 +1289,11 @@ function sendReview(t) {
 
 // Find all elements by ID, class or queryselector and bind event listeners on them
 // let elements_list = [
-// 	{name: '#cart-header-button',  	e:'click',	func:cart.showModal},
-// 	{name: '#cart-mobile-button',  	e:'click',	func:cart.showModal},
+// 	// {name: '#cart-header-button',  	e:'click',	func:cart.showModal},
+// 	// {name: '#cart-mobile-button',  	e:'click',	func:cart.showModal},
 // 	{name: '#compare-total',        e:'click',	func:showCompareModal},
 // 	{name: '#wishlist-total',       e:'click',	func:showWhishlistModal},
-// 	{name: '#search-input',         e:'input',	func:searchFunction},
+// 	// {name: '#search-input',         e:'input',	func:searchFunction},
 // ]
 // elements_list.forEach((a) => {
 // 	let element = false;
@@ -1374,27 +1341,84 @@ const reviewModal = (el, ev) => {
 	fetch('index.php?route='+el.dataset.type+'/displayReviewModal&entity_id=' + el.dataset.id,
 	{
 		method: "POST",
-		// body: 'entity_id='+el.dataset.id
-		// body: {'entity_id': el.dataset.id},
 	})
 	.then(r => {return r.text();})
 	.then(resp => {
-		// console.log(resp);
 		dialog.create(resp);
 	});
 }
 
-const cart_add = (el, ev) => {
-	console.log(el, ev);
+// Replace AJAX function
+async function fetchFunction({url, m, h, b, callback, arg}) {
+	let [a, method, headers, body, e, f] = [url, m || 'POST', h || {"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"}, b || '', callback || '', arg || ''];
+	return fetch(a, {method, headers, body})
+	.then(r => {return r.text()})
+	.then(resp => {
+		if (e === '') {
+			console.log('ololo');
+			return resp;
+		}
+		if (arg !== '' || typeof(arg) !== 'undefined') {
+			e[f](resp);
+		} else {
+			e(resp);
+		}
+	})
+}
+const cartRemove =  async (el, ev) => {
+	let resp = await fetchFunction({url: 'index.php?route=checkout/cart/remove', b: 'key='+el.dataset.key });
+	console.log(resp);
+}
+
+const compareModal = (el, ev) => {
+	fetchFunction({url:'index.php?route=product/compare/showCompareModal', m: 'POST', callback: dialog, arg:'create'})
+}
+const wishlistModal = (el, ev) => {
+	fetchFunction({url:'index.php?route=account/wishlist/showWishlistModal', m: 'POST', callback: dialog, arg:'create'})
+}
+const cartShowModal = (el, ev) => {
+	fetchFunction({url:'index.php?route=common/cart/modal', callback: dialog, arg: 'create'})
+}
+
+
+// const cartRemove =  async (el, ev) => {
+// 	let resp = fetchFunction({url: 'index.php?route=checkout/cart/remove', b: 'key='+el.dataset.key }).then(r =>{return r.text()}).then(r=>{console.log(r);});
+// }
+
+// const cartRemove = (el, ev) => {
+// 	fetch('index.php?route=checkout/cart/remove',
+// 	{
+// 		method:"POST", 
+// 		headers: {"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"}, 
+// 		body: 'key='+el.dataset.key
+// 	})
+// 	.then(r => {return r.text()})
+// 	.then(r => {
+// 		let resp = JSON.parse(r);
+// 		if ('success' in resp) {
+// 			fetch('index.php?route=common/cart/modal')
+// 			.then(r=>{return r.text()})
+// 			.then(r=>{dialog.create(r)})
+// 		}
+// 	})
+// }
+
+const cartAdd = (el, ev) => {
 	cart.add(el.dataset.productId);
 }
+
 
 // List of functions
 // event: function
 const actions = {
 	click: {
 		reviewModal,
-		cart_add
+		cartAdd,
+		cartRemove,
+		cartShowModal,
+		compareModal,
+		wishlistModal,
+
 	},
 	input: {
 		searchFunction,
