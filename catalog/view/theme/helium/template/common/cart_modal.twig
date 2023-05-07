@@ -1,6 +1,7 @@
 
 <div id="modal-cart">
   {% if products or vouchers %}
+    <h1>{{ text_header_cart }}</h1>
     <table class="table table-striped">
       {% for product in products %}
       <tr id="product_id_{{product.product_id}}">
@@ -31,7 +32,7 @@
         <td class="text-right cart-qty"> &times; {{ product.quantity }}</td>
         <td class="text-right">{{ product.total }}</td>
         <td class="text-center cart-remove">
-          <button type="button" onclick="cart.remove('{{ product.cart_id }}');" title="{{ button_remove }}" class="close"></button>
+          <button type="button" data-action="cartRemove" data-key="{{ product.cart_id }}" title="{{ button_remove }}" class="close"></button>
         </td>
       </tr>
       {% endfor %}

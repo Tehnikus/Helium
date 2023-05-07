@@ -138,13 +138,13 @@
           <input type="hidden" name="product_id" value="{{ product_id }}" />
         </div>
         <div class="btn-group">
-          <button type="button" id="button-cart" onclick="cart.add({{product_id}})" title="{{ button_cart }}" class="add-to-cart primary">{{ button_cart }}</button>
+          <button type="button" id="button-cart" data-action="cart_add" data-product-id="{{product_id}}" title="{{ button_cart }}" class="add-to-cart primary">{{ button_cart }}</button>
         </div>
         <div class="btn-group">
           <button type="button" class="wishlist" title="{{ button_wishlist }}" onclick="wishlist.add('{{ product_id }}');"><i class="icon-heart"></i></button>
           <button type="button" class="compare" title="{{ button_compare }}" onclick="compare.add('{{ product_id }}');"><i class="icon-compare"></i></button>
           {% if review_guest %}
-            <button type="button" data-id="{{ product_id }}" data-type="product/product" id="write-review"><i class="icon-edit"></i>{{ text_write }}</button>
+            <button type="button" data-id="{{ product_id }}" data-type="product/product" id="write-review" data-action="reviewModal"><i class="icon-edit"></i>{{ text_write }}</button>
           {% else %}
             {{ text_login }}
           {% endif %}

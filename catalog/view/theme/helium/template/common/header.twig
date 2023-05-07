@@ -54,18 +54,22 @@
   {% endfor %}
   <script type="text/javascript">
     var js_lang = {
-        load_more :"{{ text_load_more }}",
-        text_discount_ends_in :"{{ text_discount_ends_in }}",
-        days:  "{{ text_days }}",
-        hours: "{{ text_hours }}",
-        mins: "{{ text_mins }}",
-        secs: "{{ text_secs }}",
-        expand: "{{ text_expand }}",
-        collapse: "{{ text_collapse }}",
-        
-        close: "{{ text_close }}",
-        openlist: "{{ text_openlist }}",
-        back_to: "{{ text_back_to }}",
+      load_more :"{{ text_load_more }}",
+      text_discount_ends_in :"{{ text_discount_ends_in }}",
+      days:  "{{ text_days }}",
+      hours: "{{ text_hours }}",
+      mins: "{{ text_mins }}",
+      secs: "{{ text_secs }}",
+      expand: "{{ text_expand }}",
+      collapse: "{{ text_collapse }}",
+      
+      close: "{{ text_close }}",
+      openlist: "{{ text_openlist }}",
+      back_to: "{{ text_back_to }}",
+      text_cart_button: "{{ text_cart_button }}",
+      text_menu_button: "{{ text_menu_button }}",
+      right: "{{ right }}",
+      left: "{{ left }}",
     };
   </script>
 </head>
@@ -106,8 +110,8 @@
           </div>
         </div>
       </div>
-      <button aria-haspopup="dialog" id="wishlist-total" title="{{ text_wishlist }}" aria-label="{{ text_wishlist }}"><i class="icon-heart"></i> <span class="hidden-md"> {{ text_wishlist_count }} </span></button>
-      <button aria-haspopup="dialog" id="compare-total" title="{{ text_compare }}" aria-label="{{ text_compare }}"><i class="icon-compare"></i><span class="hidden-md">{{ text_compare_count }}</span></button>
+      <button data-action="wishlistModal" aria-haspopup="dialog" id="wishlist-total" title="{{ text_wishlist }}" aria-label="{{ text_wishlist }}"><i class="icon-heart"></i> <span class="hidden-md"> {{ text_wishlist_count }} </span></button>
+      <button data-action="compareModal" aria-haspopup="dialog" id="compare-total" title="{{ text_compare }}" aria-label="{{ text_compare }}"><i class="icon-compare"></i><span class="hidden-md">{{ text_compare_count }}</span></button>
     </div>
   </nav>
   <nav id="js_nav_main">
