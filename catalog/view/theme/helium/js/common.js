@@ -1,8 +1,13 @@
 const d = document;
-const w = document.window;
+// Time for ninja coding! :)
+// After everything is tested maybe replace standart methods with this functions prior minification
+// to save 3-4 kb of payload as standart minifyers don't replace common methods
+Node.prototype.listen = Node.prototype.addEventListener;
+var byId = function(i) {return document.getElementById(i)};
+var qs = function(q) {return document.querySelector(q)};
+var qsAll = function(q) {return document.querySelectorAll(q)};
 
 let filter_button = document.getElementById('button-filter');
-
 
 
 
@@ -454,119 +459,6 @@ var compare = {
 	}
 }
 
-// Micro slider with smooth animations and native touch
-function scrollslider() {
-	const containers_class = 'js_scroll';
-	[].forEach.call(document.getElementsByClassName(containers_class), c => {
-		// Get timer from container dataset
-		let time = c.dataset.time || 4000;
-		let timer = setInterval(() => {
-			scrollRight();
-		}, time);
-		// Observe slides visibility
-		let observer = new IntersectionObserver(onIntersection, {
-			root: c,      // Default is the viewport
-			threshold: .9 // Percentage of target's visible area. Triggers "onIntersection". Not 1, because slide may be fractionally visible
-		});
-
-		// Set class to visible slide
-		function onIntersection(slides, opts) {
-			slides.forEach(entry => {
-				entry.target.classList.toggle('visible', entry.isIntersecting)
-			})
-		}
-		// Observe slides
-		[].forEach.call(c.children, s => {
-			observer.observe(s);
-		});
-		// Scroll left
-		function scrollLeft() {
-			// clearInterval(timer);
-			// Select first visible slide if multilpe visibe
-			let visible_slide = Array.from(c.querySelectorAll('.visible')).shift();
-			if(visible_slide) {
-				if (visible_slide.previousElementSibling) {
-					// Calculate each time so dimensins change won't affect
-					let scrollAmount = visible_slide.previousElementSibling.offsetWidth;
-					// Scroll back if next slide present
-					c.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
-				} else {
-					// Else scroll all the way to end
-					let scrollAmount = c.scrollWidth;
-					c.scrollBy({ left: scrollAmount, behavior: 'smooth' });
-				}
-			}
-		}
-		// Scroll right
-		function scrollRight() {
-			// clearInterval(timer);
-			// Select last visible slide if multilpe visibe
-			let visible_slide = Array.from(c.querySelectorAll('.visible')).pop();
-			if(visible_slide) {
-				if (visible_slide.nextElementSibling) {
-					// Calculate each time so dimensins change won't affect
-					let scrollAmount = visible_slide.nextElementSibling.offsetWidth;
-					// Scroll forward if next slide present
-					c.scrollBy({ left: scrollAmount, behavior: 'smooth' });
-				} else {
-					// Else scroll all the way to begin
-					let scrollAmount = c.scrollWidth;
-					c.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
-				}
-			}
-		}
-
-		// Add control buttons
-		['left', 'right'].forEach(b => {
-			const button = createElm({
-				type: 'button',
-				attrs: {'class': 'scroll_' + b, 'aria-label':js_lang[b], 'title':js_lang[b]},
-				props: { innerHTML: '<i class="icon-chevron-' + b + '"></i>' },
-				// Add some events
-				events: {
-					// Clicks
-					'click': () => { b === 'left' ? scrollLeft() : scrollRight() },
-					// Stop slider if controls are focused or hovered
-					'mouseenter': () => { clearInterval(timer) },
-					'focus': () => { clearInterval(timer) },
-					// Else start slider again
-					'mouseleave': () => { timer = setInterval(() => {scrollRight(); }, time); },
-					// 'blur': () => { timer = setInterval(() => {scrollRight(); }, time); },
-				}
-			});
-			c.insertAdjacentElement('beforebegin', button);
-		});
-
-		// If container hovered, touched or focused - stop animation
-		['mouseenter', 'focus', 'touchstart'].forEach(e => {
-			c.addEventListener(e, () => {
-				clearInterval(timer);
-			});
-		});
-		[].forEach.call(c.children, (s) =>{
-			s.addEventListener('focusin', () => {
-				// Scroll into view
-				clearInterval(timer);
-				// s.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-			})
-		});
-		// If container is not hovered or focused - start animation
-		// No 'touchend' listener, because if user interacts with block, it's expected that block stays in same condition that it was left
-		['mouseleave', 'focusout'].forEach(f => {
-			c.addEventListener(f, () => {
-				// TODO: fix event listeners
-				// Check if container does not have focus inside - like click on button or screen reader focus
-				if (!c.matches(':focus-within')) {
-					timer = setInterval(() => {
-						scrollRight();
-					}, time);
-				} else {
-					clearInterval(timer);
-				}
-			});
-		})
-	})
-}
 
 
 
@@ -626,35 +518,6 @@ document.addEventListener('click', function(e) {
 
 
 
-// DONE Set icon on pare load
-function setIcon(productCount) {
-	const favicon = document.querySelector("link[rel~='icon']");
-	if (productCount === '0' || (typeof(favicon) === 'undefined' && favicon == null)) {return}
-	let faviconSize = 16;
-	let canvas = document.createElement('canvas');
-	canvas.width = faviconSize;
-	canvas.height = faviconSize;
-	let context = canvas.getContext('2d');
-	let img = document.createElement('img');
-	img.src = favicon.href;
-	img.onload = () => {
-		// Draw Original Favicon as Background
-		context.drawImage(img, 0, 0, faviconSize, faviconSize);
-		// Draw Notification Circle
-		context.beginPath();
-		context.arc( canvas.width - faviconSize / 3 , faviconSize / 3, faviconSize / 3, 0, 2*Math.PI);
-		context.fillStyle = '#FF0000';
-		context.fill();
-		// Draw Notification Number
-		context.font = '10px "helvetica", sans-serif';
-		context.textAlign = "center";
-		context.textBaseline = "middle";
-		context.fillStyle = '#FFFFFF';
-		context.fillText(productCount, canvas.width - faviconSize / 3, faviconSize / 3);
-		// Replace favicon
-		favicon.href = canvas.toDataURL('image/png');
-	}
-};
 
 
 
@@ -937,10 +800,13 @@ function createElm({type, styles, attrs, props, events, nest}) {
 	return el;
 }
 
+
+
+
 // TODO Допилить это
 // let dialog;
 let dialog = {
-	create: (content) => {
+	create: (content, event) => {
 		dialog.close();
 		let a;
 		a = createElm({
@@ -965,9 +831,38 @@ let dialog = {
 		});
 		// Append dialog to document
 		document.body.insertAdjacentElement('beforeend', a);
+		// Prevent body scrolling
 		document.body.style.cssText = 'overflow: hidden;'
 		// Open dialog
-		a.showModal();
+		// If click event is set, apply some nice animation
+		// Else just open
+		if (event) {
+			// Class .animate sets transform: scale(0,0,0)
+			a.classList.add('animate');
+			// Show modal - yet zero width and height, thus invisible
+			a.showModal();
+			// Calculate transform origin
+			var _wid = window.innerWidth,
+			_hei = window.innerHeight,
+			_mWid = a.offsetWidth,
+			_mHei = a.offsetHeight,
+				_x = event.clientX,
+			_y = event.clientY,
+			x,
+			y;
+			x = (_x - (_wid / 2)) + _mWid/2;
+			y = (_y - (_hei / 2)) + _mHei/2;
+			// Set transform origin to point where click happened
+			a.style.transformOrigin = [
+				x, 'px', ' ', y, 'px'
+			].join('');
+			// Set transform origin to scale(1,1,1)
+			a.classList.toggle('visible');
+			// And fly! :)
+		} else {
+			a.showModal();
+		}
+
 		return;
 	},
 	close: () => {
@@ -1094,171 +989,11 @@ let mwindow = {
 }
 
 
-function countdown(element) {
-	// DONE add data-discount-date-end here
-	let products = element.querySelectorAll('[data-special-date-end], [data-discount-date-end]');
-	for (let p = 0; p < products.length; p++) {
-		let el = products[p];
-		if (!!el.dataset && (!!el.dataset.specialDateEnd || !!el.dataset.discountDateEnd)) {
-			let date_end = el.dataset.discountDateEnd || el.dataset.specialDateEnd;
-			let finalDate = new Date(date_end + 'T00:00:00').getTime();
-			let t = timer(finalDate);
-			let div = createElm({attrs:{class: 'timer', 'aria-hidden':'true'}, nest:{1:{type:'span',props:{'innerText':js_lang.text_discount_ends_in}}}})
-
-			for (const key in t) {
-				let time = createElm({
-					attrs: {
-						class:'time ' + key,
-						'role': 'timer',
-						'aria-live': 'off'
-					},
-					nest: {
-						1: {type:'span', attrs:{class:'span_'+key}, props:{'innerText': t[key]}},
-						2: {type:'span', props:{'textContent': js_lang[key]}}
-					}
-				});
-				div.appendChild(time);
-			}
-
-			el.insertAdjacentElement('beforeend', div);
-			setInterval(function(){
-				let tt = timer(finalDate);
-				for (const key in tt) {
-					div.getElementsByClassName('span_'+key)[0].innerText = tt[key];
-				}
-			},1000);
-		}
-	}
-	function timer(finalDate) {
-		let now = new Date().getTime();
-		let diff = (finalDate - now);
-		let t = {
-			days: Math.floor(diff / (864*10e4)),
-			hours: Math.floor(diff % (864*10e4) / (1000*60*60)),
-			mins: Math.floor(diff % (1000*60*60)/ (1000*60)),
-			secs: Math.floor(diff % (1000*60) / 1000)
-		};
-		return t
-	}
-}
-// TODO Maybe make this as a separate class?
-let timeout = null;
-const searchFunction = (el) => {
-	clearTimeout(timeout);
-	let search_input = document.getElementById('search-input');
-	let inner_search = document.getElementById('search-results');
-	let search_input_group = document.getElementById('search');
-	let data = search_input.value;
-	let url = 'index.php?route=product/search/find';
-	let response;
-	timeout = setTimeout(function () {
-		ajax(url, 'search='+data,
-			function(r) {
-				if (!!r && Object.keys(r).length !== 0) {
-					response = r;
-					let search_results = createElm(r);
-					// Add special price countdown for search results
-					countdown(search_results);
-	
-					inner_search.innerHTML = '';
-					inner_search.appendChild(search_results);
-					inner_search.classList.add('some-results');
-				}
-	
-			},
-			null,null,null,'POST','JSON',true
-		);
-    }, 400);
-	if (data.length < 1) {
-		inner_search.classList.remove('some-results');
-	}
-	// Add event listeners
-	// If click or focus outside search results or search input
-	// Then close search
-	['click', 'focusin'].forEach(h => {
-		document.addEventListener(h, function(e){
-			if ((search_input_group.contains(e.target) == false) && (inner_search.contains(e.target) == false)) {
-				inner_search.classList.remove('some-results');
-			}
-		});
-	});
-
-	search_input.addEventListener('focusin', function(){
-		if (typeof(response) == 'object' && Object.keys(response).length !== 0) {
-			inner_search.classList.add('some-results');
-		}
-	});
-}
 
 
 
-// DONE add price animation when product has quantity discount
-function animatePrice() {
-	const js_prices = document.querySelector('[data-json-prices]').dataset.jsonPrices;
-	price_list = JSON.parse(js_prices);
-	const product = document.querySelector('[data-product-id]');
-	const product_id = product.dataset.productId;
-	const price_block = document.querySelector('#js_product_id_'+product_id+' .price-value');
-	let base_price, start, end;
 
-	// Start
-	let options = product.querySelectorAll('input:checked, select');
-	let qty = product.querySelector('input[name="quantity"]').value;
-	start = parseFloat(price_block.innerText);
-	base_price = price_list[product_id].base_price;
-	end = base_price;
-	// Quantity discounts
-	if ('discounts' in price_list[product_id]) {
-		for (discount_qty in price_list[product_id].discounts) {
-			if (qty >= discount_qty) {
-				end = parseFloat(price_list[product_id].discounts[discount_qty]);
-			}
-		}
-	}
-	// Option prices
-	options.forEach(option => {
-		let option_id = option.value;
-		// Foreach option in product dataset
-		for (let o in price_list[product_id].options) {
-			if (option_id in price_list[product_id].options[o]) {
-				end =  parseFloat(end) + parseFloat(price_list[product_id].options[o][option_id]);
-			}
-		}
-	});
-	animateValue(price_block, start, end, 300);
-	// Animate quantity discount price list upon choosing different options with price values
-	let discount_prices = document.querySelectorAll('[data-quantity]');
-	discount_prices.forEach(dp => {
-		let start, end;
-		let price_value = dp.querySelector('.price-value');
-		start = parseFloat(price_value.innerText);
-		end = price_list[product_id].discounts[dp.dataset.quantity];
-		options.forEach(option => {
-			let option_id = option.value;
-			for (let o in price_list[product_id].options) {
-				if (option_id in price_list[product_id].options[o]) {
-					end =  parseFloat(end) + parseFloat(price_list[product_id].options[o][option_id]);
-				}
-			}
-		})
-		animateValue(price_value, start, end, 300);
-	})
-	// Animate price change
-	// const obj = document.getElementById("value");
-	// animateValue(obj, 100, 4000, 300);
-	function animateValue(obj, start, end, duration) {
-		let startTimestamp = null;
-		const step = (timestamp) => {
-			  if (!startTimestamp) startTimestamp = timestamp;
-			  const progress = Math.min((timestamp - startTimestamp) / duration, 1);
-			  obj.innerHTML =  Math.round(((progress * (end - start) + start) + Number.EPSILON) * 100) / 100;
-			  if (progress < 1) {
-				window.requestAnimationFrame(step);
-			  }
-		};
-		window.requestAnimationFrame(step);
-	}
-}
+
 
 
 // АЯКС отправка отзыва о товаре
@@ -1321,7 +1056,54 @@ function sendReview(t) {
 // 	}
 // })
 
+// TODO Maybe make this as a separate class?
+let timeout = null;
+const searchFunction = (el) => {
+	clearTimeout(timeout);
+	let search_input = document.getElementById('search-input');
+	let inner_search = document.getElementById('search-results');
+	let search_input_group = document.getElementById('search');
+	let data = search_input.value;
+	let url = 'index.php?route=product/search/find';
+	let response;
+	timeout = setTimeout(function () {
+		ajax(url, 'search='+data,
+			function(r) {
+				if (!!r && Object.keys(r).length !== 0) {
+					response = r;
+					let search_results = createElm(r);
+					// Add special price countdown for search results
+					countdown(search_results);
+	
+					inner_search.innerHTML = '';
+					inner_search.appendChild(search_results);
+					inner_search.classList.add('some-results');
+				}
+	
+			},
+			null,null,null,'POST','JSON',true
+		);
+    }, 400);
+	if (data.length < 1) {
+		inner_search.classList.remove('some-results');
+	}
+	// Add event listeners
+	// If click or focus outside search results or search input
+	// Then close search
+	['click', 'focusin'].forEach(h => {
+		document.addEventListener(h, function(e){
+			if ((search_input_group.contains(e.target) == false) && (inner_search.contains(e.target) == false)) {
+				inner_search.classList.remove('some-results');
+			}
+		});
+	});
 
+	search_input.addEventListener('focusin', function(){
+		if (typeof(response) == 'object' && Object.keys(response).length !== 0) {
+			inner_search.classList.add('some-results');
+		}
+	});
+}
 
 
 
@@ -1344,13 +1126,13 @@ const reviewModal = (el, ev) => {
 	})
 	.then(r => {return r.text();})
 	.then(resp => {
-		dialog.create(resp);
+		dialog.create(resp, ev);
 	});
 }
 
 // Replace AJAX function
-async function fetchFunction({url, m, h, b, callback, arg}) {
-	let [a, method, headers, body, e, f] = [url, m || 'POST', h || {"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"}, b || '', callback || '', arg || ''];
+async function fetchFunction({url, m, h, b, callback, arg, ev}) {
+	let [a, method, headers, body, e, f, event] = [url, m || 'POST', h || {"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"}, b || '', callback || '', arg || '', ev || ''];
 	return fetch(a, {method, headers, body})
 	.then(r => {return r.text()})
 	.then(resp => {
@@ -1359,9 +1141,9 @@ async function fetchFunction({url, m, h, b, callback, arg}) {
 			return resp;
 		}
 		if (arg !== '' || typeof(arg) !== 'undefined') {
-			e[f](resp);
+			e[f](resp, event);
 		} else {
-			e(resp);
+			e(resp, event);
 		}
 	})
 }
@@ -1371,13 +1153,13 @@ const cartRemove =  async (el, ev) => {
 }
 
 const compareModal = (el, ev) => {
-	fetchFunction({url:'index.php?route=product/compare/showCompareModal', m: 'POST', callback: dialog, arg:'create'})
+	fetchFunction({url:'index.php?route=product/compare/showCompareModal', m: 'POST', callback: dialog, arg:'create',ev:ev})
 }
 const wishlistModal = (el, ev) => {
-	fetchFunction({url:'index.php?route=account/wishlist/showWishlistModal', m: 'POST', callback: dialog, arg:'create'})
+	fetchFunction({url:'index.php?route=account/wishlist/showWishlistModal', m: 'POST', callback: dialog, arg:'create', ev:ev})
 }
 const cartShowModal = (el, ev) => {
-	fetchFunction({url:'index.php?route=common/cart/modal', callback: dialog, arg: 'create'})
+	fetchFunction({url:'index.php?route=common/cart/modal', callback: dialog, arg: 'create',ev:ev})
 }
 
 
@@ -1686,3 +1468,265 @@ function anchorNav() {
 		})
 	}
 }
+
+// DONE Set icon on pare load
+function setIcon(productCount) {
+	const favicon = document.querySelector("link[rel~='icon']");
+	if (productCount === '0' || (typeof(favicon) === 'undefined' && favicon == null)) {return}
+	let faviconSize = 16;
+	let canvas = document.createElement('canvas');
+	canvas.width = faviconSize;
+	canvas.height = faviconSize;
+	let context = canvas.getContext('2d');
+	let img = document.createElement('img');
+	img.src = favicon.href;
+	img.onload = () => {
+		// Draw Original Favicon as Background
+		context.drawImage(img, 0, 0, faviconSize, faviconSize);
+		// Draw Notification Circle
+		context.beginPath();
+		context.arc( canvas.width - faviconSize / 3 , faviconSize / 3, faviconSize / 3, 0, 2*Math.PI);
+		context.fillStyle = '#FF0000';
+		context.fill();
+		// Draw Notification Number
+		context.font = '10px "helvetica", sans-serif';
+		context.textAlign = "center";
+		context.textBaseline = "middle";
+		context.fillStyle = '#FFFFFF';
+		context.fillText(productCount, canvas.width - faviconSize / 3, faviconSize / 3);
+		// Replace favicon
+		favicon.href = canvas.toDataURL('image/png');
+	}
+};
+
+// Micro slider with smooth animations and native touch
+function scrollslider() {
+	const containers_class = 'js_scroll';
+	[].forEach.call(document.getElementsByClassName(containers_class), c => {
+		// Get timer from container dataset
+		let time = c.dataset.time || 4000;
+		let timer = setInterval(() => {
+			scrollRight();
+		}, time);
+		// Observe slides visibility
+		let observer = new IntersectionObserver(onIntersection, {
+			root: c,      // Default is the viewport
+			threshold: .9 // Percentage of target's visible area. Triggers "onIntersection". Not 1, because slide may be fractionally visible
+		});
+
+		// Set class to visible slide
+		function onIntersection(slides, opts) {
+			slides.forEach(entry => {
+				entry.target.classList.toggle('visible', entry.isIntersecting)
+			})
+		}
+		// Observe slides
+		[].forEach.call(c.children, s => {
+			observer.observe(s);
+			
+		});
+		// Scroll left
+		function scrollLeft() {
+			// clearInterval(timer);
+			// Select first visible slide if multilpe visibe
+			let visible_slide = Array.from(c.querySelectorAll('.visible')).shift();
+			if(visible_slide) {
+				if (visible_slide.previousElementSibling) {
+					// Calculate each time so dimensins change won't affect
+					let scrollAmount = visible_slide.previousElementSibling.offsetWidth;
+					// Scroll back if next slide present
+					c.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+				} else {
+					// Else scroll all the way to end
+					let scrollAmount = c.scrollWidth;
+					c.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+				}
+			}
+		}
+		// Scroll right
+		function scrollRight() {
+			// clearInterval(timer);
+			// Select last visible slide if multilpe visibe
+			let visible_slide = Array.from(c.querySelectorAll('.visible')).pop();
+			if(visible_slide) {
+				if (visible_slide.nextElementSibling) {
+					// Calculate each time so dimensins change won't affect
+					let scrollAmount = visible_slide.nextElementSibling.offsetWidth;
+					// Scroll forward if next slide present
+					c.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+				} else {
+					// Else scroll all the way to begin
+					let scrollAmount = c.scrollWidth;
+					c.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+				}
+			}
+		}
+
+		// Add control buttons
+		['left', 'right'].forEach(b => {
+			const button = createElm({
+				type: 'button',
+				attrs: {'class': 'scroll_' + b, 'aria-label':js_lang[b], 'title':js_lang[b]},
+				props: { innerHTML: '<i class="icon-chevron-' + b + '"></i>' },
+				// Add some events
+				events: {
+					// Clicks
+					'click': () => { b === 'left' ? scrollLeft() : scrollRight() },
+					// Stop slider if controls are focused or hovered
+					'mouseenter': () => { clearInterval(timer) },
+					'focus': () => { clearInterval(timer) },
+					// Else start slider again
+					'mouseleave': () => { timer = setInterval(() => {scrollRight(); }, time); },
+					// 'blur': () => { timer = setInterval(() => {scrollRight(); }, time); },
+				}
+			});
+			c.insertAdjacentElement('beforebegin', button);
+		});
+
+		// If container hovered, touched or focused - stop animation
+		['mouseenter', 'focus', 'touchstart'].forEach(e => {
+			c.addEventListener(e, () => {
+				clearInterval(timer);
+			});
+		});
+		[].forEach.call(c.children, (s) =>{
+			s.addEventListener('focusin', () => {
+				// Scroll into view
+				clearInterval(timer);
+				// s.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+			})
+		});
+		// If container is not hovered or focused - start animation
+		// No 'touchend' listener, because if user interacts with block, it's expected that block stays in same condition that it was left
+		['mouseleave', 'focusout'].forEach(f => {
+			c.addEventListener(f, () => {
+				// TODO: fix event listeners
+				// Check if container does not have focus inside - like click on button or screen reader focus
+				if (!c.matches(':focus-within')) {
+					clearInterval(timer);
+					timer = setInterval(() => {
+						scrollRight();
+					}, time);
+				} else {
+					clearInterval(timer);
+				}
+			});
+		})
+	})
+}
+// DONE add price animation when product has quantity discount
+function animatePrice() {
+	const js_prices = document.querySelector('[data-json-prices]').dataset.jsonPrices;
+	price_list = JSON.parse(js_prices);
+	const product = document.querySelector('[data-product-id]');
+	const product_id = product.dataset.productId;
+	const price_block = document.querySelector('#js_product_id_'+product_id+' .price-value');
+	let base_price, start, end;
+
+	// Start
+	let options = product.querySelectorAll('input:checked, select');
+	let qty = product.querySelector('input[name="quantity"]').value;
+	start = parseFloat(price_block.innerText);
+	base_price = price_list[product_id].base_price;
+	end = base_price;
+	// Quantity discounts
+	if ('discounts' in price_list[product_id]) {
+		for (discount_qty in price_list[product_id].discounts) {
+			if (qty >= discount_qty) {
+				end = parseFloat(price_list[product_id].discounts[discount_qty]);
+			}
+		}
+	}
+	// Option prices
+	options.forEach(option => {
+		let option_id = option.value;
+		// Foreach option in product dataset
+		for (let o in price_list[product_id].options) {
+			if (option_id in price_list[product_id].options[o]) {
+				end =  parseFloat(end) + parseFloat(price_list[product_id].options[o][option_id]);
+			}
+		}
+	});
+	animateValue(price_block, start, end, 300);
+	// Animate quantity discount price list upon choosing different options with price values
+	let discount_prices = document.querySelectorAll('[data-quantity]');
+	discount_prices.forEach(dp => {
+		let start, end;
+		let price_value = dp.querySelector('.price-value');
+		start = parseFloat(price_value.innerText);
+		end = price_list[product_id].discounts[dp.dataset.quantity];
+		options.forEach(option => {
+			let option_id = option.value;
+			for (let o in price_list[product_id].options) {
+				if (option_id in price_list[product_id].options[o]) {
+					end =  parseFloat(end) + parseFloat(price_list[product_id].options[o][option_id]);
+				}
+			}
+		})
+		animateValue(price_value, start, end, 300);
+	})
+	// Animate price change
+	// const obj = document.getElementById("value");
+	// animateValue(obj, 100, 4000, 300);
+	function animateValue(obj, start, end, duration) {
+		let startTimestamp = null;
+		const step = (timestamp) => {
+			  if (!startTimestamp) startTimestamp = timestamp;
+			  const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+			  obj.innerHTML =  Math.round(((progress * (end - start) + start) + Number.EPSILON) * 100) / 100;
+			  if (progress < 1) {
+				window.requestAnimationFrame(step);
+			  }
+		};
+		window.requestAnimationFrame(step);
+	}
+}
+
+function countdown(element) {
+	// DONE add data-discount-date-end here
+	let products = element.querySelectorAll('[data-special-date-end], [data-discount-date-end]');
+	for (let p = 0; p < products.length; p++) {
+		let el = products[p];
+		if (!!el.dataset && (!!el.dataset.specialDateEnd || !!el.dataset.discountDateEnd)) {
+			let date_end = el.dataset.discountDateEnd || el.dataset.specialDateEnd;
+			let finalDate = new Date(date_end + 'T00:00:00').getTime();
+			let t = timer(finalDate);
+			let div = createElm({attrs:{class: 'timer', 'aria-hidden':'true'}, nest:{1:{type:'span',props:{'innerText':js_lang.text_discount_ends_in}}}})
+
+			for (const key in t) {
+				let time = createElm({
+					attrs: {
+						class:'time ' + key,
+						'role': 'timer',
+						'aria-live': 'off'
+					},
+					nest: {
+						1: {type:'span', attrs:{class:'span_'+key}, props:{'innerText': t[key]}},
+						2: {type:'span', props:{'textContent': js_lang[key]}}
+					}
+				});
+				div.appendChild(time);
+			}
+
+			el.insertAdjacentElement('beforeend', div);
+			setInterval(function(){
+				let tt = timer(finalDate);
+				for (const key in tt) {
+					div.getElementsByClassName('span_'+key)[0].innerText = tt[key];
+				}
+			},1000);
+		}
+	}
+	function timer(finalDate) {
+		let now = new Date().getTime();
+		let diff = (finalDate - now);
+		let t = {
+			days: Math.floor(diff / (864*10e4)),
+			hours: Math.floor(diff % (864*10e4) / (1000*60*60)),
+			mins: Math.floor(diff % (1000*60*60)/ (1000*60)),
+			secs: Math.floor(diff % (1000*60) / 1000)
+		};
+		return t
+	}
+}
+

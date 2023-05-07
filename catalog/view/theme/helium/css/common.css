@@ -483,22 +483,25 @@ details[disabled], details[disabled] summary {color: var(--color-text-muted);poi
 
 
 /* Dialogs */
-dialog {border: none; outline: transparent; box-shadow: 0 0 5px #333; position: fixed; scrollbar-gutter: auto!important; /* Hide scrollbar gutter on dialog */}
-
+/* dialog {border: none; outline: transparent; box-shadow: 0 0 5px #333; position: fixed; transition: transform var(--time) var(--style); transform: scale3d(0,0,0);  scrollbar-gutter: auto!important;} */
+dialog {border: none; outline: transparent; box-shadow: 0 0 5px #333; position: fixed; scrollbar-gutter: auto!important;}
+dialog.animate{transition: transform var(--time) var(--style); transform: scale3d(0,0,0); }
+dialog.visible {transform: scale3d(1,1,1);}
 dialog::backdrop {
     /* backdrop-filter: blur(5px); */
     animation: blur-in 500ms forwards; /* Important */
     background: #0003; /* Firefox does not support dialog::backdrop blur, so let it be just color*/
+    will-change: transform;
 }
 
 @keyframes blur-in {
     from {
         background-color: #00000000;
-        backdrop-filter: blur(0px);
+        /* backdrop-filter: blur(0px); */
     }
     to {
         background-color: #00000050;
-        backdrop-filter: blur(5px);
+        backdrop-filter: blur(20px);
     }
 }
 
