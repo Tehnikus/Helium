@@ -316,7 +316,7 @@ figure {
     padding: 0 0 1rem;
     justify-content: center;
 }
-figure a {display:flex}
+figure a {display:flex;width: 100%;justify-content: center;}
 figcaption {
     position: absolute;
     bottom: 1rem;
@@ -388,10 +388,13 @@ ul {margin: 0; padding: 0;}
 /* Tables */
 table {border-collapse:collapse;margin-bottom:10px;width:100%;table-layout:fixed}
 table caption, td, th {text-align:left}
-td,th {padding:6px;vertical-align:top;word-wrap:break-word}
+td,th {padding:6px;vertical-align:top;word-wrap:break-word;}
+td:first-child{border-radius: var(--radius) 0 0 var(--radius)}
+td:last-child{border-radius: 0 var(--radius) var(--radius) 0}
+
 thead {border-bottom:1px solid var(--border);font-weight: 600;}
 tfoot {border-top:1px solid var(--border)}
-tbody tr:nth-child(2n) {background-color:var(--bg-main-blocks)}
+tbody tr:nth-child(2n) {background-color:var(--bg-main-blocks);}
 .text-right {text-align: right}
 .text-left {text-align: left}
 
@@ -511,7 +514,7 @@ button.close:after {
 }
 /* Position and appearence of product remove buttons in cart */
 tr[id^='product_id_'] {position: relative;}
-tr[id^='product_id_'] button.close {background: transparent; box-shadow: none;}
+tr[id^='product_id_'] button.close {background: transparent;box-shadow: none;}
 
 
 /* Main menu */
@@ -593,7 +596,7 @@ textarea:disabled {
     cursor:not-allowed;
     opacity:.5;
     background: var(--bg-button-disabled);
-    color: var(--color-text-muted);
+    color: #fff;
 }
 .primary:hover {
     /* background-image: linear-gradient(to right, #4776E6 0%, #8E54E9  51%, #4776E6  100%); */
