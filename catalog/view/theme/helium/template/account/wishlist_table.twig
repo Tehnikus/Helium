@@ -3,22 +3,22 @@
 {% endif %}
 
 {% if products %}
-      <div class="table-responsive">
-        <table class="table table-bordered table-hover">
-          <thead>
-            <tr>
-              <td class="text-center">{{ column_image }}</td>
-              <td class="text-left">{{ column_name }}</td>
-              <td class="text-left">{{ column_model }}</td>
-              <td class="text-right">{{ column_stock }}</td>
-              <td class="text-right">{{ column_price }}</td>
-              <td class="text-right">{{ column_action }}</td>
-            </tr>
-          </thead>
-          <tbody>
-          
-          {% for product in products %}
-          <tr>
+  <h1>{{ heading_title }}</h1>
+  <div class="table-responsive">
+    <table class="table table-bordered table-hover">
+      <thead>
+        <tr>
+          <td class="text-center">{{ column_image }}</td>
+          <td class="text-left">{{ column_name }}</td>
+          <td class="text-left">{{ column_model }}</td>
+          <td class="text-right">{{ column_stock }}</td>
+          <td class="text-right">{{ column_price }}</td>
+          <td class="text-right">{{ column_action }}</td>
+        </tr>
+      </thead>
+      <tbody>
+        {% for product in products %}
+          <tr id="product_id_{{ product.product_id }}">
             <td class="text-center">{% if product.thumb %}<a href="{{ product.href }}">
               <img loading="lazy" src="{{ product.thumb }}" alt="{{ product.name }}" title="{{ product.name }}" /></a>{% endif %}</td>
             <td class="text-left"><a href="{{ product.href }}">{{ product.name }}</a></td>
@@ -30,15 +30,14 @@
                 {% else %} <b>{{ product.special }}</b> <s>{{ product.price }}</s> {% endif %} </div>
               {% endif %}</td>
             <td class="text-right">
-                <button type="button" onclick="cart.add('{{ product.product_id }}');" data-toggle="tooltip" title="{{ button_cart }}" class="primary"><i class="icon-cart"></i></button>
-              
-                <button {# href="{{ product.remove }}" #} onclick="wishlist.remove('{{ product.product_id }}');" title="{{ button_remove }}" class="close"></button></td>
+              <button type="button" onclick="cart.add('{{ product.product_id }}');" data-toggle="tooltip" title="{{ button_cart }}" class="primary"><i class="icon-cart"></i></button>
+              <button {# href="{{ product.remove }}" #} onclick="wishlist.remove('{{ product.product_id }}');" title="{{ button_remove }}" class="close"></button>
+            </td>
           </tr>
-          {% endfor %}
-            </tbody>
-          
-        </table>
-      </div>
-      {% else %}
-      <p>{{ text_empty }}</p>
-    {% endif %}
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% else %}
+  <p>{{ text_empty }}</p>
+{% endif %}
