@@ -232,6 +232,7 @@ class ControllerAccountWishList extends Controller {
 	}
 
 	public function showWishlistModal(){
+		$this->load->language('account/wishlist');
 		$data['products'] = $this->renderWishlistProducts();
 		$this->response->setOutput($this->load->view('account/wishlist_table', $data));
 	}
