@@ -512,7 +512,7 @@ class ModelCatalogProduct extends Model {
 		$sql = "
 		SELECT
 			p.product_id,
-			(p.price / p.weight) as price_to_weight,
+			(p.price / NULLIF(p.weight, 0)) as price_to_weight,
 			(SELECT 
 				price 
 				FROM " . DB_PREFIX . "product_discount pd2 
@@ -711,6 +711,8 @@ class ModelCatalogProduct extends Model {
 
 			$sql .= " LIMIT " . (int)$data['start'] . "," . (int)$data['limit'];
 		}
+
+		echo($sql);
 
 		$product_data = array();
 
