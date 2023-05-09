@@ -392,11 +392,8 @@ class ModelBlogArticle extends Model {
 				AND p2s.store_id = '" . (int)$this->config->get('config_store_id') . "'
 		");
 		
-		foreach ($query->rows as $result) { 
-			$product_data[$result['product_id']] = $this->model_catalog_product->getProduct($result['product_id']);
-		}
 
-		return $product_data;
+		return $query->rows;
 	}
 		
 	public function getArticleLayoutId($article_id) {

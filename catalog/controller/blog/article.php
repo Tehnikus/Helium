@@ -219,55 +219,13 @@ class ControllerBlogArticle extends Controller {
 			$data['products'] = array();
 			
 			// Product relateds to this article
-			$results = $this->model_blog_article->getArticleRelatedProduct($this->request->get['article_id']);
-			foreach ($results as $result) {
-				if ($result['image']) {
-					$image = $this->model_tool_image->resize($result['image'], $this->config->get('image_product_width'), $this->config->get('image_product_height'));
-				} else {
-					$image = $this->model_tool_image->resize('no_image.webp', $this->config->get('image_product_width'), $this->config->get('image_product_height'));
-				}
-				if ($this->customer->isLogged() || !$this->config->get('config_customer_price')) {
-					$price = $this->currency->format($this->tax->calculate($result['price'], $result['tax_class_id'], $this->config->get('config_tax')), $this->session->data['currency']);
-				} else {
-					$price = false;
-				}
-
-				if ((float)$result['special']) {
-					$special = $this->currency->format($this->tax->calculate($result['special'], $result['tax_class_id'], $this->config->get('config_tax')), $this->session->data['currency']);
-				} else {
-					$special = false;
-				}
-
-				if ($this->config->get('config_tax')) {
-					$tax = $this->currency->format((float)$result['special'] ? $result['special'] : $result['price'], $this->session->data['currency']);
-				} else {
-					$tax = false;
-				}
-				
-				if ($this->config->get('configblog_review_status')) {
-					$rating = (int)$result['rating'];
-				} else {
-					$rating = false;
-				}
-				
-				$data['text_tax'] = $this->language->get('text_tax');
-							
-				$data['products'][] = array(
-					'product_id' 		=> $result['product_id'],
-					'thumb'   			=> $image,
-					'width'  			=> $this->config->get('image_product_width'),
-					'height' 			=> $this->config->get('image_product_height'),
-					'name'    	 		=> $result['name'],
-					'description' 		=> utf8_substr(strip_tags(html_entity_decode($result['description'], ENT_QUOTES, 'UTF-8')), 0, $this->config->get('configblog_article_description_length')) . '..',
-					'price'   	 		=> $price,
-					'special' 	 		=> $special,
-					'rating'     		=> $rating,
-					'tax'        		=> $tax,
-					'minimum'     		=> $result['minimum'] > 0 ? $result['minimum'] : 1,
-					'reviews'    		=> (int)$result['reviews'],
-					'href'    	 		=> $this->url->link('product/product', 'product_id=' . $result['product_id']),
-				);
+			$related_products = $this->model_blog_article->getArticleRelatedProduct($this->request->get['article_id']);
+			foreach ($related_products as $product_id) {
+				$product_list[] = $this->model_catalog_product->getProduct($product_id['product_id']);				
 			}	
+			$data['products'] = $this->model_catalog_product->prepareProductList($product_list, null);
+
+
 			
 			$data['download_status'] = $this->config->get('configblog_article_download');
 			
