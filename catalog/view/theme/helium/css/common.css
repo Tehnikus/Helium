@@ -426,6 +426,7 @@ fieldset>input, fieldset>select {
 
 /* Headers */
 .uppercase, hgroup, .module .h3 {text-transform: uppercase}
+hgroup h1, .module .h3 {padding: 0}
 .relative, .module {position:relative}
 .hidden-md {display: none!important}
 

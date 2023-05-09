@@ -10,7 +10,7 @@
         <li><a href="{{ share }}#article" title="{{ tab_description }}">{{ tab_description }}</a></li>
       {% endif %}
       {% if articles %}
-        <li><a href="{{ share }}#articles" title="{{ text_related_articles }}">{{ text_related_articles }}</a></li>
+        <li><a href="{{ share }}#related_articles" title="{{ text_related_articles }}">{{ text_related_articles }}</a></li>
       {% endif %}
       {% if images %}
         <li><a href="{{ share }}#photos" title="{{ tab_photos }}">{{ tab_photos }}</a></li>
@@ -19,7 +19,7 @@
         <li><a href="{{ share }}#reviews" title="{{ text_reviews }}">{{ text_reviews }} ({{ reviews }})</a></li>
       {% endif %}
       {% if products %}
-        <li><a href="{{ share }}#related" title="{{ text_related_product }}">{{ text_related_product }} ({{products|length}})</a></li>
+        <li><a href="{{ share }}#related_products" title="{{ text_related_product }}">{{ text_related_product }} ({{products|length}})</a></li>
       {% endif %}
       {% if downloads %}
         <li><a href="{{ share }}#downloads" title="{{ tab_downloads }}">{{ tab_downloads }}</a></li>
@@ -30,7 +30,7 @@
     {% include 'helium/template/common/rating_stars.twig' with {rating: rating, count: reviews} %}
   {% endif %}
   {% if review_guest %}
-    <button type="button" data-type="blog/article" data-id="{{ article_id }}" id="write-review"><i class="icon-edit"></i>{{ text_write }}</button>
+    <button type="button" data-action="reviewModal" data-type="blog/article" data-id="{{ article_id }}" id="write-review"><i class="icon-edit"></i>{{ text_write }}</button>
   {% else %}
     {{ text_login }}
   {% endif %}
@@ -56,22 +56,29 @@
   {% endif %} 
             
             
+
+		
+
   {% if products %}
-    <span class="h3">{{ text_related_product }}</span>
-    <div class="product grid">
+    <div id="related_products" class="module related-products">
+      <span class="h3">{{ text_related_product }}</span>
+      <div class="scroll-x js_scroll">
       {% for product in products %}
         {% include 'helium/template/product/product_miniature.twig' with {product: product} %}
-      {% endfor %} 
+      {% endfor %}   
+      </div>
     </div>
   {% endif %}
-		
+
   {% if articles %}
-    <span class="h3">{{ text_related_articles }}</span>
-      <div class="article grid">
+    <div id="related_articles" class="module related-articles">
+      <span class="h3">{{ text_related_articles }}</span>
+      <div class="scroll-x js_scroll">
         {% for article in articles %} 
           {% include 'helium/template/blog/article_miniature.twig' with {article: article, review_status:review_status} %}
         {% endfor %}
       </div>
+    </div>
   {% endif %}
   {{ content_bottom }}
 </main>
