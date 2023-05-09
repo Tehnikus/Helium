@@ -100,6 +100,7 @@ class ControllerProductSpecial extends Controller {
 
 		$special_products = $this->model_catalog_product->getProductSpecials($filter_data);
 		if ($special_products) {
+			$product_list = [];
 			foreach ($special_products as $product_id) {
 				$product_list[] = $this->model_catalog_product->getProduct($product_id['product_id']);
 			}

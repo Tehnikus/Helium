@@ -219,6 +219,7 @@ class ControllerBlogArticle extends Controller {
 			$data['products'] = array();
 			
 			// Product relateds to this article
+			$product_list = [];
 			$related_products = $this->model_blog_article->getArticleRelatedProduct($this->request->get['article_id']);
 			foreach ($related_products as $product_id) {
 				$product_list[] = $this->model_catalog_product->getProduct($product_id['product_id']);				
