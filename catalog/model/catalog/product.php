@@ -870,11 +870,7 @@ class ModelCatalogProduct extends Model {
 
 		$query = $this->db->query($sql);
 
-		foreach ($query->rows as $result) {
-			$product_data[$result['product_id']] = $this->getProduct($result['product_id']);
-		}
-
-		return $product_data;
+		return $query->rows;
 	}
 
 	public function getLatestProducts($limit) {
