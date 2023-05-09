@@ -113,6 +113,7 @@ class ControllerProductProduct extends Controller {
 			}
 
 			// Images
+			// Main image
 			if ($product_info['image']) {
 				$data['popup'] = $this->model_tool_image->resize($product_info['image'], $this->config->get('image_popup_width'), $this->config->get('image_popup_height'));
 				$data['thumb']['link'] = $this->model_tool_image->resize($product_info['image'], $this->config->get('image_thumb_width'), $this->config->get('image_thumb_height'));
@@ -121,16 +122,21 @@ class ControllerProductProduct extends Controller {
 				$data['popup'] = $this->model_tool_image->resize('no_image.webp', $this->config->get('image_popup_width'), $this->config->get('image_popup_height'));
 				$data['thumb']['link'] = $this->model_tool_image->resize('no_image.webp', $this->config->get('image_thumb_width'), $this->config->get('image_thumb_height'));
 			}
+			$data['thumb']['width'] = $this->config->get('image_thumb_width');
+			$data['thumb']['height'] = $this->config->get('image_thumb_height');
+			
+			// Additional images
 			$data['images'] = array();
 			$additional_images = $this->model_catalog_product->getProductImages($this->request->get['product_id']);
 			foreach ($additional_images as $img) {
 				$data['images'][] = array(
 					'popup' => $this->model_tool_image->resize($img['image'], $this->config->get('image_popup_width'), $this->config->get('image_popup_height')),
-					'thumb' => $this->model_tool_image->resize($img['image'], $this->config->get('image_additional_width'), $this->config->get('image_additional_height'))
+					'thumb' => $this->model_tool_image->resize($img['image'], $this->config->get('image_additional_width'), $this->config->get('image_additional_height')),
+					'width' => $this->config->get('image_additional_width'),
+					'height' => $this->config->get('image_additional_height'),
 				);
 			}
-			$data['thumb']['width'] = $this->config->get('image_thumb_width');
-			$data['thumb']['height'] = $this->config->get('image_thumb_height');
+
 
 			// Prices
 			// Base price

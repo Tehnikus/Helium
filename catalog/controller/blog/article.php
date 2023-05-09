@@ -88,7 +88,7 @@ class ControllerBlogArticle extends Controller {
 		$article_info = $this->model_blog_article->getArticle($article_id);
 		
 		if ($article_info) {
-
+			$this->load->model('tool/image');
 			
 			$data['breadcrumbs'][] = array(
 				'text' => $article_info['name'],
@@ -117,22 +117,22 @@ class ControllerBlogArticle extends Controller {
 			} else {
 				$data['heading_title'] = $article_info['name'];
 			}
-			
-			$data['text_select'] = $this->language->get('text_select');
-			$data['text_write'] = $this->language->get('text_write');
-			$data['text_login'] = sprintf($this->language->get('text_login'), $this->url->link('account/login', '', true), $this->url->link('account/register', '', true));
-			$data['text_loading'] = $this->language->get('text_loading');
-			$data['text_note'] = $this->language->get('text_note');
-			$data['text_share'] = $this->language->get('text_share');
-			$data['text_wait'] = $this->language->get('text_wait');
-			$data['button_cart'] = $this->language->get('button_cart');
+
+			$data['text_select']     = $this->language->get('text_select');
+			$data['text_write']      = $this->language->get('text_write');
+			$data['text_login']      = sprintf($this->language->get('text_login'), $this->url->link('account/login', '', true), $this->url->link('account/register', '', true));
+			$data['text_loading']    = $this->language->get('text_loading');
+			$data['text_note']       = $this->language->get('text_note');
+			$data['text_share']      = $this->language->get('text_share');
+			$data['text_wait']       = $this->language->get('text_wait');
+			$data['button_cart']     = $this->language->get('button_cart');
 			$data['button_wishlist'] = $this->language->get('button_wishlist');
-			$data['button_compare'] = $this->language->get('button_compare');
-			$data['entry_name'] = $this->language->get('entry_name');
-			$data['entry_review'] = $this->language->get('entry_review');
-			$data['entry_rating'] = $this->language->get('entry_rating');
-			$data['entry_captcha'] = $this->language->get('entry_captcha');
-			$data['share'] = $this->url->link('blog/article', 'article_id=' . $this->request->get['article_id']);
+			$data['button_compare']  = $this->language->get('button_compare');
+			$data['entry_name']      = $this->language->get('entry_name');
+			$data['entry_review']    = $this->language->get('entry_review');
+			$data['entry_rating']    = $this->language->get('entry_rating');
+			$data['entry_captcha']   = $this->language->get('entry_captcha');
+			$data['share']           = $this->url->link('blog/article', 'article_id=' . $this->request->get['article_id']);
 			
 			// $data['button_send_review'] = $this->language->get('button_continue');
 			
@@ -169,22 +169,30 @@ class ControllerBlogArticle extends Controller {
 			$data['rating'] = (int)$article_info['rating'];
 			$data['gstatus'] = (int)$article_info['gstatus'];
 			$data['description'] = html_entity_decode($article_info['description'], ENT_QUOTES, 'UTF-8');
-			
+
+			// Main image
+			$data['thumb']['link'] = $this->model_tool_image->resize($article_info['image'], $this->config->get('article_miniature_image_width'), $this->config->get('article_miniature_image_height'));
+			$data['thumb']['width'] = $this->config->get('article_miniature_image_width');
+			$data['thumb']['height'] = $this->config->get('article_miniature_image_height');
+
+			// Related articles
 			$data['articles'] = array();
 			
 			$data['button_more'] = $this->language->get('button_more');
 			$data['text_views'] = $this->language->get('text_views');
 			
-			$this->load->model('tool/image');
 			
+			// Related articles to this article
 			$results = $this->model_blog_article->getArticleRelated($this->request->get['article_id']);
-			
 			foreach ($results as $result) {
+				$image = [];
 				if ($result['image']) {
 					$image = $this->model_tool_image->resize($result['image'], $this->config->get('article_miniature_image_width'), $this->config->get('article_miniature_image_height'));
 				} else {
 					$image = $this->model_tool_image->resize('no_image.webp', $this->config->get('article_miniature_image_width'), $this->config->get('article_miniature_image_height'));
 				}
+				
+				
 				
 				if ($this->config->get('configblog_review_status')) {
 					$rating = (int)$result['rating'];
@@ -195,12 +203,14 @@ class ControllerBlogArticle extends Controller {
 				$data['articles'][] = array(
 					'article_id' 		=> $result['article_id'],
 					'thumb'   			=> $image,
+					'width' 			=> $this->config->get('article_miniature_image_width'),
+					'height' 			=> $this->config->get('article_miniature_image_height'),
 					'name'    	 		=> $result['name'],
 					'description' 		=> utf8_substr(strip_tags(html_entity_decode($result['description'], ENT_QUOTES, 'UTF-8')), 0, $this->config->get('configblog_article_description_length')) . '..',
 					'rating'     		=> $rating,
 					'date_added'  		=> date($this->language->get('date_format_short'), strtotime($result['date_added'])),
 					'viewed'      		=> $result['viewed'],
-					'reviews'    	=> (int)$result['reviews'],
+					'reviews'    		=> (int)$result['reviews'],
 					'href'    	 		=> $this->url->link('blog/article', 'article_id=' . $result['article_id']),
 				);
 			}
@@ -208,8 +218,8 @@ class ControllerBlogArticle extends Controller {
 			$this->load->model('tool/image');
 			$data['products'] = array();
 			
+			// Product relateds to this article
 			$results = $this->model_blog_article->getArticleRelatedProduct($this->request->get['article_id']);
-			
 			foreach ($results as $result) {
 				if ($result['image']) {
 					$image = $this->model_tool_image->resize($result['image'], $this->config->get('image_product_width'), $this->config->get('image_product_height'));
@@ -245,6 +255,8 @@ class ControllerBlogArticle extends Controller {
 				$data['products'][] = array(
 					'product_id' 		=> $result['product_id'],
 					'thumb'   			=> $image,
+					'width'  			=> $this->config->get('image_product_width'),
+					'height' 			=> $this->config->get('image_product_height'),
 					'name'    	 		=> $result['name'],
 					'description' 		=> utf8_substr(strip_tags(html_entity_decode($result['description'], ENT_QUOTES, 'UTF-8')), 0, $this->config->get('configblog_article_description_length')) . '..',
 					'price'   	 		=> $price,

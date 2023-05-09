@@ -6,6 +6,7 @@ class ModelBlogArticle extends Model {
 		$this->db->query("UPDATE " . DB_PREFIX . "article SET viewed = (viewed + 1) WHERE article_id = '" . (int)$article_id . "'");
 	}
 	
+	// Get article data
 	public function getArticle($article_id) {
 		// if ($this->customer->isLogged()) {
 		// 	$customer_group_id = $this->customer->getGroupId();
@@ -66,6 +67,7 @@ class ModelBlogArticle extends Model {
 		}
 	}
 
+	// Sitemap links
 	public function getArticlesLinks()
 	{
 		$sql = "
