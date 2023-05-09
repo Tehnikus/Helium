@@ -115,11 +115,11 @@ class ControllerProductProduct extends Controller {
 			// Images
 			if ($product_info['image']) {
 				$data['popup'] = $this->model_tool_image->resize($product_info['image'], $this->config->get('image_popup_width'), $this->config->get('image_popup_height'));
-				$data['thumb'] = $this->model_tool_image->resize($product_info['image'], $this->config->get('image_thumb_width'), $this->config->get('image_thumb_height'));
-				$this->document->addLink($data['thumb'], 'preload', 'image');
+				$data['thumb']['link'] = $this->model_tool_image->resize($product_info['image'], $this->config->get('image_thumb_width'), $this->config->get('image_thumb_height'));
+				$this->document->addLink($data['thumb']['link'], 'preload', 'image');
 			} else {
 				$data['popup'] = $this->model_tool_image->resize('no_image.webp', $this->config->get('image_popup_width'), $this->config->get('image_popup_height'));
-				$data['thumb'] = $this->model_tool_image->resize('no_image.webp', $this->config->get('image_thumb_width'), $this->config->get('image_thumb_height'));
+				$data['thumb']['link'] = $this->model_tool_image->resize('no_image.webp', $this->config->get('image_thumb_width'), $this->config->get('image_thumb_height'));
 			}
 			$data['images'] = array();
 			$additional_images = $this->model_catalog_product->getProductImages($this->request->get['product_id']);
@@ -129,6 +129,8 @@ class ControllerProductProduct extends Controller {
 					'thumb' => $this->model_tool_image->resize($img['image'], $this->config->get('image_additional_width'), $this->config->get('image_additional_height'))
 				);
 			}
+			$data['thumb']['width'] = $this->config->get('image_thumb_width');
+			$data['thumb']['height'] = $this->config->get('image_thumb_height');
 
 			// Prices
 			// Base price
