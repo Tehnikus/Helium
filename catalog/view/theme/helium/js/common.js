@@ -870,6 +870,8 @@ let dialog = {
 		for (let i = 0; i < b.length; i++) {
 			// Here animations can be added
 			// console.log(b[i]);
+			// b[i].classList.remove('visible');
+			// b[i].addEventListener('webkitAnimationEnd', function(){})
 			b[i].close();
 			document.body.removeChild(b[i]);
 		}
@@ -1587,7 +1589,7 @@ function scrollslider() {
 		['mouseenter', 'focus', 'touchstart'].forEach(e => {
 			c.addEventListener(e, () => {
 				clearInterval(timer);
-			});
+			}, {passive: true});
 		});
 		[].forEach.call(c.children, (s) =>{
 			s.addEventListener('focusin', () => {
