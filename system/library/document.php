@@ -91,10 +91,12 @@ class Document {
      * @param	string	$href
 	 * @param	string	$rel
      */
-	public function addLink($href, $rel) {
+	public function addLink($href, $rel, $as = null) {
 		$this->links[$href] = array(
 			'href' => $href,
-			'rel'  => $rel
+			'rel'  => $rel,
+			'as' => $as,
+
 		);
 	}
 

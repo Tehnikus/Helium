@@ -116,6 +116,7 @@ class ControllerProductProduct extends Controller {
 			if ($product_info['image']) {
 				$data['popup'] = $this->model_tool_image->resize($product_info['image'], $this->config->get('image_popup_width'), $this->config->get('image_popup_height'));
 				$data['thumb'] = $this->model_tool_image->resize($product_info['image'], $this->config->get('image_thumb_width'), $this->config->get('image_thumb_height'));
+				$this->document->addLink($data['thumb'], 'preload', 'image');
 			} else {
 				$data['popup'] = $this->model_tool_image->resize('no_image.webp', $this->config->get('image_popup_width'), $this->config->get('image_popup_height'));
 				$data['thumb'] = $this->model_tool_image->resize('no_image.webp', $this->config->get('image_thumb_width'), $this->config->get('image_thumb_height'));
