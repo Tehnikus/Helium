@@ -7,6 +7,7 @@
          url('fonts/Robotocondensed.ttf') format('truetype');
     font-weight: 400;
     font-style: normal;
+    font-display: swap;
 }
 :root {
     /* Backgrounds */
@@ -394,7 +395,9 @@ td:last-child{border-radius: 0 var(--radius) var(--radius) 0}
 
 thead {border-bottom:1px solid var(--border);font-weight: 600;}
 tfoot {border-top:1px solid var(--border)}
-tbody tr:nth-child(2n) {background-color:var(--bg-main-blocks);}
+tbody tr:nth-child(1n) {background-color:var(--bg-main-blocks)}
+tbody tr:nth-child(2n) {background-color:var(--bg-body)}
+
 .text-right {text-align: right}
 .text-left {text-align: left}
 
