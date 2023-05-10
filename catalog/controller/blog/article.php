@@ -4,11 +4,17 @@
 class ControllerBlogArticle extends Controller {
 	private $error = array(); 
 	
-	public function index() { 
+	public function index() {
+		// Load models
+		$this->load->model('blog/article');
+		$this->load->model('tool/image');
 		$this->load->language('blog/article');
+		// Update article viewed number
+		$this->model_blog_article->updateViewed($this->request->get['article_id']);
 	
+		// Breadcrumbs
+		// TODO Maybe rewrite this so no heavy queries involved
 		$data['breadcrumbs'] = array();
-
 		$data['breadcrumbs'][] = array(
 			'text'      => $this->language->get('text_home'),
 			'href'      => $this->url->link('common/home'),			
@@ -16,7 +22,6 @@ class ControllerBlogArticle extends Controller {
 		);
 		
 		$configblog_name = $this->config->get('configblog_name');
-		
 		if (!empty($configblog_name)) {
 			$name = $this->config->get('configblog_name');
 		} else {
@@ -28,21 +33,16 @@ class ControllerBlogArticle extends Controller {
 			'href' => $this->url->link('blog/latest')
 		);
 		
-		$this->load->model('blog/category');	
-		
-		
+		$this->load->model('blog/category');
 		if (isset($this->request->get['blog_category_id'])) {
 			$blog_category_id = '';
-				
 			foreach (explode('_', $this->request->get['blog_category_id']) as $path_id) {
 				if (!$blog_category_id) {
 					$blog_category_id = $path_id;
 				} else {
 					$blog_category_id .= '_' . $path_id;
 				}
-				
 				$category_info = $this->model_blog_category->getCategory($path_id);
-				
 				if ($category_info) {
 					$data['breadcrumbs'][] = array(
 						'text'      => $category_info['name'],
@@ -52,30 +52,6 @@ class ControllerBlogArticle extends Controller {
 			}
 		}
 		
-	
-
-	
-
-	if (isset($this->request->get['filter_name']) || isset($this->request->get['filter_tag'])) {
-			$url = '';
-			
-			if (isset($this->request->get['filter_name'])) {
-				$url .= '&filter_name=' . $this->request->get['filter_name'];
-			}
-						
-			if (isset($this->request->get['filter_tag'])) {
-				$url .= '&filter_tag=' . $this->request->get['filter_tag'];
-			}
-						
-			if (isset($this->request->get['filter_description'])) {
-				$url .= '&filter_description=' . $this->request->get['filter_description'];
-			}
-			
-			if (isset($this->request->get['filter_news_id'])) {
-				$url .= '&filter_news_id=' . $this->request->get['filter_news_id'];
-			}	
-						
-		}
 		
 		if (isset($this->request->get['article_id'])) {
 			$article_id = (int)$this->request->get['article_id'];
@@ -83,12 +59,9 @@ class ControllerBlogArticle extends Controller {
 			$article_id = 0;
 		}
 		
-		$this->load->model('blog/article');
-		
 		$article_info = $this->model_blog_article->getArticle($article_id);
 		
 		if ($article_info) {
-			$this->load->model('tool/image');
 			
 			$data['breadcrumbs'][] = array(
 				'text' => $article_info['name'],
@@ -118,32 +91,36 @@ class ControllerBlogArticle extends Controller {
 				$data['heading_title'] = $article_info['name'];
 			}
 
-			$data['text_select']     = $this->language->get('text_select');
-			$data['text_write']      = $this->language->get('text_write');
-			$data['text_login']      = sprintf($this->language->get('text_login'), $this->url->link('account/login', '', true), $this->url->link('account/register', '', true));
-			$data['text_loading']    = $this->language->get('text_loading');
-			$data['text_note']       = $this->language->get('text_note');
-			$data['text_share']      = $this->language->get('text_share');
-			$data['text_wait']       = $this->language->get('text_wait');
-			$data['button_cart']     = $this->language->get('button_cart');
-			$data['button_wishlist'] = $this->language->get('button_wishlist');
-			$data['button_compare']  = $this->language->get('button_compare');
-			$data['entry_name']      = $this->language->get('entry_name');
-			$data['entry_review']    = $this->language->get('entry_review');
-			$data['entry_rating']    = $this->language->get('entry_rating');
-			$data['entry_captcha']   = $this->language->get('entry_captcha');
-			$data['share']           = $this->url->link('blog/article', 'article_id=' . $this->request->get['article_id']);
-			
+			// Language texts
+			$data['text_select']          = $this->language->get('text_select');
+			$data['text_write']           = $this->language->get('text_write');
+			$data['text_login']           = sprintf($this->language->get('text_login'), $this->url->link('account/login', '', true), $this->url->link('account/register', '', true));
+			$data['text_loading']         = $this->language->get('text_loading');
+			$data['text_note']            = $this->language->get('text_note');
+			$data['text_share']           = $this->language->get('text_share');
+			$data['text_wait']            = $this->language->get('text_wait');
+			$data['button_cart']          = $this->language->get('button_cart');
+			$data['button_wishlist']      = $this->language->get('button_wishlist');
+			$data['button_compare']       = $this->language->get('button_compare');
+			$data['entry_name']           = $this->language->get('entry_name');
+			$data['entry_review']         = $this->language->get('entry_review');
+			$data['entry_rating']         = $this->language->get('entry_rating');
+			$data['entry_captcha']        = $this->language->get('entry_captcha');
+			$data['share']                = $this->url->link('blog/article', 'article_id=' . $this->request->get['article_id']);
+			$data['text_related']         = $this->language->get('text_related');
+			$data['text_related_product'] = $this->language->get('text_related_product');
+			$data['button_more']          = $this->language->get('button_more');
+			$data['text_views']           = $this->language->get('text_views');
+			$data['text_on']              = $this->language->get('text_on');
+			$data['text_no_reviews']      = $this->language->get('text_no_reviews');
 			// $data['button_send_review'] = $this->language->get('button_continue');
 			
-			$this->load->model('blog/review');
 
-			$data['text_related'] = $this->language->get('text_related');
-			$data['text_related_product'] = $this->language->get('text_related_product');
-			
+
+
 			$data['article_id'] = $this->request->get['article_id'];
 			
-			$data['review_status'] = $this->config->get('configblog_review_status');
+			
 			
 			if ($this->config->get('configblog_review_guest') || $this->customer->isLogged()) {
 				$data['review_guest'] = true;
@@ -163,26 +140,24 @@ class ControllerBlogArticle extends Controller {
 			} else {
 				$data['captcha'] = '';
 			}
-			
-			$data['article_review'] = (int)$article_info['article_review'];
-			$data['reviews'] = (int)$article_info['reviews'];
-			$data['rating'] = (int)$article_info['rating'];
-			$data['gstatus'] = (int)$article_info['gstatus'];
-			$data['description'] = html_entity_decode($article_info['description'], ENT_QUOTES, 'UTF-8');
+
+			$data['article_review'] = (int) $article_info['article_review'];
+			$data['reviews_count']  = (int) $article_info['reviews'];
+			$data['rating']         = (int) $article_info['rating'];
+			$data['gstatus']        = (int) $article_info['gstatus'];
+			$data['description']    = html_entity_decode($article_info['description'], ENT_QUOTES, 'UTF-8');
 
 			// Main image
-			$data['thumb']['link'] = $this->model_tool_image->resize($article_info['image'], $this->config->get('article_miniature_image_width'), $this->config->get('article_miniature_image_height'));
-			$data['thumb']['width'] = $this->config->get('article_miniature_image_width');
+			$data['thumb']['link']   = $this->model_tool_image->resize($article_info['image'], $this->config->get('article_miniature_image_width'), $this->config->get('article_miniature_image_height'));
+			$data['thumb']['width']  = $this->config->get('article_miniature_image_width');
 			$data['thumb']['height'] = $this->config->get('article_miniature_image_height');
 
-			// Related articles
-			$data['articles'] = array();
 			
-			$data['button_more'] = $this->language->get('button_more');
-			$data['text_views'] = $this->language->get('text_views');
+
 			
 			
 			// Related articles to this article
+			$data['articles'] = array();
 			$results = $this->model_blog_article->getArticleRelated($this->request->get['article_id']);
 			foreach ($results as $result) {
 				$image = [];
@@ -215,7 +190,7 @@ class ControllerBlogArticle extends Controller {
 				);
 			}
 
-			$this->load->model('tool/image');
+			
 			$data['products'] = array();
 			
 			// Product relateds to this article
@@ -237,20 +212,8 @@ class ControllerBlogArticle extends Controller {
             foreach ($results as $result) {
                 if (file_exists(DIR_DOWNLOAD . $result['filename'])) {
                     $size = filesize(DIR_DOWNLOAD . $result['filename']);
- 
                     $i = 0;
- 
-                    $suffix = array(
-                        'B',
-                        'KB',
-                        'MB',
-                        'GB',
-                        'TB',
-                        'PB',
-                        'EB',
-                        'ZB',
-                        'YB'
-                    );
+                    $suffix = array('B','KB','MB','GB','TB','PB','EB','ZB','YB');
  
                     while (($size / 10024) > 1) {
                         $size = $size / 10024;
@@ -268,40 +231,85 @@ class ControllerBlogArticle extends Controller {
 			
 			$data['url'] = $this->url->link('blog/article', 'article_id=' . $this->request->get['article_id']);
 			
-			$this->model_blog_article->updateViewed($this->request->get['article_id']);
-			$data['column_left'] = $this->load->controller('common/column_left');
-			$data['column_right'] = $this->load->controller('common/column_right');
-			$data['content_top'] = $this->load->controller('common/content_top');
-			$data['content_bottom'] = $this->load->controller('common/content_bottom');
-			$data['footer'] = $this->load->controller('common/footer');
-			$data['header'] = $this->load->controller('common/header');
 			
+			
+			// Load controllers
+			$data['column_left']    = $this->load->controller('common/column_left');
+			$data['column_right']   = $this->load->controller('common/column_right');
+			$data['content_top']    = $this->load->controller('common/content_top');
+			$data['content_bottom'] = $this->load->controller('common/content_bottom');
+			$data['footer']         = $this->load->controller('common/footer');
+			$data['header']         = $this->load->controller('common/header');
+
+
+
+			$this->language->load('blog/article');
+		
+			// Reviews - display statically
+			$this->load->model('blog/review');
+			// If reviews allowed
+			$data['review_status'] = $this->config->get('configblog_review_status');
+			if (isset($this->request->get['page'])) {
+				$page = $this->request->get['page'];
+			} else {
+				$page = 1;
+			}
+			
+			$review_total = $this->model_blog_review->getTotalReviewsByArticleId($this->request->get['article_id']);
+			$results = $this->model_blog_review->getReviewsByArticleId($this->request->get['article_id'], ($page - 1) * 5, 5);
+			
+			$data['reviews'] = array();
+			foreach ($results as $result) {
+				$data['reviews'][] = array(
+					'author'     		=> $result['author'],
+					'text'       		=> $result['text'],
+					'rating'     		=> (int)$result['rating'],
+					'reviews'    	=> (int)$review_total,
+					'date_added' 		=> date($this->language->get('date_format_short'), strtotime($result['date_added']))
+				);
+			  }
+			
+			$pagination = new Pagination();
+			$pagination->total = $review_total;
+			$pagination->page = $page;
+			$pagination->limit = 5;
+			$pagination->url = $this->url->link('blog/article/review', 'article_id=' . $this->request->get['article_id'] . '&page={page}');
+	
+			$data['pagination'] = $pagination->render();
+			$data['results'] = sprintf($this->language->get('text_pagination'), ($review_total) ? (($page - 1) * 5) + 1 : 0, ((($page - 1) * 5) > ($review_total - 5)) ? $review_total : ((($page - 1) * 5) + 5), $review_total, ceil($review_total / 5));
+
+
+			// Output result
 			$this->response->setOutput($this->load->view('blog/article', $data));
 		} else {
-			// TODO Разобраться с этим
+			// 404 page
+
+			// Set proper breadcrumbs
 			$data['breadcrumbs'][] = array(
 				'text' => $this->language->get('text_error'),
 				'href' => $this->url->link('product/product', '&product_id=' . $article_id)
 			);
 
+			// Set title
 			$this->document->setTitle($this->language->get('text_error'));
-
-			$data['heading_title'] = $this->language->get('text_error');
-
-			$data['text_error'] = $this->language->get('text_error');
-
-			$data['button_continue'] = $this->language->get('button_continue');
-
-			$data['continue'] = $this->url->link('common/home');
-
+			// Add 404 header
 			$this->response->addHeader($this->request->server['SERVER_PROTOCOL'] . ' 404 Not Found');
 
-			$data['column_left'] = $this->load->controller('common/column_left');
-			$data['column_right'] = $this->load->controller('common/column_right');
-			$data['content_top'] = $this->load->controller('common/content_top');
+			// Home link
+			$data['continue'] = $this->url->link('common/home');
+
+			// Language texts
+			$data['heading_title']   = $this->language->get('text_error');
+			$data['text_error']      = $this->language->get('text_error');
+			$data['button_continue'] = $this->language->get('button_continue');
+
+			// Load controllers
+			$data['column_left']    = $this->load->controller('common/column_left');
+			$data['column_right']   = $this->load->controller('common/column_right');
+			$data['content_top']    = $this->load->controller('common/content_top');
 			$data['content_bottom'] = $this->load->controller('common/content_bottom');
-			$data['footer'] = $this->load->controller('common/footer');
-			$data['header'] = $this->load->controller('common/header');
+			$data['footer']         = $this->load->controller('common/footer');
+			$data['header']         = $this->load->controller('common/header');
 
 			$this->response->setOutput($this->load->view('error/not_found', $data));
     	}
@@ -406,7 +414,7 @@ class ControllerBlogArticle extends Controller {
 	// Display review modal window 
 	public function displayReviewModal() {
 		$this->load->language('blog/article');
-		$data['entity_id'] = (int)$this->request->post['entity_id'];
+		$data['entity_id'] = (int)$this->request->get['entity_id'];
 		$data['type'] = 'blog/article';
 		$this->response->setOutput($this->load->view('common/review_form', $data));
 	}
