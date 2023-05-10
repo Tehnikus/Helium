@@ -866,9 +866,11 @@ hgroup h1 {
 .rating label:before, .rating label::after {
     display: none;
 }
-input#input-quantity {
-    text-align: center;
-}
+
+#reviews {display: flex; flex-direction: column; gap: 1rem;}
+div.review .review_header, div.review .review_header address {display: flex; gap: 1rem;}
+div.review .review_header address {flex: 1;}
+input#input-quantity {text-align: center}
 
 .product_top #photos, .product_top .infos {
     display: flex; flex-direction: column;
