@@ -316,6 +316,7 @@ figure {
     position: relative;
     padding: 0 0 1rem;
     justify-content: center;
+    flex: 0 1 auto;
 }
 figure a {display:flex;width: 100%;justify-content: center;}
 figcaption {
@@ -329,12 +330,7 @@ figcaption {
 }
 
 /* Basic styling - background and colors */
-.subcategory,
-.alert-danger, .alert-success,
-
-img, video,
-input, textarea, fieldset, select,
-nav, footer, main, aside > div, [data-accordion], .miniature, details, dialog {
+.subcategory, .alert-danger, .alert-success, .block, img, video, input, textarea, fieldset, select, nav, footer, main, aside > div, [data-accordion], .miniature, details, dialog {
     background: var(--bg-main-blocks);
     border-radius: var(--radius);
     position: relative;
@@ -345,7 +341,7 @@ select {
     padding-right:35px;
 }
 /* Padding for main blocks */
-nav, footer, main, aside > div, [data-accordion] {
+nav, footer, main, aside > div, [data-accordion], .block {
     padding: 1rem;
 }
 /* Ordering -  mobile */
@@ -803,7 +799,7 @@ input[name="quantity"] {max-width: 80px}
 main #category_description {overflow-y:auto;max-height:200px;position:relative;width:100%;border-radius: var(--radius)}
 span.price-new {color: var(--danger); font-weight: 600;}
 .short-description {flex: 1}
-span.price-old {color: var(--color-text-muted);font-size: 1rem}
+span.price-old {color: var(--color-text-muted);font-size: 1rem;flex: 1 0 100%;display: flex;justify-content: center;padding: .5rem;}
 .price-old .price-value {text-decoration: line-through; text-decoration-color: var(--color-text);}
 hgroup h1 {
     display: flex;
