@@ -45,12 +45,12 @@ class Pagination {
 		$output = '<ul class="pagination scroll-x">';
 
 		if ($page > 1) {
-			$output .= '<li><a rel="first" href="' . str_replace(array('&amp;page={page}', '?page={page}', '&page={page}'), '', $this->url) . '">' . $this->text_first . '</a></li>';
+			$output .= '<li><a class="button" rel="first" href="' . str_replace(array('&amp;page={page}', '?page={page}', '&page={page}'), '', $this->url) . '">' . $this->text_first . '</a></li>';
 			
 			if ($page - 1 === 1) {
-				$output .= '<li><a rel="prev" href="' . str_replace(array('&amp;page={page}', '?page={page}', '&page={page}'), '', $this->url) . '">' . $this->text_prev . '</a></li>';
+				$output .= '<li><a class="button" rel="prev" href="' . str_replace(array('&amp;page={page}', '?page={page}', '&page={page}'), '', $this->url) . '">' . $this->text_prev . '</a></li>';
 			} else {
-				$output .= '<li><a rel="prev" href="' . str_replace('{page}', $page - 1, $this->url) . '">' . $this->text_prev . '</a></li>';
+				$output .= '<li><a class="button" rel="prev" href="' . str_replace('{page}', $page - 1, $this->url) . '">' . $this->text_prev . '</a></li>';
 			}
 		}
 
