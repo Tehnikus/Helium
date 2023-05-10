@@ -3,40 +3,43 @@
 <main role="main" id="blog-article">
   <hgroup>
     {# Заголовок #}
-    <h1 class="article-name">{{ heading_title }}</h1>
+    <div class="title">
+      <h1 class="article-name">{{ heading_title }}</h1>
+      {% if review_status %}
+        {% include 'helium/template/common/rating_stars.twig' with {rating: rating, count: reviews_count} %}
+      {% endif %}
+    </div>
     {# Содержание #}
     <ul class="contents scroll-x">
       {% if description %}
-        <li><a href="{{ share }}#article" title="{{ tab_description }}">{{ tab_description }}</a></li>
+        <li><a class="button" href="{{ share }}#article" title="{{ tab_description }}">{{ tab_description }}</a></li>
       {% endif %}
       {% if articles %}
-        <li><a href="{{ share }}#related_articles" title="{{ text_related_articles }}">{{ text_related_articles }}</a></li>
+        <li><a class="button" href="{{ share }}#related_articles" title="{{ text_related_articles }}">{{ text_related_articles }}</a></li>
       {% endif %}
       {% if images %}
-        <li><a href="{{ share }}#photos" title="{{ tab_photos }}">{{ tab_photos }}</a></li>
+        <li><a class="button" href="{{ share }}#photos" title="{{ tab_photos }}">{{ tab_photos }}</a></li>
       {% endif %}
-      {% if review_status %}
-        <li><a href="{{ share }}#reviews" title="{{ text_reviews }}">{{ text_reviews }} ({{ reviews }})</a></li>
+      {% if review_status and reviews %}
+        <li><a class="button" href="{{ share }}#reviews" title="{{ text_reviews }}">{{ text_reviews }} ({{ reviews_count }})</a></li>
       {% endif %}
       {% if products %}
-        <li><a href="{{ share }}#related_products" title="{{ text_related_product }}">{{ text_related_product }} ({{products|length}})</a></li>
+        <li><a class="button" href="{{ share }}#related_products" title="{{ text_related_product }}">{{ text_related_product }} ({{products|length}})</a></li>
       {% endif %}
       {% if downloads %}
-        <li><a href="{{ share }}#downloads" title="{{ tab_downloads }}">{{ tab_downloads }}</a></li>
+        <li><a class="button" href="{{ share }}#downloads" title="{{ tab_downloads }}">{{ tab_downloads }}</a></li>
       {% endif %}
     </ul>
   </hgroup>
-  {% if review_status %}
-    {% include 'helium/template/common/rating_stars.twig' with {rating: rating, count: reviews} %}
-  {% endif %}
+
   {% if review_guest %}
     <button type="button" data-action="reviewModal" data-type="blog/article" data-id="{{ article_id }}" id="write-review"><i class="icon-edit"></i>{{ text_write }}</button>
   {% else %}
     {{ text_login }}
   {% endif %}
-  {# модули #}
+  {# Modules #}
   {{ content_top }}
-  {# Фото статьи #}
+  {# Article main photo #}
   {% if thumb or images %}
     {% include 'helium/template/common/images_gallery.twig' with {thumb:thumb, images:images, class:'article-image'} %}
   {% endif %}
@@ -44,7 +47,9 @@
     {{ description }}
   </article>
 
-		  
+  {% include 'helium/template/blog/review.twig' %}
+
+  {# Downloads #}
   {% if download_status %}
     <div id="downloads" class="blog-info">
     {% if downloads %}
@@ -54,22 +59,20 @@
     {% endif %} 
     </div>
   {% endif %} 
-            
-            
 
-		
-
+  {# Related products #}
   {% if products %}
     <div id="related_products" class="module related-products">
       <span class="h3">{{ text_related_product }}</span>
       <div class="scroll-x js_scroll">
-      {% for product in products %}
-        {% include 'helium/template/product/product_miniature.twig' with {product: product} %}
-      {% endfor %}   
+        {% for product in products %}
+          {% include 'helium/template/product/product_miniature.twig' with {product: product} %}
+        {% endfor %}   
       </div>
     </div>
   {% endif %}
 
+  {# Related articles #}
   {% if articles %}
     <div id="related_articles" class="module related-articles">
       <span class="h3">{{ text_related_articles }}</span>
@@ -80,6 +83,7 @@
       </div>
     </div>
   {% endif %}
+  {# Modules #}
   {{ content_bottom }}
 </main>
 {{ column_left }} 
@@ -87,7 +91,7 @@
 
 
 
-<script type="text/javascript"><!--
+<script type="text/javascript">
 
 
 // $('button[id^=\'button-upload\']').on('click', function() {

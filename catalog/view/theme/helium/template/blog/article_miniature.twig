@@ -14,14 +14,12 @@
       <p class="short-description">
         {{ article.description }}
       </p>
-      {% if review_status %}
-        {% if article.rating %}
-          {% include 'helium/template/common/rating_stars.twig' with {rating:article.rating, count:article.reviews} %}
-        {% endif %}
+      {% if article.rating %}
+        {% include 'helium/template/common/rating_stars.twig' with {rating:article.rating, count:article.reviews} %}
       {% endif %}
     </div>
     <div class="article-infos">
-      <span title="{{ date_added }}"><i class="icon-calendar"></i>{{ article.date_added }}</span>
+      <time title="{{ date_added }}"><i class="icon-calendar"></i>{{ article.date_added }}</time>
       {% if article.viewed > 100 %}
       <span title="{{ text_views }}"><i class="icon-eye"></i>{{ article.viewed }}</span>
       {% endif %}

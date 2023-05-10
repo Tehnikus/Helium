@@ -1,5 +1,5 @@
 {% if rating > 0 %}
-<div aria-label="{{ aria_rating_label }} {{ rating }}, {{ aria_review_count_label }} {{ count }}" title="{{ aria_rating_label }} {{ rating }}, {{ aria_review_count_label }} {{ count }}">
+<div aria-label="{{ aria_rating_label }} {{ rating }}{% if count is defined and count > 0 %}, {{ aria_review_count_label }} {{ count }}{% endif %}" title="{{ aria_rating_label }} {{ rating }}{% if count is defined and count > 0 %}, {{ aria_review_count_label }} {{ count }}{% endif %}">
   <div class="rating" role="presentation">
     {% for i in 1..5 %}
       {% if rating >= i %}
