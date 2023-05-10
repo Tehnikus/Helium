@@ -867,7 +867,7 @@ hgroup h1 {
     display: none;
 }
 
-#reviews {display: flex; flex-direction: column; gap: 1rem;}
+#js_reviews {display: flex; flex-direction: column; gap: 1rem;}
 div.review .review_header, div.review .review_header address {display: flex; gap: 1rem;}
 div.review .review_header address {flex: 1;}
 input#input-quantity {text-align: center}

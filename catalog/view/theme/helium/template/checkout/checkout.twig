@@ -281,7 +281,6 @@ function handleErrors(result, form_with_errors) {
     el.removeAttribute('aria-errormessage');
 	});
 
-  console.log(result);
   if ('error' in result) {
     let errors_object = result.error;
     for (i in errors_object) {
@@ -289,7 +288,7 @@ function handleErrors(result, form_with_errors) {
       if (i == 'warning') {
         mwindow.create('toast', errors_object['warning'], 'warning');
       } else {
-        console.log(i, errors_object[i]);
+        // console.log(i, errors_object[i]);
         let error_input = form_with_errors.querySelector('[name='+i+']');
         if (error_input) {
           // Set ARIA ittributes to invalid fields
