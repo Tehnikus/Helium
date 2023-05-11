@@ -226,17 +226,17 @@ class ControllerBlogCategory extends Controller {
 				}
 
 				$data['articles'][] = array(
-					'article_id'  => $result['article_id'],
-					'thumb'       => $image,
-					'width'		  => $this->config->get('article_miniature_image_width'),
-					'height'	  => $this->config->get('article_miniature_image_height'),
-					'name'        => $result['name'],
-					'description' => utf8_substr(strip_tags(html_entity_decode($result['description'], ENT_QUOTES, 'UTF-8')), 0, $this->config->get('configblog_article_description_length')) . '..',
-					'date_added'  => date($this->language->get('date_format_short'), strtotime($result['date_added'])),
-					'viewed'      => $result['viewed'],
-					'rating'      => $result['rating'],
-					'reviews'     => $result['reviews'],
-					'href'        => $this->url->link('blog/article', 'blog_category_id=' . $this->request->get['blog_category_id'] . '&article_id=' . $result['article_id'] . $url)
+					'article_id'   		=> $result['article_id'],
+					'thumb'        		=> $image,
+					'width'		   		=> $this->config->get('article_miniature_image_width'),
+					'height'	   		=> $this->config->get('article_miniature_image_height'),
+					'name'         		=> $result['name'],
+					'description'  		=> utf8_substr(strip_tags(html_entity_decode($result['description'], ENT_QUOTES, 'UTF-8')), 0, $this->config->get('configblog_article_description_length')) . '..',
+					'date_added'   		=> date($this->language->get('date_format_short'), strtotime($result['date_added'])),
+					'viewed'       		=> $result['viewed'],
+					'rating'       		=> $result['rating'],
+					'reviews_count'		=> (int)$result['reviews'],
+					'href'         		=> $this->url->link('blog/article', 'blog_category_id=' . $this->request->get['blog_category_id'] . '&article_id=' . $result['article_id'] . $url)
 				);
 			}
 

@@ -141,9 +141,10 @@ class ControllerBlogArticle extends Controller {
 				$data['captcha'] = '';
 			}
 
-			$data['article_review'] = (int) $article_info['article_review'];
+			// $data['article_review'] = (int) $article_info['article_review'];
 			$data['reviews_count']  = (int) $article_info['reviews'];
 			$data['rating']         = (int) $article_info['rating'];
+			$data['review_status'] = $this->config->get('configblog_review_status');
 			$data['gstatus']        = (int) $article_info['gstatus'];
 			$data['description']    = html_entity_decode($article_info['description'], ENT_QUOTES, 'UTF-8');
 
@@ -170,7 +171,7 @@ class ControllerBlogArticle extends Controller {
 				
 				
 				if ($this->config->get('configblog_review_status')) {
-					$rating = (int)$result['rating'];
+					$rating = round((float)$result['rating'], 2);
 				} else {
 					$rating = false;
 				}
@@ -185,7 +186,7 @@ class ControllerBlogArticle extends Controller {
 					'rating'     		=> $rating,
 					'date_added'  		=> date($this->language->get('date_format_short'), strtotime($result['date_added'])),
 					'viewed'      		=> $result['viewed'],
-					'reviews'    		=> (int)$result['reviews'],
+					'reviews_count'    	=> (int)$result['reviews'],
 					'href'    	 		=> $this->url->link('blog/article', 'article_id=' . $result['article_id']),
 				);
 			}
@@ -240,44 +241,12 @@ class ControllerBlogArticle extends Controller {
 			$data['content_bottom'] = $this->load->controller('common/content_bottom');
 			$data['footer']         = $this->load->controller('common/footer');
 			$data['header']         = $this->load->controller('common/header');
+			$data['reviews'] 		= $this->reviews();
+			$data['reviews_count']  = (int) $article_info['reviews'];
+			$data['rating']         = (int) $article_info['rating'];
 
-
-
-			$this->language->load('blog/article');
-		
-			// Reviews - display statically
-			$this->load->model('blog/review');
-			// If reviews allowed
-			$data['review_status'] = $this->config->get('configblog_review_status');
-			if (isset($this->request->get['page'])) {
-				$page = $this->request->get['page'];
-			} else {
-				$page = 1;
-			}
-			
-			$review_total = $this->model_blog_review->getTotalReviewsByArticleId($this->request->get['article_id']);
-			$results = $this->model_blog_review->getReviewsByArticleId($this->request->get['article_id'], ($page - 1) * 5, 5);
-			
-			$data['reviews'] = array();
-			foreach ($results as $result) {
-				$data['reviews'][] = array(
-					'author'     		=> $result['author'],
-					'text'       		=> $result['text'],
-					'rating'     		=> (int)$result['rating'],
-					'reviews'    	=> (int)$review_total,
-					'date_added' 		=> date($this->language->get('date_format_short'), strtotime($result['date_added']))
-				);
-			  }
-			
-			$pagination = new Pagination();
-			$pagination->total = $review_total;
-			$pagination->page = $page;
-			$pagination->limit = 5;
-			$pagination->url = $this->url->link('blog/article/review', 'article_id=' . $this->request->get['article_id'] . '&page={page}');
-	
-			$data['pagination'] = $pagination->render();
-			$data['results'] = sprintf($this->language->get('text_pagination'), ($review_total) ? (($page - 1) * 5) + 1 : 0, ((($page - 1) * 5) > ($review_total - 5)) ? $review_total : ((($page - 1) * 5) + 5), $review_total, ceil($review_total / 5));
-
+			// print_r($data);
+			// return;
 
 			// Output result
 			$this->response->setOutput($this->load->view('blog/article', $data));
@@ -367,36 +336,28 @@ class ControllerBlogArticle extends Controller {
 		}
 	}
 	
-	public function review() {
-    	$this->language->load('blog/article');
-		
+	public function reviews() {
+		$this->load->language('blog/article');
 		$this->load->model('blog/review');
 
-		$data['text_on'] = $this->language->get('text_on');
-		$data['text_no_reviews'] = $this->language->get('text_no_reviews');
-
 		if (isset($this->request->get['page'])) {
-			$page = $this->request->get['page'];
+			$page = (int)$this->request->get['page'];
 		} else {
 			$page = 1;
-		}  
-		
-		$data['reviews'] = array();
-		
+		}
+
 		$review_total = $this->model_blog_review->getTotalReviewsByArticleId($this->request->get['article_id']);
-			
 		$results = $this->model_blog_review->getReviewsByArticleId($this->request->get['article_id'], ($page - 1) * 5, 5);
-      		
+
 		foreach ($results as $result) {
-        	$data['reviews'][] = array(
-        		'author'     		=> $result['author'],
-				'text'       		=> $result['text'],
-				'rating'     		=> (int)$result['rating'],
-        		'reviews'    	=> (int)$review_total,
-        		'date_added' 		=> date($this->language->get('date_format_short'), strtotime($result['date_added']))
-        	);
-      	}
-		
+			$data['reviews'][] = array(
+				'author'     => $result['author'],
+				'text'       => nl2br($result['text']),
+				'rating'     => (int)$result['rating'],
+				'date_added' => date($this->language->get('date_format_short'), strtotime($result['date_added']))
+			);
+		}
+
 		$pagination = new Pagination();
 		$pagination->total = $review_total;
 		$pagination->page = $page;
@@ -404,11 +365,15 @@ class ControllerBlogArticle extends Controller {
 		$pagination->url = $this->url->link('blog/article/review', 'article_id=' . $this->request->get['article_id'] . '&page={page}');
 
 		$data['pagination'] = $pagination->render();
+		$data['reviews_count'] = sprintf($this->language->get('text_review_pagination'), ($review_total) ? (($page - 1) * 5) + 1 : 0, ((($page - 1) * 5) > ($review_total - 5)) ? $review_total : ((($page - 1) * 5) + 5), $review_total, ceil($review_total / 5));
 
-		$data['results'] = sprintf($this->language->get('text_pagination'), ($review_total) ? (($page - 1) * 5) + 1 : 0, ((($page - 1) * 5) > ($review_total - 5)) ? $review_total : ((($page - 1) * 5) + 5), $review_total, ceil($review_total / 5));
+		return $data;
+	}
 
+	public function review() {
+		$data = array();
+		$data['reviews'] = $this->reviews();
 		$this->response->setOutput($this->load->view('common/review_grid', $data));
-		
 	}
 
 	// Display review modal window 
