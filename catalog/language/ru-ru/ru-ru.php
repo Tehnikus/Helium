@@ -15,6 +15,7 @@ $_['text_none']             = ' --- Не выбрано --- ';
 $_['text_select']           = ' --- Выберите --- ';
 $_['text_all_zones']        = 'Все зоны';
 $_['text_pagination']       = 'Показано с <span class="from">%s</span> по <span class="to">%d</span> из %s товаров, (страниц: %d)';
+$_['text_review_pagination']   = 'Показано с <span class="from">%s</span> по <span class="to">%d</span> из %s отзывов, (страниц: %d)';
 $_['aria_rating_label']     = 'Оценка'; 
 $_['aria_review_count_label'] = 'отзывов';
 
