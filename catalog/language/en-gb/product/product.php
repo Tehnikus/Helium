@@ -13,7 +13,6 @@ $_['text_tax']                 = 'Ex Tax:';
 $_['text_discount']            = ' pcs or more ';
 $_['text_option']              = 'Available Options';
 $_['text_minimum']             = 'This product has a minimum quantity of %s';
-$_['text_reviews']             = '%s reviews';
 $_['text_write']               = 'Write a review';
 $_['text_login']               = 'Please <a href="%s">login</a> or <a href="%s">register</a> to review';
 $_['text_no_reviews']          = 'There are no reviews for this product.';
@@ -43,7 +42,7 @@ $_['entry_bad']                = 'Bad';
 // Tabs
 $_['tab_description']          = 'Description';
 $_['tab_attribute']            = 'Specification';
-$_['tab_review']               = 'Reviews (%s)';
+$_['tab_review']               = 'Reviews';
 $_['tab_photos']               = 'Photos';
 $_['button_send_review']       = 'Send review';
 
