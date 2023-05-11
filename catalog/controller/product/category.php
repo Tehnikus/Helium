@@ -593,7 +593,7 @@ class ControllerProductCategory extends Controller {
 				'offerCount' 	=> $data['offer_count'],
 				'lowPrice' 		=> round($data['min_price'], 2),
 				'highPrice' 	=> round($data['max_price'], 2),
-				'priceCurrency' => $this->session->data['currency'],
+				'priceCurrency' => $this->config->get('config_currency'),
 				'availability'	=>'http://schema.org/InStock',
 			);
 		}
