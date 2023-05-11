@@ -116,7 +116,7 @@ class ControllerProductProduct extends Controller {
 			$data['meta_description'] 	= $product_info['meta_description'];
 			$data['meta_keyword'] 		= $product_info['meta_keyword'];
 			$this->seoData($data);
-			$this->microdata($product_info, $data);
+			
 			
 			$data['description'] 		= html_entity_decode($product_info['description'], ENT_QUOTES, 'UTF-8');
 
@@ -326,6 +326,8 @@ class ControllerProductProduct extends Controller {
 				$data['tab_review'] = $this->language->get('tab_review').' ('.(int)$product_info['reviews'].')';
 			}
 
+			$this->microdata($product_info, $data);
+
 			$this->response->setOutput($this->load->view('product/product', $data));
 		} else {
 			// 404 Not found
@@ -466,82 +468,97 @@ class ControllerProductProduct extends Controller {
 
 	public function microdata($product_info, &$data) {
 		$microdata = array();
-
-
-		$jayParsedAry = [
-			'@context' => 'https://schema.org/',
-			'@type' => 'Product',
-			'sku' => 'trinket-12345',
-			'gtin14' => '12345678901234',
-			'image' => [
-				'https://example.com/photos/16x9/trinket.jpg',
-				'https://example.com/photos/4x3/trinket.jpg',
-				'https://example.com/photos/1x1/trinket.jpg'
-			],
-			'name' => $product_info['name'],
-			'description' => $product_info['description'],
+		$microdata = [
+			'@context' 		=> 'https://schema.org/',
+			'@type'			=> 'Product',
+			'sku' 			=> $product_info['sku'],
+			'ean13' 		=> $product_info['ean'],
+			'name' 			=> $product_info['name'],
+			'description' 	=> mb_substr(strip_tags($product_info['description']), 0, 260),
 
 			'offers' => [
-				'@type' => 'Offer',
-				'url' => 'https://www.example.com/trinket_offer',
-				'itemCondition' => 'https://schema.org/NewCondition',
-				'availability' => 'https://schema.org/InStock',
-				'price' => 39.99,
-				'priceCurrency' => 'USD',
-				'priceValidUntil' => '2020-11-20',
-				'shippingDetails' => [
-					'@type' => 'OfferShippingDetails',
-					'shippingRate' => [
-						'@type' => 'MonetaryAmount',
-						'value' => 3.49,
-						'currency' => 'USD'
-					],
-					'shippingDestination' => [
-						'@type' => 'DefinedRegion',
-						'addressCountry' => 'US'
-					],
-					'deliveryTime' => [
-						'@type' => 'ShippingDeliveryTime',
-						'handlingTime' => [
-							'@type' => 'QuantitativeValue',
-							'minValue' => 0,
-							'maxValue' => 1,
-							'unitCode' => 'DAY'
-						],
-						'transitTime' => [
-							'@type' => 'QuantitativeValue',
-							'minValue' => 1,
-							'maxValue' => 5,
-							'unitCode' => 'DAY'
-						]
-					]
-				]
+				'@type' 			=> 'Offer',
+				'url' 				=> $this->url->link('product/product', 'product_id=' . $this->request->get['product_id']),
+				'itemCondition' 	=> 'https://schema.org/NewCondition',
+				'availability' 		=> 'https://schema.org/InStock',
+				'price' 			=> !empty($product_info['special']) ? $product_info['special'] : $product_info['price'],
+				'priceCurrency' 	=> $this->config->get('config_currency'),
+				'priceValidUntil' 	=> !empty($product_info['special_date_end']) ? $product_info['special_date_end'] : date('Y-m-d', strtotime('+1 month')),
+				
 			],
-			'review' => [
-				'@type' => 'Review',
-				'reviewRating' => [
-					'@type' => 'Rating',
-					'ratingValue' => 4,
-					'bestRating' => 5
-				],
-				'author' => [
-					'@type' => 'Person',
-					'name' => 'Fred Benson'
-				]
-			],
+
 			'aggregateRating' => [
-				'@type' => 'AggregateRating',
-				'ratingValue' => 4.4,
-				'reviewCount' => 89
+				'@type' 		=> 'AggregateRating',
+				'ratingValue' 	=> $product_info['rating'],
+				'reviewCount' 	=> $product_info['reviews']
 			]
 		];
+
+		// Microdata images
+		// Main image
+		if ($product_info['image'] && $data['thumb']['link']) {
+			$microdata['image'][] = $data['thumb']['link'];
+		}
+		if (!empty($data['images'])) {
+			foreach ($data['images'] as $additional_image) {
+				$microdata['image'][] = $additional_image['popup'];
+			}
+		}
+		// Microdata latest reviews
+		if (isset($data['reviews']) && !empty($data['reviews']['reviews'])) {
+			$microdata['review'] = [];
+			foreach ($data['reviews']['reviews'] as $review) {
+				$microdata['review'] = array(
+					'@type' => 'Review',
+					'datePublished' => $review['date_added'],
+					'reviewRating' => [
+						'@type' => 'Rating',
+						'ratingValue' => $review['rating'],
+						'bestRating' => 5
+					],
+					'author' => [
+						'@type' => 'Person',
+						'name' => $review['author']
+					]
+				);
+			}
+		}
+		// Microdata brand
 		if (!empty($product_info['manufacturer'])) {
 			$microdata['brand'] = array(
 				'@type' => 'Brand',
 				'name' => $product_info['manufacturer']
 			);
 		}
+		$data['microdata'] = json_encode($microdata, JSON_UNESCAPED_UNICODE);
 
+		// $microdata['shippingDetails'] = array(
+		// 	'@type' => 'OfferShippingDetails',
+		// 	'shippingRate' => [
+		// 		'@type' => 'MonetaryAmount',
+		// 		'value' => 3.49,
+		// 		'currency' => 'USD'
+		// 	],
+		// 	'shippingDestination' => [
+		// 		'@type' => 'DefinedRegion',
+		// 		'addressCountry' => 'US'
+		// 	],
+		// 	'deliveryTime' => [
+		// 		'@type' => 'ShippingDeliveryTime',
+		// 		'handlingTime' => [
+		// 			'@type' => 'QuantitativeValue',
+		// 			'minValue' => 0,
+		// 			'maxValue' => 1,
+		// 			'unitCode' => 'DAY'
+		// 		],
+		// 		'transitTime' => [
+		// 			'@type' => 'QuantitativeValue',
+		// 			'minValue' => 1,
+		// 			'maxValue' => 5,
+		// 			'unitCode' => 'DAY'
+		// 		]
+		// 	]
+		// );
 	}
 
 	public function getRecurringDescription() {
