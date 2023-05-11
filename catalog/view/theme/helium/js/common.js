@@ -892,11 +892,11 @@ function loadMore() {
 		active_pages = pagination.querySelectorAll('li.active');
 		var last = active_pages[active_pages.length - 1];
 		next_page = last.nextElementSibling;
+		// Disable "Load more" button and hide next and last buttons
 		if (!next_page.nextElementSibling.classList.contains('page')) {
 			d.getElementById('load-more-btn').disabled = true;
 			document.querySelectorAll('[rel="next"], [rel="last"]').forEach(function (e) {
 				e.style.cssText = 'display:none'
-				
 			});
 		}
 		if (!!next_page) {
@@ -905,10 +905,10 @@ function loadMore() {
 				ajax(next_href.href, null, function(resp){
 					var div = document.createElement('div');
 					div.innerHTML = resp;
-					var blocks = div.querySelectorAll('main .miniature, .js-product-review');
+					var blocks = div.querySelectorAll('main .miniature, div[role="comment"]');
 					for (let index = 0; index < blocks.length; index++) {
 						const block = blocks[index];
-						document.querySelector('main .product.grid, main .article.grid, #js-reviews').insertAdjacentElement('beforeend', block);
+						document.querySelector('main .product.grid, main .article.grid, #js_reviews').insertAdjacentElement('beforeend', block);
 						countdown(block)
 					}
 					var next_text = next_href.innerText;
@@ -1008,12 +1008,14 @@ function sendReview(t) {
 	ajax(review_url, review,
 		function(r) {
 			if (r.error) {
+				handleErrors(r, review_form);
 				mwindow.create('toast', r.error, 'error');
 			}
 			if (r.success) {
+				dialog.close();
 				mwindow.create('toast', r.success, 'success');
 				// Убираем форму
-				review_form.parentElement.removeChild(review_form);
+				// review_form.parentElement.removeChild(review_form);
 			}
 		},
 		null,null,null,'POST','JSON',true
@@ -1732,3 +1734,54 @@ function countdown(element) {
 	}
 }
 
+// Handle errors on inputs
+// Highlights feulty inputs, adds ARIA aria-errormessage to announce errors on screenreaders
+// @result - the result of fetch request
+// @form_with_errors - DOM element of form to be highlighted
+function handleErrors(result, form_with_errors) {
+	console.log(result);
+	// Remove previous error messages
+	removeElementsByClass('text-danger');
+	[].forEach.call(document.querySelectorAll('.has-error'), function (el) {
+		el.classList.remove('has-error');
+	});
+	// Remove ARIA attributes for previous errors
+	[].forEach.call(document.querySelectorAll('[aria-invalid="true"]'), function (el) {
+		el.removeAttribute('aria-invalid');
+	});
+	[].forEach.call(document.querySelectorAll('[aria-errormessage]'), function (el) {
+		el.removeAttribute('aria-errormessage');
+	});
+
+	if ('error' in result) {
+		let errors_object = result.error;
+		for (i in errors_object) {
+			// TODO Test this with multiple warnings
+			if (i == 'warning') {
+				mwindow.create('toast', errors_object['warning'], 'warning');
+			} else {
+				// console.log(i, errors_object[i]);
+				let error_input = form_with_errors.querySelector('[name=' + i + ']');
+				if (error_input) {
+					// Set ARIA ittributes to invalid fields
+					error_input.setAttribute('aria-invalid', true);
+					error_input.setAttribute('aria-errormessage', 'error_label_' + i);
+					let error_input_group = error_input.parentElement.classList.contains('form-group') ? error_input.parentElement : false;
+					if (error_input_group) {
+						error_input_group.classList.add('has-error');
+					}
+					error_input.insertAdjacentHTML('afterend', '<span role="alert" id="error_label_' + i + '" class="text-danger">' + errors_object[i] + '</span>')
+				} else {
+					console.log('input not found:', 'input name=[' + i + ']');
+				}
+			}
+		}
+	}
+}
+
+function removeElementsByClass(className) {
+	const elements = document.getElementsByClassName(className);
+	while(elements.length > 0) {
+	  elements[0].parentNode.removeChild(elements[0]);
+	}
+}
