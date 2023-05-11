@@ -62,7 +62,6 @@ class ControllerProductProduct extends Controller {
 		if ($product_info) {
 
 			// Load models
-			$this->load->model('catalog/review');
 			$this->load->model('tool/image');
 
 			// Flags
@@ -75,49 +74,12 @@ class ControllerProductProduct extends Controller {
 				'href' => $this->url->link('product/product', '&product_id=' . $this->request->get['product_id'])
 			);
 
-			if ($product_info['meta_title']) {
-				$this->document->setTitle($product_info['meta_title']);
-			} else {
-				$this->document->setTitle($product_info['name']);
-			}
-			
-			if ($product_info['meta_h1']) {
-				$data['heading_title'] = $product_info['meta_h1'];
-			} else {
-				$data['heading_title'] = $product_info['name'];
-			}
-			
-			$this->document->setDescription($product_info['meta_description']);
-			$this->document->setKeywords($product_info['meta_keyword']);
-			$this->document->addLink($this->url->link('product/product', 'product_id=' . $this->request->get['product_id']), 'canonical');
-
-			$data['text_minimum'] 		= sprintf($this->language->get('text_minimum'), $product_info['minimum']);
-			$data['text_login'] 		= sprintf($this->language->get('text_login'), $this->url->link('account/login', '', true), $this->url->link('account/register', '', true));
-			$data['tab_review']			= sprintf($this->language->get('tab_review'), $product_info['reviews']);
-			$data['product_id'] 		= (int)$this->request->get['product_id'];
-			$data['manufacturer'] 		= $product_info['manufacturer'];
-			$data['manufacturers'] 		= $this->url->link('product/manufacturer/info', 'manufacturer_id=' . $product_info['manufacturer_id']);
-			$data['model'] 				= $product_info['model'];
-			$data['reward'] 			= $product_info['reward'];
-			$data['points'] 			= $product_info['points'];
-			$data['special_date_end'] 	= $product_info['special_date_end'];
-			$data['description'] 		= html_entity_decode($product_info['description'], ENT_QUOTES, 'UTF-8');
-
-			// Stock status
-			if ($product_info['quantity'] <= 0) {
-				$data['stock'] = $product_info['stock_status'];
-			} elseif ($this->config->get('config_stock_display')) {
-				$data['stock'] = $product_info['quantity'];
-			} else {
-				$data['stock'] = $this->language->get('text_instock');
-			}
-
 			// Images
 			// Main image
 			if ($product_info['image']) {
 				$data['popup'] = $this->model_tool_image->resize($product_info['image'], $this->config->get('image_popup_width'), $this->config->get('image_popup_height'));
 				$data['thumb']['link'] = $this->model_tool_image->resize($product_info['image'], $this->config->get('image_thumb_width'), $this->config->get('image_thumb_height'));
-				$this->document->addLink($data['thumb']['link'], 'preload', 'image');
+				
 			} else {
 				$data['popup'] = $this->model_tool_image->resize('no_image.webp', $this->config->get('image_popup_width'), $this->config->get('image_popup_height'));
 				$data['thumb']['link'] = $this->model_tool_image->resize('no_image.webp', $this->config->get('image_thumb_width'), $this->config->get('image_thumb_height'));
@@ -136,6 +98,38 @@ class ControllerProductProduct extends Controller {
 					'height' => $this->config->get('image_additional_height'),
 				);
 			}
+
+			$data['text_minimum'] 		= sprintf($this->language->get('text_minimum'), $product_info['minimum']);
+			$data['text_login'] 		= sprintf($this->language->get('text_login'), $this->url->link('account/login', '', true), $this->url->link('account/register', '', true));
+			$data['product_id'] 		= (int)$this->request->get['product_id'];
+			$data['manufacturer'] 		= $product_info['manufacturer'];
+			$data['manufacturers'] 		= $this->url->link('product/manufacturer/info', 'manufacturer_id=' . $product_info['manufacturer_id']);
+			$data['model'] 				= $product_info['model'];
+			$data['reward'] 			= $product_info['reward'];
+			$data['points'] 			= $product_info['points'];
+			$data['special_date_end'] 	= $product_info['special_date_end'];
+			
+			// Set seo data
+			$data['meta_title'] 		= $product_info['meta_title'];
+			$data['name'] 				= $product_info['name'];
+			$data['meta_h1'] 			= $product_info['meta_h1'];
+			$data['meta_description'] 	= $product_info['meta_description'];
+			$data['meta_keyword'] 		= $product_info['meta_keyword'];
+			$this->seoData($data);
+			$this->microdata($product_info, $data);
+			
+			$data['description'] 		= html_entity_decode($product_info['description'], ENT_QUOTES, 'UTF-8');
+
+			// Stock status
+			if ($product_info['quantity'] <= 0) {
+				$data['stock'] = $product_info['stock_status'];
+			} elseif ($this->config->get('config_stock_display')) {
+				$data['stock'] = $product_info['quantity'];
+			} else {
+				$data['stock'] = $this->language->get('text_instock');
+			}
+
+
 
 
 			// Prices
@@ -267,25 +261,12 @@ class ControllerProductProduct extends Controller {
 			$data['json_prices'] = json_encode($json_prices);
 			////////////////////////////////////////////////////
 
-
-
-
-			$data['review_status'] = $this->config->get('config_review_status');
-
-			if ($this->config->get('config_review_guest') || $this->customer->isLogged()) {
-				$data['review_guest'] = true;
-			} else {
-				$data['review_guest'] = false;
-			}
-
 			if ($this->customer->isLogged()) {
-				$data['customer_name'] = $this->customer->getFirstName() . '&nbsp;' . $this->customer->getLastName();
+				$data['customer_name'] = $this->customer->getFirstName() . ' ' . $this->customer->getLastName();
 			} else {
 				$data['customer_name'] = '';
 			}
 
-			$data['reviews'] = sprintf($this->language->get('text_reviews'), (int)$product_info['reviews']);
-			$data['rating'] = (int)$product_info['rating'];
 
 			// Captcha
 			if ($this->config->get('captcha_' . $this->config->get('config_captcha') . '_status') && in_array('review', (array)$this->config->get('config_captcha_page'))) {
@@ -327,7 +308,23 @@ class ControllerProductProduct extends Controller {
 			$data['content_bottom'] = $this->load->controller('common/content_bottom');
 			$data['footer'] = $this->load->controller('common/footer');
 			$data['header'] = $this->load->controller('common/header');
-			$data['review_list'] = $this->reviews();
+
+			/////////////////
+			// Review data //
+			/////////////////
+			$data['review_status'] = $this->config->get('config_review_status');
+			if ($this->config->get('config_review_guest') || $this->customer->isLogged()) {
+				$data['review_guest'] = true;
+			} else {
+				$data['review_guest'] = false;
+			}
+			$data['reviews_header'] = $this->language->get('tab_review');
+			$data['reviews_count'] = (int)$product_info['reviews'];
+			$data['rating'] = round((float)$product_info['rating'], 2);
+			$data['reviews'] = $this->reviews();
+			if ((int)$product_info['reviews'] > 0) {
+				$data['tab_review'] = $this->language->get('tab_review').' ('.(int)$product_info['reviews'].')';
+			}
 
 			$this->response->setOutput($this->load->view('product/product', $data));
 		} else {
@@ -357,7 +354,6 @@ class ControllerProductProduct extends Controller {
 	// Show reviews list statically
 	public function reviews() {
 		$this->load->language('product/product');
-
 		$this->load->model('catalog/review');
 
 		if (isset($this->request->get['page'])) {
@@ -385,8 +381,8 @@ class ControllerProductProduct extends Controller {
 		$pagination->limit = 5;
 		$pagination->url = $this->url->link('product/product/review', 'product_id=' . $this->request->get['product_id'] . '&page={page}');
 
-		$data['reviews_pagination'] = $pagination->render();
-		$data['reviews_results'] = sprintf($this->language->get('text_pagination'), ($review_total) ? (($page - 1) * 5) + 1 : 0, ((($page - 1) * 5) > ($review_total - 5)) ? $review_total : ((($page - 1) * 5) + 5), $review_total, ceil($review_total / 5));
+		$data['pagination'] = $pagination->render();
+		$data['reviews_count'] = sprintf($this->language->get('text_review_pagination'), ($review_total) ? (($page - 1) * 5) + 1 : 0, ((($page - 1) * 5) > ($review_total - 5)) ? $review_total : ((($page - 1) * 5) + 5), $review_total, ceil($review_total / 5));
 
 		return $data;
 	}
@@ -396,8 +392,8 @@ class ControllerProductProduct extends Controller {
 	// И отображает файл шаблона с отзывами
 	public function review() {
 		$data = array();
-		$data['review_list'] = $this->reviews();
-		$this->response->setOutput($this->load->view('product/review', $data));
+		$data['reviews'] = $this->reviews();
+		$this->response->setOutput($this->load->view('common/review_grid', $data));
 	}
 
 	// Display review modal window 
@@ -450,6 +446,102 @@ class ControllerProductProduct extends Controller {
 
 		$this->response->addHeader('Content-Type: application/json');
 		$this->response->setOutput(json_encode($json));
+	}
+
+	// Set SEO data
+	public function seoData(&$data) {
+		// Meta titles
+		!empty($data['meta_title']) ? $this->document->setTitle($data['meta_title']) : $this->document->setTitle($data['name']); 
+		// H1 tag
+		!empty($data['meta_h1']) ? ($data['heading_title'] = $data['meta_h1']) : ($data['heading_title'] = $data['name']); 
+		// Meta Description
+		$this->document->setDescription($data['meta_description']);
+		// Keywords
+		$this->document->setKeywords($data['meta_keyword']);
+		// Canonical link
+		$this->document->addLink($this->url->link('product/product', 'product_id=' . $this->request->get['product_id']), 'canonical');
+		// Preload main image
+		$this->document->addLink($data['thumb']['link'], 'preload', 'image');
+	}
+
+	public function microdata($product_info, &$data) {
+		$microdata = array();
+
+
+		$jayParsedAry = [
+			'@context' => 'https://schema.org/',
+			'@type' => 'Product',
+			'sku' => 'trinket-12345',
+			'gtin14' => '12345678901234',
+			'image' => [
+				'https://example.com/photos/16x9/trinket.jpg',
+				'https://example.com/photos/4x3/trinket.jpg',
+				'https://example.com/photos/1x1/trinket.jpg'
+			],
+			'name' => $product_info['name'],
+			'description' => $product_info['description'],
+
+			'offers' => [
+				'@type' => 'Offer',
+				'url' => 'https://www.example.com/trinket_offer',
+				'itemCondition' => 'https://schema.org/NewCondition',
+				'availability' => 'https://schema.org/InStock',
+				'price' => 39.99,
+				'priceCurrency' => 'USD',
+				'priceValidUntil' => '2020-11-20',
+				'shippingDetails' => [
+					'@type' => 'OfferShippingDetails',
+					'shippingRate' => [
+						'@type' => 'MonetaryAmount',
+						'value' => 3.49,
+						'currency' => 'USD'
+					],
+					'shippingDestination' => [
+						'@type' => 'DefinedRegion',
+						'addressCountry' => 'US'
+					],
+					'deliveryTime' => [
+						'@type' => 'ShippingDeliveryTime',
+						'handlingTime' => [
+							'@type' => 'QuantitativeValue',
+							'minValue' => 0,
+							'maxValue' => 1,
+							'unitCode' => 'DAY'
+						],
+						'transitTime' => [
+							'@type' => 'QuantitativeValue',
+							'minValue' => 1,
+							'maxValue' => 5,
+							'unitCode' => 'DAY'
+						]
+					]
+				]
+			],
+			'review' => [
+				'@type' => 'Review',
+				'reviewRating' => [
+					'@type' => 'Rating',
+					'ratingValue' => 4,
+					'bestRating' => 5
+				],
+				'author' => [
+					'@type' => 'Person',
+					'name' => 'Fred Benson'
+				]
+			],
+			'aggregateRating' => [
+				'@type' => 'AggregateRating',
+				'ratingValue' => 4.4,
+				'reviewCount' => 89
+			]
+		];
+		if (!empty($product_info['manufacturer'])) {
+			$microdata['brand'] = array(
+				'@type' => 'Brand',
+				'name' => $product_info['manufacturer']
+			);
+		}
+
 	}
 
 	public function getRecurringDescription() {
