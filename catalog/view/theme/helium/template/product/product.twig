@@ -1,15 +1,20 @@
 {{ header }}
+{% if microdata is defined %}
+  <!-- microdata -->
+  <script type="application/ld+json">
+    {{ microdata }}
+  </script>
+{% endif %}
 {% include 'helium/template/common/breadcrumbs.twig' %}
 <main role="main" id="product" data-product-id="{{ product_id }}" data-json-prices={{ json_prices }} >
   {{ content_top }}
-  
   <hgroup>
     {# Header #}
     <div class="title">
       <h1 class="product-name">{{ heading_title }}</h1>
       {# Rating stars display #}
       {% if review_status %}
-        {% include 'helium/template/common/rating_stars.twig' with {rating: rating, count:reviews} %}
+        {% include 'helium/template/common/rating_stars.twig' with {rating: rating, count:reviews_count} %}
       {% endif %}
     </div>
     {# Page contents #}
@@ -25,7 +30,7 @@
           <li><a class="button" href="{{ share }}#specification" title="{{ tab_attribute }}">{{ tab_attribute }}</a></li>
         {% endif %}
         {% if review_status %}
-          <li><a class="button" href="{{ share }}#reviews" title="{{ tab_review }}">{{ tab_review }}</a></li>
+          <li><a class="button" href="{{ share }}#js_reviews" title="{{ tab_review }}">{{ tab_review }}</a></li>
         {% endif %}
         {% if products %}
           <li><a class="button" href="{{ share }}#related" title="{{ text_related }}">{{ text_related }} ({{products|length}})</a></li>
@@ -197,11 +202,9 @@
 
     {# Reviews #}
     {% if review_status %}
-      <span class="h1">{{ tab_review }}</span>
-      <div id="reviews">
-          {# Подключаем файл с обработкой отзывов для статичного отображения #}
-          {% include 'helium/template/product/review.twig' %}
-      </div>
+
+      {% include 'helium/template/common/review_grid.twig' %}
+      {# {% include 'helium/template/product/review.twig' %} #}
     {% endif %}
   </article>
   {# Сопутствующие товары #}
@@ -236,66 +239,6 @@ $('select[name=\'recurring_id\'], input[name="quantity"]').change(function(){
 });
 //--></script>  #}
 
-
-
-{# <script type="text/javascript">
-
-
-$('button[id^=\'button-upload\']').on('click', function() {
-	var node = this;
-
-	$('#form-upload').remove();
-
-	$('body').prepend('<form enctype="multipart/form-data" id="form-upload" style="display: none;"><input type="file" name="file" /></form>');
-
-	$('#form-upload input[name=\'file\']').trigger('click');
-
-	if (typeof timer != 'undefined') {
-    	clearInterval(timer);
-	}
-
-	timer = setInterval(function() {
-		if ($('#form-upload input[name=\'file\']').val() != '') {
-			clearInterval(timer);
-
-			$.ajax({
-				url: 'index.php?route=tool/upload',
-				type: 'post',
-				dataType: 'json',
-				data: new FormData($('#form-upload')[0]),
-				cache: false,
-				contentType: false,
-				processData: false,
-				beforeSend: function() {
-					$(node).button('loading');
-				},
-				complete: function() {
-					$(node).button('reset');
-				},
-				success: function(json) {
-					$('.text-danger').remove();
-
-					if (json['error']) {
-						$(node).parent().find('input').after('<span class="text-danger">' + json['error'] + '</div>');
-					}
-
-					if (json['success']) {
-						alert(json['success']);
-
-						$(node).parent().find('input').val(json['code']);
-					}
-				},
-				error: function(xhr, ajaxOptions, thrownError) {
-					alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
-				}
-			});
-		}
-	}, 500);
-});
-</script>  #}
-{# <script type="text/javascript">
-
-</script>  #}
 {{ column_left }}
 {{ column_right }}
 {{ footer }} 

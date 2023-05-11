@@ -15,7 +15,7 @@
         {{ article.description }}
       </p>
       {% if article.rating %}
-        {% include 'helium/template/common/rating_stars.twig' with {rating:article.rating, count:article.reviews} %}
+        {% include 'helium/template/common/rating_stars.twig' with {rating:article.rating, count:article.reviews_count} %}
       {% endif %}
     </div>
     <div class="article-infos">

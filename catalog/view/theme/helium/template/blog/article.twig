@@ -47,6 +47,7 @@
     {{ description }}
   </article>
 
+  {# Reviews #}
   {% include 'helium/template/common/review_grid.twig' %}
 
   {# Downloads #}
@@ -78,7 +79,7 @@
       <span class="h3">{{ text_related_articles }}</span>
       <div class="scroll-x js_scroll">
         {% for article in articles %} 
-          {% include 'helium/template/blog/article_miniature.twig' with {article: article, review_status:review_status} %}
+          {% include 'helium/template/blog/article_miniature.twig' with {article: article, count:reviews_count} %}
         {% endfor %}
       </div>
     </div>
