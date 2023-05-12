@@ -600,23 +600,24 @@ class ControllerProductCategory extends Controller {
 		if ($data['rating'] !== null && $data['review_count'] !== null) {
 			$rating = array(
 				'@type' => 'AggregateRating',
-				'ratingValue' => round($data['rating'], 2),
-				'ratingCount' => $data['review_count'],
-				'reviewCount' => $data['review_count'],
-				'bestRating' => '5',
-				'worstRating' => '1'
+				'ratingValue' 	=> round($data['rating'], 2),
+				'ratingCount' 	=> $data['review_count'],
+				'reviewCount' 	=> $data['review_count'],
+				'bestRating' 	=> '5',
+				'worstRating' 	=> '1'
 			);
 		}
 		$microdata_array = array(
-			'@context' => 'http://schema.org/',
-			'@type' => 'Product',
-			'name' => $data['name'],
-			'description' => $data['meta_description'],
-			'image' => $this->model_tool_image->resize($data['image'], $this->config->get('image_category_width'), $this->config->get('image_category_height')),
-			'offers' => $offers,
+			'@context' 		=> 'http://schema.org/',
+			'@type' 		=> 'Product',
+			'name' 			=> $data['name'],
+			'description' 	=> $data['meta_description'],
+			'image' 		=> $this->model_tool_image->resize($data['image'], $this->config->get('image_category_width'), $this->config->get('image_category_height')),
+			'offers' 		=> $offers,
+			
 			'seller' => array(
 				'@type' => 'Organization',
-				'name' => $this->config->get('config_name')
+				'name' 	=> $this->config->get('config_name')
 			),
 			'aggregateRating' => $rating
 		);
