@@ -1,88 +1,101 @@
 {{ header }}
 {% include 'helium/template/common/breadcrumbs.twig' %}
 <main role="main" id="information-contact">
-  {{ content_top }}
-  <h1>{{ heading_title }}</h1>
-  <h3>{{ text_location }}</h3>
-      <div class="panel panel-default">
-        <div class="panel-body">
-          <div class="row">
-            {% if image %}
-            <div class="col-sm-3"><img loading="lazy" src="{{ image }}" alt="{{ store }}" title="{{ store }}" class="img-thumbnail" /></div>
-            {% endif %}
-            <div class="col-sm-3"><strong>{{ store }}</strong><br />
+      {{ content_top }}
+      <h1>{{ heading_title }}</h1>
+      <h2>{{ text_location }}</h2>
+      <div class="address">
+        <div>
+          {% if image %}
+            <div>
+              <img loading="lazy" src="{{ image }}" alt="{{ store }}" title="{{ store }}" />
+            </div>
+          {% endif %}
+          <div>
+            <div>
+              <p>{{ store }}</p>
               <address>
-              {{ address }}
+                {{ address }}
               </address>
               {% if geocode %}
-              <a href="https://maps.google.com/maps?q={{ geocode|url_encode }}&hl={{ geocode_hl }}&t=m&z=15" target="_blank" class="btn btn-info"><i class="icon-location"></i> {{ button_map }}</a>
+                <a class="button" href="https://maps.google.com/maps?q={{ geocode|url_encode }}&hl={{ geocode_hl }}&t=m&z=15" target="_blank" class="btn btn-info"><i class="icon-location"></i> {{ button_map }}</a>
               {% endif %}
             </div>
-            <div class="col-sm-3"><strong>{{ text_telephone }}</strong><br>
-              {{ telephone }}<br />
-              <br />
+            <div>
+              <p>{{ text_telephone }}</p>
+              <a href="tel:{{ telephone }}" rel="phone">{{ telephone }}</a>
+            </div>
+            <div>
               {% if fax %}
-              <strong>{{ text_fax }}</strong><br>
-              {{ fax }}
+                <p>{{ text_fax }}</p>
+                {{ fax }}
               {% endif %}
             </div>
-            <div class="col-sm-3">
+            <div>
               {% if open %}
-              <strong>{{ text_open }}</strong><br />
-              {{ open }}<br />
-              <br />
+                <p>{{ text_open }}</p>
+                {{ open }}
               {% endif %}
               {% if comment %}
-              <strong>{{ text_comment }}</strong><br />
-              {{ comment }}
+                <p>{{ text_comment }}</p>
+                {{ comment }}
               {% endif %}
             </div>
           </div>
         </div>
       </div>
+
       {% if locations %}
-      <h3>{{ text_store }}</h3>
-      <div class="panel-group" id="accordion">
-        {% for location in locations %}
-        <div class="panel panel-default">
-          <div class="panel-heading">
-            <h4>{{ location.name }}</h4>
-          </div>
-            <div class="row">
-              {% if location.image %}
-              <div class="col-sm-3"><img loading="lazy" src="{{ location.image }}" alt="{{ location.name }}" title="{{ location.name }}" class="img-thumbnail" /></div>
-              {% endif %}
-              <div class="col-sm-3"><strong>{{ location.name }}</strong><br/>
-                <address>
-                {{ location.address }}
-                </address>
-                {% if location.geocode %}
-                <a href="https://maps.google.com/maps?q={{ location.geocode|url_encode }}&hl={{ geocode_hl }}&t=m&z=15" target="_blank" class="btn btn-info"><i class="icon-location"></i> {{ button_map }}</a>
-                {% endif %}
+        <h3>{{ text_store }}</h3>
+        
+          {% for location in locations %}
+            <div class="">
+              <h2>{{ location.name }}</h2>
+              
+                <div>
+                  {% if location.image %}
+                  <div class="col-sm-3"><img loading="lazy" src="{{ location.image }}" alt="{{ location.name }}" title="{{ location.name }}" class="img-thumbnail" /></div>
+                  {% endif %}
+                  <div class="col-sm-3">
+                    <p>{{ location.name }}</p>
+                    <address>
+                      {{ location.address|nl2br }}
+                    </address>
+                    {% if location.geocode %}
+                      <a href="https://maps.google.com/maps?q={{ location.geocode|url_encode }}&hl={{ geocode_hl }}&t=m&z=15" target="_blank" class="btn btn-info"><i class="icon-location"></i> {{ button_map }}</a>
+                    {% endif %}
+                  </div>
+                  <div>
+                    {% if location.map %}
+                      <iframe>
+                      {{ location.map|raw|raw }}
+                      </iframe>
+                    {% endif %}
+                  </div>
+                  <div> 
+                    <p>{{ text_telephone }}</p>
+                    {{ location.telephone }}
+                    
+                    {% if location.fax %}
+                      <p>{{ text_fax }}</p>
+                      {{ location.fax }}
+                    {% endif %}
+                  </div>
+                  <div>
+                    {% if location.open %}
+                    <p>{{ text_open }}</p>
+                    {{ location.open|nl2br }}
+                    
+                    {% endif %}
+                    {% if location.comment %}
+                    <p>{{ text_comment }}</p>
+                    {{ location.comment }}
+                    {% endif %}
+                  </div>
               </div>
-              <div class="col-sm-3"> <strong>{{ text_telephone }}</strong><br/>
-                {{ location.telephone }}<br/>
-                <br/>
-                {% if location.fax %}
-                <strong>{{ text_fax }}</strong><br/>
-                {{ location.fax }}
-                {% endif %}
-              </div>
-              <div class="col-sm-3">
-                {% if location.open %}
-                <strong>{{ text_open }}</strong><br/>
-                {{ location.open }}<br/>
-                <br/>
-                {% endif %}
-                {% if location.comment %}
-                <strong>{{ text_comment }}</strong><br/>
-                {{ location.comment }}
-                {% endif %}
-              </div>
-          </div>
-        </div>
-        {% endfor %}
-      </div>
+            </div>
+          {% endfor %}
+        
       {% endif %}
       <form action="{{ action }}" method="post" enctype="multipart/form-data" >
         <fieldset>

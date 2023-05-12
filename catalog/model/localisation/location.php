@@ -24,4 +24,16 @@ class ModelLocalisationLocation extends Model {
 
 		return $query->row;
 	}
+
+	public function getLocationsByStore($store_id) {
+		$query = "
+			SELECT 
+				* 
+			FROM `oc_location`
+			WHERE `store_id` = ".$store_id."
+			AND `status` = '1'
+			ORDER BY `sort_order` ASC;
+		";
+		$this->db->query($query);
+	}
 }
