@@ -1,0 +1,21 @@
+{# {% if reviews %} #}
+  <div id="js_reviews">
+    <span class="h1">{{ reviews_header }}</span>
+    {% for review in reviews.reviews %}
+      <div role="comment" tabindex="0" class="block review">
+        <div class="review_header">
+          <address>
+            {% if review.author %}<span rel="author"><i class="icon-user"></i>{{ review.author }}</span>{% endif %}
+            <time pubdate class="text-right"><i class="icon-calendar"></i>{{ review.date_added }}</time>
+          </address>
+          {% include 'helium/template/common/rating_stars.twig' with {rating: review.rating} %}
+        </div>
+        <div><p>{{ review.text|striptags }}</p></div>
+      </div>
+    {% endfor %}
+  </div>
+  <div class="scroll-x">{{ reviews.pagination }}</div>
+  <span>{{ reviews.reviews_count }}</span>
+{# {% else %}
+  <p>{{ text_no_reviews }}</p> #}
+{# {% endif %}  #}

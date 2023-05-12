@@ -16,3 +16,4 @@ image/*.*
 .vscode/settings.json
 catalog/view/theme/helium/js/slider.html
 
+*.jpg
