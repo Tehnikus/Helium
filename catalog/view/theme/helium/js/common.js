@@ -1165,6 +1165,10 @@ const wishlistModal = (el, ev) => {
 const cartShowModal = (el, ev) => {
 	fetchFunction({url:'index.php?route=common/cart/modal', callback: dialog, arg: 'create',ev:ev})
 }
+const contactsModal = (el, ev) => {
+	fetchFunction({url:'index.php?route=information/contact/showContactsModal', callback: dialog, arg: 'create',ev:ev})
+}
+
 
 
 // const cartRemove =  async (el, ev) => {
@@ -1204,6 +1208,7 @@ const actions = {
 		cartShowModal,
 		compareModal,
 		wishlistModal,
+		contactsModal
 
 	},
 	input: {

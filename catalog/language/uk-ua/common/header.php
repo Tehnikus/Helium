@@ -10,6 +10,7 @@ $_['text_transaction']      = 'Транзакції';
 $_['text_wishlist']         = 'Закладки';
 $_['text_download']         = 'Завантаження';
 $_['text_logout']           = 'Вихід';
+$_['text_location']         = 'Контакти';
 
 $_['text_checkout']         = 'Оформлення замовлення';
 $_['text_search']           = 'Пошук';
@@ -34,9 +35,8 @@ $_['text_secs']             = 'сек';
 $_['text_close']            = 'Закрити';
 $_['text_openlist']         = 'Відкрити список підкатегорій';
 $_['text_back_to']          = 'Назад до списку';
+
 $_['text_cart_button']      = 'Кошик';
 $_['text_menu_button']      = 'Меню';
-$_['right']            = 'Вперед';
-$_['left']             = 'Назад';
-
-
+$_['right']                 = 'Вперед';
+$_['left']                  = 'Назад';

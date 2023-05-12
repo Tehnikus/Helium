@@ -10,6 +10,7 @@ $_['text_transaction']              = 'Transactions';
 $_['text_wishlist']                 = 'Wishlist';
 $_['text_download']                 = 'Downloads';
 $_['text_logout']                   = 'Logout';
+$_['text_location']                 = 'Locations';
 
 $_['text_checkout']                 = 'Checkout';
 $_['text_search']                   = 'Search';
@@ -35,7 +36,7 @@ $_['text_close']                    = 'Close';
 $_['text_openlist']                 = 'Open subcategories list';
 $_['text_back_to']                  = 'Back to list';       
 
-$_['text_cart_button']      = 'Cart';
-$_['text_menu_button']      = 'Menu';
-$_['right']            = 'Forward';
-$_['left']             = 'Back';
+$_['text_cart_button']              = 'Cart';
+$_['text_menu_button']              = 'Menu';
+$_['right']                         = 'Forward';
+$_['left']                          = 'Back';

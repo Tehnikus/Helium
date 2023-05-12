@@ -921,7 +921,7 @@ input#input-quantity {text-align: center}
         display: flex;
         justify-content: space-between;
     }
-    /* ul.contents.scroll-x {justify-content: end} */
+    ul.contents.scroll-x {justify-content: end}
     .product_top #photos, .product_top .infos {max-width: 50%;}
     body {
         flex-direction: row;

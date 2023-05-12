@@ -61,52 +61,7 @@ class ControllerInformationContact extends Controller {
 
 		$data['action'] = $this->url->link('information/contact', '', true);
 
-		$this->load->model('tool/image');
-
-		if ($this->config->get('config_image')) {
-			$data['image'] = $this->model_tool_image->resize($this->config->get('config_image'), $this->config->get('theme_' . $this->config->get('config_theme') . '_image_location_width'), $this->config->get('theme_' . $this->config->get('config_theme') . '_image_location_height'));
-		} else {
-			$data['image'] = false;
-		}
-
-		$data['store'] = $this->config->get('config_name');
-		$data['address'] = nl2br($this->config->get('config_address'));
-		$data['geocode'] = $this->config->get('config_geocode');
-		$data['geocode_hl'] = $this->config->get('config_language');
-		$data['telephone'] = $this->config->get('config_telephone');
-		$data['fax'] = $this->config->get('config_fax');
-		$data['open'] = nl2br($this->config->get('config_open'));
-		$data['comment'] = $this->config->get('config_comment');
-
-		$data['locations'] = array();
-
-		$this->load->model('localisation/location');
-
-
-		foreach((array)$this->config->get('config_location') as $location_id) {
-			$location_info = $this->model_localisation_location->getLocation($location_id);
-
-			if ($location_info) {
-				if ($location_info['image']) {
-					$image = $this->model_tool_image->resize($location_info['image'], $this->config->get('theme_' . $this->config->get('config_theme') . '_image_location_width'), $this->config->get('theme_' . $this->config->get('config_theme') . '_image_location_height'));
-				} else {
-					$image = false;
-				}
-
-				$data['locations'][] = array(
-					'location_id' => $location_info['location_id'],
-					'name'        => $location_info['name'],
-					'map'         => $location_info['map'],
-					'address'     => nl2br($location_info['address']),
-					'telephone'   => $location_info['telephone'],
-					'fax'         => $location_info['fax'],
-					'geocode'     => $location_info['geocode'],
-					'image'       => $image,
-					'open'        => nl2br($location_info['open']),
-					'comment'     => $location_info['comment']
-				);
-			}
-		}
+		$this->getContacts($data);
 
 		if (isset($this->request->post['name'])) {
 			$data['name'] = $this->request->post['name'];
@@ -197,5 +152,62 @@ class ControllerInformationContact extends Controller {
 		$data['header'] = $this->load->controller('common/header');
 
 		$this->response->setOutput($this->load->view('common/success', $data));
+	}
+
+	public function showContactsModal()
+	{
+		$data = $this->getContacts();
+		echo(json_encode($data));
+	}
+
+	public function getContacts(&$data = null)
+	{
+		if ($data === null) {
+			$data = [];
+		}
+		$this->load->model('tool/image');
+		$this->load->model('localisation/location');
+
+		if ($this->config->get('config_image')) {
+			$data['image'] = $this->model_tool_image->resize($this->config->get('config_image'), $this->config->get('theme_' . $this->config->get('config_theme') . '_image_location_width'), $this->config->get('theme_' . $this->config->get('config_theme') . '_image_location_height'));
+		} else {
+			$data['image'] = false;
+		}
+
+		$data['store'] 		= $this->config->get('config_name');
+		$data['address'] 	= nl2br($this->config->get('config_address'));
+		$data['geocode'] 	= $this->config->get('config_geocode');
+		$data['geocode_hl'] = $this->config->get('config_language');
+		$data['telephone'] 	= $this->config->get('config_telephone');
+		$data['fax'] 		= $this->config->get('config_fax');
+		$data['open'] 		= nl2br($this->config->get('config_open'));
+		$data['comment'] 	= $this->config->get('config_comment');
+
+		$data['locations'] = array();
+		foreach((array)$this->config->get('config_location') as $location_id) {
+			$location_info = $this->model_localisation_location->getLocation($location_id);
+
+			if ($location_info) {
+				if ($location_info['image']) {
+					$image = $this->model_tool_image->resize($location_info['image'], $this->config->get('theme_' . $this->config->get('config_theme') . '_image_location_width'), $this->config->get('theme_' . $this->config->get('config_theme') . '_image_location_height'));
+				} else {
+					$image = false;
+				}
+
+				$data['locations'][] = array(
+					'location_id' => $location_info['location_id'],
+					'name'        => $location_info['name'],
+					'map'         => $location_info['map'],
+					'address'     => nl2br($location_info['address']),
+					'telephone'   => $location_info['telephone'],
+					'fax'         => $location_info['fax'],
+					'geocode'     => $location_info['geocode'],
+					'image'       => $image,
+					'open'        => nl2br($location_info['open']),
+					'comment'     => $location_info['comment']
+				);
+			}
+		}
+		return $data;
 	}
 }

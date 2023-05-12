@@ -10,6 +10,7 @@ $_['text_transaction']      = 'Транзакции';
 $_['text_wishlist']         = 'Закладки';
 $_['text_download']         = 'Загрузки';
 $_['text_logout']           = 'Выход';
+$_['text_location']         = 'Контакты';
 
 $_['text_checkout']         = 'Оформление заказа';
 $_['text_search']           = 'Поиск';
@@ -25,7 +26,7 @@ $_['text_compare']          = 'Сравнить';
 $_['text_wishlist_count']   = 'Закладки <span class="product-count">%s</span>';
 $_['text_compare_count']    = 'Сравнить <span class="product-count">%s</span>';
 
-
+// JS translatable vars
 $_['text_discount_ends_in'] = 'Скидка заканчивается через';
 $_['text_days']             = 'дней';
 $_['text_hours']            = 'час';
@@ -37,6 +38,5 @@ $_['text_back_to']          = 'Назад к списку';
 
 $_['text_cart_button']      = 'Корзина';
 $_['text_menu_button']      = 'Меню';
-$_['right']            = 'Вперед';
-$_['left']             = 'Назад';
-
+$_['right']                 = 'Вперед';
+$_['left']                  = 'Назад';
