@@ -2,17 +2,15 @@
 
 
 class ControllerExtensionModuleFeaturedProduct extends Controller {
-	public function index($setting) {
-		
-		
+	public function index($setting) {		
 		if (!$setting['limit']) {
 			$setting['limit'] = 4;
 		}
-		
-		$results = array();
-		
+		$this->load->language('extension/module/featured_product');
+		$this->load->model('catalog/product');
 		$this->load->model('catalog/cms');
-		
+
+		$results = array();
 		if (isset($this->request->get['manufacturer_id'])) {
 			$filter_data = array(
 				'manufacturer_id'  => $this->request->get['manufacturer_id'],
@@ -30,22 +28,12 @@ class ControllerExtensionModuleFeaturedProduct extends Controller {
 			}
 		}
 		
-		$this->load->language('extension/module/featured_product');
-
-		$this->load->model('catalog/product');
-
-		$this->load->model('tool/image');
-
 		$data['products'] = array();
-		
 		if (!empty($results)) {
-
 			$data['products'] = $this->model_catalog_product->prepareProductList($results, null);
-			
 		}
 		
 		return $this->load->view('extension/module/featured_product', $data);
-
 	}
 	
 }

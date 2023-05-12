@@ -355,6 +355,7 @@ class ControllerProductProduct extends Controller {
 
 	// Show reviews list statically
 	public function reviews() {
+		$data = [];
 		$this->load->language('product/product');
 		$this->load->model('catalog/review');
 
@@ -475,7 +476,7 @@ class ControllerProductProduct extends Controller {
 			'ean13' 		=> $product_info['ean'],
 			'name' 			=> $product_info['name'],
 			'description' 	=> mb_substr(strip_tags($product_info['description']), 0, 260),
-
+			'image' 		=> [],
 			'offers' => [
 				'@type' 			=> 'Offer',
 				'url' 				=> $this->url->link('product/product', 'product_id=' . $this->request->get['product_id']),
@@ -484,7 +485,6 @@ class ControllerProductProduct extends Controller {
 				'price' 			=> !empty($product_info['special']) ? $product_info['special'] : $product_info['price'],
 				'priceCurrency' 	=> $this->config->get('config_currency'),
 				'priceValidUntil' 	=> !empty($product_info['special_date_end']) ? $product_info['special_date_end'] : date('Y-m-d', strtotime('+1 month')),
-				
 			],
 
 			'aggregateRating' => [

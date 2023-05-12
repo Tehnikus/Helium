@@ -34,7 +34,6 @@
           {% endif %} 
         </p>
       {% endif %}
-
     </div>
     <div class="btn-group">
       <button type="button" aria-haspopup="dialog" class="add-to-cart primary" title="{{ button_cart }} {{ product.name }}" {% if product.price_value and product.price_value != 0 %} onclick="cart.add('{{ product.product_id }}', '{{ product.minimum }}');" {% else %} disabled {% endif %}><i class="icon-cart"></i> <span>{{ button_cart }}</span></button>
