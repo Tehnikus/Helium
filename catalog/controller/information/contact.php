@@ -157,7 +157,8 @@ class ControllerInformationContact extends Controller {
 	public function showContactsModal()
 	{
 		$data = $this->getContacts();
-		echo(json_encode($data));
+		$this->response->setOutput($this->load->view('information/contact_grid', $data));
+		// echo(json_encode($data));
 	}
 
 	public function getContacts(&$data = null)
@@ -197,7 +198,7 @@ class ControllerInformationContact extends Controller {
 				$data['locations'][] = array(
 					'location_id' => $location_info['location_id'],
 					'name'        => $location_info['name'],
-					'map'         => $location_info['map'],
+					'map'         => html_entity_decode($location_info['map']),
 					'address'     => nl2br($location_info['address']),
 					'telephone'   => $location_info['telephone'],
 					'fax'         => $location_info['fax'],
