@@ -1,4 +1,4 @@
-{# {% if reviews %} #}
+{% if reviews and reviews.reviews %}
   <div id="js_reviews">
     <span class="h1">{{ reviews_header }}</span>
     {% for review in reviews.reviews %}
@@ -16,6 +16,6 @@
   </div>
   <div class="scroll-x">{{ reviews.pagination }}</div>
   <span>{{ reviews.reviews_count }}</span>
-{# {% else %}
-  <p>{{ text_no_reviews }}</p> #}
-{# {% endif %}  #}
+{% else %}
+  <p>{{ text_no_reviews }}</p>
+{% endif %} 
