@@ -282,33 +282,6 @@ var cart = {
 				document.getElementById('cart').innerHTML = n;
 			},null,null,null,"GET","text",true);
 		})
-		// $.ajax({
-		// 	url: 'index.php?route=checkout/cart/remove',
-		// 	type: 'post',
-		// 	data: 'key=' + key,
-		// 	dataType: 'json',
-		// 	beforeSend: function() {
-		// 		$('#cart > button').button('loading');
-		// 	},
-		// 	complete: function() {
-		// 		$('#cart > button').button('reset');
-		// 	},
-		// 	success: function(json) {
-		// 		// Need to set timeout otherwise it wont update the total
-		// 		setTimeout(function () {
-		// 			$('#cart > button').html('<span id="cart-total"><i class="fa fa-shopping-cart"></i> ' + json['total'] + '</span>');
-		// 		}, 100);
-
-		// 		if (getURLVar('route') == 'checkout/cart' || getURLVar('route') == 'checkout/checkout') {
-		// 			location = 'index.php?route=checkout/cart';
-		// 		} else {
-		// 			$('#cart > ul').load('index.php?route=common/cart/info ul li');
-		// 		}
-		// 	},
-		// 	error: function(xhr, ajaxOptions, thrownError) {
-		// 		alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
-		// 	}
-		// });
 	},
 	'showModal': function(){
 		ajax('index.php?route=common/cart/modal',null,function(c) {
@@ -929,41 +902,6 @@ function sendReview(t) {
 
 
 
-
-// Find all elements by ID, class or queryselector and bind event listeners on them
-// let elements_list = [
-// 	// {name: '#cart-header-button',  	e:'click',	func:cart.showModal},
-// 	// {name: '#cart-mobile-button',  	e:'click',	func:cart.showModal},
-// 	{name: '#compare-total',        e:'click',	func:showCompareModal},
-// 	{name: '#wishlist-total',       e:'click',	func:showWhishlistModal},
-// 	// {name: '#search-input',         e:'input',	func:searchFunction},
-// ]
-// elements_list.forEach((a) => {
-// 	let element = false;
-// 	let q = a.name.slice(0, 1);
-// 	if (q == '#') {
-// 		element = document.getElementById(a.name.substring(1));
-// 	} else if (q == '.') {
-// 		element = document.getElementsByClassName(a.name.substring(1));
-// 	} else {
-// 		element = document.querySelectorAll(a.name);
-// 	}
-
-// 	if (!!element) {
-// 		if (element.length === undefined) {
-// 			element.addEventListener(a.e, function(ev) {
-// 				a.func(ev)
-// 			})
-// 		} else {
-// 			for (var i = 0; i < element.length; i++) {
-// 				element[i].addEventListener(a.e, function(ev) {
-// 					a.func(ev);
-// 				})
-// 			}
-// 		}
-// 	}
-// })
-
 // TODO Maybe make this as a separate class?
 let timeout = null;
 const searchFunction = (el) => {
@@ -1054,9 +992,14 @@ async function fetchFunction({url, m, h, b, callback, arg, ev}) {
 }
 
 const cartRemove =  async (el, ev) => {
-	let resp = await fetchFunction({url: 'index.php?route=checkout/cart/remove', b: 'key='+el.dataset.key });
+	// Request
+	let r = await fetchFunction({url: 'index.php?route=checkout/cart/remove', b: 'key='+el.dataset.key });
+	let resp = JSON.parse(r);
 	cartShowModal();
-	console.log(JSON.parse(resp));
+	// Update button in header
+	cartUpdateHeaderButton(resp);
+	// Update favicon
+	setIcon(resp.product_count);
 }
 
 const cartAdd =  async (el, ev) => {
@@ -1086,6 +1029,8 @@ const cartAdd =  async (el, ev) => {
 	
 	// If added successfully
 	if ('success' in resp) {
+		// Update button in header
+		cartUpdateHeaderButton(resp);
 		// Show dialog
 		cartShowModal(el,ev);
 		// Update favicon
@@ -1103,46 +1048,27 @@ const cartAdd =  async (el, ev) => {
 	// That's all, folks!
 }
 
+const cartUpdateHeaderButton = (r) => {
+	if ('total_cart' in r && 'product_count' in r) {
+		document.getElementById('total_cart').innerHTML = r.total_cart;
+		document.getElementById('product_count').innerText = r.product_count;
+	}
+}
+
+const cartShowModal = (el, ev) => {
+	fetchFunction({url:'index.php?route=common/cart/modal', callback: dialog, arg: 'create',ev:ev})
+}
+
 const compareModal = (el, ev) => {
 	fetchFunction({url:'index.php?route=product/compare/showCompareModal', callback: dialog, arg:'create',ev:ev})
 }
 const wishlistModal = (el, ev) => {
 	fetchFunction({url:'index.php?route=account/wishlist/showWishlistModal', callback: dialog, arg:'create', ev:ev})
 }
-const cartShowModal = (el, ev) => {
-	fetchFunction({url:'index.php?route=common/cart/modal', callback: dialog, arg: 'create',ev:ev})
-}
 const contactsModal = (el, ev) => {
 	fetchFunction({url:'index.php?route=information/contact/showContactsModal', callback: dialog, arg: 'create',ev:ev})
 }
 
-
-
-// const cartRemove =  async (el, ev) => {
-// 	let resp = fetchFunction({url: 'index.php?route=checkout/cart/remove', b: 'key='+el.dataset.key }).then(r =>{return r.text()}).then(r=>{console.log(r);});
-// }
-
-// const cartRemove = (el, ev) => {
-// 	fetch('index.php?route=checkout/cart/remove',
-// 	{
-// 		method:"POST", 
-// 		headers: {"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"}, 
-// 		body: 'key='+el.dataset.key
-// 	})
-// 	.then(r => {return r.text()})
-// 	.then(r => {
-// 		let resp = JSON.parse(r);
-// 		if ('success' in resp) {
-// 			fetch('index.php?route=common/cart/modal')
-// 			.then(r=>{return r.text()})
-// 			.then(r=>{dialog.create(r)})
-// 		}
-// 	})
-// }
-
-// const cartAdd = (el, ev) => {
-// 	cart.add(el.dataset.productId);
-// }
 
 
 // List of functions
@@ -1155,7 +1081,7 @@ const actions = {
 		cartShowModal,
 		compareModal,
 		wishlistModal,
-		contactsModal
+		contactsModal,
 
 	},
 	input: {
