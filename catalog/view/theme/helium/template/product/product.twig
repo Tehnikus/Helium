@@ -143,7 +143,19 @@
           <input type="hidden" name="product_id" value="{{ product_id }}" />
         </div>
         <div class="btn-group">
-          <button type="button" id="button-cart" data-action="cart_add" data-product-id="{{product_id}}" title="{{ button_cart }}" class="add-to-cart primary">{{ button_cart }}</button>
+
+          <button type="button" 
+            {% if price %}
+              data-action="cartAdd" 
+              data-product_id="{{product_id}}"
+              aria-haspopup="dialog"
+            {% else %}
+              disabled
+            {% endif %}
+            title="{{ button_cart }} {{ name }}" 
+            class="add-to-cart primary">
+            {{ button_cart }}
+          </button>
         </div>
         <div class="btn-group">
           <button type="button" class="wishlist" title="{{ button_wishlist }}" onclick="wishlist.add('{{ product_id }}');"><i class="icon-heart"></i></button>

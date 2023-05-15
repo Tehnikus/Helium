@@ -124,7 +124,20 @@
       <td></td>
       {% for product in products %}
         <td>
-          <button type="button" class="primary" onclick="cart.add('{{ product.product_id }}', '{{ product.minimum }}');">{{ button_cart }}</button>
+          <button type="button" 
+            {% if product.price %}
+              data-action="cartAdd" 
+              data-product_id="{{ product.product_id }}"
+              data-minimum_qty="{{ product.minimum }}" 
+              aria-haspopup="dialog"
+            {% else %}
+              disabled
+            {% endif %}
+            title="{{ button_cart }} {{ name }}" 
+            class="add-to-cart primary">
+            {{ button_cart }}
+          </button>
+          
           <a href="{{ product.remove }}" class="danger">{{ button_remove }}</a>
         </td>
       {% endfor %} 

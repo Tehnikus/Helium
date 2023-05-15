@@ -56,13 +56,24 @@
         
       </div>
     {% endif %}
-      <div class="btn-group">
-        <button type="button" id="button-cart" onclick="cart.add({{product_id}})" title="{{ button_cart }}" class="add-to-cart primary">{{ button_cart }}</button>
+    <div class="btn-group">
+      <button type="button" 
+        {% if price %}
+          data-action="cartAdd" 
+          data-product_id="{{ product_id }}"
+          aria-haspopup="dialog"
+        {% else %}
+          disabled
+        {% endif %}
+        title="{{ button_cart }} {{ name }}" 
+        class="add-to-cart primary">
+        {{ button_cart }}
+      </button>
+    </div>
+    {% if minimum > 1 %}
+      <div class="alert alert-info"><i class="icon-info"></i> 
+        {{ text_minimum }}
       </div>
-      {% if minimum > 1 %}
-        <div class="alert alert-info"><i class="icon-info"></i> 
-          {{ text_minimum }}
-        </div>
-      {% endif %}
+    {% endif %}
   </div>
 </div>

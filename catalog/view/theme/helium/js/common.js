@@ -238,68 +238,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Cart add remove functions
 var cart = {
-	'add': function(product_id, quantity = null) {
-
-		if (quantity == null) {
-			qty_input = document.getElementById('input-quantity');
-			if (!!qty_input) {
-				quantity = qty_input.value;
-			}
-		}
-		var data = 'product_id=' + product_id + '&quantity=' + (typeof(quantity) != 'undefined' ? quantity : 1);
-
-		// Product options
-		let options_inputs = document.querySelectorAll('[name^="option"]:checked');
-		let options_selects = document.querySelectorAll('select[name^="option"]');
-		let options_string = '';
-		// Options inputs values
-		for (let i = 0; i < options_inputs.length; i++) {
-			options_string += '&' + options_inputs[i].name + '=' + options_inputs[i].value;
-		}
-		// Options selects values
-		for (let i = 0; i < options_selects.length; i++) {
-			options_string += '&' + options_selects[i].name + '=' + options_selects[i][options_selects[i].selectedIndex].value;
-		}
-		data += options_string;
-
-		// var data = new FormData();
-		// data.append( "json", JSON.stringify( p ) );
-
-		// fetch(url,
-		// {
-		// 	method: "POST",
-		// 	body: data
-		// })
-		// .then(function(res){ return res.json(); })
-		// .then(function(data){ alert( JSON.stringify( data ) ) })
-
-		// Add to cart request
-		var url = 'index.php?route=checkout/cart/add';
-		ajax(url, data,
-			function(r) {
-				if (r.success) {
-					document.getElementById('total_cart').innerHTML = r.total_cart;
-					document.getElementById('product_count').innerText = r.product_count;
-					setIcon(r.product_count);
-					// Запрос на обновление внешнего вида корзины
-					ajax('index.php?route=common/cart/modal',null,function(c) {
-						dialog.create(c);
-					}, null,null,null,"GET","text",true);
-
-				}
-				// Display additional dialog for required options
-				if (r.error && r.error.option) {
-					let options = r.error.option;
-					var url = 'index.php?route=common/cart/displayAdditionalModal';
-					var data = 'product_id=' + product_id;
-					ajax(url, data, function(response) {
-						dialog.create('<span class="h3">'+options+'</span>'+response.data);
-					},null,null,null,'POST','json',true);
-				}
-			},
-			null,null,null,'POST','JSON',true
-		);
-	},
+	
 	'update': function(key, quantity) {
 		// Эта функция нигде не используется
 		var url = 'index.php?route=checkout/cart/edit';
@@ -493,17 +432,6 @@ document.addEventListener('click', function(e) {
 		}, null, null, null, 'GET', 'text', true);
 	}
 
-	// Добавление товара в корзину
-	// if (e.target.id == 'button-cart') {
-	// 	var array = [];
-	// 	var checkboxes = document.querySelectorAll('input:checked');
-
-	// 	for (var i = 0; i < checkboxes.length; i++) {
-	// 		array.push(checkboxes[i].value);
-	// 	}
-	// 	// console.log(array);
-	// }
-
 	// Отзывы
 	if (e.target.id == 'button-review') {
 		e.preventDefault();
@@ -549,30 +477,6 @@ function phoneMask (phone) {
     .replace(/(\d{3})(\d{1,5})/, '$1-$2')
     .replace(/(-\d{4})\d+?$/, '$1');
 }
-
-// function sajax({url, data, method, respType}) {
-// 	if (typeof(url || data) == "undefined") {
-// 		return console.log("data or url undefined");
-// 	}
-// 	if method
-// 	var xhr = new XMLHttpRequest();
-// 	xhr.responseType = respType.toLowerCase();
-// 	if (method == "POST") {
-//         xhr.open(method, url, async);
-// 		xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
-// 		xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
-//         xhr.send(data);
-//     } else {
-//         if(typeof data !== 'undefined' && data !== null) {
-//             url = url+'?'+data;
-//         }
-//         xhr.open(method, url, async);
-// 		xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
-// 		xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
-//         xhr.send(null);
-// 	}
-
-// }
 
 
 // AJAX function
@@ -813,7 +717,7 @@ let dialog = {
 			type: 'dialog',
 			attrs: {'class': '', 'role':'dialog'},
 			events: {
-				'close': (e) => {console.log('closed', e)},
+				// 'close': (e) => {console.log('closed', e)},
 				'click': (e) => {
 					// Click outside the dialog
 					if (e.target.contains(a)) {
@@ -1009,7 +913,7 @@ function sendReview(t) {
 		function(r) {
 			if (r.error) {
 				handleErrors(r, review_form);
-				mwindow.create('toast', r.error, 'error');
+				// mwindow.create('toast', r.error, 'error');
 			}
 			if (r.success) {
 				dialog.close();
@@ -1124,10 +1028,7 @@ function handle(evt) {
 // const firstElemHandler = (elem, evt) =>
 // 	elem.textContent = `You ${evt.type === "click" ? "clicked" : "touched"}!`;
 const reviewModal = (el, ev) => {
-	fetch('index.php?route='+el.dataset.type+'/displayReviewModal&entity_id=' + el.dataset.id,
-	{
-		method: "POST",
-	})
+	fetch('index.php?route='+el.dataset.type+'/displayReviewModal&entity_id=' + el.dataset.id, {method: "POST"})
 	.then(r => {return r.text();})
 	.then(resp => {
 		dialog.create(resp, ev);
@@ -1141,7 +1042,6 @@ async function fetchFunction({url, m, h, b, callback, arg, ev}) {
 	.then(r => {return r.text()})
 	.then(resp => {
 		if (e === '') {
-			console.log('ololo');
 			return resp;
 		}
 		if (arg !== '' || typeof(arg) !== 'undefined') {
@@ -1149,18 +1049,65 @@ async function fetchFunction({url, m, h, b, callback, arg, ev}) {
 		} else {
 			e(resp, event);
 		}
+		return resp;
 	})
 }
+
 const cartRemove =  async (el, ev) => {
 	let resp = await fetchFunction({url: 'index.php?route=checkout/cart/remove', b: 'key='+el.dataset.key });
-	console.log(resp);
+	cartShowModal();
+	console.log(JSON.parse(resp));
+}
+
+const cartAdd =  async (el, ev) => {
+	
+	// Product ID
+	const product_id = el.dataset.product_id;
+	
+	// Quantity. If input quantity is present, use it value. If minimum quantity in dataset is present, use it. If no - then just use 1
+	const qty = (!!document.getElementById('input-quantity')) ? document.getElementById('input-quantity').value : el.dataset.minimum_qty || 1;
+	
+	// Product options
+	const options_inputs = Array.from(document.querySelectorAll('input[name^="option"]:checked, select[name^="option"]'));
+	let options = options_inputs.map(element => {
+		if (element.tagName === 'SELECT') {
+			return `${element.name}=${element.options[element.selectedIndex].value}`;
+		} else {
+			return `${element.name}=${element.value}`;
+		}
+	}).join('&');
+
+	// All neccessary data
+	let data = 'product_id=' + product_id + '&quantity=' + qty + ((options.length > 0) ? '&' + options : '');
+	
+	// Request
+	let r = await fetchFunction({url: 'index.php?route=checkout/cart/add', b: data});
+	let resp = JSON.parse(r);
+	
+	// If added successfully
+	if ('success' in resp) {
+		// Show dialog
+		cartShowModal(el,ev);
+		// Update favicon
+		setIcon(resp.product_count);
+	}
+	
+	// Additional window if product options are required
+	if ('error' in resp) {
+		const h1_options = resp.error.option;
+		let er = await fetchFunction({url:'index.php?route=common/cart/displayAdditionalModal', b: 'product_id=' + el.dataset.product_id});
+		er  = JSON.parse(er);
+		// Add header pointing on missing options
+		dialog.create('<span class="h1">'+h1_options+'</span>'+er.data, ev);
+	}
+	// That's all, folks!
 }
 
 const compareModal = (el, ev) => {
-	fetchFunction({url:'index.php?route=product/compare/showCompareModal', m: 'POST', callback: dialog, arg:'create',ev:ev})
+	fetchFunction({url:'index.php?route=product/compare/showCompareModal', callback: dialog, arg:'create',ev:ev})
 }
 const wishlistModal = (el, ev) => {
-	fetchFunction({url:'index.php?route=account/wishlist/showWishlistModal', m: 'POST', callback: dialog, arg:'create', ev:ev})
+	fetchFunction({url:'index.php?route=account/wishlist/showWishlistModal', callback: dialog, arg:'create', ev:ev})
 }
 const cartShowModal = (el, ev) => {
 	fetchFunction({url:'index.php?route=common/cart/modal', callback: dialog, arg: 'create',ev:ev})
@@ -1193,9 +1140,9 @@ const contactsModal = (el, ev) => {
 // 	})
 // }
 
-const cartAdd = (el, ev) => {
-	cart.add(el.dataset.productId);
-}
+// const cartAdd = (el, ev) => {
+// 	cart.add(el.dataset.productId);
+// }
 
 
 // List of functions

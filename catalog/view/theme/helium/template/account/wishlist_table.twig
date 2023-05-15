@@ -30,7 +30,19 @@
                 {% else %} <b>{{ product.special }}</b> <s>{{ product.price }}</s> {% endif %} </div>
               {% endif %}</td>
             <td class="text-right">
-              <button type="button" onclick="cart.add('{{ product.product_id }}');" data-toggle="tooltip" title="{{ button_cart }}" class="primary"><i class="icon-cart"></i></button>
+              <button type="button" 
+                {% if product.price %} 
+                  data-action="cartAdd" 
+                  data-product_id="{{ product.product_id }}" 
+                  data-minimum_qty="{{ product.minimum }}" 
+                  aria-haspopup="dialog"
+                {% else %}
+                  disabled
+                {% endif %}
+                class="add-to-cart primary" 
+                title="{{ button_cart }} {{ product.name }}">
+                <i class="icon-cart"></i>
+              </button>
               <button {# href="{{ product.remove }}" #} onclick="wishlist.remove('{{ product.product_id }}');" title="{{ button_remove }}" class="close"></button>
             </td>
           </tr>
