@@ -84,7 +84,6 @@ body {
     flex-wrap:wrap;
     gap:1rem;
     padding:0;
-    text-wrap: balance; /* Carefuly wrap text */
 }
 
 /* Responsive images and videos */
@@ -311,7 +310,7 @@ input[type="radio"]:disabled, input[type="radio"]:disabled+label {
 
 
 /* Blocks with gap */
-header, footer, main, aside, nav, nav > div, hgroup {
+header, footer, main, aside, nav, nav > div, hgroup, #content-top, #content-bottom {
     display:flex;
     gap:1rem;
 }
@@ -322,7 +321,7 @@ footer, main, aside > div, [data-accordion] {
     overflow: hidden;
 }
 
-main, aside {
+main, aside, #content-top, #content-bottom  {
     flex-direction: column;
     flex: 1 0 100%; /* 100% width for mobile */
     max-width: 100%;
@@ -352,18 +351,24 @@ figcaption {
 }
 
 /* Basic styling - background and colors */
-.subcategory, .alert-danger, .alert-success, .block, img, video, input, textarea, fieldset, select, nav, footer, main, aside > div, [data-accordion], .miniature, details, dialog {
+nav, footer, main, main#home .module, aside > div,
+input, textarea, fieldset, select, details, dialog,
+img, video,
+.subcategory, .alert-danger, .alert-success, .block, [data-accordion], .miniature {
     background: var(--bg-main-blocks);
     border-radius: var(--radius);
     position: relative;
 }
+main#home {background: transparent; padding: 0;}
+
+
 /* Separate background for select with svg chevron */
 select {
     background: var(--bg-inputs) url("data:image/svg+xml;charset=utf-8,<svg xmlns='http://www.w3.org/2000/svg' height='63' width='117' fill='%23161f27'><path d='M115 2c-1-2-4-2-5 0L59 53 7 2a4 4 0 00-5 5l54 54 2 2 3-2 54-54c2-1 2-4 0-5z'/></svg>") calc(100% - 12px) 50%/12px no-repeat;
     padding-right:35px;
 }
 /* Padding for main blocks */
-nav, footer, main, aside > div, [data-accordion], .block {
+nav, footer, main, main#home .module, aside > div, [data-accordion], .block {
     padding: 1rem;
 }
 /* Ordering -  mobile */
@@ -444,7 +449,6 @@ fieldset>input, fieldset>select {
 
 /* Headers */
 .uppercase, hgroup, .module .h3 {text-transform: uppercase}
-hgroup h1, .module .h3 {padding: 0}
 .relative, .module {position:relative}
 .hidden-md {display: none!important}
 
@@ -453,6 +457,7 @@ h1,h2,h3,h4,h5,h6,
     margin:0;
     width: 100%;
     padding: 0 0 .5rem 0;
+    text-wrap: balance; /* Carefuly wrap text */
 }
 /* Fonts */
 h1,h2,h3,h4,h5,h6,
@@ -716,11 +721,11 @@ aside>div.module{display: flex; flex-direction: column;}
 #filter>.sort {display: flex;flex-direction: column;}
 #filter>div[id^='filter_group_'], #filter>.sort {padding: 0 0 1rem 0;}
 /* Slider scroll buttons */
-.module button.scroll_left {position: absolute;right: 45px;top: 5px;width:35px; height:35px}
-.module button.scroll_right {position: absolute;right: 5px;top: 5px;width:35px; height:35px}
+.module button.scroll_left {position: absolute; right: 45px; top: 5px; width: 35px ;height: 35px}
+.module button.scroll_right {position: absolute; right: 5px; top: 5px; width: 35px; height: 35px}
 
 /* Max width for products and blog articles in scroll container - accounting flags, that are offset a little to the left */
-.scroll-x article {max-width: min(20rem, calc(100% - 0.7rem)); margin: 1rem}
+.scroll-x article {max-width: clamp(20rem, calc(20% - 2rem), calc(100% - 0.7rem)); margin: 1rem}
 /* Braedcrumbs scrolling */
 .breadcrumbs.scroll-x {list-style-type: none; margin:-1rem 0; padding: 0}
 /* Mobile buttons scrolling */
@@ -897,6 +902,7 @@ input#input-quantity {text-align: center}
 .product_top #photos, .product_top .infos {
     display: flex; flex-direction: column;
 }
+/* #product #description p {text-align: justify;} */
 
 /* Media query for desktops */
 /* 63.938rem = 1023px */
