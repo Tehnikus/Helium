@@ -286,7 +286,7 @@ function handleErrors(result, form_with_errors) {
     for (i in errors_object) {
       // TODO Test this with multiple warnings
       if (i == 'warning') {
-        mwindow.create('toast', errors_object['warning'], 'warning');
+        toast.create(errors_object['warning'], 'warning');
       } else {
         // console.log(i, errors_object[i]);
         let error_input = form_with_errors.querySelector('[name='+i+']');

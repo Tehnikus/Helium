@@ -641,10 +641,6 @@ button:active, .button:active, .primary:active, button.active {
     background: #777;
 }
 
-
-
-
-
 /* Button group */
 .btn-group {gap: 1rem}
 .btn-group+.btn-group {padding: 1rem 0 1rem 0;}
@@ -656,11 +652,6 @@ button:active, .button:active, .primary:active, button.active {
 /* Round corners on input groups */
 .input-group :first-child {border-radius: var(--radius) 0 0 var(--radius)}
 .input-group :last-child {border-radius: 0 var(--radius) var(--radius) 0}
-
-
-
-
-
 
 /* Product counter in header buttons */
 button:has(span.product-count) {position: relative}
@@ -757,6 +748,43 @@ aside>div.module{display: flex; flex-direction: column;}
     flex: 0 0 100%;
     box-sizing: border-box;
 } */
+
+
+.toast {
+    position: fixed;
+    top: 20px;
+	right: 20px;
+	left: auto;
+	bottom: auto;
+    z-index: 3;
+    opacity: 0.7;
+    display: block;
+    padding: 20px;
+    color: #fff;
+    transition: opacity var(--time);
+    max-width: 250px;
+    border-radius: var(--radius);
+}
+.toast button.close {background: transparent;box-shadow: none;}
+.toast:hover {
+    opacity: 1;
+    transition: opacity var(--time);
+}
+
+.toast.success {
+    background: #26aa1d;
+}
+
+.toast.warning {
+    background: #eabb10;
+    color: #000;
+}
+
+.toast.error {
+    background: #ff6334;
+    color: #000;
+}
+
 
 
 /* Product and blog miniature */
@@ -911,7 +939,6 @@ input#input-quantity {text-align: center}
     .mobile_menu {
         justify-content: center;
         position: fixed;
-        z-index: 1;
         bottom: 4.5rem;
         left: 1rem;
         right: 1rem;

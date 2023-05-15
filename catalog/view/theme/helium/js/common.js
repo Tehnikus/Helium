@@ -109,7 +109,6 @@ document.addEventListener('DOMContentLoaded', function() {
 	// Set product count on favicon on page load 
 	fetch('index.php?route=common/cart/fetchProductCount').then(r => {return r.text()}).then(resp => { setIcon(resp)})
 
-
 	// TODO Move this to it's function
 	let pagination = document.querySelector('main ul.pagination');
 	if (!!pagination) {
@@ -121,20 +120,6 @@ document.addEventListener('DOMContentLoaded', function() {
 		});
 		pagination.insertAdjacentElement('afterend', load_more_btn);
 	}
-
-
-
-
-	// Highlight any found errors
-	var error_inputs = document.getElementsByClassName('.text-danger');
-    for (let i = 0; i < error_inputs.length; i++) {
-        const e = error_inputs[i];
-        var p = e.parentElement.parentElement;
-        if (!!p && p.classList.contains('form-group')) {
-            p.classList.add('has-error');
-        }
-    }
-
 
 	// Currency
 	currency_selector = document.querySelectorAll('#form-currency .currency-select');
@@ -351,7 +336,7 @@ var wishlist = {
 		var url = 'index.php?route=account/wishlist/remove';
 		var data = 'product_id=' + product_id;
 		ajax(url, data, function(r) {
-			mwindow.create('toast', r['remove'], 'success');
+			toast.create(r['remove'], 'success');
 			document.querySelector('#wishlist-total').innerHTML = r['total'];
 		},null,null,null,"POST","json",true);
 	},
@@ -550,7 +535,7 @@ function login() {
 			if (success.error) {
 				for (const error_type in success.error) {
 					if (success.error.hasOwnProperty(error_type)) {
-						mwindow.create('toast', success.error[error_type], error_type);
+						toast.create(success.error[error_type], error_type);
 					}
 				}
 				email.classList.add('has-error');
@@ -798,57 +783,31 @@ function loadMore() {
 }
 
 
-let mwindow = {
-	'create': function(type, content, reason) {
-
-		// Remove previous dialog and backdrop so the dont stack
-		let previous_dialog = d.querySelector('.modal_window.dialog');
-		let backdrop = d.querySelector('.modal_backdrop');
-		if (!!previous_dialog) {
-			d.body.removeChild(d.querySelector('.modal_window.dialog'));
-		}
-		if (!!backdrop) {
-			d.body.removeChild(d.querySelector('.modal_backdrop'));
-		}
-
+let toast = {
+	'create': function(content, reason) {
 		// Create new modal window
-		let [r, t] = [reason || '', type || 'dialog'];
+		let r = reason || 'success';
 		let modal = createElm({
-			attrs: {'class': 'modal_window ' + t + ' '+ r, 'aria-modal':'true'},
+			attrs: {'class': 'modal_window toast ' + r, 'aria-modal':'true'},
 			nest: {
-				1: {type: 'button', attrs: {'id':'focus','class':'close','aria-label':js_lang.close}, events: {'click': function(e) {mwindow.close(e)}}},
+				1: {type: 'button', attrs: {'class':'close','aria-label':js_lang.close}, events: {'click': function(e) {toast.close(e)}}},
 				2: {attrs: {'class':'modal_content'},props:{'innerHTML': (typeof(content) == 'object' ? content.outerHTML : content)}},
 			}
 		});
-		if (t == 'dialog') {
-			let backdrop = createElm({attrs:{'class': 'modal_backdrop', 'aria-modal':'true'}, events: {'click': function(e) {mwindow.close(e)}}});
-			d.body.insertAdjacentElement('beforeend', backdrop);
+		modal.style.cssText = 'position:fixed;top:20px;right:20px;z-index:100';
+		modal.setAttribute('role', 'alertdialog');
+		// Find last toast and set top position underneath previous
+		let alltoasts = document.getElementsByClassName('toast');
+		if (typeof(alltoasts[alltoasts.length - 1]) !== 'undefined') {
+			modal.style.top = alltoasts[alltoasts.length - 1].offsetHeight + alltoasts[alltoasts.length - 1].offsetTop + 10 + 'px';
 		}
-		if (t == 'toast') {
-			modal.style.cssText = 'position:fixed;top:20px;right:20px;z-index:100';
-			modal.setAttribute('role', 'alertdialog');
-			let alltoasts = document.getElementsByClassName('toast');
-			// Find last toast and set top position underneath previous
-			if (typeof(alltoasts[alltoasts.length - 1]) !== 'undefined') {
-				modal.style.top = alltoasts[alltoasts.length - 1].offsetHeight + alltoasts[alltoasts.length - 1].offsetTop + 10 + 'px';
-			}
-		}
-		let f = modal.querySelector('#focus');
-		d.body.insertAdjacentElement('beforeend', modal);
-		// DONE Focus on window
-		if (!!f) {
-			f.focus();
-		}
+		document.body.insertAdjacentElement('beforeend', modal);
 	},
 	'close': function(e) {
 		if (e.target === undefined) {return}
 		let m = e.target.closest('.modal_window') || d.querySelector('.modal_window');
-		let b = d.querySelector('.modal_backdrop');
 		if (!!m) {
 			d.body.removeChild(d.querySelector('.modal_window'));
-		}
-		if (!!b) {
-			d.body.removeChild(d.querySelector('.modal_backdrop'));
 		}
 		recalcPositions();
 		function recalcPositions() {
@@ -886,11 +845,10 @@ function sendReview(t) {
 		function(r) {
 			if (r.error) {
 				handleErrors(r, review_form);
-				// mwindow.create('toast', r.error, 'error');
 			}
 			if (r.success) {
 				dialog.close();
-				mwindow.create('toast', r.success, 'success');
+				toast.create(r.success, 'success');
 				// Убираем форму
 				// review_form.parentElement.removeChild(review_form);
 			}
@@ -1636,7 +1594,7 @@ function handleErrors(result, form_with_errors) {
 		for (i in errors_object) {
 			// TODO Test this with multiple warnings
 			if (i == 'warning') {
-				mwindow.create('toast', errors_object['warning'], 'warning');
+				toast.create(errors_object['warning'], 'warning');
 			} else {
 				// console.log(i, errors_object[i]);
 				let error_input = form_with_errors.querySelector('[name=' + i + ']');
