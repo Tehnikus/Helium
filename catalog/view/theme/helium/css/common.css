@@ -410,11 +410,11 @@ hgroup > * {
 /* Typography */
 ul {margin: 0; padding: 0;}
 /* Tables */
-table {border-collapse:collapse;margin-bottom:10px;width:100%;table-layout:fixed}
+table {border-collapse:collapse;margin-bottom:10px;width:100%;table-layout:fixed;border-radius: var(--radius);overflow: hidden;}
 table caption, td, th {text-align:left}
 td,th {padding:6px;vertical-align:top;word-wrap:break-word;}
-td:first-child{border-radius: var(--radius) 0 0 var(--radius)}
-td:last-child{border-radius: 0 var(--radius) var(--radius) 0}
+td:first-child{/* border-radius: var(--radius) 0 0 var(--radius); */}
+td:last-child{/* border-radius: 0 var(--radius) var(--radius) 0; */}
 
 thead {border-bottom:1px solid var(--border);font-weight: 600;}
 tfoot {border-top:1px solid var(--border)}
