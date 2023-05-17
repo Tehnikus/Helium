@@ -243,9 +243,11 @@ function getForm(method_name) {
     step.innerHTML = body;
     let details = step.closest('details');
     if (details.Accordion) {
+      // Open Accordion by class method
       details.Accordion.open();
       console.log('true');
     } else {
+      // Open details by native api
       details.open;
     }
     let country_select = step.querySelector('[name="country_id"]');
