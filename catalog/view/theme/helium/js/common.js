@@ -416,6 +416,7 @@ document.addEventListener('click', function(e) {
 // ID инпутов, куда может вводиться номер телефона
 // TODO Объединить все в одну функцию
 let masked_inputs = ['tel'];
+// ['paste', 'input']
 document.addEventListener('input', function(e) {
     if (masked_inputs.indexOf(e.target.type) != -1) {
         e.target.addEventListener('input', handleInput, false);
@@ -424,16 +425,26 @@ document.addEventListener('input', function(e) {
 
 
 function handleInput (e) {
-  e.target.value = phoneMask(e.target.value)
+  e.target.value = phoneMask(e.target.value, '38')
 }
 
-function phoneMask (phone) {
-  return phone.replace(/\D/g, '')
-    .replace(/^(38)/, '')
-    .replace(/^(\d)/, '($1')
-    .replace(/^(\(\d{3})(\d)/, '$1) $2')
-    .replace(/(\d{3})(\d{1,5})/, '$1-$2')
-    .replace(/(-\d{4})\d+?$/, '$1');
+// TODO
+// The real time phone masking while typing
+// Pass format as variable
+// Example format: '+38(XXX)XXX-XX-XX'
+// 1. All digits and plus sign at the beginning considered as country code
+// 2. Count digits inside brackets: (XXX) = {3}, (XX) {2} and so on
+// 3. Count digits after brackets: XXX-XXXX. First group is XXX = {3}
+// 4. Count digits after brackets: XXX-XXXX. Second group is XXXX = {4}
+
+function phoneMask (phone, format) {
+
+  	return phone.replace(/\D/g, '')
+		.replace(/^(38)/, '') // 1. Pass country code here as variable
+		.replace(/^(\d)/, '($1') 
+		.replace(/^(\(\d{3})(\d)/, '$1) $2') 	// 2. Pass number of digits in brackets here. Like this {number_of_digits_in_brackets} instead of {3}
+		.replace(/(\d{3})(\d{1,5})/, '$1-$2') 	// 3. Pass first group here XXX = {3}
+		.replace(/(-\d{4})\d+?$/, '$1'); 		// 4. Pass first group here XXX = {4}
 }
 
 
@@ -686,7 +697,7 @@ let dialog = {
 			nest: [
 				{attrs: {'class':'modal_content'},
 				// Inner content. If typeof object (JSON or DOM) use outer HTML that parses it into HTML 
-				props:{'innerHTML': (typeof(content) == 'object' ? content.outerHTML : content)}},
+				props:{'innerHTML': (typeof(content) === 'object' ? content.outerHTML : content)}},
 				// Close button
 				{type: 'button', attrs: {'class':'close','aria-label':js_lang.close, 'title':js_lang.close}, events: {'click': (e) => {dialog.close(e)}}},
 			]
@@ -1013,8 +1024,64 @@ const cartUpdateHeaderButton = (r) => {
 	}
 }
 
-const cartShowModal = (el, ev) => {
-	fetchFunction({url:'index.php?route=common/cart/modal', callback: dialog, arg: 'create',ev:ev})
+const cartShowModal = async (el, ev) => {
+	let c = await fetchFunction({url:'index.php?route=common/cart/modal'});
+	let q = await fetchFunction({url:'index.php?route=common/cart/displayQuickCheckout'});
+	let cart = document.createElement('div');
+	cart.innerHTML = c+q;
+	dialog.create(cart, ev);
+
+	// Get elements after dialog appended to the document
+	let country_select = document.querySelector('[name="country_id"]');
+	if (!!country_select) {
+		await getZones(country_select);
+		country_select.addEventListener('change', ()=>{
+			getZones(country_select);
+			console.log(country_select);
+		})
+    }
+}
+
+
+const getZones = async (country_select) => {
+	return fetch('index.php?route=checkout/checkout/country&country_id='+country_select.value,{method: "POST"})
+	.then((r) => {return r.text();})
+	.then((r) => {
+		let country = JSON.parse(r);
+		let zone_select = document.querySelector('[name="zone_id"]');
+		// IDs of zone selects and input groups
+		// In case if user opens cart with Quick checkout while on regular checkout page
+		// so we need to update both fields if one of them changed 
+		let zone_input_group_ids = ['js_payment_zone_group_quick_checkout',''];
+		let zone_select_ids = ['js_input_payment_zone_quick_checkout',''];
+		if ('zone' in country) {
+			if (!zone_select) {
+				zone_select = document.createElement('select');
+				zone_select.name = 'zone_id';
+				zone_select.id = 'js_input_payment_zone_quick_checkout';
+				country_select.parentElement.nextElementSibling.insertAdjacentElement('beforeend', zone_select);
+			} else {
+				// remove child elements
+				while (zone_select.firstChild) {
+					zone_select.removeChild(zone_select.lastChild);
+				}
+			}
+			// Add new select options
+			for (const zone in country.zone) {
+				if (Object.hasOwnProperty.call(country.zone, zone)) {
+					const element = country.zone[zone];
+					let option = document.createElement('option');
+					option.value = element.zone_id;
+					option.innerText = element.name;
+					zone_select.appendChild(option);
+				}
+			}
+		} else {
+			if (!!zone_select) {
+				zone_select.parentElement.removeChild(zone_select)
+			}
+		}
+	});
 }
 
 const compareModal = (el, ev) => {
