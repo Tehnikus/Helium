@@ -315,4 +315,54 @@ class ControllerCommonCart extends Controller {
 	public function fetchProductCount() {
 		echo($this->cart->countProducts());
 	}
+
+	public function displayQuickCheckout() {
+		$this->load->language('checkout/checkout');
+		$this->load->model('account/address');
+		$this->load->model('localisation/country');
+		$this->load->model('account/custom_field');
+
+		$data['addresses'] = $this->model_account_address->getAddresses();
+
+		if (isset($this->session->data['payment_address']['address_id'])) {
+			$data['address_id'] = $this->session->data['payment_address']['address_id'];
+		} else {
+			$data['address_id'] = $this->customer->getAddressId();
+		}
+
+
+		if (isset($this->session->data['payment_address']['country_id'])) {
+			$data['country_id'] = $this->session->data['payment_address']['country_id'];
+		} else {
+			$data['country_id'] = $this->config->get('config_country_id');
+		}
+
+		if (isset($this->session->data['payment_address']['zone_id'])) {
+			$data['zone_id'] = $this->session->data['payment_address']['zone_id'];
+		} else {
+			$data['zone_id'] = '';
+		}
+
+		
+
+		$data['countries'] = $this->model_localisation_country->getCountries();
+
+		// Custom Fields
+		$data['custom_fields'] = array();
+		$custom_fields = $this->model_account_custom_field->getCustomFields($this->config->get('config_customer_group_id'));
+
+		foreach ($custom_fields as $custom_field) {
+			if ($custom_field['location'] == 'address') {
+				$data['custom_fields'][] = $custom_field;
+			}
+		}
+
+		if (isset($this->session->data['payment_address']['custom_field'])) {
+			$data['payment_address_custom_field'] = $this->session->data['payment_address']['custom_field'];
+		} else {
+			$data['payment_address_custom_field'] = array();
+		}
+
+		echo($this->load->view('common/quick_checkout', $data));
+	}
 }
