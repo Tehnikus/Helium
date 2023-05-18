@@ -68,19 +68,20 @@ To the opposit of common usage of side libraries Helium Store relies on Vanilla 
 The goal is to create lightweight and fast initializing code that uses native browser features.
 Here are some of features included in this project
 ### Main menu
-1. Responsive. 
-2. Has assistive tehnologies markup for diasbled users, announces navigation points, supports keyboard interaction, hides closed menu block from screen readers. 
+1. Responsive and convenient on mobile devices and desktops as well. 
+2. Has assistive tehnologies markup for diasbled users, announces navigation points, supports keyboard interaction, hides closed menu blocks from screen readers. 
 3. Best SEO results - does't hide markup from Google bot as many others.
 4. Does not affect time-to-interactive metric.
-5. All the data gathered from DB in single query.
+5. All the data gathered from DB in single optimized query.
+6. Uses some neat animations
 ### Live Search
 1. Displays products with images, prices, short descriptions. 
 2. Highlights search terms in text. 
-3. Shows countdown to discount end if applicable. 
+3. Shows countdown to discount end date if applicable. 
 4. Orders products by relevance to the search term.
 5. Has support for assistive technologies and keyboard interaction.
 6. Works really fast! Renders products on client side so does not load server with unneccessary requests
-In future update I will add search in Blog posts, Product filter pages, Categories, Product features 
+In future updates I will add search in Blog posts, Product filter pages, Categories, Product features to search results to make search more convenient and user-engaging
 ### Live cart
 The main part of every online store is checkout process. So I focused to make it as easy as possible.
 1. The checkout dialog has quick order form, that creates order the same as regular checkout.
@@ -140,3 +141,21 @@ If you think like a customer, how do you pick product from list of similar ones?
 - Last updated
 - Best value by price/weight (if you sell volume products, your customers will love it!)
 ... and 14 more sorting ways
+### Product flags (or badges)
+Highlight products among others with flags. This feature shows badges on products in every list, where they appear. There are three types of flags: static, dynamic and service. 
+Static flags show some product features:
+- Special price
+- Batch discounts (for example: buy 2 with 10% off)
+- Hot sale (if there is discout date end present)
+- Video (if video is present in description)
+- Featured
+Dynamic flags kind of similar to product sorting, they appear on number of first products that suit requirements:
+- Bestseller (for every category)
+- Best reviews (for every category)
+If product appear in some other page than category, product's main category is used as context of dynamic flag
+Service flags just show user inderactions:
+- Viewed product
+- Added to wishlist
+- Added to compare
+- Already bought by current customer
+Nice and convenient way to showcase products and drive more conversions
