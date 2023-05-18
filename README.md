@@ -1,9 +1,20 @@
 # Helium Store
 Helium store is a deep modification of Opencart 3 with multiple major changes
 It introduces comprehensive changes in frontend to have maximum performace, match all modern SEO requirements, support assistive technologies and screen readers, yet use minimum network payload.
-No side JS libraries used to minimize code initialisation, everything is written in Vanilla JS.
+TLDR:
+- No side JS libraries used to minimize code initialisation, everything is written in Vanilla JS (under 20kb)
+- No enormous CSS frameworks, all styles are handwritten (under 15kb)
+- Optimized SQL structure and queries
+- Caching of static data 
+- Modern image formats - WEBP, SVG where needed
+- All SEO requirements fulfilled
+- Microdata markup in JSON-LD for Google rich snippets for all pages
+- FAST loading time, under 100 milliseconds for heaviest page
+- Comprehensive all-around support of assistive technologies for disabled users
+- SEO Filter with static pages meta-tags, texts, content and so on
 
 ## Search engine optimization
+SEO Depends on multiple factors, both internal and external. If you are going to take higher place, first thing you do - is to make your pages bulletproof optimized on server side. This includes various code optimizations like remove content clones, hide service data and links, comply SEO requirement related to tags, image formats, responsive design and so on. It can be quite challanging, if you want keep appearence and functional features.
 I have an experience of optimizing sites on competetive markets, had multiple succefull projects. So here are part of my server side optimizations, I keep in mind while developing Helium Store:
 ### Do not hide content
 If there is some content that is not displayed under any conditions, it is likely it will be reduced as ranking factor. So no content is hidden or any other way manipulated in Helium Store
@@ -18,19 +29,36 @@ Helium store is built on modern semantics, that distinct to Search engines the c
 ### Make user interaction convenient
 When user interacts with the page that signals to search engines that viewed page is valuable. So interaction should be smooth and convenient. Helium store has no interaction delay, everything is accesible and on the spot.
 ### Keep all ranking factors filled.
-There are multitudes of them, so I'll just mention that all tags are filled in if user didn't in admin part
-### Create static pages with content
+There are multitudes of them, so I'll just mention that all tags are filled in if user didn't in admin part.You have all controls on every significant tag as:
+- title
+- decription
+- H1-H3 headers inside page markup
+- ect.
+### Remove content cloning
+There are couple of challanges related to content cloning. Let's take a look for example on category page and what is done in terms of texts optimization:
+- Remove description texts on ordering and filtering pages (except static filters!), pagination, any non-canonical case
+- Set titles and H1 according to filter, order and pagination
+- Add 'noindex' tag to pages that are partially repeat content of canonical page itself
+And so on. So every requirement is fulfilled here
+
+### Create as much static pages with content as you can
 Every static page has it's own ranking tags filled, 
+
 ### Preload, lazy load, preconnect
 There are several types of content that should be preloaded: scripts, styles, images that appear inside of first viewport.
-There is content that sould be lazy loaded: Images outside of viewport, unneccesary scripts \
+There is content that sould be lazy loaded: Images outside of viewport, unneccesary scripts
 ### Make your site FAST
 Also search bots have time quota for every domain, so if pages load 
 
+## Images
+Helium Store uses WEBP and SVG formats by default. The dimensions are lined up in such way to avoid multiple sizes of same image and fit responsive design on various screens at the same time.
+But those are completely editable. 
+SVG support implemented with proper resizing, so you can use SVG for product options or favicon, elsewhere.
+
 ## Database
 Every single DB query in Helium store was tested to be as fast as possible to support multiple simultaneous clients browsing store with thouthands of products.
-The DB structure changes include new primary keys, indexes, queries that minimize traffic between SQL and PHP processes. 
-Narrow queries as product search, filtering and display were rewritten from scratch.
+The DB structure changes include new primary keys, indexes, optimized queries and minimization of traffic between SQL and PHP processes.
+Slow queries as product search, filtering and displayand others were rewritten from scratch.
 Several tables were added for new functions.
 
 ## Javascript
@@ -63,7 +91,7 @@ The main part of every online store is checkout process. So I focused to make it
 5. Cart does not expose any links or content to Google bot so does not interfrer with SEO results.
 6. Shows products number on favicon in browser (Facebook-like message counter) so the customer will not forget to finish checkut.
 ### Sliders
-As for me, sliders are kind of antipattern in modern design, but sometimes they are the only way to introduce product, attract attention and engage users, and also sqeeze a lot of products in relatively small space. So I created really neat slider, that comlies SEO, does not hide content, responsive without media queries (yeah, that's possible), relies on browser native features, supports touch and inertial scrolling and initializes for couple of milliseconds.
+As for me, sliders are kind of antipattern in modern design, but sometimes they are the only way to introduce product, attract attention and engage users, and also sqeeze a lot of products in relatively small space. So I created really neat slider, that complies SEO, does not hide content, responsive without media queries (yeah, that's possible), relies on browser native features, supports touch and inertial scrolling and initializes for couple of milliseconds.
 Used to display product lists like:
 - Viewed products
 - Featured products
@@ -74,8 +102,10 @@ Used to display product lists like:
 - Any HTML content (also under development)
 - etc.
 The biggest point here as Sliders support native browser touch interactions, so no akward behaviour on touch devices. Also perfectly support for keyboard interactions and, consequently, assistive technologies.
+### Load more
+Load more button fetches products in product lists, articles, comments on products and articles. Works fast, all events (interactivity) attached properly.
 ### Countdown
-Shows countdown to discount end, if the date is set in Admin backoffice. Encourages users for impulsive purchases. Displayed where related product appear: category, live search, related, viewed featured products, etc. Has assistive technologies tags, so screen readers will not announce every timer change.
+Shows countdown to discount end, if the date is set in Admin backoffice. Encourages users for impulsive purchases. Displayed where related product appear: category, live search, related, viewed featured products, product page itself, etc. Has assistive technologies tags, so screen readers will not announce every timer change.
 ### Anchor nav
 It allows to focus user input on certain page blocks, skipping others. Smoothly scrolls to target and shows focus state.
 This helps users with assistive technologies and also keeps Google on the page for a bit longer.
