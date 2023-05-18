@@ -2,19 +2,21 @@
 Helium store is a deep modification of Opencart 3 with multiple major changes
 It introduces comprehensive changes in frontend to have maximum performace, match all modern SEO requirements, support assistive technologies and screen readers, yet use minimum network payload.
 TLDR:
-- No side JS libraries used to minimize code initialisation, everything is written in Vanilla JS (under 20kb)
-- No enormous CSS frameworks, all styles are handwritten (under 15kb)
+- No side JS libraries, minimal code initialisation time, everything is written in Vanilla JS (under 20kb)
+- No enormous CSS frameworks, all styles are handwritten (under 10kb)
 - Optimized SQL structure and queries
 - Caching of static data 
 - Modern image formats - WEBP, SVG where needed
 - All SEO requirements fulfilled
-- Microdata markup in JSON-LD for Google rich snippets for all pages
+- Microdata markup in JSON-LD for Google rich snippets on all pages
 - FAST loading time, under 100 milliseconds for heaviest page
 - Comprehensive all-around support of assistive technologies for disabled users
 - SEO Filter with static pages meta-tags, texts, content and so on
+- Smart search with ranking, search words highlighting, images, countdown, product flags
+- 100/100 Pagespeed, 100/100 SEO, 100/100 Accesibility
 
 ## Search engine optimization
-SEO Depends on multiple factors, both internal and external. If you are going to take higher place, first thing you do - is to make your pages bulletproof optimized on server side. This includes various code optimizations like remove content clones, hide service data and links, comply SEO requirement related to tags, image formats, responsive design and so on. It can be quite challanging, if you want keep appearence and functional features.
+SEO Depends on multiple factors, both internal and external. If you are going to take higher place, first thing you do - is to make your pages bulletproof optimized on server side. This includes various code optimizations like remove content clones, hide service data and links like cart and account, comply SEO requirement related to tags, image formats, responsive design and so on. It can be quite challanging, if you want keep appearence and functional features.
 I have an experience of optimizing sites on competetive markets, had multiple succefull projects. So here are part of my server side optimizations, I keep in mind while developing Helium Store:
 ### Do not hide content
 If there is some content that is not displayed under any conditions, it is likely it will be reduced as ranking factor. So no content is hidden or any other way manipulated in Helium Store
@@ -46,9 +48,9 @@ Every static page has it's own ranking tags filled,
 
 ### Preload, lazy load, preconnect
 There are several types of content that should be preloaded: scripts, styles, images that appear inside of first viewport.
-There is content that sould be lazy loaded: Images outside of viewport, unneccesary scripts
+There is content that should be lazy loaded: images outside of viewport, unneccesary scripts, fonts
 ### Make your site FAST
-Also search bots have time quota for every domain, so if pages load 
+Also search bots have time quota for every domain, so if pages load exceedes 500 milliseconds, your website will be scanned 50-100 pages at the time. No such issue with Helium Store, because it loads all pages about 100 milliseconds. Also BestBuy reseach shows that faster loading pages increases conversion rate. In Helium store pages load almost instantly, which leads to better user experience. 
 
 ## Images
 Helium Store uses WEBP and SVG formats by default. The dimensions are lined up in such way to avoid multiple sizes of same image and fit responsive design on various screens at the same time.
@@ -112,8 +114,6 @@ This helps users with assistive technologies and also keeps Google on the page f
 Used on category pages, products, blog posts.
 If the page has other ranking factors fulfilled, those links will appear on Search Engine Page Results (SERP) as page contents.
 
-
-
 ## CSS
 All the styles were writteh from the scratch, on top of Normalize CSS. It is responsive and also doesn't manipulate content visibility not to harm SEO. 
 Minimum mediaqueries used, basically for narrow and wide screens to ommit useless grids for number of screen sizes.
@@ -122,7 +122,21 @@ No monstrous CSS frameworks used, as realworld pages use 10%-20% of that code.
 Design relies heavily on CSS variables and built-in CSS calc() functions.
 Calculations are used to dynamically create color schema by using HSL colors.
 This means you can quickly change primary color and all other complementary and triad colors will be calculated by CSS.
-This also relates to focus states, call-to-action buttons,
+This also relates to focus states, call-to-action buttons, color accents.
 Transparency, animations, shadows and rounded corners also controlled in one place, so no need to search and replace multiple lines.
 Every bit of design changes accordingly to global variables.
 Currently minified and gzipped CSS file is under 10kb of payload.
+
+## Features
+There are multiple features I made in this projes, that distinc it from other standart online stores. I'll just review several:
+### Category and Filter cross-linking
+Filter pages and Categories have cross links, that help users to navigate and also is a powerful feature for SEO. This means you will get more pages in Google index, thus better overall results and more customers.
+### Product ordering
+If you think like a customer, how do you pick product from list of similar ones? Here is the answer: sort them in convenient way. Here are some sorting options, that I implemented in Helium Store in addition to standart dummy A-Z:
+- Best sellers (with returns accounted also)
+- Best reviews (counting both overall rating and reviews quantity)
+- New arrivals
+- Discounted products first
+- Last updated
+- Best value by price/weight (if you sell volume products, your customers will love it!)
+... and 14 more sorting ways
