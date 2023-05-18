@@ -38,27 +38,22 @@
       {% endfor %}
     </div>
   </div>
-
-
-
-  {# Build recursive nested list #}
-  {# Leave this for now #}
-  {# <div id="main-menu" class="dropdown-menu collapse">
-    <div class="menu-inner">
-      <div class="menu">
-        <ul class="top-level">
-          {% for category_set in categories %}
-            {{ _self.recursiveCategory(category_set) }}
-          {% endfor %}
-        </ul>
-      </div>
-    </div>
-  </div> #}
 {% endif %}
 
-
-{# Build categories list recursively #}
-{% macro recursiveCategory(category) %}
+{# Build recursive nested list #}
+{# Leave this for now #}
+{# <div id="main-menu" class="dropdown-menu collapse">
+  <div class="menu-inner">
+    <div class="menu">
+      <ul class="top-level">
+        {% for category_set in categories %}
+          {{ _self.recursiveCategory(category_set) }}
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+</div> #}
+{# {% macro recursiveCategory(category) %}
   <li><a class="mcn" href="{{ category.href }}">{{ category.name }}</a>&nbsp;<span class="product_count">{{category.product_count}}</span>
     {% if category.children|length %}
       <ul class="inner-level">
@@ -68,4 +63,4 @@
       </ul>
     {% endif %}
     </li>
-{% endmacro %}
+{% endmacro %} #}
