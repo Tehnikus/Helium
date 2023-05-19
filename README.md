@@ -15,6 +15,12 @@ TLDR:
 - Smart search with ranking, search words highlighting, images, countdown, product flags
 - 100/100 Pagespeed, 100/100 SEO, 100/100 Accesibility
 
+Requirements:
+PHP7.4 =< PHP8.2
+MySQL =< 8.0 or MariaDB =< 10.4
+nGinx =< 1.23 
+Redis (to be implemented)
+
 ## Search engine optimization
 SEO Depends on multiple factors, both internal and external. If you are going to take higher place, first thing you do - is to make your pages bulletproof optimized on server side. This includes various code optimizations like remove content clones, hide service data and links like cart and account, comply SEO requirement related to tags, image formats, responsive design and so on. It can be quite challanging, if you want keep appearence and functional features.
 I have an experience of optimizing sites on competetive markets, had multiple succefull projects. So here are part of my server side optimizations, I keep in mind while developing Helium Store:
@@ -23,18 +29,19 @@ If there is some content that is not displayed under any conditions, it is likel
 ### Place content that affect ranking in certain places
 The higher the H1 headers and content in code - the better. 
 For example, if your main content is way below initial load by Google bot (experimentally it is somewhere after 25kb of code), it will not see your content in first time scanning wich leads to slower indexing. 
-So everything user- and Google bot- readable is placed as close to page start as possible. Place headings in order of importance. Make content attractive but not obstructive.
+So everything user- and Google bot- readable is placed as close to page start as possible. Place headings in order of importance. Make content attractive but not obstructive. Every requirement is covered in Helium store.
 ### Make content to code ratio in favor to content
-If your page is overflown with code and scripts, it can be treated by Google bot as garbage page. So I used as little markup as possible reaching the point when there is more user readable content, than markup itself. And also removed any inline scripts and styles, so no garbage code anywhere.
+If your page is overflown with code and scripts, it can be treated by Google bot as garbage page. So I used as little HTML markup as possible reaching the point when there is more user readable content, than markup itself. And also removed any inline scripts and styles, so no garbage code anywhere.
 ### Use semantic markup
 Helium store is built on modern semantics, that distinct to Search engines the content, the navigation, the service content and so on.
 ### Make user interaction convenient
-When user interacts with the page that signals to search engines that viewed page is valuable. So interaction should be smooth and convenient. Helium store has no interaction delay, everything is accesible and on the spot.
+When user interacts with the page that signals to Search engines that viewed page is valuable. So interaction should be smooth and convenient. Helium store has no interaction delay, everything is accesible and on the spot. The interface was made with customers in mind to guide them from first page visit to purchase smoothly. 
 ### Keep all ranking factors filled.
-There are multitudes of them, so I'll just mention that all tags are filled in if user didn't in admin part.You have all controls on every significant tag as:
+There are multitudes of them, so I'll just mention that all tags are filled in if user didn't in admin part. You have all controls on every significant tag as:
 - title
 - decription
 - H1-H3 headers inside page markup
+- Texts appearence
 - ect.
 ### Remove content cloning
 There are couple of challanges related to content cloning. Let's take a look for example on category page and what is done in terms of texts optimization:
@@ -42,15 +49,16 @@ There are couple of challanges related to content cloning. Let's take a look for
 - Set titles and H1 according to filter, order and pagination
 - Add 'noindex' tag to pages that are partially repeat content of canonical page itself
 And so on. So every requirement is fulfilled here
-
 ### Create as much static pages with content as you can
-Every static page has it's own ranking tags filled, 
-
+Here you'll have specially developed instrumet - SEO Filter, where you can create static pages by filtering parameters.
+Filter pages work exactly as category pages: it had same structure, same SEO tags, same markup with editable text and headers. Thus you can create multiple landing pages for different Google search requests and gain more visitors. Also filter and category pages have crosslinking: they refer to each other with convenient user-readable button-styled links, which both contributes to user experience and SEO.
+Filter pages are based on same architecture as category pages, so they deliver content as fast as category pages and have the same functionality.
 ### Preload, lazy load, preconnect
 There are several types of content that should be preloaded: scripts, styles, images that appear inside of first viewport.
-There is content that should be lazy loaded: images outside of viewport, unneccesary scripts, fonts
+There is content that should be lazy loaded: images outside of viewport, unneccesary scripts, fonts.
+I've covered every aspect of async preloading to make Helium Store fast and futureproof. 
 ### Make your site FAST
-Also search bots have time quota for every domain, so if pages load exceedes 500 milliseconds, your website will be scanned 50-100 pages at the time. No such issue with Helium Store, because it loads all pages about 100 milliseconds. Also BestBuy reseach shows that faster loading pages increases conversion rate. In Helium store pages load almost instantly, which leads to better user experience. 
+Also search bots have time quota for every domain, so if pages load exceedes 500 milliseconds, your website will be scanned 50-100 pages at the time. No such issue with Helium Store, because it loads every page for about 100 milliseconds. Also BestBuy reseach shows that faster loading pages increases conversion rate. In Helium store pages load almost instantly, which leads to better user experience.
 
 ## Images
 Helium Store uses WEBP and SVG formats by default. The dimensions are lined up in such way to avoid multiple sizes of same image and fit responsive design on various screens at the same time.
@@ -129,7 +137,7 @@ Every bit of design changes accordingly to global variables.
 Currently minified and gzipped CSS file is under 10kb of payload.
 
 ## Features
-There are multiple features I made in this projes, that distinc it from other standart online stores. I'll just review several:
+There are multiple features I made in this project, that distinc it from other standart online stores. I'll just review several:
 ### Category and Filter cross-linking
 Filter pages and Categories have cross links, that help users to navigate and also is a powerful feature for SEO. This means you will get more pages in Google index, thus better overall results and more customers.
 ### Product ordering
@@ -158,4 +166,7 @@ Service flags just show user inderactions:
 - Added to wishlist
 - Added to compare
 - Already bought by current customer
-Nice and convenient way to showcase products and drive more conversions
+Nice and convenient way to showcase products and drive more conversions.
+
+## Summary
+I cannot cover every feature here, I developed in Helium Store. I'll just add, that I use it myself :)
