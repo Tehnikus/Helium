@@ -1,6 +1,6 @@
 <?php
 class ControllerCommonCart extends Controller {
-	public function displayCart() {
+	public function getCartData() {
 		$this->load->language('common/cart');
 		$this->load->language('product/product');
 
@@ -156,8 +156,9 @@ class ControllerCommonCart extends Controller {
 	}
 
 	// Отображение модального окна
-	public function modal() {
-		$data = $this->displayCart();
+	public function displayCartModal() {
+		$data = $this->getCartData();
+		$this->getQuickCheckoutData($data);
 		echo($this->load->view('common/cart_modal', $data));
 	}
 
@@ -316,12 +317,15 @@ class ControllerCommonCart extends Controller {
 		echo($this->cart->countProducts());
 	}
 
-	public function displayQuickCheckout() {
+	public function getQuickCheckoutData(&$data) {
 		$this->load->language('checkout/checkout');
 		$this->load->model('account/address');
 		$this->load->model('localisation/country');
 		$this->load->model('account/custom_field');
 		$this->load->model('setting/extension');
+		if(!$data) {
+			$data = [];
+		}
 
 		$data['addresses'] = $this->model_account_address->getAddresses();
 
@@ -340,53 +344,7 @@ class ControllerCommonCart extends Controller {
 		// print_r($customer_data);
 
 
-		$shipping_methods = [];
-		$shipping_modules = $this->model_setting_extension->getExtensions('shipping');
-		// If cart has shipping
-		// Prepare shipping modules
-		if ($this->cart->hasShipping()) {
-
-			// If shipping address is present - display full delivery methods with prices
-			// Else - just delivery names
-			if (is_array($this->session->data) && isset($this->session->data['shipping_address'])) {
-				foreach ($shipping_modules as $module) {
-					if ($this->config->get('shipping_' . $module['code'] . '_status')) {
-						$this->load->model('extension/shipping/' . $module['code']);
-		
-						$quote = $this->{'model_extension_shipping_' . $module['code']}->getQuote($this->session->data['shipping_address']);
-		
-						if ($quote) {
-							$shipping_methods[$module['code']] = array(
-								'title'      => $quote['title'],
-								'quote'      => $quote['quote'],
-								'sort_order' => $quote['sort_order'],
-								'error'      => $quote['error']
-							);
-						}
-					}
-				}
-			} else {
-				foreach ($shipping_modules as $module) {
-					// Load language of every shipping module
-					$this->load->language('extension/shipping/'.$module['code']);
-					// Set title and code for every module
-					$shipping_methods[$module['code']] = array(
-						'title' => $this->language->get('text_title'),
-						'code' => $module['code'],
-					);
-				}
-			}
-
-			// Sort modules by sort order set in admin panel
-			$sort_order = array();
-			foreach ($shipping_methods as $key => $value) {
-				$sort_order[$key] = $value['sort_order'];
-			}
-
-			array_multisort($sort_order, SORT_ASC, $shipping_methods);
-		}
-		// print_r($shipping_methods);
-		$data['shipping_methods'] = $shipping_methods;
+		$data['shipping_methods'] = $this->getShippingMethods();
 
 
 
@@ -516,78 +474,150 @@ class ControllerCommonCart extends Controller {
 		} else {
 			$data['shipping_address'] = true;
 		}
-
-		echo($this->load->view('common/quick_checkout', $data));
+		return $data;
+		// echo($this->load->view('common/quick_checkout', $data));
 	}
 
-	// Get shipping methods
-	public function getShipping() {
-		$this->load->language('checkout/checkout');
+	public function displayQuickCheckout() {
+		$data = false;
+		$data = $this->getQuickCheckoutData($data);
+		if ($data) {
+			echo($this->load->view('common/quick_checkout', $data));
+		} else {
+			echo('Quick checkout loading error, no data provided');
+		}
+	}
 
-		if (isset($this->session->data['shipping_address'])) {
-			// Shipping Methods
-			$method_data = array();
 
-			$this->load->model('setting/extension');
+	
+	// public function getShipping() {
+	// 	$this->load->language('checkout/checkout');
 
-			$results = $this->model_setting_extension->getExtensions('shipping');
+	// 	if (isset($this->session->data['shipping_address'])) {
+	// 		// Shipping Methods
+	// 		$method_data = array();
 
-			foreach ($results as $result) {
-				if ($this->config->get('shipping_' . $result['code'] . '_status')) {
-					$this->load->model('extension/shipping/' . $result['code']);
+	// 		$this->load->model('setting/extension');
 
-					$quote = $this->{'model_extension_shipping_' . $result['code']}->getQuote($this->session->data['shipping_address']);
+	// 		$results = $this->model_setting_extension->getExtensions('shipping');
 
-					if ($quote) {
-						$method_data[$result['code']] = array(
-							'title'      => $quote['title'],
-							'quote'      => $quote['quote'],
-							'sort_order' => $quote['sort_order'],
-							'error'      => $quote['error']
-						);
+	// 		foreach ($results as $result) {
+	// 			if ($this->config->get('shipping_' . $result['code'] . '_status')) {
+	// 				$this->load->model('extension/shipping/' . $result['code']);
+
+	// 				$quote = $this->{'model_extension_shipping_' . $result['code']}->getQuote($this->session->data['shipping_address']);
+
+	// 				if ($quote) {
+	// 					$method_data[$result['code']] = array(
+	// 						'title'      => $quote['title'],
+	// 						'quote'      => $quote['quote'],
+	// 						'sort_order' => $quote['sort_order'],
+	// 						'error'      => $quote['error']
+	// 					);
+	// 				}
+	// 			}
+	// 		}
+
+	// 		$sort_order = array();
+
+	// 		foreach ($method_data as $key => $value) {
+	// 			$sort_order[$key] = $value['sort_order'];
+	// 		}
+
+	// 		array_multisort($sort_order, SORT_ASC, $method_data);
+
+	// 		$this->session->data['shipping_modules'] = $method_data;
+	// 	}
+
+	// 	if (empty($this->session->data['shipping_modules'])) {
+	// 		$data['error_warning'] = sprintf($this->language->get('error_no_shipping'), $this->url->link('information/contact'));
+	// 	} else {
+	// 		$data['error_warning'] = '';
+	// 	}
+
+	// 	if (isset($this->session->data['shipping_modules'])) {
+	// 		$data['shipping_modules'] = $this->session->data['shipping_modules'];
+	// 	} else {
+	// 		$data['shipping_modules'] = array();
+	// 	}
+
+	// 	if (isset($this->session->data['shipping_method']['code'])) {
+	// 		$data['code'] = $this->session->data['shipping_method']['code'];
+	// 	} else {
+	// 		$data['code'] = '';
+	// 	}
+
+	// 	if (isset($this->session->data['comment'])) {
+	// 		$data['comment'] = $this->session->data['comment'];
+	// 	} else {
+	// 		$data['comment'] = '';
+	// 	}
+		
+	// 	return  $data;
+	// }
+
+
+
+	// get Shipping methods
+	public function getShippingMethods() {
+		$shipping_methods = [];
+		$shipping_modules = $this->model_setting_extension->getExtensions('shipping');
+		// If cart has shipping
+		// Prepare shipping modules
+		if ($this->cart->hasShipping()) {
+
+			// If shipping address is present - display full delivery methods with prices
+			// Render modules as normal
+			if (is_array($this->session->data) && isset($this->session->data['shipping_address'])) {
+				foreach ($shipping_modules as $module) {
+					if ($this->config->get('shipping_' . $module['code'] . '_status')) {
+						$this->load->model('extension/shipping/' . $module['code']);
+						// Request shipping module method
+						$quote = $this->{'model_extension_shipping_' . $module['code']}->getQuote($this->session->data['shipping_address']);
+						// If module returns some data - add it to the list
+						if ($quote) {
+							$shipping_methods[$module['code']] = array(
+								'title'      => $quote['title'],
+								'quote'      => $quote['quote'],
+								'sort_order' => $quote['sort_order'],
+								'error'      => $quote['error']
+							);
+						}
 					}
 				}
+			} else {
+				// Else - just delivery names
+				foreach ($shipping_modules as $module) {
+					// Load language of every shipping module
+					$this->load->language('extension/shipping/'.$module['code']);
+					// Set title and code for every module
+					$shipping_methods[$module['code']] = array(
+						'title' => $this->language->get('text_title'),
+						'code' => $module['code'],
+						// Place unordered shipping methods at the end 
+						'sort_order' =>  ($this->config->get('shipping_'.$module['code'].'_sort_order') !== '') ? $this->config->get('shipping_'.$module['code'].'_sort_order') : '99',
+						// Get module status related to countries set in module settings
+						'status' => (int)$this->config->get('shipping_'.$module['code'].'_geo_zone_id')
+					);
+				}
+				print_r($shipping_methods);
 			}
 
+			// Sort modules by sort order set in admin panel
 			$sort_order = array();
-
-			foreach ($method_data as $key => $value) {
+			foreach ($shipping_methods as $key => $value) {
 				$sort_order[$key] = $value['sort_order'];
 			}
-
-			array_multisort($sort_order, SORT_ASC, $method_data);
-
-			$this->session->data['shipping_modules'] = $method_data;
+			array_multisort($sort_order, SORT_ASC, $shipping_methods);
 		}
-
-		if (empty($this->session->data['shipping_modules'])) {
-			$data['error_warning'] = sprintf($this->language->get('error_no_shipping'), $this->url->link('information/contact'));
-		} else {
-			$data['error_warning'] = '';
-		}
-
-		if (isset($this->session->data['shipping_modules'])) {
-			$data['shipping_modules'] = $this->session->data['shipping_modules'];
-		} else {
-			$data['shipping_modules'] = array();
-		}
-
-		if (isset($this->session->data['shipping_method']['code'])) {
-			$data['code'] = $this->session->data['shipping_method']['code'];
-		} else {
-			$data['code'] = '';
-		}
-
-		if (isset($this->session->data['comment'])) {
-			$data['comment'] = $this->session->data['comment'];
-		} else {
-			$data['comment'] = '';
-		}
-		
-		return  $data;
+		return $shipping_methods;
 	}
 	// Display shipping for fetch requests
 	public function displayShipping($data) {
 		$this->response->setOutput($this->load->view('checkout/shipping_method', $data));
+	}
+	// Save fields by fetch request while typing
+	public function fetchSaveQuickCheckoutfields() {
+		echo(json_encode($this->request->post['form']));
 	}
 }

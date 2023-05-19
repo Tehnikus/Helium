@@ -1,4 +1,4 @@
-<form action="index.php?route=checkout/payment_address/save" method="post" id="payment_address">
+<form action="index.php?route=checkout/payment_address/save" method="post" id="js_quick_ckeckout">
   {% if addresses %}
     <div class="form-control">
       <input id="payment_address_existing" type="radio" name="payment_address" value="existing" checked="checked" />
@@ -264,10 +264,12 @@
               </div>
             {% endfor %}
           {% else %}
-            <div class="form-control">
-              <input type="radio" value="{{ shipping_method.code }}" id="shipping_{{ shipping_method.code }}" name="shipping_method"/>
-              <label for="shipping_{{ shipping_method.code }}">{{ shipping_method.title }}</label>
-            </div>
+            {% if shipping_method.status == 1 %}
+              <div class="form-control">
+                <input type="radio" value="{{ shipping_method.code }}" id="shipping_{{ shipping_method.code }}" name="shipping_method"/>
+                <label for="shipping_{{ shipping_method.code }}">{{ shipping_method.title }}</label>
+              </div>
+            {% endif %}
           {% endif %}
         {% else %}
           <div class="alert alert-danger">{{ shipping_method.error }}</div>

@@ -269,7 +269,7 @@ var cart = {
 		})
 	},
 	'showModal': function(){
-		ajax('index.php?route=common/cart/modal',null,function(c) {
+		ajax('index.php?route=common/cart/displayCartModal',null,function(c) {
 			dialog.create(c);
 		}, null,null,null,"GET","text",true);
 	}
@@ -736,7 +736,7 @@ let dialog = {
 			a.showModal();
 		}
 
-		return;
+		return a;
 	},
 	close: () => {
 		let b = document.getElementsByTagName('dialog');
@@ -1025,21 +1025,51 @@ const cartUpdateHeaderButton = (r) => {
 }
 
 const cartShowModal = async (el, ev) => {
-	let c = await fetchFunction({url:'index.php?route=common/cart/modal'});
-	let q = await fetchFunction({url:'index.php?route=common/cart/displayQuickCheckout'});
-	let cart = document.createElement('div');
-	cart.innerHTML = c+q;
-	dialog.create(cart, ev);
-
-	// Get elements after dialog appended to the document
-	let country_select = document.querySelector('[name="country_id"]');
-	if (!!country_select) {
-		await getZones(country_select);
+	fetch('index.php?route=common/cart/displayCartModal',{method: "POST"})
+	.then((r) => {return r.text();})
+	.then((r) => {
+		let a = document.createElement('div');
+		a.innerHTML = r;
+		let b = dialog.create(a, ev);
+		let country_select = b.querySelector('[name="country_id"]');
+		let form = d.getElementById('js_quick_ckeckout');
+		
+		getZones(country_select);
 		country_select.addEventListener('change', ()=>{
 			getZones(country_select);
-			console.log(country_select);
+		});
+		const formElements = Array.from(form.elements);
+		[].forEach.call(formElements, (input)=>{
+			input.addEventListener('focusout', ()=>{
+				saveCheckoutfields(form)
+			})
 		})
-    }
+
+		// Add save fields on blur
+	})
+}
+
+// Save checkout inputs so they are filled next time if user didn't finish checkout
+function saveCheckoutfields(form) {
+	let saved_data = {};
+	const formElements = Array.from(form.elements);
+	[].forEach.call(formElements, (input)=>{
+		// if (input.tagName == 'RADIO') {
+			// console.log(input.value, input.checked, input);
+		// }
+		if ((input.type == 'text' && input.name !== '' && input.value !== '') || (input.type == 'radio' && input.checked == true)) {
+			saved_data[input.name] = input.value;
+		} else if (input.tagName == 'SELECT') {
+			saved_data[input.name] = input.options[input.selectedIndex].value;
+		}
+	});
+	fetch('index.php?route=common/cart/fetchSaveQuickCheckoutfields', {method: "POST", headers: {"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"}, body: 'form='+JSON.stringify(saved_data)})
+	.then(r=>{return r.json()})
+	.then(r=>{
+		console.log(r);
+	})
+	// console.log(saved_data);
+	
 }
 
 
