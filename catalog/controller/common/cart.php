@@ -317,12 +317,83 @@ class ControllerCommonCart extends Controller {
 	}
 
 	public function displayQuickCheckout() {
+
+		
+
 		$this->load->language('checkout/checkout');
 		$this->load->model('account/address');
 		$this->load->model('localisation/country');
 		$this->load->model('account/custom_field');
+		$this->load->model('setting/extension');
 
 		$data['addresses'] = $this->model_account_address->getAddresses();
+
+		// $customer_data = [];
+		// foreach ($this->session->data as $account_type => $field) {
+		// 	if ($account_type == 'payment_address' || $account_type == 'guest' || $account_type == 'shipping_address') {
+		// 		if (is_array($this->session->data[$account_type])) {
+		// 			foreach ($this->session->data[$account_type] as $field_name => $field_value) {
+		// 				if ($field_value !== '') {
+		// 					$customer_data[$field_name] = $field_value;
+		// 				}
+		// 			}
+		// 		}
+		// 	}
+		// }
+		// print_r($customer_data);
+
+
+		$shipping_methods = [];
+		$shipping_modules = $this->model_setting_extension->getExtensions('shipping');
+		// If cart has shipping
+		// Prepare shipping modules
+		if ($this->cart->hasShipping()) {
+
+			// If shipping address is present - display full delivery methods with prices
+			// Else - just delivery names
+			if (is_array($this->session->data) && isset($this->session->data['shipping_address'])) {
+				foreach ($shipping_modules as $module) {
+					if ($this->config->get('shipping_' . $module['code'] . '_status')) {
+						$this->load->model('extension/shipping/' . $module['code']);
+		
+						$quote = $this->{'model_extension_shipping_' . $module['code']}->getQuote($this->session->data['shipping_address']);
+		
+						if ($quote) {
+							$shipping_methods[$module['code']] = array(
+								'title'      => $quote['title'],
+								'quote'      => $quote['quote'],
+								'sort_order' => $quote['sort_order'],
+								'error'      => $quote['error']
+							);
+						}
+					}
+				}
+			} else {
+				foreach ($shipping_modules as $module) {
+					// Load language of every shipping module
+					$this->load->language('extension/shipping/'.$module['code']);
+					// Set title and code for every module
+					$shipping_methods[$module['code']] = array(
+						'title' => $this->language->get('text_title'),
+						'code' => $module['code'],
+					);
+				}
+			}
+
+			// Sort modules by sort order set in admin panel
+			$sort_order = array();
+			foreach ($shipping_methods as $key => $value) {
+				$sort_order[$key] = $value['sort_order'];
+			}
+
+			array_multisort($sort_order, SORT_ASC, $shipping_methods);
+		}
+		// print_r($shipping_methods);
+		$data['shipping_methods'] = $shipping_methods;
+
+
+
+		
 
 		if (isset($this->session->data['payment_address']['address_id'])) {
 			$data['address_id'] = $this->session->data['payment_address']['address_id'];
@@ -337,8 +408,81 @@ class ControllerCommonCart extends Controller {
 			$data['country_id'] = $this->config->get('config_country_id');
 		}
 
+
+		if (isset($this->session->data['guest']['customer_group_id'])) {
+			$data['customer_group_id'] = $this->session->data['guest']['customer_group_id'];
+		} else {
+			$data['customer_group_id'] = $this->config->get('config_customer_group_id');
+		}
+
+		if (isset($this->session->data['guest']['firstname'])) {
+			$data['firstname'] = $this->session->data['guest']['firstname'];
+		} else {
+			$data['firstname'] = '';
+		}
+
+		if (isset($this->session->data['guest']['lastname'])) {
+			$data['lastname'] = $this->session->data['guest']['lastname'];
+		} else {
+			$data['lastname'] = '';
+		}
+
+		if (isset($this->session->data['guest']['email'])) {
+			$data['email'] = $this->session->data['guest']['email'];
+		} else {
+			$data['email'] = '';
+		}
+
+		if (isset($this->session->data['guest']['telephone'])) {
+			$data['telephone'] = $this->session->data['guest']['telephone'];
+		} else {
+			$data['telephone'] = '';
+		}
+
+		if (isset($this->session->data['payment_address']['company'])) {
+			$data['company'] = $this->session->data['payment_address']['company'];
+		} else {
+			$data['company'] = '';
+		}
+
+		if (isset($this->session->data['payment_address']['address_1'])) {
+			$data['address_1'] = $this->session->data['payment_address']['address_1'];
+		} else {
+			$data['address_1'] = '';
+		}
+
+		if (isset($this->session->data['payment_address']['address_2'])) {
+			$data['address_2'] = $this->session->data['payment_address']['address_2'];
+		} else {
+			$data['address_2'] = '';
+		}
+
+		if (isset($this->session->data['payment_address']['postcode'])) {
+			$data['postcode'] = $this->session->data['payment_address']['postcode'];
+		} elseif (isset($this->session->data['shipping_address']['postcode'])) {
+			$data['postcode'] = $this->session->data['shipping_address']['postcode'];
+		} else {
+			$data['postcode'] = '';
+		}
+
+		if (isset($this->session->data['payment_address']['city'])) {
+			$data['city'] = $this->session->data['payment_address']['city'];
+		} else {
+			$data['city'] = '';
+		}
+
+		if (isset($this->session->data['payment_address']['country_id'])) {
+			$data['country_id'] = $this->session->data['payment_address']['country_id'];
+		} elseif (isset($this->session->data['shipping_address']['country_id'])) {
+			$data['country_id'] = $this->session->data['shipping_address']['country_id'];
+		} else {
+			$data['country_id'] = $this->config->get('config_country_id');
+		}
+
 		if (isset($this->session->data['payment_address']['zone_id'])) {
 			$data['zone_id'] = $this->session->data['payment_address']['zone_id'];
+		} elseif (isset($this->session->data['shipping_address']['zone_id'])) {
+			$data['zone_id'] = $this->session->data['shipping_address']['zone_id'];
 		} else {
 			$data['zone_id'] = '';
 		}
@@ -348,21 +492,105 @@ class ControllerCommonCart extends Controller {
 		$data['countries'] = $this->model_localisation_country->getCountries();
 
 		// Custom Fields
-		$data['custom_fields'] = array();
-		$custom_fields = $this->model_account_custom_field->getCustomFields($this->config->get('config_customer_group_id'));
+		$data['custom_fields'] = $this->model_account_custom_field->getCustomFields();
 
-		foreach ($custom_fields as $custom_field) {
-			if ($custom_field['location'] == 'address') {
-				$data['custom_fields'][] = $custom_field;
+		if (isset($this->session->data['guest']['custom_field'])) {
+			if (isset($this->session->data['guest']['custom_field'])) {
+				$guest_custom_field = $this->session->data['guest']['custom_field'];
+			} else {
+				$guest_custom_field = array();
 			}
+
+			if (isset($this->session->data['payment_address']['custom_field'])) {
+				$address_custom_field = $this->session->data['payment_address']['custom_field'];
+			} else {
+				$address_custom_field = array();
+			}
+
+			$data['guest_custom_field'] = $guest_custom_field + $address_custom_field;
+		} else {
+			$data['guest_custom_field'] = array();
 		}
 
-		if (isset($this->session->data['payment_address']['custom_field'])) {
-			$data['payment_address_custom_field'] = $this->session->data['payment_address']['custom_field'];
+		$data['shipping_required'] = $this->cart->hasShipping();
+
+		if (isset($this->session->data['guest']['shipping_address'])) {
+			$data['shipping_address'] = $this->session->data['guest']['shipping_address'];
 		} else {
-			$data['payment_address_custom_field'] = array();
+			$data['shipping_address'] = true;
 		}
 
 		echo($this->load->view('common/quick_checkout', $data));
+	}
+
+	// Get shipping methods
+	public function getShipping() {
+		$this->load->language('checkout/checkout');
+
+		if (isset($this->session->data['shipping_address'])) {
+			// Shipping Methods
+			$method_data = array();
+
+			$this->load->model('setting/extension');
+
+			$results = $this->model_setting_extension->getExtensions('shipping');
+
+			foreach ($results as $result) {
+				if ($this->config->get('shipping_' . $result['code'] . '_status')) {
+					$this->load->model('extension/shipping/' . $result['code']);
+
+					$quote = $this->{'model_extension_shipping_' . $result['code']}->getQuote($this->session->data['shipping_address']);
+
+					if ($quote) {
+						$method_data[$result['code']] = array(
+							'title'      => $quote['title'],
+							'quote'      => $quote['quote'],
+							'sort_order' => $quote['sort_order'],
+							'error'      => $quote['error']
+						);
+					}
+				}
+			}
+
+			$sort_order = array();
+
+			foreach ($method_data as $key => $value) {
+				$sort_order[$key] = $value['sort_order'];
+			}
+
+			array_multisort($sort_order, SORT_ASC, $method_data);
+
+			$this->session->data['shipping_modules'] = $method_data;
+		}
+
+		if (empty($this->session->data['shipping_modules'])) {
+			$data['error_warning'] = sprintf($this->language->get('error_no_shipping'), $this->url->link('information/contact'));
+		} else {
+			$data['error_warning'] = '';
+		}
+
+		if (isset($this->session->data['shipping_modules'])) {
+			$data['shipping_modules'] = $this->session->data['shipping_modules'];
+		} else {
+			$data['shipping_modules'] = array();
+		}
+
+		if (isset($this->session->data['shipping_method']['code'])) {
+			$data['code'] = $this->session->data['shipping_method']['code'];
+		} else {
+			$data['code'] = '';
+		}
+
+		if (isset($this->session->data['comment'])) {
+			$data['comment'] = $this->session->data['comment'];
+		} else {
+			$data['comment'] = '';
+		}
+		
+		return  $data;
+	}
+	// Display shipping for fetch requests
+	public function displayShipping($data) {
+		$this->response->setOutput($this->load->view('checkout/shipping_method', $data));
 	}
 }
