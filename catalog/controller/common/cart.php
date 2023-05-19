@@ -317,9 +317,6 @@ class ControllerCommonCart extends Controller {
 	}
 
 	public function displayQuickCheckout() {
-
-		
-
 		$this->load->language('checkout/checkout');
 		$this->load->model('account/address');
 		$this->load->model('localisation/country');
