@@ -1031,7 +1031,7 @@ const cartShowModal = async (el, ev) => {
 		let a = document.createElement('div');
 		a.innerHTML = r;
 		let b = dialog.create(a, ev);
-		let country_select = b.querySelector('[name="country_id"]');
+		let country_select = b.querySelector('[name="shipping_address[country_id]"]');
 		let form = d.getElementById('js_quick_ckeckout');
 		
 		getZones(country_select);
@@ -1051,25 +1051,12 @@ const cartShowModal = async (el, ev) => {
 
 // Save checkout inputs so they are filled next time if user didn't finish checkout
 function saveCheckoutfields(form) {
-	let saved_data = {};
-	const formElements = Array.from(form.elements);
-	[].forEach.call(formElements, (input)=>{
-		// if (input.tagName == 'RADIO') {
-			// console.log(input.value, input.checked, input);
-		// }
-		if ((input.type == 'text' && input.name !== '' && input.value !== '') || (input.type == 'radio' && input.checked == true)) {
-			saved_data[input.name] = input.value;
-		} else if (input.tagName == 'SELECT') {
-			saved_data[input.name] = input.options[input.selectedIndex].value;
-		}
-	});
-	fetch('index.php?route=common/cart/fetchSaveQuickCheckoutfields', {method: "POST", headers: {"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"}, body: 'form='+JSON.stringify(saved_data)})
-	.then(r=>{return r.json()})
+	let data = new FormData(form);
+	fetch('index.php?route=common/cart/fetchSaveQuickCheckoutfields', {method: "POST", body: data})
+	.then(r=>{return r.text()})
 	.then(r=>{
-		console.log(r);
+		console.log(JSON.parse(r));
 	})
-	// console.log(saved_data);
-	
 }
 
 

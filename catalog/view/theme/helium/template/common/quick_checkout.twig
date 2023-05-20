@@ -27,7 +27,7 @@
       <label for="input-payment-firstname">{{ entry_firstname }}, {{ entry_lastname }}</label>
       <input
         type="text"
-        name="firstname"
+        name="guest[firstname]"
         value="{{ firstname }}"
         placeholder="{{ entry_firstname }}"
         id="input-payment-firstname"
@@ -38,7 +38,7 @@
       />
       <input
         type="text"
-        name="lastname"
+        name="guest[lastname]"
         value="{{ lastname }}"
         placeholder="{{ entry_lastname }}"
         id="input-payment-lastname"
@@ -53,7 +53,7 @@
       <label for="input-payment-address-1">{{ entry_city }}, {{ entry_address_1 }}</label>
       <input 
         type="text" 
-        name="city" 
+        name="shipping_address[city]" 
         value="{{ city }}"
         placeholder="{{ entry_city }}" 
         id="input-payment-city"
@@ -65,7 +65,7 @@
       />
       <input
         type="text"
-        name="address_1"
+        name="shipping_address[address_1]"
         value="{{ address_1 }}"
         placeholder="{{ entry_address_1 }}"
         id="input-payment-address-1"
@@ -94,7 +94,7 @@
       <label for="input-payment-telephone">{{ entry_telephone }}</label>
       <input
         type="tel"
-        name="telephone"
+        name="guest[telephone]"
         value="{{ telephone }}"
         placeholder="{{ entry_telephone }}"
         id="input-payment-telephone"
@@ -121,7 +121,7 @@
 
     <div class="form-group required">
       <label for="input-payment-country">{{ entry_country }}</label>
-      <select name="country_id" id="input-payment-country">
+      <select name="shipping_address[country_id]" id="input-payment-country">
         <option value="">{{ text_select }}</option>
         {% for country in countries %}
           {% if country.country_id == country_id %}
@@ -135,7 +135,7 @@
 
     <div id="js_payment_zone_group_quick_checkout" class="form-group required">
       <label for="js_input_payment_zone_quick_checkout">{{ entry_zone }}</label>
-      <select name="zone_id" id="js_input_payment_zone_quick_checkout"></select>
+      <select name="shipping_address[zone_id]" id="js_input_payment_zone_quick_checkout"></select>
     </div>
 
     {% for custom_field in custom_fields %}
@@ -266,7 +266,7 @@
           {% else %}
             {% if shipping_method.status == 1 %}
               <div class="form-control">
-                <input type="radio" value="{{ shipping_method.code }}" id="shipping_{{ shipping_method.code }}" name="shipping_method"/>
+            <input type="radio" value="{{ shipping_method.code }}" id="shipping_{{ shipping_method.code }}" name="shipping_method" {% if loop.first %} checked {% endif %}/>
                 <label for="shipping_{{ shipping_method.code }}">{{ shipping_method.title }}</label>
               </div>
             {% endif %}

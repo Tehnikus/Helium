@@ -618,6 +618,11 @@ class ControllerCommonCart extends Controller {
 	}
 	// Save fields by fetch request while typing
 	public function fetchSaveQuickCheckoutfields() {
-		echo(json_encode($this->request->post['form']));
+		foreach ($this->request->post as $field_name => $value) {
+			if ($value !== '') {
+				$this->session->data['quick_checkout'][$field_name] = $value;
+			}
+		}
+		echo(json_encode($this->session->data['quick_checkout']));
 	}
 }
