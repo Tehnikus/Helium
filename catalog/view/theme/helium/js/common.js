@@ -1107,6 +1107,24 @@ const contactsModal = (el, ev) => {
 	fetchFunction({url:'index.php?route=information/contact/showContactsModal', callback: dialog, arg: 'create',ev:ev})
 }
 
+const correctTime = (el, ev) => {
+	let date = '', time = '', hours = '', mins = '';
+	let value = el.value;
+	if (value.split('T')[1]) {
+		date = value.split('T')[0] + 'T';
+		time = value.split('T')[1];
+	} else {
+		time = value;
+	}
+	hours = time.split(':')[0];
+	mins = time.split(':')[1];
+	if (parseInt(mins) > 30) {
+		hours = parseInt(hours) + 1 + '';
+	}
+	mins = '00';
+	el.value = date+hours+':'+mins;
+}
+
 
 
 // List of functions
