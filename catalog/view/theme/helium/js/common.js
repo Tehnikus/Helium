@@ -1030,7 +1030,7 @@ function saveCheckoutfields(form) {
 	fetch('index.php?route=common/cart/fetchSaveQuickCheckoutfields', {method: "POST", body: data})
 	.then(r=>{return r.text()})
 	.then(r=>{
-		console.log(r)
+		// console.log(r)
 		// console.log(JSON.parse(r));
 	})
 }
@@ -1119,10 +1119,13 @@ const correctTime = (el, ev) => {
 	hours = time.split(':')[0];
 	mins = time.split(':')[1];
 	if (parseInt(mins) > 30) {
-		hours = parseInt(hours) + 1 + '';
+		hours = parseInt(hours) + 1;
+		if (hours < 10) {
+			hours = `0${hours}`;
+		}
 	}
 	mins = '00';
-	el.value = date+hours+':'+mins;
+	el.value = `${date}` + `${hours}:${mins}`;
 }
 
 
