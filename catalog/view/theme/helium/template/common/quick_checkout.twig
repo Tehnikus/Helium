@@ -133,7 +133,7 @@
       </select>
     </div>
 
-    <div id="js_payment_zone_group_quick_checkout" class="form-group required">
+    <div class="form-group required">
       <label for="js_input_payment_zone_quick_checkout">{{ entry_zone }}</label>
       <select name="shipping_address[zone_id]" id="js_input_payment_zone_quick_checkout"></select>
     </div>
@@ -228,7 +228,7 @@
           data-date-format="HH:mm" 
           id="input-payment-custom-field{{ custom_field.custom_field_id }}" 
           min="08:00" max="20:00"
-          step="3600"
+          data-action="correctTime" step="3600000"
         />
       </div>
       {% endif %}
@@ -242,7 +242,7 @@
           placeholder="{{ custom_field.name }}" 
           data-date-format="YYYY-MM-DD HH:mm" 
           id="input-payment-custom-field{{ custom_field.custom_field_id }}" 
-          step="3600"
+          data-action="correctTime" step="3600"
         />
       </div>
       {% endif %}

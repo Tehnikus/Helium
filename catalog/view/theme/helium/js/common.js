@@ -1024,6 +1024,17 @@ const cartUpdateHeaderButton = (r) => {
 	}
 }
 
+// Save checkout inputs so they are filled next time if user didn't finish checkout
+function saveCheckoutfields(form) {
+	let data = new FormData(form);
+	fetch('index.php?route=common/cart/fetchSaveQuickCheckoutfields', {method: "POST", body: data})
+	.then(r=>{return r.text()})
+	.then(r=>{
+		console.log(r)
+		// console.log(JSON.parse(r));
+	})
+}
+
 const cartShowModal = async (el, ev) => {
 	fetch('index.php?route=common/cart/displayCartModal',{method: "POST"})
 	.then((r) => {return r.text();})
@@ -1053,50 +1064,35 @@ const cartShowModal = async (el, ev) => {
 	})
 }
 
-// Save checkout inputs so they are filled next time if user didn't finish checkout
-function saveCheckoutfields(form) {
-	let data = new FormData(form);
-	fetch('index.php?route=common/cart/fetchSaveQuickCheckoutfields', {method: "POST", body: data})
-	.then(r=>{return r.text()})
-	.then(r=>{
-		// console.log(r)
-		// console.log(JSON.parse(r));
-	})
-}
 
 
-const getZones = async (country_select, zone_select) => {
-	// Parent block of zones to hide or show
-	let zone_block = zone_select.parentElement;
-	await fetch('index.php?route=checkout/checkout/country&country_id='+country_select.value,{method: "POST"})
+
+const getZones = (country_select, zone_select) => {
+	let zone_block = country_select.parentElement.nextElementSibling;
+	fetch('index.php?route=checkout/checkout/country&country_id='+country_select.value,{method: "POST"})
 	.then((r) => {return r.text();})
 	.then((r) => {
+		while (zone_select.firstElementChild) {
+			zone_select.removeChild(zone_select.lastElementChild)
+		}
 		country_data = JSON.parse(r);
 		if ('zone' in country_data) {
-			console.log('yes',zone_block);
 			zone_block.classList.remove('hidden');
-			zone_block.removeChild(zone_select);
-			let new_zone_select = createZoneSelect(country_data.zone);
-			zone_block.insertAdjacentElement('beforeend', new_zone_select);
+			createZoneSelect(zone_select, country_data.zone);
+			zone_block.style.cssText = '';
 		} else {
-			zone_block.removeChild(zone_select);
-			zone_block.classList.add('hidden');
+			zone_block.style.cssText = 'display:none';
 		}
 	});
-	function createZoneSelect(zones) {
-		let s = createElm({
-			type: 'select',
-			attrs: {'name':'shipping_address[zone_id]'},
-		});
+	function createZoneSelect(zone_select, zones) {
 		for (z in zones) {
 			let o = createElm({
 				type: 'option',
 				attrs: {'value':zones[z].zone_id},
 				props: {'innerText':zones[z].name}
 			})
-			s.insertAdjacentElement('afterbegin', o);
+			zone_select.insertAdjacentElement('afterbegin', o);
 		}
-		return s
 	}
 }
 
@@ -1129,6 +1125,9 @@ const actions = {
 	input: {
 		searchFunction,
 	},
+	change: {
+		correctTime
+	}
 };
 // Add event listener to document
 Object.keys(actions).forEach(key => document.addEventListener(key, handle));

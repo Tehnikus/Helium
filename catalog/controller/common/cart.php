@@ -634,6 +634,8 @@ class ControllerCommonCart extends Controller {
 			}
 			// Save data to session
 			$this->session->data['quick_checkout'][$field_name] = $value;
+
+
 		}
 		print_r(($this->session->data));
 	}
