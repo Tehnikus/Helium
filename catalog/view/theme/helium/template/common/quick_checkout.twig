@@ -211,9 +211,9 @@
           name="custom_field[{{ custom_field.location }}][{{ custom_field.custom_field_id }}]"
           value="{{ custom_field.value }}"
           placeholder="{{ custom_field.name }}"
-          step="1"
+          
           id="input-payment-custom-field{{ custom_field.custom_field_id }}"
-          data-date-format="YYYY-MM-DD"
+          min="{{ now|date('Y-m-d') }}"
         />
       </div>
       {% endif %}
@@ -228,7 +228,7 @@
           data-date-format="HH:mm" 
           id="input-payment-custom-field{{ custom_field.custom_field_id }}" 
           min="08:00" max="20:00"
-          data-action="correctTime" step="3600000"
+          data-action="correctTime" 
         />
       </div>
       {% endif %}
@@ -240,9 +240,10 @@
           name="custom_field[{{ custom_field.location }}][{{ custom_field.custom_field_id }}]"
           value="{{ custom_field.value }}"
           placeholder="{{ custom_field.name }}" 
-          data-date-format="YYYY-MM-DD HH:mm" 
+          min="{{ now|date('Y-m-d\\TH:i') }}"
           id="input-payment-custom-field{{ custom_field.custom_field_id }}" 
-          data-action="correctTime" step="3600"
+          data-action="correctTime" 
+          
         />
       </div>
       {% endif %}
