@@ -157,6 +157,7 @@ class ControllerCommonCart extends Controller {
 
 	// Отображение модального окна
 	public function displayCartModal() {
+		$data = [];
 		$data = $this->getCartData();
 		$this->getQuickCheckoutData($data);
 		echo($this->load->view('common/cart_modal', $data));
@@ -600,7 +601,7 @@ class ControllerCommonCart extends Controller {
 						'status' => (int)$this->config->get('shipping_'.$module['code'].'_geo_zone_id')
 					);
 				}
-				print_r($shipping_methods);
+				// print_r($shipping_methods);
 			}
 
 			// Sort modules by sort order set in admin panel
@@ -610,6 +611,7 @@ class ControllerCommonCart extends Controller {
 			}
 			array_multisort($sort_order, SORT_ASC, $shipping_methods);
 		}
+		// print_r($this->session->data['quick_checkout']);
 		return $shipping_methods;
 	}
 	// Display shipping for fetch requests
@@ -619,10 +621,37 @@ class ControllerCommonCart extends Controller {
 	// Save fields by fetch request while typing
 	public function fetchSaveQuickCheckoutfields() {
 		foreach ($this->request->post as $field_name => $value) {
-			if ($value !== '') {
-				$this->session->data['quick_checkout'][$field_name] = $value;
+			// Remove empty array keys to avoid errors
+			if (is_array($value)) {
+				$value = array_filter($value);
+				if (empty($value)) {
+					unset($this->request->post[$field_name]);
+				}
 			}
+			// Remove empty strings
+			if ($value == '') {
+				unset($this->request->post[$field_name]);
+			}
+			// Save data to session
+			$this->session->data['quick_checkout'][$field_name] = $value;
 		}
-		echo(json_encode($this->session->data['quick_checkout']));
+		print_r(($this->session->data));
+	}
+	function removeEmptyArrayValues($array) {
+		if (!is_array($array)) {
+			return $array;
+		}
+        foreach ($array as $k => $v) {
+            if (is_array($v)) {
+                $array[$k] = $this->removeEmptyArrayValues($v);
+
+                if (0 == count($array[$k])) {
+                    unset($array[$k]);
+                }
+            } elseif (empty($v)) {
+                unset($array[$k]);
+            }
+        }
+		return $array;
 	}
 }

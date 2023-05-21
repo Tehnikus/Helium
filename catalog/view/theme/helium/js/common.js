@@ -1030,22 +1030,26 @@ const cartShowModal = async (el, ev) => {
 	.then((r) => {
 		let a = document.createElement('div');
 		a.innerHTML = r;
-		let b = dialog.create(a, ev);
-		let country_select = b.querySelector('[name="shipping_address[country_id]"]');
-		let form = d.getElementById('js_quick_ckeckout');
+		let cd = dialog.create(a, ev);
+		let country_select = cd.querySelector('[name="shipping_address[country_id]"]');
+		let zone_select = cd.querySelector('[name="shipping_address[zone_id]"]');
+		let form = cd.querySelector('#js_quick_ckeckout');
 		
-		getZones(country_select);
-		country_select.addEventListener('change', ()=>{
-			getZones(country_select);
-		});
-		const formElements = Array.from(form.elements);
-		[].forEach.call(formElements, (input)=>{
-			input.addEventListener('focusout', ()=>{
-				saveCheckoutfields(form)
+		if (!!country_select) {
+			getZones(country_select, zone_select);
+			country_select.addEventListener('change', ()=>{
+				getZones(country_select, zone_select);
+			});
+		}
+		if (!!form) {
+			const formElements = Array.from(form.elements);
+			[].forEach.call(formElements, (input)=>{
+				input.addEventListener('focusout', ()=>{
+					// Save fields on blur
+					saveCheckoutfields(form)
+				})
 			})
-		})
-
-		// Add save fields on blur
+		}
 	})
 }
 
@@ -1055,51 +1059,47 @@ function saveCheckoutfields(form) {
 	fetch('index.php?route=common/cart/fetchSaveQuickCheckoutfields', {method: "POST", body: data})
 	.then(r=>{return r.text()})
 	.then(r=>{
-		console.log(JSON.parse(r));
+		// console.log(r)
+		// console.log(JSON.parse(r));
 	})
 }
 
 
-const getZones = async (country_select) => {
-	return fetch('index.php?route=checkout/checkout/country&country_id='+country_select.value,{method: "POST"})
+const getZones = async (country_select, zone_select) => {
+	// Parent block of zones to hide or show
+	let zone_block = zone_select.parentElement;
+	await fetch('index.php?route=checkout/checkout/country&country_id='+country_select.value,{method: "POST"})
 	.then((r) => {return r.text();})
 	.then((r) => {
-		let country = JSON.parse(r);
-		let zone_select = document.querySelector('[name="zone_id"]');
-		// IDs of zone selects and input groups
-		// In case if user opens cart with Quick checkout while on regular checkout page
-		// so we need to update both fields if one of them changed 
-		let zone_input_group_ids = ['js_payment_zone_group_quick_checkout',''];
-		let zone_select_ids = ['js_input_payment_zone_quick_checkout',''];
-		if ('zone' in country) {
-			if (!zone_select) {
-				zone_select = document.createElement('select');
-				zone_select.name = 'zone_id';
-				zone_select.id = 'js_input_payment_zone_quick_checkout';
-				country_select.parentElement.nextElementSibling.insertAdjacentElement('beforeend', zone_select);
-			} else {
-				// remove child elements
-				while (zone_select.firstChild) {
-					zone_select.removeChild(zone_select.lastChild);
-				}
-			}
-			// Add new select options
-			for (const zone in country.zone) {
-				if (Object.hasOwnProperty.call(country.zone, zone)) {
-					const element = country.zone[zone];
-					let option = document.createElement('option');
-					option.value = element.zone_id;
-					option.innerText = element.name;
-					zone_select.appendChild(option);
-				}
-			}
+		country_data = JSON.parse(r);
+		if ('zone' in country_data) {
+			console.log('yes',zone_block);
+			zone_block.classList.remove('hidden');
+			zone_block.removeChild(zone_select);
+			let new_zone_select = createZoneSelect(country_data.zone);
+			zone_block.insertAdjacentElement('beforeend', new_zone_select);
 		} else {
-			if (!!zone_select) {
-				zone_select.parentElement.removeChild(zone_select)
-			}
+			zone_block.removeChild(zone_select);
+			zone_block.classList.add('hidden');
 		}
 	});
+	function createZoneSelect(zones) {
+		let s = createElm({
+			type: 'select',
+			attrs: {'name':'shipping_address[zone_id]'},
+		});
+		for (z in zones) {
+			let o = createElm({
+				type: 'option',
+				attrs: {'value':zones[z].zone_id},
+				props: {'innerText':zones[z].name}
+			})
+			s.insertAdjacentElement('afterbegin', o);
+		}
+		return s
+	}
 }
+
 
 const compareModal = (el, ev) => {
 	fetchFunction({url:'index.php?route=product/compare/showCompareModal', callback: dialog, arg:'create',ev:ev})
