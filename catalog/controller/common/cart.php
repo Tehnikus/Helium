@@ -1,6 +1,7 @@
 <?php
 class ControllerCommonCart extends Controller {
 	public function getCartData() {
+		
 		$this->load->language('common/cart');
 		$this->load->language('product/product');
 
@@ -158,6 +159,8 @@ class ControllerCommonCart extends Controller {
 	// Отображение модального окна
 	public function displayCartModal() {
 		$data = [];
+		
+		// print_r($this->session->data['shipping_methods']);
 		$data = $this->getCartData();
 		$this->getQuickCheckoutData($data);
 		echo($this->load->view('common/cart_modal', $data));
@@ -618,27 +621,95 @@ class ControllerCommonCart extends Controller {
 	public function displayShipping($data) {
 		$this->response->setOutput($this->load->view('checkout/shipping_method', $data));
 	}
+
+
+
 	// Save fields by fetch request while typing
 	public function fetchSaveQuickCheckoutfields() {
-		foreach ($this->request->post as $field_name => $value) {
-			// Remove empty array keys to avoid errors
-			if (is_array($value)) {
-				$value = array_filter($value);
-				if (empty($value)) {
-					unset($this->request->post[$field_name]);
-				}
-			}
-			// Remove empty strings
-			if ($value == '') {
-				unset($this->request->post[$field_name]);
-			}
-			// Save data to session
-			$this->session->data['quick_checkout'][$field_name] = $value;
+		$json_errors = [];
+		// remove empty entries so nothing falsy triggers
+		$data = $this->removeEmptyArrayValues($this->request->post);
 
+		// Add required data to guest
+		if (isset($data['guest']) &&
+			isset($data['guest']['firstname']) &&
+			isset($data['guest']['lastname']) &&
+			isset($data['guest']['telephone'])) {
+			// Default guest customer group
+			$data['guest']['customer_group_id'] = $this->config->get('config_customer_group_id');
+			// Shipping addrei is the same as payment
+			$data['guest']['shipping_address'] = true;
+		}
+
+		// Country data
+		if (isset($data['shipping_address'])) {
+			// Get country data required for shipping
+			if (isset($data['shipping_address']['country_id'])) {
+				$this->load->model('localisation/country');
+				$country_info = $this->model_localisation_country->getCountry($data['shipping_address']['country_id']);
+				$data['country'] = $country_info;
+			}
+			// Get zone data
+			if (isset($data['shipping_address']['zone_id'])) {
+				$this->load->model('localisation/zone');
+				$zone_info = $this->model_localisation_zone->getZone($data['shipping_address']['zone_id']);
+				$data['zone'] = $zone_info;
+			}
+
+			if ((isset($data['country']) && !empty($data['country'])) && (isset($data['zone']) && !empty($data['zone']))) {
+				$country_and_zone = array_merge($data['country'], $data['zone']);
+				$data['shipping_address'] = array_merge($data['shipping_address'], $country_and_zone);
+				unset($data['country'], $data['zone']);
+			}
+
+			// Check country errors
+			$address_errors = $this->checkAddressErrors($data['shipping_address'], $country_info);
+			if (empty($address_errors)) {
+				// If no errors, copy shipping address to payment address
+				$data['payment_address'] = $data['shipping_address'];
+				// Set session data
+				$this->session->data['shipping_address'] = $data['shipping_address'];
+				$this->session->data['payment_address'] = $data['payment_address'];
+			} else {
+				// Else return errors and handleErrors() in javascript
+				return $address_errors;
+			}
+		}
+
+		if (isset($data['shipping_method'])) {
 
 		}
-		print_r(($this->session->data));
+		
+		if (!isset($this->session->data['quick_checkout'])) {
+			$this->session->data['quick_checkout'] = [];
+		}
+
+		// Save data to session
+		$this->session->data['quick_checkout'] = $data;
+		// Now just print out data, so I'll see if something missing
+		print_r($this->session->data);
+		// print_r($this->session->data['quick_checkout']);
 	}
+
+	public function checkAddressErrors($data, $country_info) {
+		$json = [];
+		if ($country_info && $country_info['postcode_required'] && (utf8_strlen(trim($data['postcode'])) < 2 || utf8_strlen(trim($data['postcode'])) > 10)) {
+			$json['error']['postcode'] = $this->language->get('error_postcode');
+		}
+
+		if (!isset($data['country_id']) || $data['country_id'] == '') {
+			$json['error']['country'] = $this->language->get('error_country');
+		}
+
+		if (!isset($data['zone_id']) || $data['zone_id'] == '') {
+			$json['error']['zone_id'] = $this->language->get('error_zone');
+		}
+		return $json;
+	}
+
+
+	// Remove empty values from array
+	// Thanks, stackoverflow
 	function removeEmptyArrayValues($array) {
 		if (!is_array($array)) {
 			return $array;
