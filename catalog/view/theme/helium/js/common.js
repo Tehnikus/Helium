@@ -1028,10 +1028,13 @@ const cartUpdateHeaderButton = (r) => {
 function saveCheckoutfields(form) {
 	let data = new FormData(form);
 	fetch('index.php?route=common/cart/fetchSaveQuickCheckoutfields', {method: "POST", body: data})
-	.then(r=>{return r.text()})
+	.then(r=>{return r.json()})
 	.then(r=>{
-		// console.log(r)
-		// console.log(JSON.parse(r));
+		console.log(r);
+		if ('errors' in r) {
+			handleErrors(r, form);
+		}
+
 	})
 }
 
@@ -1205,7 +1208,7 @@ function mainMenu() {
 				p.setAttribute('aria-expanded', false);
 				setTimeout(() => {
 					parent_menu.querySelector('a').focus();
-				}, 400);
+				}, 200);
 
 			}}
 		});

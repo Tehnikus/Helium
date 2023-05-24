@@ -564,6 +564,8 @@ class ControllerCommonCart extends Controller {
 
 	// get Shipping methods
 	public function getShippingMethods() {
+		$this->load->model('setting/extension');
+
 		$shipping_methods = [];
 		$shipping_modules = $this->model_setting_extension->getExtensions('shipping');
 		// If cart has shipping
@@ -637,8 +639,12 @@ class ControllerCommonCart extends Controller {
 			isset($data['guest']['telephone'])) {
 			// Default guest customer group
 			$data['guest']['customer_group_id'] = $this->config->get('config_customer_group_id');
-			// Shipping addrei is the same as payment
+			// Shipping address is the same as payment
 			$data['guest']['shipping_address'] = true;
+		}
+		// Save Guest fields in any case 
+		foreach ($data['guest'] as $guest_field => $guest_value) {
+			$this->session->data['guest'][$guest_field] = $guest_value;
 		}
 
 		// Country data
@@ -667,38 +673,53 @@ class ControllerCommonCart extends Controller {
 			if (empty($address_errors)) {
 				// If no errors, copy shipping address to payment address
 				$data['payment_address'] = $data['shipping_address'];
+				// Get shipping methods
+				$data['shipping_methods'] = $this->getShippingMethods();
 				// Set session data
 				$this->session->data['shipping_address'] = $data['shipping_address'];
 				$this->session->data['payment_address'] = $data['payment_address'];
 			} else {
 				// Else return errors and handleErrors() in javascript
-				return $address_errors;
+				echo(json_encode($address_errors));
+				die;
 			}
 		}
 
-		if (isset($data['shipping_method'])) {
-
+		// If available shipping methods are rendered successfully and one of them is selected
+		// TODO Load language file here
+		if (isset($data['shipping_method']) && isset($data['shipping_methods'])) {
+			$shipping_errors = [];
+			$shipping = explode('.', $data['shipping_method']);
+			// echo($data['shipping_method']);
+			if (!isset($shipping[0]) || !isset($shipping[1]) || !isset($data['shipping_methods'][$shipping[0]]['quote'][$shipping[1]])) {
+				$shipping_errors['errors'] = $this->language->get('error_shipping');
+				echo(json_encode($shipping_errors));
+				die;
+			} else {
+				$data['shipping_method'] = $data['shipping_methods'][$shipping[0]];
+			}
 		}
 		
 		if (!isset($this->session->data['quick_checkout'])) {
 			$this->session->data['quick_checkout'] = [];
 		}
-
 		// Save data to session
 		$this->session->data['quick_checkout'] = $data;
+		
 		// Now just print out data, so I'll see if something missing
-		print_r($this->session->data);
-		// print_r($this->session->data['quick_checkout']);
+		echo(json_encode($this->session->data['quick_checkout']));
 	}
 
+	// Check if all address fields filled correctly
 	public function checkAddressErrors($data, $country_info) {
+		// TODO Load language file here
 		$json = [];
 		if ($country_info && $country_info['postcode_required'] && (utf8_strlen(trim($data['postcode'])) < 2 || utf8_strlen(trim($data['postcode'])) > 10)) {
 			$json['error']['postcode'] = $this->language->get('error_postcode');
 		}
 
 		if (!isset($data['country_id']) || $data['country_id'] == '') {
-			$json['error']['country'] = $this->language->get('error_country');
+			$json['error']['country_id'] = $this->language->get('error_country');
 		}
 
 		if (!isset($data['zone_id']) || $data['zone_id'] == '') {

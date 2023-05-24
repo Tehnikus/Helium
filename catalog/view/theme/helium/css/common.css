@@ -192,7 +192,7 @@ form {
     /* grid-template-rows: 1fr; */
     /* max-width: 100%; */
 }
-label {cursor:pointer; user-select: none;}
+label {cursor:pointer; user-select: none;-webkit-user-select: none;-moz-user-select: none;-ms-user-select: none;}
 .form-group {display: flex;flex: 1;align-items: center; padding: 0.5rem;  border-radius: var(--radius); flex-wrap: wrap; }
 .form-group label {flex: 1 1 auto;max-width: 8rem}
 /* For multiple lined up inputs in form group */
@@ -415,7 +415,7 @@ hgroup > * {
 }
 
 /* Typography */
-ul {margin: 0; padding: 0;}
+ul {margin: .5rem;padding: 0 .5rem;}
 /* Tables */
 table {border-collapse:collapse;margin-bottom:10px;width:100%;table-layout:fixed;border-radius: var(--radius);overflow: hidden;}
 table caption, td, th {text-align:left}
@@ -630,7 +630,7 @@ button.primary {
     background-size: 200% auto;
     color: white;            
     flex: 1; /* Grow primary button in button group */
-    user-select: none;
+    user-select: none;-webkit-user-select: none;-moz-user-select: none;-ms-user-select: none;
 }
 button:disabled,
 input:disabled,

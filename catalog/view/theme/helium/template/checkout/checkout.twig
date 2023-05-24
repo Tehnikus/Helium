@@ -253,7 +253,7 @@ function getForm(method_name) {
     let country_select = step.querySelector('[name="country_id"]');
     let zone_select = step.querySelector('[name="zone_id"]');
     if (!!country_select && !!zone_select) {
-      getZones(country_select.value, zone_select.id);
+      getZones2(country_select.value, zone_select.id);
     }
   });
 }
@@ -317,7 +317,7 @@ function removeElementsByClass(className) {
 
 
 // Create zones options
-function getZones(country_id, zone_input_id) {
+function getZones2(country_id, zone_input_id) {
 	fetch('index.php?route=checkout/checkout/country&country_id='+country_id,{method: "POST"})
 	.then((r) => {return r.text();})
 	.then((body) => {
