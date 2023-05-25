@@ -415,15 +415,15 @@ class ControllerProductProduct extends Controller {
 		if (isset($this->request->get['entity_id']) && $this->request->get['entity_id']) {
 			if ($this->request->server['REQUEST_METHOD'] == 'POST') {
 				if ((utf8_strlen($this->request->post['name']) < 3) || (utf8_strlen($this->request->post['name']) > 25)) {
-					$json['error'] = $this->language->get('error_name');
+					$json['error']['name'] = $this->language->get('error_name');
 				}
 
 				if ((utf8_strlen($this->request->post['text']) < 25) || (utf8_strlen($this->request->post['text']) > 1000)) {
-					$json['error'] = $this->language->get('error_text');
+					$json['error']['text'] = $this->language->get('error_text');
 				}
 
 				if (empty($this->request->post['rating']) || $this->request->post['rating'] < 0 || $this->request->post['rating'] > 5) {
-					$json['error'] = $this->language->get('error_rating');
+					$json['error']['rating'] = $this->language->get('error_rating');
 				}
 
 				// Captcha
