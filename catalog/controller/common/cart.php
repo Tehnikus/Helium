@@ -347,12 +347,7 @@ class ControllerCommonCart extends Controller {
 		// }
 		// print_r($customer_data);
 
-
 		$data['shipping_methods'] = $this->getShippingMethods();
-
-
-
-		
 
 		if (isset($this->session->data['payment_address']['address_id'])) {
 			$data['address_id'] = $this->session->data['payment_address']['address_id'];
@@ -620,11 +615,20 @@ class ControllerCommonCart extends Controller {
 		return $shipping_methods;
 	}
 	// Display shipping for fetch requests
-	public function displayShipping($data) {
-		$this->response->setOutput($this->load->view('checkout/shipping_method', $data));
+	// public function displayShipping($data) {
+	// 	$this->response->setOutput($this->load->view('common/quick_checkout_shipping', $data));
+	// }
+	public function fetchDisplayShipping() {
+		$data['shipping_methods'] = $this->getShippingMethods();
+		// print_r($data);
+		echo($this->load->view('common/quick_checkout_shipping', $data));
 	}
 
-
+	public function getPaymentMethods() {
+		$this->load->model('setting/extension');
+		$paymet_methods = $this->model_setting_extension->getExtensions('payment');
+		print_r($paymet_methods);
+	}
 
 	// Save fields by fetch request while typing
 	public function fetchSaveQuickCheckoutfields() {
@@ -642,9 +646,11 @@ class ControllerCommonCart extends Controller {
 			// Shipping address is the same as payment
 			$data['guest']['shipping_address'] = true;
 		}
-		// Save Guest fields in any case 
-		foreach ($data['guest'] as $guest_field => $guest_value) {
-			$this->session->data['guest'][$guest_field] = $guest_value;
+		// Save Guest fields in any case
+		if (isset($data['guest'])) {
+			foreach ($data['guest'] as $guest_field => $guest_value) {
+				$this->session->data['guest'][$guest_field] = $guest_value;
+			}
 		}
 
 		// Country data
@@ -669,34 +675,52 @@ class ControllerCommonCart extends Controller {
 			}
 
 			// Check country errors
-			$address_errors = $this->checkAddressErrors($data['shipping_address'], $country_info);
-			if (empty($address_errors)) {
+			if (isset($country_info) && !empty($country_info)) {
+				$address_errors = $this->checkAddressErrors($data['shipping_address'], $country_info);
 				// If no errors, copy shipping address to payment address
-				$data['payment_address'] = $data['shipping_address'];
-				// Get shipping methods
-				$data['shipping_methods'] = $this->getShippingMethods();
-				// Set session data
-				$this->session->data['shipping_address'] = $data['shipping_address'];
-				$this->session->data['payment_address'] = $data['payment_address'];
-			} else {
-				// Else return errors and handleErrors() in javascript
-				echo(json_encode($address_errors));
-				die;
+				if (empty($address_errors)) {
+					$data['payment_address'] = $data['shipping_address'];
+					// Get shipping methods
+					$data['shipping_methods'] = $this->getShippingMethods();
+					// Set session data
+					$this->session->data['shipping_address'] = $data['shipping_address'];
+					$this->session->data['payment_address'] = $data['payment_address'];
+					
+				} else {
+					// Else return errors and handleErrors() in javascript
+					echo(json_encode($address_errors));
+					die;
+				}
 			}
 		}
 
-		// If available shipping methods are rendered successfully and one of them is selected
-		// TODO Load language file here
-		if (isset($data['shipping_method']) && isset($data['shipping_methods'])) {
-			$shipping_errors = [];
-			$shipping = explode('.', $data['shipping_method']);
-			// echo($data['shipping_method']);
-			if (!isset($shipping[0]) || !isset($shipping[1]) || !isset($data['shipping_methods'][$shipping[0]]['quote'][$shipping[1]])) {
-				$shipping_errors['errors'] = $this->language->get('error_shipping');
-				echo(json_encode($shipping_errors));
-				die;
-			} else {
-				$data['shipping_method'] = $data['shipping_methods'][$shipping[0]];
+		// Thipping methods are rendered to response only if address country and zone (if needed) are set correctly
+		// If available shipping methods are rendered successfully 		
+		if (isset($data['shipping_methods'])) {
+			// Save available shipping methods
+			$this->session->data['shipping_methods'] = $data['shipping_methods'];
+			
+			// Output shipping methods html
+			// $response_html = [];
+			// $response_html['shipping_methods_html'] = $this->load->view('checkout/shipping_method', $data['shipping_methods']);
+			// echo(($this->load->view('checkout/shipping_method', $data['shipping_methods'])));
+			
+			// If one of shipping methods is selected
+			if (isset($data['shipping_method'])) {
+				// Try to select one by input value
+				$shipping = explode('.', $data['shipping_method']);
+				if (!isset($shipping[0]) || !isset($shipping[1]) || !isset($data['shipping_methods'][$shipping[0]]['quote'][$shipping[1]])) {
+					// Check for errors
+					// TODO Load language file here
+					$shipping_errors = [];
+					// Second array key ['shipping_method'] must comply faulty input name. Like this: input name="shipping_method"
+					$shipping_errors['error']['shipping_method'] = $this->language->get('error_shipping');
+					echo(json_encode($shipping_errors));
+					die;
+				} else {
+					// If no errors, set selected shipping method to data
+					$data['shipping_method'] = $data['shipping_methods'][$shipping[0]];
+				}
 			}
 		}
 		
