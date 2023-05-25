@@ -845,27 +845,22 @@ let toast = {
 
 
 
-// АЯКС отправка отзыва о товаре
+// Update reviews form, remove obsolete code
 function sendReview(t) {
+	let review_form = document.getElementById('form-review');
 	// Получаем форму, превращаем данные в строку вида:
 	// &name='Вася'&review='ололо'
-	let review_form = document.getElementById('form-review');
-	let review = new URLSearchParams(new FormData(review_form)).toString();
+	// let review = new URLSearchParams(new FormData(review_form)).toString();
 	let review_url = 'index.php?route='+t.dataset.type+'/sendReview&entity_id=' + t.dataset.id;
-	ajax(review_url, review,
-		function(r) {
-			if (r.error) {
-				handleErrors(r, review_form);
-			}
-			if (r.success) {
-				dialog.close();
-				toast.create(r.success, 'success');
-				// Убираем форму
-				// review_form.parentElement.removeChild(review_form);
-			}
-		},
-		null,null,null,'POST','JSON',true
-	);
+	let data = new FormData(review_form);
+	fetch(review_url, {method: "POST", body: data})
+	.then(r => {return r.json()})
+	.then(r => {
+		if (!handleErrors(r, review_form) && 'success' in r) {
+			dialog.create(r.success);
+			// toast.create(r.success, 'success');
+		}
+	})
 }
 
 
@@ -972,10 +967,8 @@ const cartRemove =  async (el, ev) => {
 }
 
 const cartAdd =  async (el, ev) => {
-	
 	// Product ID
 	const product_id = el.dataset.product_id;
-	
 	// Quantity. If input quantity is present, use it value. If minimum quantity in dataset is present, use it. If no - then just use 1
 	const qty = (!!document.getElementById('input-quantity')) ? document.getElementById('input-quantity').value : el.dataset.minimum_qty || 1;
 	
@@ -1031,13 +1024,24 @@ function saveCheckoutfields(form) {
 	.then(r=>{return r.json()})
 	.then(r=>{
 		console.log(r);
-		if ('errors' in r) {
-			handleErrors(r, form);
-		}
+		// Show any errors
+		handleErrors(r, form);
+		
+		// Update shipping methods when address country and zone are set correctly
+		fetch('index.php?route=common/cart/fetchDisplayShipping', {method: "POST", body: data})
+		.then(r=>{return r.text()})
+		.then(r=>{
+			let shipping = document.getElementById('js_shipping_methods');
+			// Check if block exists, for example if modal was closed or cart updated
+			if (!!shipping) {
+				shipping.innerHTML = r;
+			}
+		});
 
 	})
 }
 
+// New function with Quick checkout
 const cartShowModal = async (el, ev) => {
 	fetch('index.php?route=common/cart/displayCartModal',{method: "POST"})
 	.then((r) => {return r.text();})
@@ -1064,7 +1068,10 @@ const cartShowModal = async (el, ev) => {
 				})
 			})
 		}
-	})
+	});
+	fetch('index.php?route=checkout/payment_method/fetchPaymentMethodsData',{method: "POST"})
+	.then((r) => {return r.text();})
+	.then((r) => {console.log(r);})
 }
 
 
@@ -1678,7 +1685,7 @@ function countdown(element) {
 }
 
 // Handle errors on inputs
-// Highlights feulty inputs, adds ARIA aria-errormessage to announce errors on screenreaders
+// Highlights faulty inputs, adds ARIA aria-errormessage to announce errors on screenreaders
 // @result - the result of fetch request
 // @form_with_errors - DOM element of form to be highlighted
 function handleErrors(result, form_with_errors) {
@@ -1699,12 +1706,14 @@ function handleErrors(result, form_with_errors) {
 	if ('error' in result) {
 		let errors_object = result.error;
 		for (i in errors_object) {
+			console.log(i, errors_object[i]);
 			// TODO Test this with multiple warnings
 			if (i == 'warning') {
 				toast.create(errors_object['warning'], 'warning');
 			} else {
 				// console.log(i, errors_object[i]);
 				let error_input = form_with_errors.querySelector('[name=' + i + ']');
+				console.log(error_input, document.querySelector('[name=' + i + ']'));
 				if (error_input) {
 					// Set ARIA ittributes to invalid fields
 					error_input.setAttribute('aria-invalid', true);
@@ -1719,7 +1728,9 @@ function handleErrors(result, form_with_errors) {
 				}
 			}
 		}
+		return true;
 	}
+	return false;
 }
 
 function removeElementsByClass(className) {
