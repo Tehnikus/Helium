@@ -222,15 +222,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 // Cart add remove functions
-var cart = {
+// var cart = {
 	
-	'update': function(key, quantity) {
-		// Эта функция нигде не используется
-		var url = 'index.php?route=checkout/cart/edit';
-		var data = 'key=' + key + '&quantity=' + (typeof(quantity) != 'undefined' ? quantity : 1);
-		ajax(url, data, function(r){
-			console.log(r);
-		},null,null,null,"POST","JSON",true);
+	// 'update': function(key, quantity) {
+	// 	// Эта функция нигде не используется
+	// 	var url = 'index.php?route=checkout/cart/edit';
+	// 	var data = 'key=' + key + '&quantity=' + (typeof(quantity) != 'undefined' ? quantity : 1);
+	// 	ajax(url, data, function(r){
+	// 		console.log(r);
+	// 	},null,null,null,"POST","JSON",true);
 		// 	$.ajax({
 		// 		url: 'index.php?route=checkout/cart/edit',
 		// 		type: 'post',
@@ -258,22 +258,22 @@ var cart = {
 		// 			alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
 		// 		}
 		// 	});
-	},
-	'remove': function(key) {
-		var url = 'index.php?route=checkout/cart/remove';
-		var data = 'key=' + key;
-		ajax(url, data, function(r) {
-			ajax('index.php?route=common/cart/info', null, function(n) {
-				document.getElementById('cart').innerHTML = n;
-			},null,null,null,"GET","text",true);
-		})
-	},
-	'showModal': function(){
-		ajax('index.php?route=common/cart/displayCartModal',null,function(c) {
-			dialog.create(c);
-		}, null,null,null,"GET","text",true);
-	}
-}
+	// },
+	// 'remove': function(key) {
+	// 	var url = 'index.php?route=checkout/cart/remove';
+	// 	var data = 'key=' + key;
+	// 	ajax(url, data, function(r) {
+	// 		ajax('index.php?route=common/cart/info', null, function(n) {
+	// 			document.getElementById('cart').innerHTML = n;
+	// 		},null,null,null,"GET","text",true);
+	// 	})
+	// },
+	// 'showModal': function(){
+	// 	ajax('index.php?route=common/cart/displayCartModal',null,function(c) {
+	// 		dialog.create(c);
+	// 	}, null,null,null,"GET","text",true);
+	// }
+// }
 
 
 
@@ -676,8 +676,7 @@ function createElm({type, styles, attrs, props, events, nest}) {
 
 
 
-// TODO Допилить это
-// let dialog;
+// DONE Допилить это
 let dialog = {
 	create: (content, event) => {
 		dialog.close();
@@ -938,6 +937,8 @@ const reviewModal = (el, ev) => {
 }
 
 // Replace AJAX function
+// Chains fetch with callback, returns result text
+// Sets default header to post form data
 async function fetchFunction({url, m, h, b, callback, arg, ev}) {
 	let [a, method, headers, body, e, f, event] = [url, m || 'POST', h || {"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"}, b || '', callback || '', arg || '', ev || ''];
 	return fetch(a, {method, headers, body})
@@ -1017,29 +1018,6 @@ const cartUpdateHeaderButton = (r) => {
 	}
 }
 
-// Save checkout inputs so they are filled next time if user didn't finish checkout
-// function saveCheckoutfields(form) {
-// 	let data = new FormData(form);
-// 	fetch('index.php?route=common/cart/fetchSaveQuickCheckoutfields', {method: "POST", body: data})
-// 	.then(r=>{return r.json()})
-// 	.then(r=>{
-// 		console.log(r);
-// 		// Show any errors
-// 		handleErrors(r, form);
-		
-// 		// Update shipping methods when address country and zone are set correctly
-// 		fetch('index.php?route=common/cart/fetchDisplayShipping', {method: "POST", body: data})
-// 		.then(r=>{return r.text()})
-// 		.then(r=>{
-// 			let shipping = document.getElementById('js_shipping_methods');
-// 			// Check if block exists, for example if modal was closed or cart updated
-// 			if (!!shipping) {
-// 				shipping.innerHTML = r;
-// 			}
-// 		});
-
-// 	})
-// }
 
 // Refactored saveCheckoutfields function
 async function saveCheckoutfields(form) {
@@ -1047,17 +1025,12 @@ async function saveCheckoutfields(form) {
 		let data = new FormData(form);
 		let response = await fetch('index.php?route=common/cart/fetchSaveQuickCheckoutfields', { method: "POST", body: data });
 		let result = await response.json();
-		// console.log(result);
-
-		// Show any errors
-		// if ('error' in result) {
-		// 	handleErrors(result, form);
-		// }
 
 		// Update shipping methods when address country and zone are set correctly
 		response = await fetch('index.php?route=common/cart/fetchDisplayShipping', { method: "POST", body: data });
 		let shippingHtml = await response.text();
 		let shipping = document.getElementById('js_shipping_methods');
+		
 		// Check if block exists, for example if modal was closed or cart updated
 		if (!!shipping) {
 			shipping.innerHTML = shippingHtml;
@@ -1103,6 +1076,9 @@ async function saveCheckoutfields(form) {
 // }
 
 const cartShowModal = async (el, ev) => {
+	let a = await fetch('index.php?route=common/cart/fetchSessionData', { method: "POST" });
+	let b = await a.json();
+	console.log(b);
 	try {
 		let response = await fetch('index.php?route=common/cart/displayCartModal', { method: "POST" });
 		let modalContent = await response.text();
@@ -1754,7 +1730,7 @@ function countdown(element) {
 // @result - the result of fetch request
 // @form_with_errors - DOM element of form to be highlighted
 function handleErrors(result, form_with_errors) {
-	console.log(result);
+	// console.log(result);
 	// Remove previous error messages
 	removeElementsByClass('text-danger');
 	[].forEach.call(document.querySelectorAll('.has-error'), function (el) {
