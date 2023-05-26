@@ -6,7 +6,7 @@
  */
 class ModelCatalogProduct extends Model {
 
-	public	$allowed_sort_data = array(
+	public $allowed_sort_data = array(
 		'optgroup_default' => array(
 			'ASC' => array(
 				'p.sort_order',
@@ -288,9 +288,10 @@ class ModelCatalogProduct extends Model {
 	}
 
 	// Get product data and cache if needed
-	// @product_id = int
+	// $product_id = int
 	// return array()
 	// Returns the same as $this->renderProduct($product_id) only refers to cache if needed
+	// TODO Add chacing setting in backoffice
 	public function getProduct(int $product_id) {
 		// if ($this->config->get('cache_products')) {
 		if (true) {
@@ -1271,17 +1272,17 @@ class ModelCatalogProduct extends Model {
 			 LCASE(pd.description)	LIKE '%".$search."%')
 			
 			ORDER BY 
-			
-			# First sort by matching product name, then by description
-			CASE
-				WHEN p.model		LIKE '".$search."' THEN 1
-				WHEN pd.name		LIKE '".$search."' THEN 2
-				WHEN pd.name		LIKE '%".$search."%' THEN 3
-				WHEN pd.name		LIKE '%".$search." ' THEN 4
-				# TODO Add case when space follows product name like 'name '
-				WHEN pd.description	LIKE '%".$search."%' THEN 5
-				ELSE 10
-			END asc
+				# First sort by matching product name, then by description
+				CASE
+					WHEN p.model		LIKE '".$search."' THEN 1
+					WHEN pd.name		LIKE '".$search."' THEN 2
+					WHEN pd.name		LIKE '%".$search."%' THEN 3
+					WHEN pd.name		LIKE '%".$search." ' THEN 4
+					# TODO Add case when space follows product name like 'name '
+					WHEN pd.description	LIKE '%".$search."%' THEN 5
+					ELSE 10
+				END 
+			ASC
 			LIMIT 10
 		";
 		
@@ -1322,6 +1323,7 @@ class ModelCatalogProduct extends Model {
 		return $query->rows;
 	}
 
+	// Check if sort and order corresponds allowed sorting data in 
 	function searchArrayForKeyValue($array, $key, $value) {
 		foreach ($array as $optgroup) {
 			foreach ($optgroup as $sortDirection => $fields) {
