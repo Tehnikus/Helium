@@ -139,7 +139,7 @@
     </div>
 
     {# Custom fields #}
-    {% include 'helium/template/common/custom_fields.twig' with {type: 'shipping'} %}
+    {% include 'helium/template/common/custom_fields.twig' with {type: 'shipping', location: 'address'} %}
     {# Shipping methods #}
     {% include 'helium/template/common/quick_checkout_shipping.twig' %}
 
