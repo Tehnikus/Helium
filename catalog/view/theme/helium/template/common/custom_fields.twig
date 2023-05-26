@@ -1,4 +1,4 @@
-{% for custom_field in custom_fields %}
+{% for custom_field in custom_fields|sort((a, b) => a.sort_order <=> b.sort_order) %}
   {% if custom_field.location == location %}
     {% if custom_field.type == 'select' %}
       <div class="form-group{% if custom_field.required %} required {% endif %} custom-field" data-sort="{{ custom_field.sort_order }}">
