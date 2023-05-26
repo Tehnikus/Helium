@@ -1018,61 +1018,126 @@ const cartUpdateHeaderButton = (r) => {
 }
 
 // Save checkout inputs so they are filled next time if user didn't finish checkout
-function saveCheckoutfields(form) {
-	let data = new FormData(form);
-	fetch('index.php?route=common/cart/fetchSaveQuickCheckoutfields', {method: "POST", body: data})
-	.then(r=>{return r.json()})
-	.then(r=>{
-		console.log(r);
-		// Show any errors
-		handleErrors(r, form);
+// function saveCheckoutfields(form) {
+// 	let data = new FormData(form);
+// 	fetch('index.php?route=common/cart/fetchSaveQuickCheckoutfields', {method: "POST", body: data})
+// 	.then(r=>{return r.json()})
+// 	.then(r=>{
+// 		console.log(r);
+// 		// Show any errors
+// 		handleErrors(r, form);
 		
-		// Update shipping methods when address country and zone are set correctly
-		fetch('index.php?route=common/cart/fetchDisplayShipping', {method: "POST", body: data})
-		.then(r=>{return r.text()})
-		.then(r=>{
-			let shipping = document.getElementById('js_shipping_methods');
-			// Check if block exists, for example if modal was closed or cart updated
-			if (!!shipping) {
-				shipping.innerHTML = r;
-			}
-		});
+// 		// Update shipping methods when address country and zone are set correctly
+// 		fetch('index.php?route=common/cart/fetchDisplayShipping', {method: "POST", body: data})
+// 		.then(r=>{return r.text()})
+// 		.then(r=>{
+// 			let shipping = document.getElementById('js_shipping_methods');
+// 			// Check if block exists, for example if modal was closed or cart updated
+// 			if (!!shipping) {
+// 				shipping.innerHTML = r;
+// 			}
+// 		});
 
-	})
+// 	})
+// }
+
+// Refactored saveCheckoutfields function
+async function saveCheckoutfields(form) {
+	try {
+		let data = new FormData(form);
+		let response = await fetch('index.php?route=common/cart/fetchSaveQuickCheckoutfields', { method: "POST", body: data });
+		let result = await response.json();
+		// console.log(result);
+
+		// Show any errors
+		// if ('error' in result) {
+		// 	handleErrors(result, form);
+		// }
+
+		// Update shipping methods when address country and zone are set correctly
+		response = await fetch('index.php?route=common/cart/fetchDisplayShipping', { method: "POST", body: data });
+		let shippingHtml = await response.text();
+		let shipping = document.getElementById('js_shipping_methods');
+		// Check if block exists, for example if modal was closed or cart updated
+		if (!!shipping) {
+			shipping.innerHTML = shippingHtml;
+		}
+		return result;
+	} catch (error) {
+		console.error(error);
+	}
 }
 
+
 // New function with Quick checkout
+// const cartShowModal = async (el, ev) => {
+// 	fetch('index.php?route=common/cart/displayCartModal',{method: "POST"})
+// 	.then((r) => {return r.text();})
+// 	.then((r) => {
+// 		let a = document.createElement('div');
+// 		a.innerHTML = r;
+// 		let cd = dialog.create(a, ev);
+// 		let country_select = cd.querySelector('[name="shipping_address[country_id]"]');
+// 		let zone_select = cd.querySelector('[name="shipping_address[zone_id]"]');
+// 		let form = cd.querySelector('#js_quick_ckeckout');
+		
+// 		if (!!country_select) {
+// 			getZones(country_select, zone_select);
+// 			country_select.addEventListener('change', ()=>{
+// 				getZones(country_select, zone_select);
+// 			});
+// 		}
+// 		if (!!form) {
+// 			const formElements = Array.from(form.elements);
+// 			[].forEach.call(formElements, (input)=>{
+// 				input.addEventListener('focusout', ()=>{
+// 					// Save fields on blur
+// 					saveCheckoutfields(form)
+// 				})
+// 			})
+// 		}
+// 	});
+// 	fetch('index.php?route=checkout/payment_method/fetchPaymentMethodsData',{method: "POST"})
+// 	.then((r) => {return r.text();})
+// 	.then((r) => {console.log(r);})
+// }
+
 const cartShowModal = async (el, ev) => {
-	fetch('index.php?route=common/cart/displayCartModal',{method: "POST"})
-	.then((r) => {return r.text();})
-	.then((r) => {
-		let a = document.createElement('div');
-		a.innerHTML = r;
-		let cd = dialog.create(a, ev);
+	try {
+		let response = await fetch('index.php?route=common/cart/displayCartModal', { method: "POST" });
+		let modalContent = await response.text();
+		let modalDiv = document.createElement('div');
+		modalDiv.innerHTML = modalContent;
+		let cd = dialog.create(modalDiv, ev);
 		let country_select = cd.querySelector('[name="shipping_address[country_id]"]');
 		let zone_select = cd.querySelector('[name="shipping_address[zone_id]"]');
 		let form = cd.querySelector('#js_quick_ckeckout');
-		
+
 		if (!!country_select) {
 			getZones(country_select, zone_select);
-			country_select.addEventListener('change', ()=>{
+			country_select.addEventListener('change', () => {
 				getZones(country_select, zone_select);
 			});
 		}
+
 		if (!!form) {
 			const formElements = Array.from(form.elements);
-			[].forEach.call(formElements, (input)=>{
-				input.addEventListener('focusout', ()=>{
+			formElements.forEach((input) => {
+				input.addEventListener('focusout', () => {
 					// Save fields on blur
-					saveCheckoutfields(form)
-				})
-			})
+					saveCheckoutfields(form);
+					saveCheckoutfields(form).then(r => {
+						console.log(r);
+						handleErrors(r, form);
+					})
+					
+				});
+			});
 		}
-	});
-	fetch('index.php?route=checkout/payment_method/fetchPaymentMethodsData',{method: "POST"})
-	.then((r) => {return r.text();})
-	.then((r) => {console.log(r);})
-}
+	} catch (error) {
+		console.error(error);
+	}
+};
 
 
 
