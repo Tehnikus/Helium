@@ -3,6 +3,11 @@
 
 class ControllerCheckoutShippingMethod extends Controller {
 	public function index() {
+		$data = $this->getShippingMethodsData();
+		$this->response->setOutput($this->load->view('checkout/shipping_method', $data));
+	}
+
+	public function getShippingMethodsData() {
 		$this->load->language('checkout/checkout');
 
 		if (isset($this->session->data['shipping_address'])) {
@@ -64,8 +69,13 @@ class ControllerCheckoutShippingMethod extends Controller {
 		} else {
 			$data['comment'] = '';
 		}
-		
-		$this->response->setOutput($this->load->view('checkout/shipping_method', $data));
+		return $data;
+	}
+
+	public function fetchShippingMethodsData() {
+		$data = $this->getShippingMethodsData();
+		echo(json_encode($data));
+		die;
 	}
 
 	public function save() {

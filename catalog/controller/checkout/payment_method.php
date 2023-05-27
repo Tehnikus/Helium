@@ -191,6 +191,7 @@ class ControllerCheckoutPaymentMethod extends Controller {
 	}
 	public function fetchPaymentMethodsData() {
 		$data = $this->getPaymentMethodsData();
-		print_r($data);
+		echo(json_encode($data));
+		die;
 	}
 }
