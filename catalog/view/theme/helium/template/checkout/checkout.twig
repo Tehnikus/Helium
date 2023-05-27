@@ -165,6 +165,7 @@ document.addEventListener('click', async (e) => {
   // If create account and checkout
 	if (!!button_account) {
 		if (button_account.contains(e.target)) {
+      // radio box that contains name of the form to be loaded
 			var guest_or_register = document.querySelector('input[name="account"]:checked').value;
       getForm(guest_or_register);
 		}
@@ -250,6 +251,8 @@ function getForm(method_name) {
       // Open details by native api
       details.open;
     }
+    // TODO, use global getZones
+    // TODO, add Event listener on country change to load zones dynamically 
     let country_select = step.querySelector('[name="country_id"]');
     let zone_select = step.querySelector('[name="zone_id"]');
     if (!!country_select && !!zone_select) {
@@ -268,52 +271,6 @@ async function chainFunctions(function1, argument1, function2, argument2) {
   }
 }
 
-// Highlight incorrectly filled fields
-function handleErrors(result, form_with_errors) {
-	// Remove previous error messages
-	removeElementsByClass('text-danger');
-	[].forEach.call(document.querySelectorAll('.has-error'), function(el) {
-    el.classList.remove('has-error');
-	});
-  // Remove ARIA attributes for previous errors
-	[].forEach.call(document.querySelectorAll('[aria-invalid="true"]'), function(el) {
-    el.removeAttribute('aria-invalid');
-	});
-	[].forEach.call(document.querySelectorAll('[aria-errormessage]'), function(el) {
-    el.removeAttribute('aria-errormessage');
-	});
-
-  if ('error' in result) {
-    let errors_object = result.error;
-    for (i in errors_object) {
-      // TODO Test this with multiple warnings
-      if (i == 'warning') {
-        toast.create(errors_object['warning'], 'warning');
-      } else {
-        // console.log(i, errors_object[i]);
-        let error_input = form_with_errors.querySelector('[name='+i+']');
-        if (error_input) {
-          // Set ARIA ittributes to invalid fields
-          error_input.setAttribute('aria-invalid', true);
-          error_input.setAttribute('aria-errormessage', 'error_label_'+i);
-          let error_input_group = error_input.parentElement.classList.contains('form-group') ? error_input.parentElement : false;
-          if (error_input_group) {
-            error_input_group.classList.add('has-error');
-          }
-          error_input.insertAdjacentHTML('afterend', '<span role="alert" id="error_label_'+i+'" class="text-danger">' + errors_object[i] + '</span>')
-        } else {
-          console.log('input not found:', 'input name=['+i+']');
-        }
-      }
-    }
-  }
-}
-function removeElementsByClass(className) {
-  const elements = document.getElementsByClassName(className);
-  while(elements.length > 0) {
-    elements[0].parentNode.removeChild(elements[0]);
-  }
-}
 
 
 // Create zones options
