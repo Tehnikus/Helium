@@ -103,7 +103,20 @@ class ControllerCheckoutCheckout extends Controller {
 
 		if ($country_info) {
 			$this->load->model('localisation/zone');
-
+			$country_zones = $this->model_localisation_zone->getZonesByCountryId($this->request->get['country_id']);
+			// Set selected zone
+			if (
+				isset($this->session->data) && 
+				isset($this->session->data['shipping_address']) && 
+				isset($this->session->data['shipping_address']['zone_id']) &&
+				(isset($country_zones) && !empty($country_zones))) 
+			{
+				foreach ($country_zones as $key => &$zone) {
+					if ($zone['zone_id'] == $this->session->data['shipping_address']['zone_id']) {
+						$zone['selected'] = true;
+					}
+				}
+			}
 			$json = array(
 				'country_id'        => $country_info['country_id'],
 				'name'              => $country_info['name'],
@@ -111,7 +124,7 @@ class ControllerCheckoutCheckout extends Controller {
 				'iso_code_3'        => $country_info['iso_code_3'],
 				'address_format'    => $country_info['address_format'],
 				'postcode_required' => $country_info['postcode_required'],
-				'zone'              => $this->model_localisation_zone->getZonesByCountryId($this->request->get['country_id']),
+				'zone'              => $country_zones,
 				'status'            => $country_info['status']
 			);
 		}
