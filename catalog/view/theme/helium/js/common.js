@@ -99,6 +99,9 @@ document.addEventListener('click', function(e) {
 // }
 
 document.addEventListener('DOMContentLoaded', function() {
+
+	fetch('index.php?route=common/cart/fetchSessionData', { method: "POST" }).then(r=>{return r.json()}).then(r=>{ console.info(r)})
+
 	mobileMenu(); // Buttons at the bottom of page
 	mainMenu(); // render buttons, aria attributes and titles for main menu
 	countdown(d); // Countdown to the ent of discounts
@@ -1019,66 +1022,44 @@ const cartUpdateHeaderButton = (r) => {
 }
 
 
+function saveShippingMethod(input) {
+	const [m, v] = [input.name, input.value];
+	let url = 'index.php?route=checkout/'+m+'/save';
+	let data = new FormData;
+	data.append(m, v)
+	for (const pair of data.entries()) {
+		console.log(`${pair[0]}, ${pair[1]}`);
+	}
+	fetch(url, {method:"post", body: data})
+	.then((r) => {return r.text();})
+	.then((r) => {console.log(r);})
+}
+
+
 // Refactored saveCheckoutfields function
 async function saveCheckoutfields(form) {
 	try {
 		let data = new FormData(form);
 		let response = await fetch('index.php?route=common/cart/fetchSaveQuickCheckoutfields', { method: "POST", body: data });
 		let result = await response.json();
+		console.log(result);
 
-		// Update shipping methods when address country and zone are set correctly
-		response = await fetch('index.php?route=common/cart/fetchDisplayShipping', { method: "POST", body: data });
-		let shippingHtml = await response.text();
-		let shipping = document.getElementById('js_shipping_methods');
-		
-		// Check if block exists, for example if modal was closed or cart updated
-		if (!!shipping) {
-			shipping.innerHTML = shippingHtml;
-		}
-		return result;
+		// return result;
 	} catch (error) {
 		console.error(error);
 	}
 }
 
-
-// New function with Quick checkout
-// const cartShowModal = async (el, ev) => {
-// 	fetch('index.php?route=common/cart/displayCartModal',{method: "POST"})
-// 	.then((r) => {return r.text();})
-// 	.then((r) => {
-// 		let a = document.createElement('div');
-// 		a.innerHTML = r;
-// 		let cd = dialog.create(a, ev);
-// 		let country_select = cd.querySelector('[name="shipping_address[country_id]"]');
-// 		let zone_select = cd.querySelector('[name="shipping_address[zone_id]"]');
-// 		let form = cd.querySelector('#js_quick_ckeckout');
-		
-// 		if (!!country_select) {
-// 			getZones(country_select, zone_select);
-// 			country_select.addEventListener('change', ()=>{
-// 				getZones(country_select, zone_select);
-// 			});
-// 		}
-// 		if (!!form) {
-// 			const formElements = Array.from(form.elements);
-// 			[].forEach.call(formElements, (input)=>{
-// 				input.addEventListener('focusout', ()=>{
-// 					// Save fields on blur
-// 					saveCheckoutfields(form)
-// 				})
-// 			})
-// 		}
-// 	});
-// 	fetch('index.php?route=checkout/payment_method/fetchPaymentMethodsData',{method: "POST"})
-// 	.then((r) => {return r.text();})
-// 	.then((r) => {console.log(r);})
-// }
+const validateQuickCheckout = (el, ev) => {
+	fetch('index.php?route=common/cart/getConfirmOrder', {method:"POST"})
+	.then(r =>{ return r.json()})
+	.then(r =>{
+		console.log(r);
+		handleErrors(r, document.getElementById('js_quick_ckeckout'));
+	})
+}
 
 const cartShowModal = async (el, ev) => {
-	let a = await fetch('index.php?route=common/cart/fetchSessionData', { method: "POST" });
-	let b = await a.json();
-	console.log(b);
 	try {
 		let response = await fetch('index.php?route=common/cart/displayCartModal', { method: "POST" });
 		let modalContent = await response.text();
@@ -1087,56 +1068,98 @@ const cartShowModal = async (el, ev) => {
 		let cd = dialog.create(modalDiv, ev);
 		let country_select = cd.querySelector('[name="shipping_address[country_id]"]');
 		let zone_select = cd.querySelector('[name="shipping_address[zone_id]"]');
+		let postcode_input = cd.querySelector('[name="postcode"]');
 		let form = cd.querySelector('#js_quick_ckeckout');
 
 		if (!!country_select) {
+			// Show postcode if required
+			togglePostcode();
+			// Get zones of selected country and add them to zones select
 			getZones(country_select, zone_select);
 			country_select.addEventListener('change', () => {
 				getZones(country_select, zone_select);
+				// Show postcode if required
+				togglePostcode();
 			});
 		}
 
 		if (!!form) {
 			const formElements = Array.from(form.elements);
 			formElements.forEach((input) => {
-				input.addEventListener('focusout', () => {
-					// Save fields on blur
-					saveCheckoutfields(form);
-					saveCheckoutfields(form).then(r => {
-						console.log(r);
-						handleErrors(r, form);
+				if (input.name.includes('country') || input.name.includes('zone')) {
+					// Obsrve country and zone select element immediate changes
+					// So delivery and payment are updated instantly
+					input.addEventListener('change', () => {
+						saveCheckoutfields(form);
+						fetch('index.php?route=common/cart/fetchDisplayShippingHtml', { method: "POST" })
+						.then(r=>{return r.text()}).then(r=>{
+							const shipping = document.getElementById('js_qc_delivery');
+							if (!!shipping) {
+								shipping.innerHTML = r;
+							}
+						});
+						fetch('index.php?route=common/cart/fetchDisplayPaymentHtml', { method: "POST" })
+						.then(r=>{return r.text()}).then(r=>{
+							const payment = document.getElementById('js_qc_payment');
+							if (!!payment) {
+								payment.innerHTML = r;
+							}
+						});	
+					});
+				} else if (input.name.includes('shipping_method') || input.name.includes('payment_method')) {
+					// Save shipping
+					input.addEventListener('change', () => {
+						saveShippingMethod(input);
 					})
-					
-				});
+				} else {
+					// Text fields and other not involved in delivery and payment are updatetd on focusout
+					// This fires anyway after user interaction
+					input.addEventListener('focusout', ()=>{
+						saveCheckoutfields(form);
+					});
+				}
 			});
+		}
+		function togglePostcode() {
+			if (country_select.options[country_select.selectedIndex].dataset.postcodeRequired == '1') {
+				postcode_input.parentElement.style.cssText = ''
+			} else {
+				postcode_input.parentElement.style.cssText = 'display:none'
+			}
 		}
 	} catch (error) {
 		console.error(error);
 	}
+
 };
-
-
-
 
 const getZones = (country_select, zone_select) => {
 	let zone_block = country_select.parentElement.nextElementSibling;
 	fetch('index.php?route=checkout/checkout/country&country_id='+country_select.value,{method: "POST"})
 	.then((r) => {return r.text();})
 	.then((r) => {
+		// Remove old zones
 		while (zone_select.firstElementChild) {
 			zone_select.removeChild(zone_select.lastElementChild)
 		}
 		country_data = JSON.parse(r);
+		// If country needs zones
 		if ('zone' in country_data) {
 			zone_block.classList.remove('hidden');
+			// Create new zones
 			createZoneSelect(zone_select, country_data.zone);
 			zone_block.style.cssText = '';
 		} else {
+			// Else hide corresponding block
 			zone_block.style.cssText = 'display:none';
 		}
 	});
 	function createZoneSelect(zone_select, zones) {
 		for (z in zones) {
+			// Set selected zone
+			if ('selected' in zones[z]) {
+				zone_select.value = zones[z].zone_id;
+			}
 			let o = createElm({
 				type: 'option',
 				attrs: {'value':zones[z].zone_id},
@@ -1146,7 +1169,6 @@ const getZones = (country_select, zone_select) => {
 		}
 	}
 }
-
 
 const compareModal = (el, ev) => {
 	fetchFunction({url:'index.php?route=product/compare/showCompareModal', callback: dialog, arg:'create',ev:ev})
@@ -1179,8 +1201,6 @@ const correctTime = (el, ev) => {
 	el.value = `${date}` + `${hours}:${mins}`;
 }
 
-
-
 // List of functions
 // event: function
 const actions = {
@@ -1192,6 +1212,7 @@ const actions = {
 		compareModal,
 		wishlistModal,
 		contactsModal,
+		validateQuickCheckout,
 
 	},
 	input: {
@@ -1203,11 +1224,6 @@ const actions = {
 };
 // Add event listener to document
 Object.keys(actions).forEach(key => document.addEventListener(key, handle));
-
-
-
-
-
 
 // Main menu
 // Adds buttons in the main megamenu
@@ -1235,7 +1251,7 @@ function mainMenu() {
 				
 				setTimeout(() => {
 					child_ul.firstChild.focus();
-				}, 300);
+				}, 250);
 			}}
 		});
 		c.appendChild(button_forward);
@@ -1256,7 +1272,7 @@ function mainMenu() {
 				p.setAttribute('aria-expanded', false);
 				setTimeout(() => {
 					parent_menu.querySelector('a').focus();
-				}, 200);
+				}, 250);
 
 			}}
 		});
@@ -1753,17 +1769,22 @@ function handleErrors(result, form_with_errors) {
 				toast.create(errors_object['warning'], 'warning');
 			} else {
 				// console.log(i, errors_object[i]);
-				let error_input = form_with_errors.querySelector('[name=' + i + ']');
-				console.log(error_input, document.querySelector('[name=' + i + ']'));
+				// let country_select = cd.querySelector('[name="shipping_address[country_id]"]');
+				let error_input = form_with_errors.querySelector('[name="' + i + '"]');
+				console.log(error_input, document.querySelector('[name="' + i + '"]'));
 				if (error_input) {
 					// Set ARIA ittributes to invalid fields
 					error_input.setAttribute('aria-invalid', true);
 					error_input.setAttribute('aria-errormessage', 'error_label_' + i);
-					let error_input_group = error_input.parentElement.classList.contains('form-group') ? error_input.parentElement : false;
+					let error_input_group = error_input.closest('.form-group, .form-control');
+					if (error_input_group.classList.contains('form-control')) {
+						error_input_group = error_input_group.parentElement;
+					}
 					if (error_input_group) {
 						error_input_group.classList.add('has-error');
+						error_input_group.insertAdjacentHTML('beforeend','<span role="alert" id="error_label_' + i + '" class="text-danger">' + errors_object[i] + '</span>')
 					}
-					error_input.insertAdjacentHTML('afterend', '<span role="alert" id="error_label_' + i + '" class="text-danger">' + errors_object[i] + '</span>')
+
 				} else {
 					console.log('input not found:', 'input name=[' + i + ']');
 				}
