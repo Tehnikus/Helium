@@ -28,7 +28,7 @@ class ControllerMailOrder extends Controller {
 		// We need to grab the old order status ID
 		$order_info = $this->model_checkout_order->getOrder($order_id);
 		
-		if ($order_info) {
+		if ($order_info && (isset($order_info['email']) && $order_info['email'] !== '')) {
 			// If order status is 0 then becomes greater than 0 send main html email
 			if (!$order_info['order_status_id'] && $order_status_id) {
 				$this->add($order_info, $order_status_id, $comment, $notify);
@@ -42,6 +42,10 @@ class ControllerMailOrder extends Controller {
 	}
 		
 	public function add($order_info, $order_status_id, $comment, $notify) {
+		if (!isset($order_info['email']) || $order_info['email'] == '') {
+			return;
+		}
+
 		// Check for any downloadable products
 		$download_status = false;
 
