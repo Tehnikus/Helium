@@ -100,6 +100,7 @@ document.addEventListener('click', function(e) {
 
 document.addEventListener('DOMContentLoaded', function() {
 
+	// TODO Remove this 
 	fetch('index.php?route=common/cart/fetchSessionData', { method: "POST" }).then(r=>{return r.json()}).then(r=>{ console.info(r)})
 
 	mobileMenu(); // Buttons at the bottom of page
@@ -110,7 +111,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	anchorNav(); // Focus on hastag navigation element
 
 	// Set product count on favicon on page load 
-	fetch('index.php?route=common/cart/fetchProductCount').then(r => {return r.text()}).then(resp => { setIcon(resp)})
+	fetch('index.php?route=common/cart/fetchProductCount').then(r => {return r.text()}).then(resp => {setIcon(resp)})
 
 	// TODO Move this to it's function
 	let pagination = document.querySelector('main ul.pagination');
@@ -1027,9 +1028,9 @@ function saveShippingMethod(input) {
 	let url = 'index.php?route=checkout/'+m+'/save';
 	let data = new FormData;
 	data.append(m, v)
-	for (const pair of data.entries()) {
-		console.log(`${pair[0]}, ${pair[1]}`);
-	}
+	// for (const pair of data.entries()) {
+	// 	console.log(`${pair[0]}, ${pair[1]}`);
+	// }
 	fetch(url, {method:"post", body: data})
 	.then((r) => {return r.text();})
 	.then((r) => {console.log(r);})
@@ -1054,8 +1055,11 @@ const validateQuickCheckout = (el, ev) => {
 	fetch('index.php?route=common/cart/getConfirmOrder', {method:"POST"})
 	.then(r =>{ return r.json()})
 	.then(r =>{
-		console.log(r);
+		// console.log(r);
 		handleErrors(r, document.getElementById('js_quick_ckeckout'));
+		if ('redirect' in r) {
+			window.location = r.redirect;
+		}
 	})
 }
 
@@ -1480,7 +1484,7 @@ function anchorNav() {
 	}
 }
 
-// DONE Set icon on pare load
+// DONE Set icon on page load
 function setIcon(productCount) {
 	const favicon = document.querySelector("link[rel~='icon']");
 	if (productCount === '0' || (typeof(favicon) === 'undefined' && favicon == null)) {return}
@@ -1746,7 +1750,6 @@ function countdown(element) {
 // @result - the result of fetch request
 // @form_with_errors - DOM element of form to be highlighted
 function handleErrors(result, form_with_errors) {
-	// console.log(result);
 	// Remove previous error messages
 	removeElementsByClass('text-danger');
 	[].forEach.call(document.querySelectorAll('.has-error'), function (el) {
@@ -1763,15 +1766,13 @@ function handleErrors(result, form_with_errors) {
 	if ('error' in result) {
 		let errors_object = result.error;
 		for (i in errors_object) {
-			console.log(i, errors_object[i]);
+			// console.log(i, errors_object[i]);
 			// TODO Test this with multiple warnings
 			if (i == 'warning') {
 				toast.create(errors_object['warning'], 'warning');
 			} else {
-				// console.log(i, errors_object[i]);
-				// let country_select = cd.querySelector('[name="shipping_address[country_id]"]');
 				let error_input = form_with_errors.querySelector('[name="' + i + '"]');
-				console.log(error_input, document.querySelector('[name="' + i + '"]'));
+				// console.log(error_input, document.querySelector('[name="' + i + '"]'));
 				if (error_input) {
 					// Set ARIA ittributes to invalid fields
 					error_input.setAttribute('aria-invalid', true);
@@ -1783,15 +1784,20 @@ function handleErrors(result, form_with_errors) {
 					if (error_input_group) {
 						error_input_group.classList.add('has-error');
 						error_input_group.insertAdjacentHTML('beforeend','<span role="alert" id="error_label_' + i + '" class="text-danger">' + errors_object[i] + '</span>')
+					} else {
+						// If no input found, but error occured
+						// Create toast notification with error
+						toast.create(errors_object[i], 'success');
 					}
-
 				} else {
-					console.log('input not found:', 'input name=[' + i + ']');
+					console.log('input not found:', 'input name=' + i);
 				}
 			}
 		}
+		// Return true if errors happened
 		return true;
 	}
+	// Return false if no errors occured
 	return false;
 }
 
