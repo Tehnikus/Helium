@@ -209,6 +209,10 @@ label {cursor:pointer; user-select: none;-webkit-user-select: none;-moz-user-sel
     transition: all var(--time);
     margin: .5rem;
 }
+.js_check_errors {
+    border-radius: var(--radius);
+    padding: .5rem;
+}
 .form-group.has-error {
     background: rgb(192 77 1 / 4%);
 }
@@ -464,7 +468,7 @@ h1,h2,h3,h4,h5,h6,
     margin:0;
     width: 100%;
     padding: 0 0 .5rem 0;
-    text-wrap: balance; /* Carefuly wrap text */
+    /* text-wrap: balance; */ /* Carefuly wrap text */
 }
 /* Fonts */
 h1,h2,h3,h4,h5,h6,
@@ -729,7 +733,8 @@ aside>div.module{display: flex; flex-direction: column;}
 .module button.scroll_right {position: absolute; right: 5px; top: 5px; width: 35px; height: 35px}
 
 /* Max width for products and blog articles in scroll container - accounting flags, that are offset a little to the left */
-.scroll-x article {max-width: clamp(20rem, calc(20% - 2rem), calc(100% - 0.7rem)); margin: 1rem}
+/* .scroll-x article {max-width: max(20%, calc(100% - 0.7rem)); margin: 1rem} */
+.scroll-x article {max-width: clamp(calc(20% - 2rem), 20rem, calc(100% - 0.7rem));margin: 1rem}
 /* Braedcrumbs scrolling */
 .breadcrumbs.scroll-x {list-style-type: none; margin:-1rem 0; padding: 0}
 /* Mobile buttons scrolling */
@@ -807,7 +812,7 @@ aside>div.module{display: flex; flex-direction: column;}
 .miniature, .miniature > .infos, .caption {display: flex;flex-direction: column;flex: 1 0 auto}
 /* Align product names and blog articles titles */
 .miniature h3, .miniature .h3, .rating  {text-align: center;}
-.miniature h3 a { padding: 0.5rem; margin: -0.5rem;}
+.miniature h3 a {padding: 0.5rem;margin: -0.5rem;text-wrap: balance;}
 
 /* Product flags */
 .flags {position: absolute; top: 0; left: 0; width: 0}
