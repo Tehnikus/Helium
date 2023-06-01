@@ -140,12 +140,12 @@
     {% include 'helium/template/common/custom_fields.twig' with {type: 'shipping', location: 'address'} %}
   </div>
 
-  <div id="js_qc_delivery">
+  <div id="js_qc_delivery" class="js_check_errors">
     {# Shipping methods #}
     {# Using with because $data['shipping_methods'] is subarray #}
     {% include 'helium/template/checkout/quick_checkout_shipping.twig' with {shipping_methods: shipping_methods.shipping_methods} %}
   </div>
-  <div id="js_qc_payment">
+  <div id="js_qc_payment" class="js_check_errors">
     {# Payment methods #}
     {% include 'helium/template/checkout/quick_checkout_payment.twig' with {payment_methods: payment_methods.payment_methods} %}
   </div>
