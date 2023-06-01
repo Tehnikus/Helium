@@ -518,9 +518,41 @@ class ControllerCommonCart extends Controller {
 	public function getConfirmOrder() {
 		$json = [];
 		$json = $this->checkErrors();
-		echo(json_encode($json));
-		// $data = $this->load->controller('checkout/confirm/getConfirmData');
-		// return $data;
+		if (!empty($json)) {
+			// If errors occured return JSON with errors and then process handleErrors() in JS
+			echo(json_encode($json));
+			die;
+		} else {
+			// If no errors, load confirm order controller
+			$json = $this->load->controller('checkout/confirm/getConfirmData');
+			// Check if payment method needs redirect
+			// if (isset($json['redirect'])) {
+			// 	echo(json_encode($json));
+			// 	die;
+			// } else {
+				// If no redirect needed, load payment controller with confirm link and finally redirect to successfully created order
+				// $json = $this->load->controller('extension/payment/' . $this->session->data['payment_method']['code'] . '/confirm');
+				// echo(json_encode($json));
+				// echo($this->load->controller('extension/payment/' . $this->session->data['payment_method']['code'] . '/confirm'));
+				
+				
+				// TODO Add config for Quick checkout payment mathods - which one creates order, which one displays payment form
+				// Allowed payment methods that just redirect to successful order page
+				
+				$allowed_payment_methods = ['bank_transfer', 'cheque', 'cod', 'free_checkout'];
+				if (in_array($this->session->data['payment_method']['code'], $allowed_payment_methods)) {
+					$this->load->model('checkout/order');
+					// DONE Set default order status instead of payment_cod_order_status_id
+					$this->model_checkout_order->addOrderHistory($this->session->data['order_id'], $this->config->get('config_order_status_id'));
+					$json['redirect'] = $this->url->link('checkout/success');
+				} else {
+					// If payment method is not in array of allowed payment methods, then load it's view (e.g. payment form)
+					$json['html'] = $this->load->controller('extension/payment/' . $this->session->data['payment_method']['code']);
+				}
+			// }
+			echo(json_encode($json));
+			die;
+		}
 	}
 
 	public function fetchConfirmOrder() {
@@ -672,37 +704,40 @@ class ControllerCommonCart extends Controller {
 		if (!isset($data['guest']['telephone']) || (utf8_strlen(trim($data['guest']['telephone'])) < 3 || utf8_strlen(trim($data['guest']['telephone'])) > 32)) {
 			$json['error']['guest[telephone]'] = $this->language->get('error_telephone');
 		}
-		if (!isset($data['shipping_address']['city']) || (utf8_strlen(trim($data['shipping_address']['city'])) < 2 || utf8_strlen(trim($data['shipping_address']['city'])) > 128)) {
-			$json['error']['shipping_address[city]'] = $this->language->get('error_city');
-		}
-		if (!isset($data['shipping_address']['address_1']) || (utf8_strlen(trim($data['shipping_address']['address_1'])) < 3 || utf8_strlen(trim($data['shipping_address']['address_1'])) > 128)) {
-			$json['error']['shipping_address[address_1]'] = $this->language->get('error_address_1');
-		}
-		if (!isset($data['shipping_address']['country_id']) || $data['shipping_address']['country_id'] == '') {
-			$json['error']['shipping_address[country_id]'] = $this->language->get('error_country');
+		// Condition if order needs shipping
+		if ($this->cart->hasShipping()) {
+			if (!isset($data['shipping_address']['city']) || (utf8_strlen(trim($data['shipping_address']['city'])) < 2 || utf8_strlen(trim($data['shipping_address']['city'])) > 128)) {
+				$json['error']['shipping_address[city]'] = $this->language->get('error_city');
+			}
+			if (!isset($data['shipping_address']['address_1']) || (utf8_strlen(trim($data['shipping_address']['address_1'])) < 3 || utf8_strlen(trim($data['shipping_address']['address_1'])) > 128)) {
+				$json['error']['shipping_address[address_1]'] = $this->language->get('error_address_1');
+			}
+			if (!isset($data['shipping_address']['country_id']) || $data['shipping_address']['country_id'] == '') {
+				$json['error']['shipping_address[country_id]'] = $this->language->get('error_country');
+			}
+			if (isset($data['shipping_address']['country_id']))	{
+	
+				$this->load->model('localisation/country');
+				$this->load->model('localisation/zone');
+				$country_info = $this->model_localisation_country->getCountry($data['shipping_address']['country_id']);
+				$country_zones = $this->model_localisation_zone->getZonesByCountryId($data['shipping_address']['country_id']);
+	
+				if ($country_info && $country_info['postcode_required'] && (utf8_strlen(trim($data['postcode'])) < 2 || utf8_strlen(trim($data['postcode'])) > 10)) {
+					$json['error']['postcode'] = $this->language->get('error_postcode');
+				}
+				if ($country_info && $country_zones && !empty($country_zones)) {
+					if (!isset($data['shipping_address']['zone_id'])) {
+						$json['error']['zone_id'] = $this->language->get('error_zone');
+					}
+				}
+			}
+			if (!isset($data['shipping_method'])) {
+				$json['error']['shipping_method'] = $this->language->get('error_shipping');
+			}
 		}
 
 		// TODO Check custom fields
 			
-		if (isset($data['shipping_address']['country_id']))	{
-
-			$this->load->model('localisation/country');
-			$this->load->model('localisation/zone');
-			$country_info = $this->model_localisation_country->getCountry($data['shipping_address']['country_id']);
-			$country_zones = $this->model_localisation_zone->getZonesByCountryId($data['shipping_address']['country_id']);
-
-			if ($country_info && $country_info['postcode_required'] && (utf8_strlen(trim($data['postcode'])) < 2 || utf8_strlen(trim($data['postcode'])) > 10)) {
-				$json['error']['postcode'] = $this->language->get('error_postcode');
-			}
-			if ($country_info && $country_zones && !empty($country_zones)) {
-				if (!isset($data['shipping_address']['zone_id'])) {
-					$json['error']['zone_id'] = $this->language->get('error_zone');
-				}
-			}
-		}
-		if (!isset($data['shipping_method'])) {
-			$json['error']['shipping_method'] = $this->language->get('error_shipping');
-		}
 		if (!isset($data['payment_method'])) {
 			$json['error']['payment_method'] = $this->language->get('error_payment');
 		}
