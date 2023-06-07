@@ -26,7 +26,7 @@
       <label for="input-quick-checkout-firstname">{{ entry_firstname }}, {{ entry_lastname }}</label>
       <input
         type="text"
-        name="guest[firstname]"
+        name="firstname"
         value="{{ firstname }}"
         placeholder="{{ entry_firstname }}"
         id="input-quick-checkout-firstname"
@@ -37,7 +37,7 @@
       />
       <input
         type="text"
-        name="guest[lastname]"
+        name="lastname"
         value="{{ lastname }}"
         placeholder="{{ entry_lastname }}"
         id="input-quick-checkout-lastname"
@@ -52,7 +52,7 @@
       <label for="input-quick-checkout-address-1">{{ entry_city }}, {{ entry_address_1 }}</label>
       <input 
         type="text" 
-        name="shipping_address[city]" 
+        name="city" 
         value="{{ city }}"
         placeholder="{{ entry_city }}" 
         id="input-quick-checkout-city"
@@ -64,7 +64,7 @@
       />
       <input
         type="text"
-        name="shipping_address[address_1]"
+        name="address"
         value="{{ address_1 }}"
         placeholder="{{ entry_address_1 }}"
         id="input-quick-checkout-address-1"
@@ -76,9 +76,23 @@
       />
     </div>
 
-    {# 
+    
+    {# <div class="form-group required">
+      <label for="input-quick-checkout-email"></label>
+
+    </div> #}
     <div class="form-group required">
-      <label for="input-quick-checkout-email">{{ entry_email }}</label>
+      <label for="input-quick-checkout-telephone">{{ entry_telephone }}, {{ entry_email }}</label>
+      <input
+        type="tel"
+        name="telephone"
+        value="{{ telephone }}"
+        placeholder="{{ entry_telephone }}"
+        id="input-quick-checkout-telephone"
+        inputmode="tel"
+        enterkeyhint="next"
+        minlength="3" maxlength="32"
+      />
       <input
         type="email"
         name="email"
@@ -88,19 +102,6 @@
         inputmode="email"
         enterkeyhint="next"
       />
-    </div> #}
-    <div class="form-group required">
-      <label for="input-quick-checkout-telephone">{{ entry_telephone }}</label>
-      <input
-        type="tel"
-        name="guest[telephone]"
-        value="{{ telephone }}"
-        placeholder="{{ entry_telephone }}"
-        id="input-quick-checkout-telephone"
-        inputmode="tel"
-        enterkeyhint="next"
-        minlength="3" maxlength="32"
-      />
     </div>
 
 
@@ -108,7 +109,7 @@
     <div class="form-group required">
       <label for="input-quick-checkout-country">{{ entry_country }}</label>
       <select name="shipping_address[country_id]" id="input-quick-checkout-country">
-        <option data-postcode-required="1" value="">{{ text_select }}</option>
+        <option value="">{{ text_select }}</option>
         {% for country in countries %}
           {% if country.country_id == country_id %}
             <option data-postcode-required="{{ country.postcode_required }}" value="{{ country.country_id }}" selected="selected">{{ country.name }}</option>
