@@ -61,13 +61,12 @@ $_['entry_fax']                      = 'Факс';
 $_['entry_address']                  = 'Выберите адрес';
 $_['entry_company']                  = 'Компания';
 $_['entry_customer_group']           = 'Группа покупателей';
-$_['entry_address_1']                = 'Адрес';
-$_['hint_address_1']                 = 'Улица, номер дома';
-$_['entry_address_2']                = 'Кваритра, этаж';
+$_['entry_address_1']                = 'Улица, дом';
+$_['entry_address_2']                = 'Квартира, этаж';
 $_['entry_postcode']                 = 'Почтовый индекс';
 $_['entry_city']                     = 'Город';
 $_['entry_country']                  = 'Страна';
-$_['entry_zone']                     = 'Регион / Область';
+$_['entry_zone']                     = 'Область';
 $_['entry_newsletter']               = 'Я хочу подписаться на рассылку новостей %s.';
 $_['entry_shipping'] 	             = 'Мой адрес доставки совпадает с платёжным.';
 

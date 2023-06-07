@@ -2,8 +2,8 @@
 
 
 
-$_['heading_title'] 		 = 'Checkout';
-$_['heading_title_customer'] = 'Your Order #%s Has Been Placed';
+$_['heading_title'] 		         = 'Checkout';
+$_['heading_title_customer']         = 'Your Order #%s Has Been Placed';
 
 $_['text_cart']                      = 'Shopping Cart';
 $_['text_checkout_option']           = 'Step %s: Checkout Options';
@@ -50,18 +50,18 @@ $_['column_price']                   = 'Unit Price';
 $_['column_total']                   = 'Total';
 
 // Entry
-$_['entry_email_address']            = 'E-Mail Address';
+$_['entry_email_address']            = 'E-Mail';
 $_['entry_email']                    = 'E-Mail';
 $_['entry_password']                 = 'Password';
 $_['entry_confirm']                  = 'Password Confirm';
 $_['entry_firstname']                = 'First Name';
 $_['entry_lastname']                 = 'Last Name';
-$_['entry_telephone']                = 'Telephone';
+$_['entry_telephone']                = 'Phone';
 $_['entry_address']                  = 'Choose Address';
 $_['entry_company']                  = 'Company';
 $_['entry_customer_group']           = 'Customer Group';
-$_['entry_address_1']                = 'Address 1';
-$_['entry_address_2']                = 'Address 2';
+$_['entry_address_1']                = 'Street, building';
+$_['entry_address_2']                = 'Appartment, etc';
 $_['entry_postcode']                 = 'Post Code';
 $_['entry_city']                     = 'City';
 $_['entry_country']                  = 'Country';
@@ -78,7 +78,7 @@ $_['error_exists']                   = 'Warning: E-Mail Address is already regis
 $_['error_firstname']                = 'First Name must be between 1 and 32 characters';
 $_['error_lastname']                 = 'Last Name must be between 1 and 32 characters';
 $_['error_email']                    = 'E-Mail address does not appear to be valid';
-$_['error_telephone']                = 'Telephone must be between 3 and 32 characters';
+$_['error_telephone']                = 'Phone must be between 3 and 32 characters';
 $_['error_password']                 = 'Password must be between 4 and 20 characters';
 $_['error_confirm']                  = 'Password confirmation does not match password';
 $_['error_address_1']                = 'Address 1 must be between 3 and 128 characters';

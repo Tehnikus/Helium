@@ -18,12 +18,12 @@ $_['entry_telephone']   = 'Телефон';
 $_['entry_fax']         = 'Факс';
 $_['entry_company']     = 'Компания';
 $_['entry_website']     = 'Веб-сайт';
-$_['entry_address_1']   = 'Адрес 1';
-$_['entry_address_2']   = 'Адрес 2';
+$_['entry_address_1']   = 'Улица, дом';
+$_['entry_address_2']   = 'Квартира, этаж';
 $_['entry_postcode']    = 'Почтовый индекс';
 $_['entry_city']        = 'Город';
 $_['entry_country']     = 'Страна';
-$_['entry_zone']        = 'Регион / Область';
+$_['entry_zone']        = 'Область / Регион';
 
 // Error
 $_['error_exists']      = 'Такой E-Mail уже зарегистрирован!';
