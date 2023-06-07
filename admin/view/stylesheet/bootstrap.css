@@ -1027,8 +1027,10 @@ a {
 figure {
   margin: 0; }
 
-img {
-  vertical-align: middle; }
+  img {
+    vertical-align: middle;
+    max-width: 100%;
+    }
 
 .img-responsive {
   display: block;
@@ -4832,9 +4834,7 @@ button.close {
 
 .affix {
   position: fixed; }
-@-ms-viewport {
-  .carousel-control .glyphicon-chevron-right, .carousel-control .icon-next {
-    width: device-width; } }
+
 
 .visible-xs {
   display: none !important; }
