@@ -420,17 +420,20 @@ document.addEventListener('click', function(e) {
 // ID инпутов, куда может вводиться номер телефона
 // TODO Объединить все в одну функцию
 let masked_inputs = ['tel'];
-// ['paste', 'input']
-document.addEventListener('input', function(e) {
-    if (masked_inputs.indexOf(e.target.type) != -1) {
-        e.target.addEventListener('input', handleInput, false);
-    }
-});
+['paste', 'input'].forEach(ev=>{
+	document.addEventListener(ev, e =>{
+		if (masked_inputs.indexOf(e.target.type) != -1) {
+			// e.target.addEventListener('input', handleInput, false);
+			e.target.value = phoneMask(e.target.value, '38');
+		}
+	})
+})
 
 
-function handleInput (e) {
-  e.target.value = phoneMask(e.target.value, '38')
-}
+
+// function handleInput (e) {
+//   e.target.value = phoneMask(e.target.value, '38')
+// }
 
 // TODO
 // The real time phone masking while typing
@@ -1024,6 +1027,7 @@ const cartUpdateHeaderButton = (r) => {
 
 
 function saveShippingMethod(input) {
+	// console.log(input);
 	const [m, v] = [input.name, input.value];
 	let url = 'index.php?route=checkout/'+m+'/save';
 	let data = new FormData;
@@ -1032,16 +1036,17 @@ function saveShippingMethod(input) {
 	// 	console.log(`${pair[0]}, ${pair[1]}`);
 	// }
 	fetch(url, {method:"post", body: data})
-	.then((r) => {return r.text();})
-	.then((r) => {console.log(r);})
+	// .then((r) => {return r.text();})
+	// .then((r) => {console.log(r);})
 }
 
 
 // Refactored saveCheckoutfields function
-async function saveCheckoutfields(form) {
+ const saveCheckoutfields = async (form) => {
 	try {
 		let data = new FormData(form);
 		let response = await fetch('index.php?route=common/cart/fetchSaveQuickCheckoutfields', { method: "POST", body: data });
+		// TODO remove this
 		let result = await response.json();
 		console.log(result);
 
@@ -1093,35 +1098,26 @@ const cartShowModal = async (el, ev) => {
 				if (input.name.includes('country') || input.name.includes('zone')) {
 					// Obsrve country and zone select element immediate changes
 					// So delivery and payment are updated instantly
+
+					// TODO Add event listener to dynammically changed inputs
 					input.addEventListener('change', () => {
 						saveCheckoutfields(form);
-						fetch('index.php?route=common/cart/fetchDisplayShippingHtml', { method: "POST" })
-						.then(r=>{return r.text()}).then(r=>{
-							const shipping = document.getElementById('js_qc_delivery');
-							if (!!shipping) {
-								shipping.innerHTML = r;
-							}
-						});
-						fetch('index.php?route=common/cart/fetchDisplayPaymentHtml', { method: "POST" })
-						.then(r=>{return r.text()}).then(r=>{
-							const payment = document.getElementById('js_qc_payment');
-							if (!!payment) {
-								payment.innerHTML = r;
-							}
-						});	
+						fetchDisplayShippingAndPayment()
 					});
 				} else if (input.name.includes('shipping_method') || input.name.includes('payment_method')) {
 					// Save shipping
+					// console.log('ololo');
 					input.addEventListener('change', () => {
 						saveShippingMethod(input);
 					})
-				} else {
-					// Text fields and other not involved in delivery and payment are updatetd on focusout
-					// This fires anyway after user interaction
-					input.addEventListener('focusout', ()=>{
-						saveCheckoutfields(form);
-					});
-				}
+				} 
+				// Text fields and other not involved in delivery and payment are updatetd on focusout
+				// This fires anyway after user interaction
+				input.addEventListener('focusout', ()=>{
+					saveCheckoutfields(form);
+					// fetchDisplayShippingAndPayment();
+				});
+				
 			});
 		}
 		function togglePostcode() {
@@ -1134,8 +1130,26 @@ const cartShowModal = async (el, ev) => {
 	} catch (error) {
 		console.error(error);
 	}
-
 };
+
+const fetchDisplayShippingAndPayment = () => {
+	fetch('index.php?route=common/cart/fetchDisplayShippingHtml', { method: "POST" })
+	.then(r=>{return r.text()}).then(r=>{
+		// console.log(r);
+		const shipping = document.getElementById('js_qc_delivery');
+		if (!!shipping) {
+			shipping.innerHTML = r;
+		}
+	});
+	fetch('index.php?route=common/cart/fetchDisplayPaymentHtml', { method: "POST" })
+	.then(r=>{return r.text()}).then(r=>{
+		// console.log(r);
+		const payment = document.getElementById('js_qc_payment');
+		if (!!payment) {
+			payment.innerHTML = r;
+		}
+	});
+}
 
 const getZones = (country_select, zone_select) => {
 	let zone_block = country_select.parentElement.nextElementSibling;
@@ -1221,9 +1235,10 @@ const actions = {
 	},
 	input: {
 		searchFunction,
+		correctTime,
 	},
 	change: {
-		correctTime
+		saveShippingMethod
 	}
 };
 // Add event listener to document
@@ -1486,6 +1501,7 @@ function anchorNav() {
 
 // DONE Set icon on page load
 function setIcon(productCount) {
+	const bg = getComputedStyle(document.body).getPropertyValue('--color-1') || '#ff0000';
 	const favicon = document.querySelector("link[rel~='icon']");
 	if (productCount === '0' || (typeof(favicon) === 'undefined' && favicon == null)) {return}
 	let faviconSize = 16;
@@ -1501,7 +1517,7 @@ function setIcon(productCount) {
 		// Draw Notification Circle
 		context.beginPath();
 		context.arc( canvas.width - faviconSize / 3 , faviconSize / 3, faviconSize / 3, 0, 2*Math.PI);
-		context.fillStyle = '#FF0000';
+		context.fillStyle = bg;
 		context.fill();
 		// Draw Notification Number
 		context.font = '10px "helvetica", sans-serif';
