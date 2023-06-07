@@ -1,12 +1,11 @@
 <?php
 $_['text_items']                    = '<span class="product-count">%s</span>  <span class="cart-total-summ hidden-md">%s</span>';
-$_['text_empty']                    = 'Ваша корзина пуста!';
+$_['text_empty']                    = 'Ваша корзина пуста! Самое время делать покупки! :)';
 $_['text_cart']                     = 'Перейти в корзину';
 $_['text_checkout']                 = 'Оформить заказ';
 $_['text_recurring']                = 'Платежный профиль';
 $_['text_header_cart']              = 'Корзина';
 $_['entry_qty']                     = 'Кол-во';
-
 
 $_['text_shipping_methods']         = 'Доставка';
 $_['text_payment_methods']          = 'Оплата';
@@ -20,15 +19,13 @@ $_['entry_address']                 = 'Выберите адрес';
 $_['entry_company']                 = 'Компания';
 $_['entry_customer_group']          = 'Группа покупателей';
 $_['entry_address_1']               = 'Улица, дом';
-$_['hint_address_1']                = 'Улица, номер дома';
 $_['entry_address_2']               = 'Кваритра, этаж';
 $_['entry_postcode']                = 'Почтовый индекс';
 $_['entry_city']                    = 'Город';
 $_['entry_country']                 = 'Страна';
-$_['entry_zone']                    = 'Регион / Область';
+$_['entry_zone']                    = 'Область';
 $_['entry_newsletter']              = 'Я хочу подписаться на рассылку новостей %s.';
 $_['entry_shipping'] 	            = 'Мой адрес доставки совпадает с платёжным.';
-
 
 $_['error_firstname']               = 'Имя должно быть от 1 до 32 символов';
 $_['error_lastname']                = 'Фамилия должна быть от 1 до 32 символов';
@@ -42,6 +39,3 @@ $_['error_custom_field']            = 'Заполните пожалуйста %
 $_['error_shipping']                = 'Выберите способ доставки';
 $_['error_no_shipping']             = 'Доставка по данному адресу невозможна. <a href="%s">Свяжитесь с нами</a> и мы найдём решение проблемы';
 $_['error_payment']                 = 'Выберите способ оплаты';
-
-$_['text_shipping_methods']         = 'Доставка';
-$_['text_payment_methods']          = 'Оплата';

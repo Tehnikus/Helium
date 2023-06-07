@@ -1,19 +1,41 @@
 <?php
-$_['text_items']            = '<span class="product-count">%s</span>  <span class="cart-total-summ hidden-md">%s</span>';
-$_['text_empty']            = 'Your shopping cart is empty!';
-$_['text_cart']             = 'View Cart';
-$_['text_checkout']         = 'Checkout';
-$_['text_recurring']        = 'Payment Profile';
-$_['text_header_cart']      = 'Cart';
-$_['entry_qty']             = 'Qty';
+$_['text_items']                    = '<span class="product-count">%s</span>  <span class="cart-total-summ hidden-md">%s</span>';
+$_['text_empty']                    = 'Your shopping cart is empty! Time to shop! :)';
+$_['text_cart']                     = 'View Cart';
+$_['text_checkout']                 = 'Checkout';
+$_['text_recurring']                = 'Payment Profile';
+$_['text_header_cart']              = 'Cart';
+$_['entry_qty']                     = 'Qty';
 
-$_['error_firstname']       = 'First Name must be between 1 and 32 characters';
-$_['error_lastname']        = 'Last Name must be between 1 and 32 characters';
-$_['error_address_1']       = 'Address must be between 3 and 128 characters';
-$_['error_postcode']        = 'Postcode must be between 2 and 10 characters';
-$_['error_country']         = 'Please select a country';
-$_['error_zone']            = 'Please select a region / state';
-$_['error_city']            = 'City must be between 2 and 128 characters';
-$_['error_custom_field']    = '%s required';
-$_['error_shipping']        = 'Выберите способ доставки';
-$_['error_no_shipping']     = 'Доставка по данному адресу невозможна. <a href="%s">Свяжитесь с нами</a> и мы найдём решение проблемы';
+$_['text_shipping_methods']         = 'Delivery';
+$_['text_payment_methods']          = 'Payment';
+
+// Entry
+$_['entry_email']                   = 'E-Mail';
+$_['entry_firstname']               = 'Firstname';
+$_['entry_lastname']                = 'Lastname';
+$_['entry_telephone']               = 'Phone';
+$_['entry_address']                 = 'Choose address';
+$_['entry_company']                 = 'company';
+$_['entry_customer_group']          = 'Customer group';
+$_['entry_address_1']               = 'Street, building';
+$_['entry_address_2']               = 'appartment, floor, etc.';
+$_['entry_postcode']                = 'Postal code';
+$_['entry_city']                    = 'City';
+$_['entry_country']                 = 'Country';
+$_['entry_zone']                    = 'Region';
+$_['entry_newsletter']              = 'Subscribe to our news %s.';
+$_['entry_shipping'] 	            = 'Delivery and payment addresses are the same';
+
+$_['error_firstname']               = 'Firstname should be from 1 to 32 characters';
+$_['error_lastname']                = 'lastname should be from 1 to 32 characters';
+$_['error_address_1']               = 'Address should be from 3 to 128 characters';
+$_['error_telephone']               = 'Phone number should be from 3 to 32 characters';
+$_['error_postcode']                = 'Postal code should be from 3 to 32 characters';
+$_['error_country']                 = 'Choose delivery country';
+$_['error_zone']                    = 'Choose region';
+$_['error_city']                    = 'City should be from 3 to 32 characters';
+$_['error_custom_field']            = 'Please fill %s';
+$_['error_shipping']                = 'Choose delivery option';
+$_['error_no_shipping']             = 'Unforunatelly we cannot deliver to specified address. <a href="%s">Contact us</a> and we will arrange something :)';
+$_['error_payment']                 = 'Choose payment option';
