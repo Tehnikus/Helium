@@ -32,38 +32,39 @@
     --time: .4s;
     --style: cubic-bezier(0.175, 0.885, 0.32, 1.275);
     /* HSL color schema */
-    /* Primary color */
-    --ph: 230;
-    --ps: 76%;
-    --pl: 59%;
-    --color-1: hsl( var(--ph), var(--ps), var(--pl) ); 
-    /* Secondary color */
-    --sh: 200;
-    --ss: 76%;
-    --sl: 59%;
-    --color-2: hsl( var(--sh), var(--ss), var(--sl)); 
-
-    /* Primary outline */
-    --outline: hsl(calc(var(--ph) - 20), calc(var(--ps) - 10%), calc(var(--pl) - 10%));
-    /* Middle color */
-    --color-5: hsl(calc((var(--ph) + var(--sh)) / 2), calc((var(--ps) + var(--ss)) / 5), calc(var(--pl) / 1.5));
-
-
+    --h: 230;
+    --s: 76%;
+    --l: 59%;
     --lighten: 15%;
     --darken: -15%;
-    /* --color-1-light:    hsl(var(--ph), calc(var(--ps) - 10%), calc(var(--pl) + var(--lighten))); */
-    --color-1-dark:     hsl(var(--ph), calc(var(--ps) - 10%), calc(var(--pl) + var(--darken)));
+    /* --color-1:   hsl(     var(--h),            var(--s),             var(--l)       );
+    --color-2:   hsl(calc(var(--h) - 25), calc(var(--s) - 20%), calc(var(--l) - 10%));
+    --color-3:   hsl(calc(var(--h) - 15), calc(var(--s) - 10%), calc(var(--l) - 10%));
+    --color-4:   hsl(calc(var(--h) + 25), calc(var(--s) - 35%), calc(var(--l) - 15%));
+    --color-5:   hsl(calc(var(--h) + 15), calc(var(--s) - 15%), var(--l)); */
+
+    --color-1: hsl( var(--h), var(--s), var(--l) );
+    --color-2: hsl(calc(var(--h) - 35), calc(var(--s) - 20%), calc(var(--l) - 10%));
+    --color-3: hsl(calc(var(--h) - 20), calc(var(--s) - 10%), calc(var(--l) - 10%));
+    --color-4: hsl(calc(var(--h) + 50), calc(var(--s) - 10%), calc(var(--l) - 15%));
+    --color-5: hsl(calc(var(--h) + 100), calc(var(--s) - 15%), var(--l));
+
+
+
+    --color-1-light:    hsl(var(--h), calc(var(--s) - 10%), calc(var(--l) + var(--lighten)));
+    --color-1-dark:     hsl(var(--h), calc(var(--s) - 10%), calc(var(--l) + var(--darken)));
 
     --color-red: rgb(192, 1, 1);
     --danger:rgb(192, 77, 1);
 
     --gardient: linear-gradient(to right, var(--color-1) 0%, var(--color-5)  51%, var(--color-2)  100%);
-    --gardient-2: linear-gradient(to right, var(--color-1) 0%, var(--color-5)  51%, var(--color-2)  100%);
+    --gardient-2: linear-gradient(to right, var(--color-1) 0%, var(--color-2)  25%, var(--color-3)  50%, var(--color-4) 80%, var(--color-5)  100%);
 
     --icon-height: 1.3rem;
 
     --blocks-shadow: 0 0 3px 3px #3333;
     --inputs-shadow: 0 0 8px #3333;
+
 }
 /* Neccessary */
 * {box-sizing: border-box; scroll-behavior:smooth}
@@ -220,7 +221,7 @@ label {cursor:pointer; user-select: none;-webkit-user-select: none;-moz-user-sel
 a:focus, button:focus, .button:focus, summary:focus, dialog:focus, input:focus, select:focus, textarea:focus, div:focus, article:focus {
     border-color: transparent;
     border: none;
-    outline: 2px solid var(--outline);
+    outline: 2px solid var(--color-3);
 }
 .input-group>*:not(:last-child):focus {
     margin-right: 2px; /* Prevent overflowing outlines in button groups */
@@ -297,7 +298,7 @@ input[type="checkbox"]:checked::before, input[type="radio"]:checked::before {
 
 /* Separate outline focus for custom checkboxes and radios */
 input[type="checkbox"]:focus, input[type="radio"]:focus {
-    outline: max(2px, 0.15em) solid var(--outline);
+    outline: max(2px, 0.15em) solid var(--color-3);
     outline-offset: max(2px, 0.15em);
 }
   
@@ -610,7 +611,7 @@ span.product_count {min-width: 24px;  height: 24px;  text-align: center;  border
 
 /* Compinents - Alerts */
 .alert-danger {background: #ff9e9e;padding: 1rem;border: 2px solid #ff7575;color: #800008;border-radius: var(--radius)}
-.alert-success {background: #55e43f33;padding: 1rem;border: 2px solid #42a15d;color: green;border-radius: var(--radius)}
+.alert-success {background: #55e43f;padding: 1rem;border: 2px solid #53c774;color: green;border-radius: var(--radius)}
 /* Components - Pagination */
 .pagination {align-items: center}
 
@@ -955,7 +956,7 @@ input#input-quantity {text-align: center}
 @media (max-width: 63.938rem) {
     .mobile_menu {
         justify-content: center;
-        position: fixed!important;
+        position: fixed;
         bottom: 4.5rem;
         left: 1rem;
         right: 1rem;

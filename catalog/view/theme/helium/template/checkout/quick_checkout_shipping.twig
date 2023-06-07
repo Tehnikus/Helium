@@ -1,4 +1,5 @@
 {% if shipping_methods %}
+  {{ selected_shipping_method }}
   {# {{ shipping_methods | json_encode(constant('JSON_PRETTY_PRINT')) }} #}
   <span class="h2">{{ text_shipping_methods }}</span>
   {% for shipping_method in shipping_methods %}
@@ -7,9 +8,9 @@
         {% for quote in shipping_method.quote %}
           <div class="form-control">
             {% if selected_shipping_method == quote.code %}
-              <input data-action="saveShippingMethod" id="{{ quote.code }}" type="radio" name="shipping_method" value="{{ quote.code }}" checked="checked" />
+              <input id="{{ quote.code }}" type="radio" name="shipping_method" value="{{ quote.code }}" checked="checked" />
             {% else %}
-              <input data-action="saveShippingMethod" id="{{ quote.code }}" type="radio" name="shipping_method" value="{{ quote.code }}" />
+              <input id="{{ quote.code }}" type="radio" name="shipping_method" value="{{ quote.code }}" />
             {% endif %}
             <label for="{{ quote.code }}">{{ quote.title }} - {{ quote.text }}</label>
           </div>
@@ -17,7 +18,7 @@
       {% else %}
         {% if shipping_method.status == 1 %}
           <div class="form-control">
-            <input data-action="saveShippingMethod" type="radio" value="{{ shipping_method.code }}" id="shipping_{{ shipping_method.code }}" name="shipping_method" {% if loop.first %} checked {% endif %}/>
+            <input type="radio" value="{{ shipping_method.code }}" id="shipping_{{ shipping_method.code }}" name="shipping_method" {% if loop.first %} checked {% endif %}/>
             <label for="shipping_{{ shipping_method.code }}">{{ shipping_method.title }}</label>
           </div>
         {% endif %}

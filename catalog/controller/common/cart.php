@@ -322,7 +322,7 @@ class ControllerCommonCart extends Controller {
 	// Fill entries of Quick checkout inputs
 	// Should comly with regular checkout so if you fill one form they will appear in all other forms
 	public function getQuickCheckoutData(&$data) {
-		$this->load->language('checkout/cart');
+		$this->load->language('checkout/checkout');
 
 		
 		$this->load->model('localisation/country');
@@ -388,9 +388,9 @@ class ControllerCommonCart extends Controller {
 
 		
 		if (isset($this->session->data['guest']['telephone'])) {
-			$data['phone'] = $this->session->data['guest']['telephone'];
+			$data['telephone'] = $this->session->data['guest']['telephone'];
 		} else {
-			$data['phone'] = '';
+			$data['telephone'] = '';
 		}
 		
 		
@@ -400,11 +400,11 @@ class ControllerCommonCart extends Controller {
 			$data['address_1'] = '';
 		}
 		
-		if (isset($this->session->data['guest']['email'])) {
-			$data['email'] = $this->session->data['guest']['email'];
-		} else {
-			$data['email'] = '';
-		}
+		// if (isset($this->session->data['guest']['email'])) {
+		// 	$data['email'] = $this->session->data['guest']['email'];
+		// } else {
+		// 	$data['email'] = '';
+		// }
 		// if (isset($this->session->data['payment_address']['company'])) {
 		// 	$data['company'] = $this->session->data['payment_address']['company'];
 		// } else {
@@ -478,6 +478,9 @@ class ControllerCommonCart extends Controller {
 
 		$data['shipping_methods'] = $this->getShippingMethods();
 		$data['payment_methods'] = $this->getPaymentMethods();
+		// $data['confirm'] = $this->getConfirmOrder();
+		// print_r($data['confirm']);
+
 		if (isset($this->session->data['guest']['shipping_address'])) {
 			$data['shipping_address'] = $this->session->data['guest']['shipping_address'];
 		}
@@ -494,9 +497,10 @@ class ControllerCommonCart extends Controller {
 
 	// Display shipping methods html
 	public function fetchDisplayShippingHtml() {
-		$this->load->language('common/cart');
+		$this->load->language('checkout/checkout');
 		$data = $this->getShippingMethods();
 		$this->response->setOutput($this->load->view('checkout/quick_checkout_shipping', $data));
+		// print_r($data);
 	}
 
 	// Get payment methods
@@ -506,7 +510,7 @@ class ControllerCommonCart extends Controller {
 	}
 
 	public function fetchDisplayPaymentHtml() {
-		$this->load->language('common/cart');
+		$this->load->language('checkout/checkout');
 		$data = $this->getPaymentMethods();
 		$this->response->setOutput($this->load->view('checkout/quick_checkout_payment', $data));
 	}
@@ -551,6 +555,12 @@ class ControllerCommonCart extends Controller {
 		}
 	}
 
+	public function fetchConfirmOrder() {
+		$this->load->language('checkout/checkout');
+		$data = $this->getConfirmOrder();
+		$this->response->setOutput($this->load->view('checkout/confirm', $data));
+	}
+
 	// Debug only 
 	// TODO Remove
 	public function fetchSessionData() {
@@ -580,7 +590,7 @@ class ControllerCommonCart extends Controller {
 		
 		// Process existing customer data
 		$data = $this->request->post;
-		// if (isset($data['guest'])) {
+		if (isset($data['guest'])) {
 			// Set defult customer group
 			// TODO add condition if customer is logged in
 			$this->session->data['guest']['customer_group_id'] = $this->config->get('config_customer_group_id');
@@ -590,44 +600,51 @@ class ControllerCommonCart extends Controller {
 			// Set empty email
 			$this->session->data['guest']['email'] = '';
 			
-			if (isset($data['firstname'])) {
-				$this->session->data['guest']['firstname'] 				= $data['firstname'];
-				$this->session->data['shipping_address']['firstname'] 	= $data['firstname'];
-				$this->session->data['payment_address']['firstname'] 	= $data['firstname'];
+			if (isset($data['guest']['firstname'])) {
+				$this->session->data['guest']['firstname'] 				= $data['guest']['firstname'];
+				$this->session->data['shipping_address']['firstname'] 	= $data['guest']['firstname'];
+				$this->session->data['payment_address']['firstname'] 	= $data['guest']['firstname'];
 			}
-			if (isset($data['lastname'])) {
-				$this->session->data['guest']['lastname'] 				= $data['lastname'];
-				$this->session->data['shipping_address']['lastname'] 	= $data['lastname'];
-				$this->session->data['payment_address']['lastname'] 	= $data['lastname'];
+			if (isset($data['guest']['lastname'])) {
+				$this->session->data['guest']['lastname'] 				= $data['guest']['lastname'];
+				$this->session->data['shipping_address']['lastname'] 	= $data['guest']['lastname'];
+				$this->session->data['payment_address']['lastname'] 	= $data['guest']['lastname'];
 			}
-			if (isset($data['phone'])) {
-				$this->session->data['guest']['telephone'] 				= $data['phone'];
-				$this->session->data['shipping_address']['telephone'] 	= $data['phone'];
-				$this->session->data['payment_address']['telephone'] 	= $data['phone'];
+			if (isset($data['guest']['telephone'])) {
+				$this->session->data['guest']['telephone'] 				= $data['guest']['telephone'];
+				$this->session->data['shipping_address']['telephone'] 	= $data['guest']['telephone'];
+				$this->session->data['payment_address']['telephone'] 	= $data['guest']['telephone'];
 			}
-			if (isset($data['city'])) {
-				$this->session->data['guest']['city'] 					= $data['city'];
-				$this->session->data['shipping_address']['city'] 		= $data['city'];
-				$this->session->data['payment_address']['city'] 		= $data['city'];
+			if (isset($data['shipping_address']['city'])) {
+				$this->session->data['guest']['city'] 					= $data['shipping_address']['city'];
+				$this->session->data['shipping_address']['city'] 		= $data['shipping_address']['city'];
+				$this->session->data['payment_address']['city'] 		= $data['shipping_address']['city'];
 			}
-			if (isset($data['address'])) {
-				$this->session->data['guest']['address_1'] 				= $data['address'];
-				$this->session->data['shipping_address']['address_1'] 	= $data['address'];
-				$this->session->data['payment_address']['address_1'] 	= $data['address'];
+			if (isset($data['shipping_address']['address_1'])) {
+				$this->session->data['guest']['address_1'] 				= $data['shipping_address']['address_1'];
+				$this->session->data['shipping_address']['address_1'] 	= $data['shipping_address']['address_1'];
+				$this->session->data['payment_address']['address_1'] 	= $data['shipping_address']['address_1'];
 			}
 			if (isset($data['shipping_address']['custom_field'])) {
 				$this->session->data['guest']['custom_field'] 			= $data['guest']['custom_field'];
 			} else {
 				$this->session->data['guest']['custom_field'] 			= [];
 			}
-		// }
+		}
 
 		// Save custom fields
 		if (isset($data['custom_field'])) {
 			foreach ($data['custom_field'] as $key => $custom_field) {
-				$this->session->data['shipping_address']['custom_field'][$key] = $custom_field;
+				$data['shipping_address']['custom_field'][$key] = $custom_field;
 			}
 		}
+
+		// Save Guest fields in any case
+		// if (isset($data['guest'])) {
+		// 	foreach ($data['guest'] as $guest_field => $guest_value) {
+		// 		$this->session->data['guest'][$guest_field] = $guest_value;
+		// 	}
+		// }
 
 		// Save address
 		if (isset($data['shipping_address'])) {
@@ -665,34 +682,35 @@ class ControllerCommonCart extends Controller {
 		
 		// Now just print out data, so I'll see if something missing
 		// TODO Remove when tested properly, output only errors
-		echo(json_encode($this->request->post));
-		// echo(json_encode($this->session->data));
+		// echo(json_encode($this->request->post));
+		echo(json_encode($this->session->data));
 	}
 
 	// Check if all address fields filled correctly
 	public function checkErrors() {
+		// DONE Load corresponting language file here
 		$json = [];
 		$data = $this->session->data;
-		// DONE Load corresponting language file here
+		// $json['session'] = $data;
 		$this->load->language('common/cart');
 
 		// Array keys inside ['error'] must comply to form input names for JS handleErrors() to find right elements
 		if (!isset($data['guest']['firstname']) || (utf8_strlen(trim($data['guest']['firstname'])) < 1 || utf8_strlen(trim($data['guest']['firstname'])) > 32)) {
-			$json['error']['firstname'] = $this->language->get('error_firstname');
+			$json['error']['guest[firstname]'] = $this->language->get('error_firstname');
 		}
 		if (!isset($data['guest']['lastname']) || (utf8_strlen(trim($data['guest']['lastname'])) < 1 || utf8_strlen(trim($data['guest']['lastname'])) > 32)) {
-			$json['error']['lastname'] = $this->language->get('error_lastname');
+			$json['error']['guest[lastname]'] = $this->language->get('error_lastname');
 		}
 		if (!isset($data['guest']['telephone']) || (utf8_strlen(trim($data['guest']['telephone'])) < 3 || utf8_strlen(trim($data['guest']['telephone'])) > 32)) {
-			$json['error']['phone'] = $this->language->get('error_telephone');
+			$json['error']['guest[telephone]'] = $this->language->get('error_telephone');
 		}
 		// Condition if order needs shipping
 		if ($this->cart->hasShipping()) {
 			if (!isset($data['shipping_address']['city']) || (utf8_strlen(trim($data['shipping_address']['city'])) < 2 || utf8_strlen(trim($data['shipping_address']['city'])) > 128)) {
-				$json['error']['city'] = $this->language->get('error_city');
+				$json['error']['shipping_address[city]'] = $this->language->get('error_city');
 			}
 			if (!isset($data['shipping_address']['address_1']) || (utf8_strlen(trim($data['shipping_address']['address_1'])) < 3 || utf8_strlen(trim($data['shipping_address']['address_1'])) > 128)) {
-				$json['error']['address'] = $this->language->get('error_address_1');
+				$json['error']['shipping_address[address_1]'] = $this->language->get('error_address_1');
 			}
 			if (!isset($data['shipping_address']['country_id']) || $data['shipping_address']['country_id'] == '') {
 				$json['error']['shipping_address[country_id]'] = $this->language->get('error_country');

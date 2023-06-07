@@ -6,10 +6,10 @@
   {% for payment_method in payment_methods %}
     <div class="form-control">
       {% if selected_payment_method == payment_method.code %}
-        <input data-action="saveShippingMethod" type="radio" name="payment_method" value="{{ payment_method.code }}" id="{{ payment_method.code }}" checked="checked" />
+        <input type="radio" name="payment_method" value="{{ payment_method.code }}" id="{{ payment_method.code }}" checked="checked" />
         <label for="{{ payment_method.code }}">{{ payment_method.title }}</label>
       {% else %}
-        <input data-action="saveShippingMethod" type="radio" name="payment_method" value="{{ payment_method.code }}" id="{{ payment_method.code }}"/>
+        <input type="radio" name="payment_method" value="{{ payment_method.code }}" id="{{ payment_method.code }}"/>
         <label for="{{ payment_method.code }}">{{ payment_method.title }}</label>
       {% endif %}
       {% if payment_method.terms %}
@@ -19,10 +19,10 @@
   {% endfor %}
   {% if payment_methods.text_agree %}
       {% if payment_methods.agree %}
-        <input data-action="saveShippingMethod" type="checkbox" name="agree" value="1" id="agree" checked="checked" />
+        <input type="checkbox" name="agree" value="1" id="agree" checked="checked" />
         <label for="agree">{{ payment_methods.text_agree }}</label>
       {% else %}
-        <input data-action="saveShippingMethod" type="checkbox" name="agree" value="1" id="agree" />
+        <input type="checkbox" name="agree" value="1" id="agree" />
         <label for="agree">{{ payment_methods.text_agree }}</label>
       {% endif %}
   {% endif %}
