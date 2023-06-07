@@ -1,30 +1,23 @@
-const d = document;
 // Time for ninja coding! :)
 // After everything is tested maybe replace standart methods with this functions prior minification
 // to save 3-4 kb of payload as standart minifyers don't replace common methods
+const d = document;
 Node.prototype.listen = Node.prototype.addEventListener;
 var byId = function(i) {return document.getElementById(i)};
 var qs = function(q) {return document.querySelector(q)};
 var qsAll = function(q) {return document.querySelectorAll(q)};
 
-let filter_button = document.getElementById('button-filter');
-
-
-
-
+// Scroll horizontal scrolling containers by mouse wheel
 // function horizontalScroll(element) {
 // 	element.addEventListener("wheel", (event) => {
 // 		event.preventDefault();
-
 // 		let [x, y] = [event.deltaX, event.deltaY];
 // 		let magnitude;
-
 // 		if (x === 0) {
 // 			magnitude = y > 0 ? -30 : 30;
 // 		} else {
 // 			magnitude = x;
 // 		}
-
 // 		console.log({ x, y, magnitude });
 // 		element.scrollBy({
 // 			left: -magnitude
@@ -32,17 +25,13 @@ let filter_button = document.getElementById('button-filter');
 // 	});
 // 	// requestAnimationFrame(horizontalScroll);
 // }
-// let ololo = d.getElementsByClassName('module-product-list');
-// for (var i = 0; i < ololo.length; i++) {
-// 	horizontalScroll(ololo[i]);
+// let horizontal_scrolling_containers = d.getElementsByClassName('module-product-list');
+// for (var i = 0; i < horizontal_scrolling_containers.length; i++) {
+// 	horizontalScroll(horizontal_scrolling_containers[i]);
 // }
 
-
-
-
-
-
 // TODO :)
+let filter_button = document.getElementById('button-filter');
 document.addEventListener('click', function(e) {
 	let filter = [];
 	if(!!filter_button && filter_button.contains(e.target)) {
@@ -103,12 +92,34 @@ document.addEventListener('DOMContentLoaded', function() {
 	// TODO Remove this 
 	fetch('index.php?route=common/cart/fetchSessionData', { method: "POST" }).then(r=>{return r.json()}).then(r=>{ console.info(r)})
 
-	mobileMenu(); // Buttons at the bottom of page
-	mainMenu(); // render buttons, aria attributes and titles for main menu
-	countdown(d); // Countdown to the ent of discounts
-	stickyHeader(); // Sticky header
-	scrollslider(); // Sliders everywhere
-	anchorNav(); // Focus on hastag navigation element
+	mobileMenu(); 			// Mobile menu buttons at the bottom of page
+	mainMenu(); 			// Main menu - render buttons, aria attributes and titles
+	countdown(document); 	// Countdown to the end date of discounts
+	stickyHeader(); 		// Sticky header
+	scrollslider(); 		// Sliders everywhere
+	anchorNav(); 			// Focus on hastag navigation element
+
+	// Country zones fetch
+	// Toggle postcode input
+	const counrty_select = document.getElementsByName('country_id');
+	const zone_select = document.getElementsByName('zone_id');
+	const postcode_input = document.getElementsByName('postcode');
+	Array.from(counrty_select, c => {
+		Array.from(zone_select, z => {
+			// Get zones on initial page load
+			getZones(c,z);
+			// Change zones on country select change
+			c.addEventListener('change', ()=>{
+				getZones(c,z);
+				Array.from(postcode_input, p =>{
+					togglePostcode(c, p)
+				})
+			})
+		})
+		Array.from(postcode_input, p =>{
+			togglePostcode(c, p)
+		})
+	});
 
 	// Set product count on favicon on page load 
 	fetch('index.php?route=common/cart/fetchProductCount').then(r => {return r.text()}).then(resp => {setIcon(resp)})
@@ -213,71 +224,10 @@ document.addEventListener('DOMContentLoaded', function() {
 	// 	$('#grid-view').addClass('active');
 	// }
 
-	// // Checkout
-	// $(document).on('keydown', '#collapse-checkout-option input[name=\'email\'], #collapse-checkout-option input[name=\'password\']', function(e) {
-	// 	if (e.keyCode == 13) {
-	// 		$('#collapse-checkout-option #button-login').trigger('click');
-	// 	}
-	// });
+
 
 });
 
-
-
-
-// Cart add remove functions
-// var cart = {
-	
-	// 'update': function(key, quantity) {
-	// 	// Эта функция нигде не используется
-	// 	var url = 'index.php?route=checkout/cart/edit';
-	// 	var data = 'key=' + key + '&quantity=' + (typeof(quantity) != 'undefined' ? quantity : 1);
-	// 	ajax(url, data, function(r){
-	// 		console.log(r);
-	// 	},null,null,null,"POST","JSON",true);
-		// 	$.ajax({
-		// 		url: 'index.php?route=checkout/cart/edit',
-		// 		type: 'post',
-		// 		data: 'key=' + key + '&quantity=' + (typeof(quantity) != 'undefined' ? quantity : 1),
-		// 		dataType: 'json',
-		// 		beforeSend: function() {
-		// 			$('#cart > button').button('loading');
-		// 		},
-		// 		complete: function() {
-		// 			$('#cart > button').button('reset');
-		// 		},
-		// 		success: function(json) {
-		// 			// Need to set timeout otherwise it wont update the total
-		// 			setTimeout(function () {
-		// 				$('#cart > button').html('<span id="cart-total"><i class="fa fa-shopping-cart"></i> ' + json['total'] + '</span>');
-		// 			}, 100);
-
-		// 			if (getURLVar('route') == 'checkout/cart' || getURLVar('route') == 'checkout/checkout') {
-		// 				location = 'index.php?route=checkout/cart';
-		// 			} else {
-		// 				$('#cart > ul').load('index.php?route=common/cart/info ul li');
-		// 			}
-		// 		},
-		// 		error: function(xhr, ajaxOptions, thrownError) {
-		// 			alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
-		// 		}
-		// 	});
-	// },
-	// 'remove': function(key) {
-	// 	var url = 'index.php?route=checkout/cart/remove';
-	// 	var data = 'key=' + key;
-	// 	ajax(url, data, function(r) {
-	// 		ajax('index.php?route=common/cart/info', null, function(n) {
-	// 			document.getElementById('cart').innerHTML = n;
-	// 		},null,null,null,"GET","text",true);
-	// 	})
-	// },
-	// 'showModal': function(){
-	// 	ajax('index.php?route=common/cart/displayCartModal',null,function(c) {
-	// 		dialog.create(c);
-	// 	}, null,null,null,"GET","text",true);
-	// }
-// }
 
 
 
@@ -423,17 +373,11 @@ let masked_inputs = ['tel'];
 ['paste', 'input'].forEach(ev=>{
 	document.addEventListener(ev, e =>{
 		if (masked_inputs.indexOf(e.target.type) != -1) {
-			// e.target.addEventListener('input', handleInput, false);
 			e.target.value = phoneMask(e.target.value, '38');
 		}
 	})
 })
 
-
-
-// function handleInput (e) {
-//   e.target.value = phoneMask(e.target.value, '38')
-// }
 
 // TODO
 // The real time phone masking while typing
@@ -447,15 +391,16 @@ let masked_inputs = ['tel'];
 function phoneMask (phone, format) {
 
   	return phone.replace(/\D/g, '')
-		.replace(/^(38)/, '') // 1. Pass country code here as variable
-		.replace(/^(\d)/, '($1') 
-		.replace(/^(\(\d{3})(\d)/, '$1) $2') 	// 2. Pass number of digits in brackets here. Like this {number_of_digits_in_brackets} instead of {3}
-		.replace(/(\d{3})(\d{1,5})/, '$1-$2') 	// 3. Pass first group here XXX = {3}
-		.replace(/(-\d{4})\d+?$/, '$1'); 		// 4. Pass first group here XXX = {4}
+	.replace(/^(38)/, '') // 1. Pass country code here as variable
+	.replace(/^(\d)/, '($1') 
+	.replace(/^(\(\d{3})(\d)/, '$1) $2') 	// 2. Pass number of digits in brackets here. Like this {number_of_digits_in_brackets} instead of {3}
+	.replace(/(\d{3})(\d{1,5})/, '$1-$2') 	// 3. Pass first group here XXX = {3}
+	.replace(/(-\d{4})\d+?$/, '$1'); 		// 4. Pass first group here XXX = {4}
 }
 
 
 // AJAX function
+// TODO Remove this, replace with fetch
 function ajax(url, data, success=null, beforesend=null,  complete=null, error=null, method, respType="json", async = true) {
     method = typeof method !== "undefined" ? method : "POST";
     async = typeof async !== 'undefined' ? async : true;
@@ -680,10 +625,15 @@ function createElm({type, styles, attrs, props, events, nest}) {
 	return el;
 }
 
-
-
-
-// DONE Допилить это
+// Dialog component
+// Creates accessible dialog
+// Closed by ESC or by click outside
+// Sets focus inside dialog
+// Animates from click point
+// usage:
+// dialog.create(content, event)
+// @content - html string or JSON encoded html string
+// @event - optional, event to animate from click position 
 let dialog = {
 	create: (content, event) => {
 		dialog.close();
@@ -765,6 +715,7 @@ let dialog = {
 // Load more
 // Renders "Load more" button that requests next page on every pagination
 // DONE Fix so it works on every pagination, not only product list
+// TODO Ommit links usage, move all logic to PHP
 function loadMore() {
 	let pagination = document.querySelector('main ul.pagination');
 	if (!!pagination) {
@@ -799,7 +750,9 @@ function loadMore() {
 	}
 }
 
-
+// Creates accessible toast notifications
+// Notifications stack one under another
+// Announced by screen readers correctly
 let toast = {
 	'create': function(content, reason) {
 		// Create new modal window
@@ -844,13 +797,6 @@ let toast = {
 }
 
 
-
-
-
-
-
-
-
 // Update reviews form, remove obsolete code
 function sendReview(t) {
 	let review_form = document.getElementById('form-review');
@@ -871,7 +817,9 @@ function sendReview(t) {
 
 
 
-
+// Live search
+// Shows product drid with pictures, highlights search query in product description
+// Adds countdown() if such products present
 // TODO Maybe make this as a separate class?
 let timeout = null;
 const searchFunction = (el) => {
@@ -924,7 +872,8 @@ const searchFunction = (el) => {
 
 
 // Data driven event handler
-function handle(evt) {
+// Returns element, event and fires function from action object
+function handleEvents(evt) {
 	const origin = evt.target.closest("[data-action]");
 	return origin &&
 		actions[evt.type] &&
@@ -933,8 +882,6 @@ function handle(evt) {
 		true;
 }
 
-// const firstElemHandler = (elem, evt) =>
-// 	elem.textContent = `You ${evt.type === "click" ? "clicked" : "touched"}!`;
 const reviewModal = (el, ev) => {
 	fetch('index.php?route='+el.dataset.type+'/displayReviewModal&entity_id=' + el.dataset.id, {method: "POST"})
 	.then(r => {return r.text();})
@@ -1056,6 +1003,8 @@ function saveShippingMethod(input) {
 	}
 }
 
+// Chech errors in quick checkout
+// If no errors occured - redirect to successful order page
 const validateQuickCheckout = (el, ev) => {
 	fetch('index.php?route=common/cart/getConfirmOrder', {method:"POST"})
 	.then(r =>{ return r.json()})
@@ -1075,20 +1024,21 @@ const cartShowModal = async (el, ev) => {
 		let modalDiv = document.createElement('div');
 		modalDiv.innerHTML = modalContent;
 		let cd = dialog.create(modalDiv, ev);
-		let country_select = cd.querySelector('[name="shipping_address[country_id]"]');
-		let zone_select = cd.querySelector('[name="shipping_address[zone_id]"]');
-		let postcode_input = cd.querySelector('[name="postcode"]');
-		let form = cd.querySelector('#js_quick_ckeckout');
+		let country_select 	= cd.querySelector('[name="shipping_address[country_id]"]');
+		let zone_select 	= cd.querySelector('[name="shipping_address[zone_id]"]');
+		let postcode_input 	= cd.querySelector('[name="postcode"]');
+		let form 			= cd.querySelector('#js_quick_ckeckout');
 
+		// TODO Move this to formElements.forEach((input) => {...})
 		if (!!country_select) {
 			// Show postcode if required
-			togglePostcode();
+			togglePostcode(country_select, postcode_input);
 			// Get zones of selected country and add them to zones select
 			getZones(country_select, zone_select);
 			country_select.addEventListener('change', () => {
 				getZones(country_select, zone_select);
 				// Show postcode if required
-				togglePostcode();
+				togglePostcode(country_select, postcode_input);
 			});
 		}
 
@@ -1096,17 +1046,13 @@ const cartShowModal = async (el, ev) => {
 			const formElements = Array.from(form.elements);
 			formElements.forEach((input) => {
 				if (input.name.includes('country') || input.name.includes('zone')) {
-					// Obsrve country and zone select element immediate changes
+					// Observe country and zone select element immediate changes
 					// So delivery and payment are updated instantly
-
-					// TODO Add event listener to dynammically changed inputs
 					input.addEventListener('change', () => {
 						saveCheckoutfields(form);
 						fetchDisplayShippingAndPayment()
 					});
 				} else if (input.name.includes('shipping_method') || input.name.includes('payment_method')) {
-					// Save shipping
-					// console.log('ololo');
 					input.addEventListener('change', () => {
 						saveShippingMethod(input);
 					})
@@ -1114,23 +1060,32 @@ const cartShowModal = async (el, ev) => {
 				// Text fields and other not involved in delivery and payment are updatetd on focusout
 				// This fires anyway after user interaction
 				input.addEventListener('focusout', ()=>{
+					// Only save, do not fetchDisplayShippingAndPayment() here
+					// because otherways if user clicks on delivery or payment after any field filled
+					// this will cause reload delivery and payment inputs and will look like a glitch
+					// forsing user to click one more time
 					saveCheckoutfields(form);
-					// fetchDisplayShippingAndPayment();
 				});
 				
 			});
 		}
-		function togglePostcode() {
-			if (country_select.options[country_select.selectedIndex].dataset.postcodeRequired == '1') {
-				postcode_input.parentElement.style.cssText = ''
-			} else {
-				postcode_input.parentElement.style.cssText = 'display:none'
-			}
-		}
+
 	} catch (error) {
 		console.error(error);
 	}
 };
+
+// Show postode input if country requires postcode
+function togglePostcode(country_select, postcode_input) {
+	if (!!country_select && !!postcode_input) {
+		if (country_select.options[country_select.selectedIndex].dataset.postcodeRequired == '1') {
+			postcode_input.parentElement.style.cssText = ''
+		} else {
+			postcode_input.parentElement.style.cssText = 'display:none'
+		}
+	}
+}
+
 
 const fetchDisplayShippingAndPayment = () => {
 	fetch('index.php?route=common/cart/fetchDisplayShippingHtml', { method: "POST" })
@@ -1198,6 +1153,9 @@ const contactsModal = (el, ev) => {
 	fetchFunction({url:'index.php?route=information/contact/showContactsModal', callback: dialog, arg: 'create',ev:ev})
 }
 
+// Correct time in type="time" and type="datetimelocal" inputs to hours
+// So 13:23 will be corrected to 13:00,
+// And 13:49 to 14:00
 const correctTime = (el, ev) => {
 	let date = '', time = '', hours = '', mins = '';
 	let value = el.value;
@@ -1231,7 +1189,6 @@ const actions = {
 		wishlistModal,
 		contactsModal,
 		validateQuickCheckout,
-
 	},
 	input: {
 		searchFunction,
@@ -1242,7 +1199,7 @@ const actions = {
 	}
 };
 // Add event listener to document
-Object.keys(actions).forEach(key => document.addEventListener(key, handle));
+Object.keys(actions).forEach(key => document.addEventListener(key, handleEvents));
 
 // Main menu
 // Adds buttons in the main megamenu
@@ -1311,12 +1268,14 @@ class Accordion {
 		// This is needed for global listener to close all accordions on ESC key
 		el.Accordion = this;
 
-		this.animation = null;
-		this.isClosing = false;
+		// Service data
+		this.animation   = null;
+		this.isClosing   = false;
 		this.isExpanding = false;
 
-
-		// Check if current element is details or regular something else
+		// Check if current element is details or something else
+		// If details - use <summary> as inner content
+		// Else document.querySelector('[data-accordion="'+el.dataset.accordionTarget+'"]');
 		if (this.el.tagName == 'DETAILS') {
 			this.external_content = false;
 			this.toggler = el.querySelector('summary');
@@ -1326,11 +1285,15 @@ class Accordion {
 			this.toggler = el;
 			this.content = document.querySelector('[data-accordion="'+el.dataset.accordionTarget+'"]');
 		}
+
+		// Set aria attributes
 		el.setAttribute('aria-haspopup', 'true');
 		el.setAttribute('aria-controls', this.content.id);
+		// Set content inert - for divs so it cannot be focused
 		this.content.inert = true;
 		
 		this.toggler.addEventListener('click', (e) => this.onClick(e));
+		// Close all accordions on escape key
 		document.onkeydown = function(evt) {
 			evt = evt || window.event;
 			var isEscape = false;
@@ -1407,7 +1370,6 @@ class Accordion {
 	}
 
 	shrink() {
-		
 		this.isClosing = true;
 		// If content is external add aria-epanded to content, not to the element itself
 		let startHeight, endHeight;
@@ -1479,6 +1441,7 @@ function stickyHeader() {
 	    ih = document.getElementById('js_nav_main').offsetHeight;
 	h.style.cssText = "position: sticky; z-index: 1; top:"+ -(oh - ih) + "px;";
 }
+
 // Focus on hash tag navigation element
 function anchorNav() {
 	let contents = document.querySelector('.contents');
@@ -1499,7 +1462,8 @@ function anchorNav() {
 	}
 }
 
-// DONE Set icon on page load
+// Set product count notification on favicon
+// Use CSS var in :root{} for backrgound
 function setIcon(productCount) {
 	const bg = getComputedStyle(document.body).getPropertyValue('--color-1') || '#ff0000';
 	const favicon = document.querySelector("link[rel~='icon']");
@@ -1645,6 +1609,7 @@ function scrollslider() {
 		})
 	})
 }
+
 // DONE add price animation when product has quantity discount
 function animatePrice() {
 	const js_prices = document.querySelector('[data-json-prices]').dataset.jsonPrices;
@@ -1713,6 +1678,7 @@ function animatePrice() {
 	}
 }
 
+// countdown to discout date end
 function countdown(element) {
 	// DONE add data-discount-date-end here
 	let products = element.querySelectorAll('[data-special-date-end], [data-discount-date-end]');
