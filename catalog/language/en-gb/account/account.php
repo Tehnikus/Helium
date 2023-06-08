@@ -1,7 +1,5 @@
 <?php
-
 $_['heading_title']       = 'My Account';
-
 $_['text_account']        = 'Account';
 $_['text_my_account']     = 'My Account';
 $_['text_my_orders']      = 'My Orders';
