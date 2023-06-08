@@ -1,53 +1,60 @@
 {{ header }}
 {% include 'helium/template/common/breadcrumbs.twig' %}
-<main role="main" id="account-account">
+<main role="main" id="account-account" >
   {% if success %}
-    <div class="alert alert-success alert-dismissible"><i class="icon-info"></i></i> {{ success }}</div>
+    <div class="alert alert-success"><i class="icon-info"></i></i> {{ success }}</div>
   {% endif %}
   {{ content_top }}
-  <h2>{{ text_my_account }}</h2>
-  <ul class="list-unstyled">
-    <li><a href="{{ edit }}">{{ text_edit }}</a></li>
-    <li><a href="{{ password }}">{{ text_password }}</a></li>
-    <li><a href="{{ address }}">{{ text_address }}</a></li>
-    <li><a href="{{ wishlist }}">{{ text_wishlist }}</a></li>
-  </ul>
-
-  {% if credit_cards %}
-  <h2>{{ text_credit_card }}</h2>
-  <ul class="list-unstyled">
-    {% for credit_card in credit_cards %}
-    <li><a href="{{ credit_card.href }}">{{ credit_card.name }}</a></li>
-    {% endfor %}
-  </ul>
-  {% endif %}
-
-  <h2>{{ text_my_orders }}</h2>
-  <ul class="list-unstyled">
-    <li><a href="{{ order }}">{{ text_order }}</a></li>
-    <li><a href="{{ download }}">{{ text_download }}</a></li>
-    {% if reward %}
-    <li><a href="{{ reward }}">{{ text_reward }}</a></li>
+  <div class="links grid">
+    <div>
+      <h2>{{ text_my_account }}</h2>
+      <ul class="list-unstyled">
+        <li><a class="button" href="{{ edit }}"><i class="icon-user"></i>{{ text_edit }}</a></li>
+        <li><a class="button" href="{{ password }}"><i class="icon-edit"></i>{{ text_password }}</a></li>
+        <li><a class="button" href="{{ address }}"><i class="icon-location"></i>{{ text_address }}</a></li>
+        <li><a class="button" href="{{ wishlist }}"><i class="icon-heart"></i>{{ text_wishlist }}</a></li>
+      </ul>
+    </div>
+    {% if credit_cards %}
+      <div>
+        <h2>{{ text_credit_card }}</h2>
+        <ul class="list-unstyled">
+          {% for credit_card in credit_cards %}
+            <li><a href="{{ credit_card.href }}">{{ credit_card.name }}</a></li>
+          {% endfor %}
+        </ul>
+      </div>
     {% endif %}
-    <li><a href="{{ return }}">{{ text_return }}</a></li>
-    <li><a href="{{ transaction }}">{{ text_transaction }}</a></li>
-    <li><a href="{{ recurring }}">{{ text_recurring }}</a></li>
-  </ul>
-
-  <h2>{{ text_my_affiliate }}</h2>
-  <ul class="list-unstyled">
-    {% if not tracking %}
-      <li><a href="{{ affiliate }}">{{ text_affiliate_add }}</a></li>
-    {% else %}
-      <li><a href="{{ affiliate }}">{{ text_affiliate_edit }}</a></li>
-      <li><a href="{{ tracking }}">{{ text_tracking }}</a></li>
-    {% endif %}
-  </ul>
-
-  <h2>{{ text_my_newsletter }}</h2>
-  <ul class="list-unstyled">
-    <li><a href="{{ newsletter }}">{{ text_newsletter }}</a></li>
-  </ul>
+    <div>
+      <h2>{{ text_my_orders }}</h2>
+      <ul class="list-unstyled">
+        <li><a class="button" href="{{ order }}"><i class="icon-cart"></i>{{ text_order }}</a></li>
+        <li><a class="button" href="{{ download }}"><i class="icon-chevron-down"></i>{{ text_download }}</a></li>
+        {% if reward %}
+          <li><a class="button" href="{{ reward }}"><i class="icon-gift"></i>{{ text_reward }}</a></li>
+        {% endif %}
+        <li><a class="button" href="{{ return }}"><i class="icon-reload"></i>{{ text_return }}</a></li>
+        <li><a class="button" href="{{ transaction }}"><i class="icon-credit-card"></i>{{ text_transaction }}</a></li>
+        <li><a class="button" href="{{ recurring }}"><i class="icon-calendar"></i>{{ text_recurring }}</a></li>
+      </ul>
+    </div>
+    <div>
+      <h2>{{ text_my_affiliate }}</h2>
+      <ul class="list-unstyled">
+        {% if not tracking %}
+          <li><a class="button" href="{{ affiliate }}"><i class="icon-percent"></i>{{ text_affiliate_add }}</a></li>
+        {% else %}
+          <li><a class="button" href="{{ affiliate }}">{{ text_affiliate_edit }}</a></li>
+          <li><a class="button" href="{{ tracking }}">{{ text_tracking }}</a></li>
+        {% endif %}
+      </ul>
+    </div>
+    <div>
+      <h2>{{ text_my_newsletter }}</h2>
+      <ul class="list-unstyled">
+        <li><a class="button" href="{{ newsletter }}"><i class="icon-mail"></i>{{ text_newsletter }}</a></li>
+      </ul>
+    </div>
   {{ content_bottom }}
 </main>
 {{ column_left }}

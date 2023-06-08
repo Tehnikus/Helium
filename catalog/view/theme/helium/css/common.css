@@ -94,7 +94,7 @@ iframe[src*="maps"] {
     max-width: 100%;
 }
 /* Unstyled lists */
-.list-unstyled {padding: 0; margin: 0; list-style-type: none}
+.list-unstyled {padding: 0;margin: 0;list-style-type: none}
 /* Normalize appearence */
 address,blockquote cite {font-style:normal}
 button, .button,
@@ -431,7 +431,7 @@ tfoot {border-top:1px solid var(--border)}
 tbody tr:nth-child(1n) {background-color:var(--bg-main-blocks)}
 tbody tr:nth-child(2n) {background-color:var(--bg-body)}
 
-.text-right {text-align: right}
+.text-right {text-align: right;}
 .text-left {text-align: left}
 
 /* Fieldsete and legends */
@@ -666,6 +666,7 @@ button:active, .button:active, .primary:active, button.active {
 .input-group, .btn-group {display:flex;flex-direction:row;flex-wrap:nowrap;align-items:center}
 .input-group {box-shadow: var(--inputs-shadow); border-radius: var(--radius)}
 .input-group > * {box-shadow: none}
+.btn-group.spaced {justify-content:space-between}
 /* Round corners on input groups */
 .input-group :first-child {border-radius: var(--radius) 0 0 var(--radius)}
 .input-group :last-child {border-radius: 0 var(--radius) var(--radius) 0}
@@ -858,9 +859,13 @@ input[name="quantity"] {max-width: 80px}
     width: 100%;
 }
 .product.grid,
-.article.grid {
+.article.grid,
+.links.grid {
     grid-template-columns: repeat(auto-fill, minmax(21rem, 1fr));
     will-change: contents;
+}
+.links.grid .list-unstyled li {
+    padding: .5rem 0
 }
 /* Blog article mimature */
 .article-infos {justify-content:space-between;display:flex;padding:.5rem}

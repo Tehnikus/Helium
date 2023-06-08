@@ -3,7 +3,7 @@
 <main role="main" id="account-edit">
 
   {% if error_warning %}
-    <div class="alert alert-danger alert-dismissible"><i class="fa fa-exclamation-circle"></i> {{ error_warning }}</div>
+    <div role="alert" class="alert alert-danger alert-dismissible"><i class="icon-alert"></i> {{ error_warning }}</div>
   {% endif %}
   <h1>{{ heading_title }}</h1>
   {{ content_top }}
@@ -233,105 +233,13 @@
         {% endif %}
         {% endfor %}
       </fieldset>
-      <div class="buttons clearfix">
-        <div class="pull-left"><a href="{{ back }}" class="button">{{ button_back }}</a></div>
-        <div class="pull-right">
-          <button type="submit" class="primary">{{ button_continue }}</button>
-        </div>
+      <div class="btn-group spaced">
+        <a href="{{ back }}" class="button"><i class="icon-chevron-left"></i>{{ button_back }}</a>
+        <button type="submit">{{ button_continue }}<i class="icon-chevron-right"></i></button>
       </div>
     </form>
   {{ content_bottom }}
 </main>
 {{ column_left }}
 {{ column_right }}
-<script type="text/javascript"><!--
-// Sort the custom fields
-$('.form-group[data-sort]').detach().each(function() {
-	if ($(this).attr('data-sort') >= 0 && $(this).attr('data-sort') <= $('.form-group').length) {
-		$('.form-group').eq($(this).attr('data-sort')).before(this);
-	}
-
-	if ($(this).attr('data-sort') > $('.form-group').length) {
-		$('.form-group:last').after(this);
-	}
-
-	if ($(this).attr('data-sort') == $('.form-group').length) {
-		$('.form-group:last').after(this);
-	}
-
-	if ($(this).attr('data-sort') < -$('.form-group').length) {
-		$('.form-group:first').before(this);
-	}
-});
-//--></script>
-<script type="text/javascript"><!--
-$('button[id^=\'button-custom-field\']').on('click', function() {
-	var element = this;
-
-	$('#form-upload').remove();
-
-	$('body').prepend('<form enctype="multipart/form-data" id="form-upload" style="display: none;"><input type="file" name="file" /></form>');
-
-	$('#form-upload input[name=\'file\']').trigger('click');
-
-	if (typeof timer != 'undefined') {
-    	clearInterval(timer);
-	}
-
-	timer = setInterval(function() {
-		if ($('#form-upload input[name=\'file\']').val() != '') {
-			clearInterval(timer);
-
-			$.ajax({
-				url: 'index.php?route=tool/upload',
-				type: 'post',
-				dataType: 'json',
-				data: new FormData($('#form-upload')[0]),
-				cache: false,
-				contentType: false,
-				processData: false,
-				beforeSend: function() {
-					$(element).button('loading');
-				},
-				complete: function() {
-					$(element).button('reset');
-				},
-				success: function(json) {
-					$(element).parent().find('.text-danger').remove();
-
-					if (json['error']) {
-						$(element).parent().find('input').after('<span class="text-danger">' + json['error'] + '</div>');
-					}
-
-					if (json['success']) {
-						alert(json['success']);
-
-						$(element).parent().find('input').val(json['code']);
-					}
-				},
-				error: function(xhr, ajaxOptions, thrownError) {
-					alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
-				}
-			});
-		}
-	}, 500);
-});
-//--></script>
-<script type="text/javascript"><!--
-// $('.date').datetimepicker({
-// 	language: '{{ datepicker }}',
-// 	pickTime: false
-// });
-
-// $('.datetime').datetimepicker({
-// 	language: '{{ datepicker }}',
-// 	pickDate: true,
-// 	pickTime: true
-// });
-
-// $('.time').datetimepicker({
-// 	language: '{{ datepicker }}',
-// 	pickDate: false
-// });
-//--></script>
 {{ footer }}

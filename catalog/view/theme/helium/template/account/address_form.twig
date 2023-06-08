@@ -300,12 +300,11 @@
           {% endif %} </div>
       </div>
     </fieldset>
-    <div class="buttons clearfix">
-      <div class="pull-left"><a href="{{ back }}" class="button">{{ button_back }}</a></div>
-      <div class="pull-right">
-        <button type="submit" class="primary">{{ button_continue }}</button>
-      </div>
-    </div>
+    <div class="btn-group spaced">
+      <a href="{{ back }}" class="button"><i class="icon-chevron-left"></i>{{ button_back }}</a>
+      <button type="submit">{{ button_continue }}<i class="icon-chevron-right"></i></button>
+    </div> 
+    
   </form>
   {{ content_bottom }}
 </main>
