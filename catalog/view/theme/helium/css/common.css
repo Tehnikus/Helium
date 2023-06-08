@@ -468,6 +468,7 @@ h1,h2,h3,h4,h5,h6,
     width: 100%;
     padding: 0 0 .5rem 0;
     /* text-wrap: balance; */ /* Carefuly wrap text */
+    font-weight: 600;
 }
 /* Fonts */
 h1,h2,h3,h4,h5,h6,
