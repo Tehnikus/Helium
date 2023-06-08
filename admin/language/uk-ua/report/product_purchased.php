@@ -9,7 +9,7 @@ $_['text_all_status'] = 'Всі статуси';
 $_['column_date_start'] = 'Дата';
 $_['column_date_end'] = 'Дата закінчення';
 $_['column_name'] = 'Назва товару';
-$_['column_model'] = 'Модель';
+$_['column_model'] = 'Код товару';
 $_['column_quantity'] = 'Кількість';
 $_['column_total'] = 'Разом';
 

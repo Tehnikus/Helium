@@ -16,7 +16,7 @@ $_['text_bank']                 = 'Банківський переказ';
 $_['text_agree']                = 'Я прочитав <a href="%s" class="agree"><b>%s</b></a> та згоден з умовами';
 
 // Entry
-$_['entry_firstname']           = 'Ім&#39;я, по Батькові';
+$_['entry_firstname']           = 'Ім&#39;я';
 $_['entry_lastname']            = 'Прізвище';
 $_['entry_email']               = 'E-Mail';
 $_['entry_telephone']           = 'Телефон';

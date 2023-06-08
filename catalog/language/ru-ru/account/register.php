@@ -1,7 +1,4 @@
 <?php
-
-
-
 $_['heading_title']        = 'Регистрация';
 
 $_['text_account']         = 'Аккаунт';

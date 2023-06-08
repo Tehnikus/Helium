@@ -9,7 +9,7 @@ $_['text_your_details'] = 'Ваш обліковий запис';
 $_['text_success'] = 'Ваш обліковий запис було успішно оновлено!';
 
 // Entry
-$_['entry_firstname'] = 'Ім&#39;я, по Батькові';
+$_['entry_firstname'] = 'Ім&#39;я';
 $_['entry_lastname'] = 'Прізвище';
 $_['entry_email'] = 'E-Mail';
 $_['entry_telephone'] = 'Телефон';

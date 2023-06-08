@@ -28,7 +28,7 @@ $_['text_payment_until_canceled_description'] = ': %s; Періодичніст�
 // Column
 $_['column_image'] = 'Зображення';
 $_['column_name'] = 'Назва';
-$_['column_model'] = 'Модель';
+$_['column_model'] = 'Код товару';
 $_['column_quantity'] = 'Кількість';
 $_['column_price'] = 'Ціна за шт.';
 $_['column_total'] = 'Всього';

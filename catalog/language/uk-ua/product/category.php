@@ -53,14 +53,14 @@ $_['optgroup_default'] = 'За замовчуванням';
 $_['optgroup_price']   = 'Ціна';
 $_['optgroup_popular'] = 'Популярні';
 $_['optgroup_name']    = 'Назва';
-$_['optgroup_weight']  = 'Вага та об\'єм';
+$_['optgroup_weight']  = 'Вага та об&#39;єм';
 
 $_['pd.name-ASC']          = 'Назва (А - Я)';
 $_['p.model-ASC']          = 'Код товару (А - Я)';
 $_['p.price-ASC']          = 'Ціна, від дешевих до дорогих';
 $_['p.weight-ASC']         = 'Вага, від менших до більших';
-$_['price_to_weight-ASC']  = 'Краща вартість за вагою/об\'ємом';
-$_['price_to_weight-DESC']  = 'Найдорожчі за вагою/об\'ємом';
+$_['price_to_weight-ASC']  = 'Краща вартість за вагою/об&#39;ємом';
+$_['price_to_weight-DESC']  = 'Найдорожчі за вагою/об&#39;ємом';
 $_['p.returned-ASC']       = 'Найменше повернень';
 $_['p.sort_order-ASC']     = 'За замовчуванням';
 $_['pd.name-DESC']         = 'Назва (Я - А)';
