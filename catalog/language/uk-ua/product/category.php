@@ -14,19 +14,6 @@ $_['text_new_price']        = 'Нова ціна:';
 $_['text_tax']              = 'Без ПДВ:';
 $_['text_sort']             = 'Сортувати:';
 
-// $_['text_default']          = 'За замовчуванням';
-// $_['text_name_asc']         = 'Назва (А - Я)';
-// $_['text_name_desc']        = 'Назва (Я - А)';
-// $_['text_price_asc']        = 'Ціна, спочатку дешеві';
-// $_['text_price_desc']       = 'Ціна спочатку дорогі';
-// $_['text_rating_desc']      = 'Найкращі відгуки';
-// $_['text_model_asc']        = 'Код товара (А - Я)';
-// $_['text_model_desc']       = 'Код товара (Я - А)';
-// $_['text_views_desc']       = 'Найбільше переглядів';
-// $_['text_date_added_desc']  = 'Новинки спочатку';
-// $_['text_bestsellers_desc'] = 'Лідери продаж';
-// $_['text_discounts_desc']    = 'Зпочатку зі знижками';
-
 $_['heading_title']         = 'Пошук';
 $_['heading_tag']           = 'По тегу - ';
 
@@ -54,7 +41,6 @@ $_['optgroup_price']   = 'Ціна';
 $_['optgroup_popular'] = 'Популярні';
 $_['optgroup_name']    = 'Назва';
 $_['optgroup_weight']  = 'Вага та об&#39;єм';
-
 $_['pd.name-ASC']          = 'Назва (А - Я)';
 $_['p.model-ASC']          = 'Код товару (А - Я)';
 $_['p.price-ASC']          = 'Ціна, від дешевих до дорогих';
@@ -75,4 +61,3 @@ $_['p.date_modified-DESC'] = 'Нещодавно оновлені';
 $_['p.rating-DESC']        = 'Кращі відгуки';
 $_['p.points-DESC']        = 'Більше бонусних балів';
 $_['discounts-DESC']       = 'Спочатку зі знижками';
-

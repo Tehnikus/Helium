@@ -13,19 +13,6 @@ $_['text_old_price']        = 'Старая цена: ';
 $_['text_new_price']        = 'Новая цена: ';
 $_['text_tax']              = 'Без НДС: ';
 $_['text_sort']             = 'Сортировка: ';
-// $_['text_default']          = 'По умолчанию';
-// $_['text_name_asc']         = 'Название (А - Я)';
-// $_['text_name_desc']        = 'Название (Я - А)';
-// $_['text_price_asc']        = 'Цена, сначала дешевые';
-// $_['text_price_desc']       = 'Цена, сначала дорогие';
-// $_['text_rating_desc']      = 'Лучшие отзывы';
-// $_['text_model_asc']        = 'Код Товара (А - Я)';
-// $_['text_model_desc']       = 'Код Товара (Я - А)';
-
-// $_['text_views_desc']       = 'Самые просматриваемые';
-// $_['text_date_added_desc']  = 'Новинки сначала';
-// $_['text_bestsellers_desc'] = 'Лидеры продаж сначала';
-// $_['text_discounts_desc']    = 'Сначала со скидками';
 
 $_['heading_title']         = 'Поиск';
 $_['heading_tag']		    = 'По тегу - ';
@@ -49,13 +36,11 @@ $_['tab_featured']          = 'Рекомендуем';
 $_['entry_search']          = 'Поиск';
 $_['entry_description']     = 'Искать в описании товаров';
 
-
 $_['optgroup_default'] = 'По умолчанию';
 $_['optgroup_price']   = 'Цена';
 $_['optgroup_popular'] = 'Популярные';
 $_['optgroup_name']    = 'Название';
 $_['optgroup_weight']  = 'Вес и объем';
-
 $_['pd.name-ASC']          = 'Название (А - Я)';
 $_['p.model-ASC']          = 'Код Товара (А - Я)';
 $_['p.price-ASC']          = 'Цена, сначала дешевые';

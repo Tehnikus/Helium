@@ -23,7 +23,7 @@ $_['text_recurring_item'] = 'Періодичні платежі';
 $_['text_payment_recurring'] = 'Платіжний профіль';
 $_['text_trial_description'] = ': %s; Періодичність: %d %s; Кількість платежів: %d; Далі, ';
 $_['text_payment_description'] = ': %s; Періодичність: %d %s; Кількість платежів: %d';
-$_['text_payment_until_canceled_description'] = ': %s; Періодичність: %d %s; Кількість платежів: до скасування';
+$_['text_payment_cancel'] = ': %s; Періодичність: %d %s; Кількість платежів: до скасування';
 
 // Column
 $_['column_image'] = 'Зображення';

@@ -1,6 +1,4 @@
 <?php
-
-
 $_['text_search']              = 'Поиск';
 $_['text_brand']               = 'Производитель';
 $_['text_manufacturer']        = 'Производитель:';
@@ -18,7 +16,7 @@ $_['text_write']               = 'Написать отзыв';
 $_['text_login']               = 'Пожалуйста <a href="%s">авторизируйтесь</a> или <a href="%s">создайте учетную запись</a> перед тем как написать отзыв';
 $_['text_no_reviews']          = 'Нет отзывов об этом товаре.';
 $_['text_no_review_text']      = 'Пользователь оценил данный товар, но не написал отзыв';
-$_['text_no_review_author']     = 'Клиент';
+$_['text_no_review_author']    = 'Клиент';
 $_['text_note']                = '<span style="color: #FF0000;">Примечание:</span> HTML разметка не поддерживается! Используйте обычный текст.';
 $_['text_success']             = '<h1>Спасибо за ваш отзыв! Мы скоро его опубликуем!</h1>';
 $_['text_related']             = 'Рекомендуемые товары';
@@ -42,6 +40,7 @@ $_['entry_review']             = 'Ваш отзыв:';
 $_['entry_rating']             = 'Оценка:';
 $_['entry_good']               = 'Хорошо';
 $_['entry_bad']                = 'Плохо';
+$_['entry_captcha']            = 'Введите код, укзанный на картинке:';
 
 // Tabs
 $_['tab_description']          = 'Обзор';
@@ -53,9 +52,9 @@ $_['button_send_review']       = 'Отправить отзыв';
 // Error
 $_['error_name']               = 'Имя должно содержать от 3 до 25 символов!';
 $_['error_text']               = 'Текст отзыва должен содержать от 25 до 1000 символов!';
-$_['error_rating']             = 'Пожалуйста, выберите оценку!';
+$_['error_rating']             = 'Пожалуйста, выберите оценку';
 $_['error_product']            = "Внимание: Необходимо выбрать товар, для добавления отзыва!";
-
+$_['error_captcha']            = 'Код, указанный на картинке введен неверно';
 // flags
 // Don't change names, as they correspont flag types in catalog/model/catalog/product.php, in prepareProductList($filter = array())
 $_['flag_viewed']            = '<i class="icon-eye"></i> Просмотрен';
@@ -68,5 +67,3 @@ $_['flag_compare']           = '<i class="icon-compare"></i> Сравнение'
 $_['flag_sale']              = '<i class="icon-fire"></i> Распродажа';
 $_['flag_new']               = '<i class="icon-star"></i> Новинка';
 $_['flag_video']             = '<i class="icon-youtube"></i> Видео';
-
-
