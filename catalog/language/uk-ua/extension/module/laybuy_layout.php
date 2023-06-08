@@ -1,7 +1,5 @@
 <?php
 
-
-
 $_['heading_title']            = 'Lay-Buy Information';
 
 $_['text_reference_info']      = 'Reference Information';

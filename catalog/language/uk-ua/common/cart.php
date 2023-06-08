@@ -1,10 +1,10 @@
 <?php
 $_['text_items']                    = '<span class="product-count">%s</span>  <span class="cart-total-summ hidden-md">%s</span>';
 $_['text_empty']                    = 'Ваш кошик порожній! Саме час робити покупки! :)';
-$_['text_cart']                     = 'Перейти до кошику';
+$_['text_cart']                     = 'Перейти до кошика';
 $_['text_checkout']                 = 'Оформити замовлення';
 $_['text_recurring']                = 'Платіжний профіль';
-$_['text_header_cart']              = 'Корзина';
+$_['text_header_cart']              = 'Кошик';
 $_['entry_qty']                     = 'Кількість';
 
 $_['text_shipping_methods']         = 'Доставка';
@@ -39,9 +39,3 @@ $_['error_custom_field']            = 'Заповніть будь ласка %s
 $_['error_shipping']                = 'Оберіть спосіб доставки';
 $_['error_no_shipping']             = 'Доставка за вказанною адресою неможлива. <a href="%s">Зв&#39;яжіться з нами</a> і ми знайдем рішення! :)';
 $_['error_payment']                 = 'Оберіть спосіб оплати';
-
-
-
-
-
-
