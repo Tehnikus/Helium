@@ -23,7 +23,7 @@
         {% endif %}
       {% endif %}
     {% else %}
-      <div class="alert alert-danger">{{ shipping_method.error }}</div>
+      <div role="alert" class="alert-danger">{{ shipping_method.error }}</div>
     {% endif %}
   {% endfor %}
 

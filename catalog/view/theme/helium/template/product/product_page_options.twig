@@ -137,7 +137,7 @@
   {% if option.type == 'file' %}
   <div class="form-group{% if option.required %} required {% endif %}">
     <label>{{ option.name }}</label>
-    <button type="button" id="button-upload{{ option.product_option_id }}" class="btn btn-default btn-block"><i class="fa fa-upload"></i> {{ button_upload }}</button>
+    <button type="button" id="button-upload{{ option.product_option_id }}"  {{ button_upload }}</button>
     <input 
       id="input-option_{{ option.product_option_id }}" 
       type="hidden" 

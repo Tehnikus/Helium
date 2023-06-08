@@ -2,10 +2,10 @@
 {% include 'helium/template/common/breadcrumbs.twig' %}
 <main role="main" id="account-login">
   {% if success %}
-  <div class="alert alert-success alert-dismissible"><i class="icon-info"></i> {{ success }}</div>
+  <div role="alert" class="alert-success"><i class="icon-info"></i> {{ success }}</div>
   {% endif %}
   {% if error_warning %}
-  <div class="alert alert-danger alert-dismissible"><i class="icon-alert"></i> {{ error_warning }}</div>
+  <div role="alert" class="alert-danger"><i class="icon-alert"></i> {{ error_warning }}</div>
   {% endif %}
     {{ content_top }}
       <div class="row">

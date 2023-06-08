@@ -4,7 +4,7 @@
 <main role="main" id="checkout">
   {% if error_warning %}
   <div class="alert danger"><i class="icon-alert"></i> {{ error_warning }}
-    <button type="button" class="close" data-dismiss="alert">&times;</button>
+    <button type="button" class="close">&times;</button>
   </div>
   {% endif %}
   
@@ -466,7 +466,7 @@ function getZones2(country_id, zone_input_id) {
 //                 {# $('#button-register').button('reset'); #}
 
 //                 if (json['error']['warning']) {
-//                     $('#collapse-payment-address .panel-body').prepend('<div class="alert alert-danger alert-dismissible"><i class="fa fa-exclamation-circle"></i> ' + json['error']['warning'] + '<button type="button" class="close" data-dismiss="alert">&times;</button></div>');
+//                     $('#collapse-payment-address .panel-body').prepend('<div role="alert" class="alert-danger"><i class="icon-alert"></i> ' + json['error']['warning'] + '<button type="button" class="close">&times;</button></div>');
 //                 }
 
 // 				for (i in json['error']) {
@@ -604,7 +604,7 @@ function getZones2(country_id, zone_input_id) {
 //           } else if (json['error']) {
 
 //             if (json['error']['warning']) {
-//                 $('#collapse-payment-address .panel-body').prepend('<div class="alert alert-warning alert-dismissible">' + json['error']['warning'] + '<button type="button" class="close" data-dismiss="alert">&times;</button></div>');
+//                 $('#collapse-payment-address .panel-body').prepend('<div role="alert" class="alert-warning">' + json['error']['warning'] + '<button type="button" class="close">&times;</button></div>');
 //             }
 //             for (i in json['error']) {
 //               var element = $('#input-payment-' + i.replace('_', '-'));
@@ -703,7 +703,7 @@ function getZones2(country_id, zone_input_id) {
 //                 {# $('#button-shipping-address').button('reset'); #}
 
 //                 if (json['error']['warning']) {
-//                     $('#collapse-shipping-address .panel-body').prepend('<div class="alert alert-warning alert-dismissible">' + json['error']['warning'] + '<button type="button" class="close" data-dismiss="alert">&times;</button></div>');
+//                     $('#collapse-shipping-address .panel-body').prepend('<div role="alert" class="alert-warning">' + json['error']['warning'] + '<button type="button" class="close">&times;</button></div>');
 //                 }
 
 // 				for (i in json['error']) {
@@ -791,7 +791,7 @@ function getZones2(country_id, zone_input_id) {
 //             {# $('#button-guest-shipping').button('reset'); #}
 
 //             if (json['error']['warning']) {
-//                 $('#collapse-shipping-address .panel-body').prepend('<div class="alert alert-danger alert-dismissible">' + json['error']['warning'] + '<button type="button" class="close" data-dismiss="alert">&times;</button></div>');
+//                 $('#collapse-shipping-address .panel-body').prepend('<div role="alert" class="alert-danger">' + json['error']['warning'] + '<button type="button" class="close">&times;</button></div>');
 //             }
 
 //             for (i in json['error']) {
@@ -853,7 +853,7 @@ function getZones2(country_id, zone_input_id) {
 //                 {# $('#button-shipping-method').button('reset'); #}
 
 //                 if (json['error']['warning']) {
-//                     $('#collapse-shipping-method .panel-body').prepend('<div class="alert alert-danger alert-dismissible">' + json['error']['warning'] + '<button type="button" class="close" data-dismiss="alert">&times;</button></div>');
+//                     $('#collapse-shipping-method .panel-body').prepend('<div role="alert" class="alert-danger">' + json['error']['warning'] + '<button type="button" class="close">&times;</button></div>');
 //                 }
 //             } else {
 //                 $.ajax({
@@ -901,7 +901,7 @@ function getZones2(country_id, zone_input_id) {
 //                 {# $('#button-payment-method').button('reset'); #}
                 
 //                 if (json['error']['warning']) {
-//                     $('#collapse-payment-method .panel-body').prepend('<div class="alert alert-danger alert-dismissible">' + json['error']['warning'] + '<button type="button" class="close" data-dismiss="alert">&times;</button></div>');
+//                     $('#collapse-payment-method .panel-body').prepend('<div role="alert" class="alert-danger">' + json['error']['warning'] + '<button type="button" class="close">&times;</button></div>');
 //                 }
 //             } else {
 //                 $.ajax({
