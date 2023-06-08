@@ -14,15 +14,21 @@ class ControllerAccountRegister extends Controller {
 		$this->document->setTitle($this->language->get('heading_title'));
 		$this->document->setRobots('noindex,nofollow');
 
-		//$this->document->addScript('catalog/view/javascript/jquery/datetimepicker/moment/moment.min.js');
-		//$this->document->addScript('catalog/view/javascript/jquery/datetimepicker/moment/moment-with-locales.min.js');
-		//$this->document->addScript('catalog/view/javascript/jquery/datetimepicker/bootstrap-datetimepicker.min.js');
-		//$this->document->addStyle('catalog/view/javascript/jquery/datetimepicker/bootstrap-datetimepicker.min.css');
-
 		$this->load->model('account/customer');
 
 		if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validate()) {
 			$customer_id = $this->model_account_customer->addCustomer($this->request->post);
+
+			// Save Wishlist
+			if (isset($this->session->data['wishlist']) && is_array($this->session->data['wishlist'])) {
+				$this->load->model('account/wishlist');
+
+				foreach ($this->session->data['wishlist'] as $key => $product_id) {
+					$this->model_account_wishlist->addWishlist($product_id);
+
+					unset($this->session->data['wishlist'][$key]);
+				}
+			}
 
 			// Clear any previous login attempts for unregistered accounts.
 			$this->model_account_customer->deleteLoginAttempts($this->request->post['email']);
