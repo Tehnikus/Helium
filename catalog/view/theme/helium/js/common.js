@@ -260,7 +260,7 @@ var voucher = {
 		// 	success: function(json) {
 		// 		// Need to set timeout otherwise it wont update the total
 		// 		setTimeout(function () {
-		// 			$('#cart > button').html('<span id="cart-total"><i class="fa fa-shopping-cart"></i> ' + json['total'] + '</span>');
+		// 			$('#cart > button').html('<span id="cart-total"><i class="icon-cart"></i> ' + json['total'] + '</span>');
 		// 		}, 100);
 
 		// 		if (getURLVar('route') == 'checkout/cart' || getURLVar('route') == 'checkout/checkout') {
@@ -1024,10 +1024,11 @@ const cartShowModal = async (el, ev) => {
 		let modalDiv = document.createElement('div');
 		modalDiv.innerHTML = modalContent;
 		let cd = dialog.create(modalDiv, ev);
-		let country_select 	= cd.querySelector('[name="shipping_address[country_id]"]');
-		let zone_select 	= cd.querySelector('[name="shipping_address[zone_id]"]');
-		let postcode_input 	= cd.querySelector('[name="postcode"]');
-		let form 			= cd.querySelector('#js_quick_ckeckout');
+		let country_select 	 = cd.querySelector('[name="shipping_address[country_id]"]');
+		let zone_select 	 = cd.querySelector('[name="shipping_address[zone_id]"]');
+		let postcode_input 	 = cd.querySelector('[name="postcode"]');
+		let existing_address = cd.querySelectorAll('[name="address_id"]');
+		let form 			 = cd.querySelector('#js_quick_ckeckout');
 
 		// TODO Move this to formElements.forEach((input) => {...})
 		if (!!country_select) {
@@ -1040,6 +1041,26 @@ const cartShowModal = async (el, ev) => {
 				// Show postcode if required
 				togglePostcode(country_select, postcode_input);
 			});
+		}
+		// Show or hide address form if there are existing addresses checked 
+		if(existing_address.length > 0) {
+			[].forEach.call(existing_address, ea =>{
+				console.log(ea);
+				ea.addEventListener('change', (e)=> {
+					// Only one checkbox can be checked
+					[].forEach.call(existing_address, ea =>{
+						if (e.target !== ea) {
+							ea.checked = false;
+						}
+					});
+					const address_form = cd.querySelector('#js_qc_address_form');
+					if (ea.checked) {
+						address_form.style.cssText = 'height:0px; overflow:hidden; transition: height .5s;';
+					} else {
+						address_form.style.cssText = `height: ${address_form.scrollHeight}px; transition: height .5s; overflow:hidden;`;
+					}
+				})
+			})
 		}
 
 		if (!!form) {
