@@ -2,10 +2,12 @@
 // After everything is tested maybe replace standart methods with this functions prior minification
 // to save 3-4 kb of payload as standart minifyers don't replace common methods
 const d = document;
-Node.prototype.listen = Node.prototype.addEventListener;
-var byId = function(i) {return document.getElementById(i)};
-var qs = function(q) {return document.querySelector(q)};
-var qsAll = function(q) {return document.querySelectorAll(q)};
+const w = window;
+Node.prototype.on = Node.prototype.addEventListener;
+// Node.prototype.css = Node.prototype.style.cssText;
+var byId = (i) => document.getElementById(i);
+var qs = (q) => document.querySelector(q);
+var qsAll = (q) => document.querySelectorAll(q);
 
 // Scroll horizontal scrolling containers by mouse wheel
 // function horizontalScroll(element) {
@@ -276,25 +278,7 @@ var voucher = {
 	}
 }
 
-var wishlist = {
-	// DONE Переделать на отображение окошка со списком желаний
-	'add': function(product_id) {
-		var url = 'index.php?route=account/wishlist/add';
-		var data = 'product_id=' + product_id;
-		ajax(url, data, function(r) {
-			dialog.create(r['table']);
-			document.querySelector('#wishlist-total').innerHTML = r['total'];
-		},null,null,null,"POST","json",true);
-	},
-	'remove': function(product_id) {
-		var url = 'index.php?route=account/wishlist/remove';
-		var data = 'product_id=' + product_id;
-		ajax(url, data, function(r) {
-			toast.create(r['remove'], 'success');
-			document.querySelector('#wishlist-total').innerHTML = r['total'];
-		},null,null,null,"POST","json",true);
-	},
-}
+
 
 var compare = {
 	'add': function(product_id) {
@@ -323,9 +307,7 @@ document.addEventListener('click', function(e) {
 			const agree_link = agree_links[i];
 			if (agree_link.contains(e.target) && agree_link.href !== null) {
 				e.preventDefault();
-				ajax(agree_link.href, null, function(r){
-					dialog.create(r);
-				},null,null,null,'GET','html',true);
+				fetch(agree_link.href).then(r => {return r.text()}).then(r => {dialog.create(r, e)});
 			}
 		}
 	}
@@ -337,11 +319,9 @@ document.addEventListener('click', function(e) {
 
 	// Аякс загрузка отзывов на странице товара
 	// DONE исправить, добавить нужные классы к HTML
-	if (e.target.tagName.toLowerCase() === 'a' && e.target.href.indexOf('review&product') != '-1') {
+	if (e.target.tagName === 'A' && e.target.href.indexOf('review&product') != '-1') {
 		e.preventDefault();
-		ajax(e.target.href, null, function(resp){
-			document.getElementById('reviews').innerHTML = resp;
-		}, null, null, null, 'GET', 'text', true);
+		fetch(e.target.href).then(r => {return r.text()}).then(r => {document.getElementById('js_reviews').innerHTML = r});
 	}
 
 	// Отзывы
@@ -355,13 +335,6 @@ document.addEventListener('click', function(e) {
 	}
 
 });
-
-
-
-
-
-
-
 
 
 
@@ -401,64 +374,64 @@ function phoneMask (phone, format) {
 
 // AJAX function
 // TODO Remove this, replace with fetch
-function ajax(url, data, success=null, beforesend=null,  complete=null, error=null, method, respType="json", async = true) {
-    method = typeof method !== "undefined" ? method : "POST";
-    async = typeof async !== 'undefined' ? async : true;
-    respType = typeof respType !== 'undefined' ? respType : "json";
+// function ajax(url, data, success=null, beforesend=null,  complete=null, error=null, method, respType="json", async = true) {
+//     method = typeof method !== "undefined" ? method : "POST";
+//     async = typeof async !== 'undefined' ? async : true;
+//     respType = typeof respType !== 'undefined' ? respType : "json";
 
-    if (window.XMLHttpRequest) {
-        var xhr = new XMLHttpRequest();
-    } else {
-        var xhr = new ActiveXObject("Microsoft.XMLHTTP");
-	}
-	xhr.responseType = respType.toLowerCase();
-	// Function before sending request
-	if (beforesend !== null) {
-		beforesend();
-	}
-    if (method == "POST") {
-        xhr.open(method, url, async);
-		xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
-		xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
-        xhr.send(data);
-    } else {
-        if(typeof data !== 'undefined' && data !== null) {
-            url = url+'?'+data;
-        }
-        xhr.open(method, url, async);
-		xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
-		xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
-        xhr.send(null);
-	}
-	// Function on success
-	// xhr.onload = function () {
-		xhr.onreadystatechange = function() {
-			if(xhr.readyState == 4 && xhr.status == 200) {
-				if (success !== null) {
-					success(xhr.response);
-				}
-			}
-			if (xhr.readyState !== 4 && xhr.status !== 200) {
-				if (error !== null) {
-					error(xhr.response);
-				}
-			}
-		}
-	// }
-	xhr.onerror = function() {
-		// Ошибка сервера
-	}
-	xhr.ontimeout = function () {
-		// Сервер не отвечает или нет сети
-	}
-	xhr.onabort = function () {
+//     if (window.XMLHttpRequest) {
+//         var xhr = new XMLHttpRequest();
+//     } else {
+//         var xhr = new ActiveXObject("Microsoft.XMLHTTP");
+// 	}
+// 	xhr.responseType = respType.toLowerCase();
+// 	// Function before sending request
+// 	if (beforesend !== null) {
+// 		beforesend();
+// 	}
+//     if (method == "POST") {
+//         xhr.open(method, url, async);
+// 		xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+// 		xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
+//         xhr.send(data);
+//     } else {
+//         if(typeof data !== 'undefined' && data !== null) {
+//             url = url+'?'+data;
+//         }
+//         xhr.open(method, url, async);
+// 		xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+// 		xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
+//         xhr.send(null);
+// 	}
+// 	// Function on success
+// 	// xhr.onload = function () {
+// 		xhr.onreadystatechange = function() {
+// 			if(xhr.readyState == 4 && xhr.status == 200) {
+// 				if (success !== null) {
+// 					success(xhr.response);
+// 				}
+// 			}
+// 			if (xhr.readyState !== 4 && xhr.status !== 200) {
+// 				if (error !== null) {
+// 					error(xhr.response);
+// 				}
+// 			}
+// 		}
+// 	// }
+// 	xhr.onerror = function() {
+// 		// Ошибка сервера
+// 	}
+// 	xhr.ontimeout = function () {
+// 		// Сервер не отвечает или нет сети
+// 	}
+// 	xhr.onabort = function () {
 
-	}
-	if (complete !== null) {
-		complete();
-	}
+// 	}
+// 	if (complete !== null) {
+// 		complete();
+// 	}
 
-}
+// }
 
 // // var restURL = "index.php?route=checkout/cart/add" + encodeURIComponent(document.getElementById('email').value)
 // var url = "index.php?route=checkout/cart/add&" + 'product_id=' + product_id + '&quantity=' + (typeof(quantity) != 'undefined' ? quantity : 1)
@@ -757,27 +730,35 @@ let toast = {
 	'create': function(content, reason) {
 		// Create new modal window
 		let r = reason || 'success';
-		let modal = createElm({
-			attrs: {'class': 'modal_window toast ' + r, 'aria-modal':'true'},
+		let t = createElm({
+			attrs: {'class': 'toast ' + r},
 			nest: {
 				1: {type: 'button', attrs: {'class':'close','aria-label':js_lang.close}, events: {'click': function(e) {toast.close(e)}}},
 				2: {attrs: {'class':'modal_content'},props:{'innerHTML': (typeof(content) == 'object' ? content.outerHTML : content)}},
 			}
 		});
-		modal.style.cssText = 'position:fixed;top:20px;right:20px;z-index:100';
-		modal.setAttribute('role', 'alertdialog');
+		// top:90px so toast doesn't overflow sticky header 
+		t.style.cssText = 'position:fixed;top:90px;right:20px;z-index:100';
+		// Set proper aria attribute to toast
+		t.setAttribute('role', 'alertdialog');
 		// Find last toast and set top position underneath previous
 		let alltoasts = document.getElementsByClassName('toast');
 		if (typeof(alltoasts[alltoasts.length - 1]) !== 'undefined') {
-			modal.style.top = alltoasts[alltoasts.length - 1].offsetHeight + alltoasts[alltoasts.length - 1].offsetTop + 10 + 'px';
+			t.style.top = alltoasts[alltoasts.length - 1].offsetHeight + alltoasts[alltoasts.length - 1].offsetTop + 10 + 'px';
 		}
-		document.body.insertAdjacentElement('beforeend', modal);
+		let d = document.getElementsByTagName("DIALOG");
+		console.log(t[0]);
+		if (!d.length > 0) {
+			document.body.insertAdjacentElement('beforeend', t);
+		}
+		
+		t.focus();
 	},
 	'close': function(e) {
 		if (e.target === undefined) {return}
-		let m = e.target.closest('.modal_window') || d.querySelector('.modal_window');
+		let m = e.target.closest('.toast') || d.querySelector('.toast');
 		if (!!m) {
-			d.body.removeChild(d.querySelector('.modal_window'));
+			d.body.removeChild(d.querySelector('.toast'));
 		}
 		recalcPositions();
 		function recalcPositions() {
@@ -919,6 +900,7 @@ const cartRemove =  async (el, ev) => {
 	cartUpdateHeaderButton(resp);
 	// Update favicon
 	setIcon(resp.product_count);
+	// fetch('index.php?route=checkout/cart/remove', {method:"POST", body: 'key='+el.dataset.key}).then(r=>{return r.text()}).then(r=> {console.log(r);})
 }
 
 const cartAdd =  async (el, ev) => {
@@ -1023,73 +1005,8 @@ const cartShowModal = async (el, ev) => {
 		let modalContent = await response.text();
 		let modalDiv = document.createElement('div');
 		modalDiv.innerHTML = modalContent;
-		let cd = dialog.create(modalDiv, ev);
-		let country_select 	 = cd.querySelector('[name="shipping_address[country_id]"]');
-		let zone_select 	 = cd.querySelector('[name="shipping_address[zone_id]"]');
-		let postcode_input 	 = cd.querySelector('[name="postcode"]');
-		let existing_address = cd.querySelectorAll('[name="address_id"]');
-		let form 			 = cd.querySelector('#js_quick_ckeckout');
-
-		// TODO Move this to formElements.forEach((input) => {...})
-		if (!!country_select) {
-			// Show postcode if required
-			togglePostcode(country_select, postcode_input);
-			// Get zones of selected country and add them to zones select
-			getZones(country_select, zone_select);
-			country_select.addEventListener('change', () => {
-				getZones(country_select, zone_select);
-				// Show postcode if required
-				togglePostcode(country_select, postcode_input);
-			});
-		}
-		// Show or hide address form if there are existing addresses checked 
-		if(existing_address.length > 0) {
-			[].forEach.call(existing_address, ea =>{
-				console.log(ea);
-				ea.addEventListener('change', (e)=> {
-					// Only one checkbox can be checked
-					[].forEach.call(existing_address, ea =>{
-						if (e.target !== ea) {
-							ea.checked = false;
-						}
-					});
-					const address_form = cd.querySelector('#js_qc_address_form');
-					if (ea.checked) {
-						address_form.style.cssText = 'height:0px; overflow:hidden; transition: height .5s;';
-					} else {
-						address_form.style.cssText = `height: ${address_form.scrollHeight}px; transition: height .5s; overflow:hidden;`;
-					}
-				})
-			})
-		}
-
-		if (!!form) {
-			const formElements = Array.from(form.elements);
-			formElements.forEach((input) => {
-				if (input.name.includes('country') || input.name.includes('zone')) {
-					// Observe country and zone select element immediate changes
-					// So delivery and payment are updated instantly
-					input.addEventListener('change', () => {
-						saveCheckoutfields(form);
-						fetchDisplayShippingAndPayment()
-					});
-				} else if (input.name.includes('shipping_method') || input.name.includes('payment_method')) {
-					input.addEventListener('change', () => {
-						saveShippingMethod(input);
-					})
-				} 
-				// Text fields and other not involved in delivery and payment are updatetd on focusout
-				// This fires anyway after user interaction
-				input.addEventListener('focusout', ()=>{
-					// Only save, do not fetchDisplayShippingAndPayment() here
-					// because otherways if user clicks on delivery or payment after any field filled
-					// this will cause reload delivery and payment inputs and will look like a glitch
-					// forsing user to click one more time
-					saveCheckoutfields(form);
-				});
-				
-			});
-		}
+		let cart_dialog = dialog.create(modalDiv, ev);
+		quickCheckout(cart_dialog);
 
 	} catch (error) {
 		console.error(error);
@@ -1104,6 +1021,74 @@ function togglePostcode(country_select, postcode_input) {
 		} else {
 			postcode_input.parentElement.style.cssText = 'display:none'
 		}
+	}
+}
+
+const quickCheckout = (cart_dialog) =>{
+	// Quick checkout form elements
+	const form 			 = cart_dialog.querySelector('#js_quick_ckeckout');
+	const country_select = cart_dialog.querySelector('[name="shipping_address[country_id]"]');
+	const zone_select 	 = cart_dialog.querySelector('[name="shipping_address[zone_id]"]');
+	const postcode_input = cart_dialog.querySelector('[name="postcode"]');
+	// Registered customer fields, who has saved address
+	const existing_address = cart_dialog.querySelectorAll('[name="address_id"]');
+	const address_form 	   = cart_dialog.querySelector('#js_qc_address_form');
+
+	if (!!country_select) {
+		// Show postcode if required
+		togglePostcode(country_select, postcode_input);
+		// Get zones of selected country and add them to zones select
+		getZones(country_select, zone_select);
+	}
+	// Show or hide address form if there are existing addresses checked 
+	if(existing_address.length > 0) {
+		if (!!cart_dialog.querySelector('[name="address_id"]:checked')) {
+			address_form.style.cssText = 'height:0px; overflow:hidden; transition: height .5s;';
+		}
+		existing_address.forEach(ea => {
+			ea.addEventListener('change', (e)=> {
+				// Only one checkbox can be checked
+				existing_address.forEach(ea => {
+					if (e.target !== ea) {ea.checked = false}
+				});
+				
+				if (ea.checked) {
+					address_form.style.cssText = 'height:0px; overflow:hidden; transition: height .5s;';
+				} else {
+					address_form.style.cssText = `height: ${address_form.scrollHeight}px; transition: height .5s; overflow:hidden;`;
+				}
+			})
+		})
+	}
+
+	if (!!form) {
+		const formElements = Array.from(form.elements);
+		formElements.forEach((input) => {
+			if (input.name.includes('country') || input.name.includes('zone')) {
+				// Observe country and zone select element immediate changes
+				// So delivery and payment are updated instantly
+				input.addEventListener('change', () => {
+					saveCheckoutfields(form);
+					fetchDisplayShippingAndPayment();
+					getZones(country_select, zone_select);
+					// Show postcode if required
+					togglePostcode(country_select, postcode_input);
+				});
+			} else if (input.name.includes('shipping_method') || input.name.includes('payment_method')) {
+				input.addEventListener('change', () => {
+					saveShippingMethod(input);
+				})
+			} 
+			// Text fields and other not involved in delivery and payment are updatetd on focusout
+			// This fires anyway after user interaction
+			input.addEventListener('focusout', ()=>{
+				// Only save, do not fetchDisplayShippingAndPayment() here
+				// because otherways if user clicks on delivery or payment after any field filled
+				// this will cause reload delivery and payment inputs and will look like a glitch
+				// forsing user to click one more time
+				saveCheckoutfields(form);
+			});
+		});
 	}
 }
 
@@ -1165,13 +1150,38 @@ const getZones = (country_select, zone_select) => {
 }
 
 const compareModal = (el, ev) => {
-	fetchFunction({url:'index.php?route=product/compare/showCompareModal', callback: dialog, arg:'create',ev:ev})
+	fetch('index.php?route=product/compare/showCompareModal').then(r=>{return r.text()}).then(r=> {dialog.create(r, ev)})
 }
 const wishlistModal = (el, ev) => {
-	fetchFunction({url:'index.php?route=account/wishlist/showWishlistModal', callback: dialog, arg:'create', ev:ev})
+	fetch('index.php?route=account/wishlist/showWishlistModal').then(r=>{return r.text()}).then(r=> {dialog.create(r, ev)})
+}
+const wishlistAdd = (el, ev) => {
+	const body = new FormData;
+	body.append('product_id', el.dataset.productId)
+	fetch('index.php?route=account/wishlist/add', {method: "POST", body}).then(r=>{return r.json()})
+	.then(r=>{
+		dialog.create(r['table'], ev);
+		document.querySelector('#wishlist-total').innerHTML = r['total'];
+	});
+}
+const wishlistRemove = (el, ev) => {
+	const b = new FormData;
+	b.append('product_id', el.dataset.productId)
+	fetch('index.php?route=account/wishlist/remove', {method: "POST", body:b}).then(r=>{return r.json()})
+	.then(r=>{
+		console.log(r);
+		if ('remove' in r) {
+			toast.create(r.remove, 'success');
+		}
+		document.querySelector('#wishlist-total').innerHTML = r['total'];
+		const i = document.querySelector('#js_wishlist_table #product_id_'+el.dataset.productId);
+		if (!!i) {
+			i.remove();
+		}
+	});
 }
 const contactsModal = (el, ev) => {
-	fetchFunction({url:'index.php?route=information/contact/showContactsModal', callback: dialog, arg: 'create',ev:ev})
+	fetch('index.php?route=information/contact/showContactsModal').then(r=>{return r.text()}).then(r=> {dialog.create(r, ev)})
 }
 
 // Correct time in type="time" and type="datetimelocal" inputs to hours
@@ -1208,6 +1218,8 @@ const actions = {
 		cartShowModal,
 		compareModal,
 		wishlistModal,
+		wishlistAdd,
+		wishlistRemove,
 		contactsModal,
 		validateQuickCheckout,
 	},
