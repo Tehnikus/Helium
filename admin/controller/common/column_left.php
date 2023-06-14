@@ -445,6 +445,22 @@ class ControllerCommonColumnLeft extends Controller {
 				);
 			}
 
+			// if ($this->user->hasPermission('access', 'setting/setting')) {
+			// 	$system[] = array(
+			// 		'name'	   => $this->language->get('text_quick_order'),
+			// 		'href'     => $this->url->link('setting/store', 'user_token=' . $this->session->data['user_token'], true),
+			// 		'children' => array()
+			// 	);
+			// }
+			
+			// if ($this->user->hasPermission('access', 'setting/setting')) {
+			// 	$system[] = array(
+			// 		'name'	   => $this->language->get('text_cache_settings'),
+			// 		'href'     => $this->url->link('setting/store', 'user_token=' . $this->session->data['user_token'], true),
+			// 		'children' => array()
+			// 	);
+			// }
+
 			// Users
 			$user = array();
 

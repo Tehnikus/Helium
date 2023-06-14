@@ -10,24 +10,24 @@ class ControllerStartupSass extends Controller {
 
 				$stylesheet = DIR_APPLICATION . 'view/stylesheet/' . $filename . '.css';
 
-				if (!is_file($stylesheet) || !$this->config->get('developer_sass')) {
-					$scss = new \ScssPhp\ScssPhp\Compiler();
-					$scss->setImportPaths(DIR_APPLICATION . 'view/stylesheet/');
+				// if (!is_file($stylesheet) || !$this->config->get('developer_sass')) {
+				// 	$scss = new \ScssPhp\ScssPhp\Compiler();
+				// 	$scss->setImportPaths(DIR_APPLICATION . 'view/stylesheet/');
 
-					$output = $scss->compile('@import "' . $filename . '.scss"');
+				// 	$output = $scss->compile('@import "' . $filename . '.scss"');
 
-					$handle = fopen($stylesheet, 'w');
+				// 	$handle = fopen($stylesheet, 'w');
 
-					flock($handle, LOCK_EX);
+				// 	flock($handle, LOCK_EX);
 
-					fwrite($handle, $output);
+				// 	fwrite($handle, $output);
 
-					fflush($handle);
+				// 	fflush($handle);
 
-					flock($handle, LOCK_UN);
+				// 	flock($handle, LOCK_UN);
 
-					fclose($handle);
-				}
+				// 	fclose($handle);
+				// }
 			}
 		}
 	}

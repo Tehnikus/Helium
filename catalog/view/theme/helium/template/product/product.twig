@@ -158,7 +158,7 @@
           </button>
         </div>
         <div class="btn-group">
-          <button type="button" class="wishlist" title="{{ button_wishlist }}" onclick="wishlist.add('{{ product_id }}');"><i class="icon-heart"></i></button>
+          <button type="button" data-action="wishlistAdd" data-product-id="{{ product_id }}" class="wishlist" title="{{ button_wishlist }}"><i class="icon-heart"></i></button>
           <button type="button" class="compare" title="{{ button_compare }}" onclick="compare.add('{{ product_id }}');"><i class="icon-compare"></i></button>
           {% if review_guest %}
             <button type="button" data-id="{{ product_id }}" data-type="product/product" id="write-review" data-action="reviewModal"><i class="icon-edit"></i>{{ text_write }}</button>
