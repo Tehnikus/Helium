@@ -9,6 +9,10 @@ $_['entry_qty']                     = 'Кількість';
 
 $_['text_shipping_methods']         = 'Доставка';
 $_['text_payment_methods']          = 'Оплата';
+$_['text_quick_checkout']           = 'Швидке замовлення';
+$_['text_your_addresses']           = 'Ваші адреси';
+$_['text_choose_existing_address']  = 'Оберіть адресу для доставки:';
+$_['text_or_create_new_address']    = 'Або введіть нову адресу, заповнивши форму нижче:';
 
 // Entry
 $_['entry_email']                   = 'E-Mail';
