@@ -33,6 +33,11 @@ class ControllerAccountAddress extends Controller {
 		$this->document->setTitle($this->language->get('heading_title'));
 		$this->document->setRobots('noindex,nofollow');
 
+		// $this->document->addScript('catalog/view/javascript/jquery/datetimepicker/moment/moment.min.js');
+		// $this->document->addScript('catalog/view/javascript/jquery/datetimepicker/moment/moment-with-locales.min.js');
+		// $this->document->addScript('catalog/view/javascript/jquery/datetimepicker/bootstrap-datetimepicker.min.js');
+		// $this->document->addStyle('catalog/view/javascript/jquery/datetimepicker/bootstrap-datetimepicker.min.css');
+
 		$this->load->model('account/address');
 
 		if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validateForm()) {
@@ -58,6 +63,10 @@ class ControllerAccountAddress extends Controller {
 		$this->document->setTitle($this->language->get('heading_title'));
 		$this->document->setRobots('noindex,nofollow');
 
+		// $this->document->addScript('catalog/view/javascript/jquery/datetimepicker/moment/moment.min.js');
+		// $this->document->addScript('catalog/view/javascript/jquery/datetimepicker/moment/moment-with-locales.min.js');
+		// $this->document->addScript('catalog/view/javascript/jquery/datetimepicker/bootstrap-datetimepicker.min.js');
+		// $this->document->addStyle('catalog/view/javascript/jquery/datetimepicker/bootstrap-datetimepicker.min.css');
 
 		$this->load->model('account/address');
 
@@ -457,6 +466,7 @@ class ControllerAccountAddress extends Controller {
 		}
 
 		$this->load->model('localisation/country');
+
 		$country_info = $this->model_localisation_country->getCountry($this->request->post['country_id']);
 
 		if ($country_info && $country_info['postcode_required'] && (utf8_strlen(trim($this->request->post['postcode'])) < 2 || utf8_strlen(trim($this->request->post['postcode'])) > 10)) {
@@ -464,11 +474,11 @@ class ControllerAccountAddress extends Controller {
 		}
 
 		if ($this->request->post['country_id'] == '' || !is_numeric($this->request->post['country_id'])) {
-			$this->error['country_id'] = $this->language->get('error_country');
+			$this->error['country'] = $this->language->get('error_country');
 		}
 
 		if (!isset($this->request->post['zone_id']) || $this->request->post['zone_id'] == '' || !is_numeric($this->request->post['zone_id'])) {
-			$this->error['zone_id'] = $this->language->get('error_zone');
+			$this->error['zone'] = $this->language->get('error_zone');
 		}
 
 		// Custom field validation

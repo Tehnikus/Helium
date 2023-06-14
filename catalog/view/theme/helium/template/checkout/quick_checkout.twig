@@ -1,143 +1,145 @@
-
-{% if addresses %}
-  <h2>{{ text_choose_existing_address }}</h2>
-    {# <div class="form-control">
-      <input id="payment_address_existing" type="radio" name="payment_address" value="existing" checked="checked" />
-      <label for="payment_address_existing">{{ text_choose_existing_address }}</label>
-    </div>
-    <div id="payment-existing"> #}
-  <fieldset>
-    <legend>{{ text_your_addresses }}</legend>
-    {% for address in addresses %}
-      <div class="form-control">
-        <input role="checkbox" type="checkbox" name="address_id" id="address_{{ address.address_id }}" value="{{ address.address_id }}" {% if address['address_id'] == address_id %} checked="checked" {% endif %}/>
-        <label for="address_{{ address.address_id }}">{{ address.firstname }} {{ address.lastname }}, <b>{{ address.address_1 }}, {{ address.city }}, {{address.country }}</b></label>
-      </div>
-    {% endfor %}
-  </fieldset>
-    {# </div>
+<form id="js_quick_ckeckout">
+  {% if addresses %}
     <div class="form-control">
-      <input id="payment_address_new" type="radio" name="payment_address" value="new" />
-      <label for="payment_address_new">{{ text_or_create_new_address }}</label>
-    </div> #}
-  <h3>{{ text_or_create_new_address }}</h3>
-{% endif %}
-<form id="js_quick_ckeckout">  
-  {% if not addresses %}<h2>{{ text_quick_checkout }}</h2>{% endif %}
-  <div id="js_qc_address_form">
-  <div class="form-group required">
-    <label for="input-quick-checkout-firstname">{{ entry_firstname }}, {{ entry_lastname }}</label>
-    <input
-      type="text"
-      name="firstname"
-      value="{{ firstname }}"
-      placeholder="{{ entry_firstname }}"
-      id="input-quick-checkout-firstname"
-      inputmode="text"
-      enterkeyhint="next"
-      autocapitalize="words"
-      minlength="3" maxlength="32"
-    />
-    <input
-      type="text"
-      name="lastname"
-      value="{{ lastname }}"
-      placeholder="{{ entry_lastname }}"
-      id="input-quick-checkout-lastname"
-      inputmode="text"
-      enterkeyhint="next"
-      autocapitalize="words"
-      minlength="3" maxlength="32"
-    />
-  </div>
-
-  <div class="form-group required">
-    <label for="input-quick-checkout-address-1">{{ entry_city }}, {{ entry_address_1 }}</label>
-    <input 
-      type="text" 
-      name="city" 
-      value="{{ city }}"
-      placeholder="{{ entry_city }}" 
-      id="input-quick-checkout-city"
-      inputmode="text"
-      enterkeyhint="next"
-      autocapitalize="words"
-      minlength="3" maxlength="32"
-      autocomplete="on"
-    />
-    <input
-      type="text"
-      name="address"
-      value="{{ address_1 }}"
-      placeholder="{{ entry_address_1 }}"
-      id="input-quick-checkout-address-1"
-      inputmode="text"
-      enterkeyhint="next"
-      autocapitalize="words"
-      minlength="3" maxlength="32"
-      autocomplete="on"
-    />
-  </div>
-
-  <div class="form-group required">
-    <label for="input-quick-checkout-telephone">{{ entry_telephone }}, {{ entry_email }}</label>
-    <input
-      type="tel"
-      name="phone"
-      value="{{ phone }}"
-      placeholder="{{ entry_telephone }}"
-      id="input-quick-checkout-telephone"
-      inputmode="tel"
-      enterkeyhint="next"
-      minlength="3" maxlength="32"
-    />
-    <input
-      type="email"
-      name="email"
-      value="{{ email }}"
-      placeholder="{{ entry_email }}"
-      id="input-quick-checkout-email"
-      inputmode="email"
-      enterkeyhint="next"
-    />
-  </div>
-
-
-
-  <div class="form-group required">
-    <label for="input-quick-checkout-country">{{ entry_country }}</label>
-    <select name="shipping_address[country_id]" id="input-quick-checkout-country">
-      <option value="">{{ text_select }}</option>
-      {% for country in countries %}
-        {% if country.country_id == country_id %}
-          <option data-postcode-required="{{ country.postcode_required }}" value="{{ country.country_id }}" selected="selected">{{ country.name }}</option>
+      <input id="payment_address_existing" type="radio" name="payment_address" value="existing" checked="checked" />
+      <label for="payment_address_existing">{{ text_address_existing }}</label>
+    </div>
+    <div id="payment-existing">
+      {% for address in addresses %}
+        {% if address['address_id'] == address_id %}
+          <input role="radio" type="radio" name="address_id" id="address_{{ address.address_id }}" value="{{ address.address_id }}" checked="checked"/>
+          <label for="address_{{ address.address_id }}">{{ address.firstname }} {{ address.lastname }}, {{ address.address_1 }}, {{ address.city }}</label>
         {% else %}
-          <option value="{{ country.country_id }}">{{ country.name }}</option>
+          <input role="radio" type="radio" name="address_id" id="address_{{ address.address_id }}" value="{{ address.address_id }}"/>
+          <label for="address_{{ address.address_id }}">{{ address.firstname }} {{ address.lastname }}, {{ address.address_1 }}, {{ address.city }}</label>
         {% endif %}
       {% endfor %}
-    </select>
+    </div>
+    <div class="form-control">
+      <input id="payment_address_new" type="radio" name="payment_address" value="new" />
+      <label for="payment_address_new">{{ text_address_new }}</label>
+    </div>
+  {% endif %}
+
+  <div id="payment-new">
+    <div class="form-group required">
+      <label for="input-quick-checkout-firstname">{{ entry_firstname }}, {{ entry_lastname }}</label>
+      <input
+        type="text"
+        name="firstname"
+        value="{{ firstname }}"
+        placeholder="{{ entry_firstname }}"
+        id="input-quick-checkout-firstname"
+        inputmode="text"
+        enterkeyhint="next"
+        autocapitalize="words"
+        minlength="3" maxlength="32"
+      />
+      <input
+        type="text"
+        name="lastname"
+        value="{{ lastname }}"
+        placeholder="{{ entry_lastname }}"
+        id="input-quick-checkout-lastname"
+        inputmode="text"
+        enterkeyhint="next"
+        autocapitalize="words"
+        minlength="3" maxlength="32"
+      />
+    </div>
+
+    <div class="form-group required">
+      <label for="input-quick-checkout-address-1">{{ entry_city }}, {{ entry_address_1 }}</label>
+      <input 
+        type="text" 
+        name="city" 
+        value="{{ city }}"
+        placeholder="{{ entry_city }}" 
+        id="input-quick-checkout-city"
+        inputmode="text"
+        enterkeyhint="next"
+        autocapitalize="words"
+        minlength="3" maxlength="32"
+        autocomplete="on"
+      />
+      <input
+        type="text"
+        name="address"
+        value="{{ address_1 }}"
+        placeholder="{{ entry_address_1 }}"
+        id="input-quick-checkout-address-1"
+        inputmode="text"
+        enterkeyhint="next"
+        autocapitalize="words"
+        minlength="3" maxlength="32"
+        autocomplete="on"
+      />
+    </div>
+
+    
+    {# <div class="form-group required">
+      <label for="input-quick-checkout-email"></label>
+
+    </div> #}
+    <div class="form-group required">
+      <label for="input-quick-checkout-telephone">{{ entry_telephone }}, {{ entry_email }}</label>
+      <input
+        type="tel"
+        name="phone"
+        value="{{ phone }}"
+        placeholder="{{ entry_telephone }}"
+        id="input-quick-checkout-telephone"
+        inputmode="tel"
+        enterkeyhint="next"
+        minlength="3" maxlength="32"
+      />
+      <input
+        type="email"
+        name="email"
+        value="{{ email }}"
+        placeholder="{{ entry_email }}"
+        id="input-quick-checkout-email"
+        inputmode="email"
+        enterkeyhint="next"
+      />
+    </div>
+
+
+
+    <div class="form-group required">
+      <label for="input-quick-checkout-country">{{ entry_country }}</label>
+      <select name="shipping_address[country_id]" id="input-quick-checkout-country">
+        <option value="">{{ text_select }}</option>
+        {% for country in countries %}
+          {% if country.country_id == country_id %}
+            <option data-postcode-required="{{ country.postcode_required }}" value="{{ country.country_id }}" selected="selected">{{ country.name }}</option>
+          {% else %}
+            <option value="{{ country.country_id }}">{{ country.name }}</option>
+          {% endif %}
+        {% endfor %}
+      </select>
+    </div>
+    <div class="form-group required">
+      <label for="js_input_payment_zone_quick_checkout">{{ entry_zone }}</label>
+      <select name="shipping_address[zone_id]" id="js_input_payment_zone_quick_checkout"></select>
+    </div>
+    <div class="form-group hidden">
+      <label for="input-quick-checkout-postcode">{{ entry_postcode }}</label>
+      <input
+        type="text"
+        name="postcode"
+        value="{{ postcode }}"
+        placeholder="{{ entry_postcode }}"
+        id="input-quick-checkout-postcode"
+        inputmode="numeric"
+        enterkeyhint="next"
+        minlength="3" maxlength="32"
+        autocomplete="on"
+      />
+    </div>
+    {# Custom fields #}
+    {% include 'helium/template/common/custom_fields.twig' with {type: 'shipping', location: 'address'} %}
   </div>
-  <div class="form-group required">
-    <label for="js_input_payment_zone_quick_checkout">{{ entry_zone }}</label>
-    <select name="shipping_address[zone_id]" id="js_input_payment_zone_quick_checkout"></select>
-  </div>
-  <div class="form-group hidden">
-    <label for="input-quick-checkout-postcode">{{ entry_postcode }}</label>
-    <input
-      type="text"
-      name="postcode"
-      value="{{ postcode }}"
-      placeholder="{{ entry_postcode }}"
-      id="input-quick-checkout-postcode"
-      inputmode="numeric"
-      enterkeyhint="next"
-      minlength="3" maxlength="32"
-      autocomplete="on"
-    />
-  </div>
-  {# Custom fields #}
-  {% include 'helium/template/common/custom_fields.twig' with {type: 'shipping', location: 'address'} %}
-  </div>  
 
   <div id="js_qc_delivery" class="js_check_errors">
     {# Shipping methods #}
@@ -148,6 +150,6 @@
     {# Payment methods #}
     {% include 'helium/template/checkout/quick_checkout_payment.twig' with {payment_methods: payment_methods.payment_methods} %}
   </div>
-  {# Check for errors and validate #}
-  <button type="button" data-action="validateQuickCheckout" id="js_qc_validate" class="primary">{{ button_continue }}</button>
 </form>
+{# Check for errors and validate #}
+<button type="button" data-action="validateQuickCheckout" id="js_qc_validate" class="primary">{{ button_continue }}</button>

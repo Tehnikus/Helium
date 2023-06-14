@@ -49,7 +49,7 @@
       title="{{ button_cart }} {{ product.name }}">
       <i class="icon-cart"></i> <span>{{ button_cart }}</span>
     </button>
-      <button type="button" data-action="wishlistAdd" data-product-id="{{ product.product_id }}" aria-haspopup="dialog" class="wishlist" title="{{ button_wishlist }}"><i class="icon-heart"></i></button>
+      <button type="button" data-action="" aria-haspopup="dialog" class="wishlist" title="{{ button_wishlist }}" onclick="wishlist.add('{{ product.product_id }}');"><i class="icon-heart"></i></button>
       <button type="button" data-action="" aria-haspopup="dialog" class="compare" title="{{ button_compare }}" onclick="compare.add('{{ product.product_id }}');"><i class="icon-compare"></i></button>
     </div>
   </div>
