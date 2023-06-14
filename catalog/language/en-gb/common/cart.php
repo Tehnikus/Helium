@@ -9,6 +9,10 @@ $_['entry_qty']                     = 'Qty';
 
 $_['text_shipping_methods']         = 'Delivery';
 $_['text_payment_methods']          = 'Payment';
+$_['text_quick_checkout']           = 'Quick checkout';
+$_['text_your_addresses']           = 'Your addresses';
+$_['text_choose_existing_address']  = 'Choose one of your addresses:';
+$_['text_or_create_new_address']    = 'Or create new address, filling the form below:';
 
 // Entry
 $_['entry_email']                   = 'E-Mail';
