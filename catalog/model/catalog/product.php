@@ -421,7 +421,7 @@ class ModelCatalogProduct extends Model {
 		$data = array();
 		if ($products !== null) {
 			foreach ($products as $product) {
-				if ($product['image']) {
+				if (isset($product['image'])) {
 					$image = $this->model_tool_image->resize($product['image'], $this->config->get('image_product_width'), $this->config->get('image_product_height'));
 				} else {
 					$image = $this->model_tool_image->resize('no_image.webp', $this->config->get('image_product_width'), $this->config->get('image_product_height'));
@@ -493,6 +493,8 @@ class ModelCatalogProduct extends Model {
 					'special_date_end'     	=> $product['special_date_end'],
 					'discount_date_end'     => $product['discount_date_end'],
 					'discount_quantity'     => $product['discount_quantity'],
+					'manufacturer'     		=> $product['manufacturer'],
+					'stock_status'     		=> $product['stock_status'],
 					'tax'         			=> $tax,
 					'minimum'     			=> $product['minimum'] > 0 ? $product['minimum'] : 1,
 					'rating'      			=> $rating,
