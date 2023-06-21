@@ -52,7 +52,7 @@
         {% endfor %}
       </table>
 
-      <p class="text-right">
+      <div class="btn-group spaced">
         <a class="button" href="{{ cart }}">
           {{ text_cart }}
         </a>
@@ -60,7 +60,7 @@
           <i class="icon-cart"></i> 
           {{ text_checkout }}
         </a>
-      </p>
+      </div>
     </div>
     {# Quick checkout #}
     {% include 'helium/template/checkout/quick_checkout.twig' %}
