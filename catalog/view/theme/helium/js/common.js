@@ -314,67 +314,6 @@ function phoneMask (phone, format) {
 }
 
 
-// AJAX function
-// TODO Remove this, replace with fetch
-// function ajax(url, data, success=null, beforesend=null,  complete=null, error=null, method, respType="json", async = true) {
-//     method = typeof method !== "undefined" ? method : "POST";
-//     async = typeof async !== 'undefined' ? async : true;
-//     respType = typeof respType !== 'undefined' ? respType : "json";
-
-//     if (window.XMLHttpRequest) {
-//         var xhr = new XMLHttpRequest();
-//     } else {
-//         var xhr = new ActiveXObject("Microsoft.XMLHTTP");
-// 	}
-// 	xhr.responseType = respType.toLowerCase();
-// 	// Function before sending request
-// 	if (beforesend !== null) {
-// 		beforesend();
-// 	}
-//     if (method == "POST") {
-//         xhr.open(method, url, async);
-// 		xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
-// 		xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
-//         xhr.send(data);
-//     } else {
-//         if(typeof data !== 'undefined' && data !== null) {
-//             url = url+'?'+data;
-//         }
-//         xhr.open(method, url, async);
-// 		xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
-// 		xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
-//         xhr.send(null);
-// 	}
-// 	// Function on success
-// 	// xhr.onload = function () {
-// 		xhr.onreadystatechange = function() {
-// 			if(xhr.readyState == 4 && xhr.status == 200) {
-// 				if (success !== null) {
-// 					success(xhr.response);
-// 				}
-// 			}
-// 			if (xhr.readyState !== 4 && xhr.status !== 200) {
-// 				if (error !== null) {
-// 					error(xhr.response);
-// 				}
-// 			}
-// 		}
-// 	// }
-// 	xhr.onerror = function() {
-// 		// Ошибка сервера
-// 	}
-// 	xhr.ontimeout = function () {
-// 		// Сервер не отвечает или нет сети
-// 	}
-// 	xhr.onabort = function () {
-
-// 	}
-// 	if (complete !== null) {
-// 		complete();
-// 	}
-
-// }
-
 // // var restURL = "index.php?route=checkout/cart/add" + encodeURIComponent(document.getElementById('email').value)
 // var url = "index.php?route=checkout/cart/add&" + 'product_id=' + product_id + '&quantity=' + (typeof(quantity) != 'undefined' ? quantity : 1)
 // var opts = {
@@ -390,55 +329,55 @@ function phoneMask (phone, format) {
 // });
 // // e.preventDefault();
 
-function login() {
-	email = document.querySelector('[name="email"]');
-	password = document.querySelector('[name="password"]');
-	ajax(
-		'index.php?route=checkout/login/save',
-		'password='+password+'&email='+email,
-		// Если запрос отправлен успешно и получен какой-то ответ...
-		(success) => {
-			// Закрываем предыдущие сообщения об ошибках
-			let error_windows = document.querySelectorAll('.modal_window');
-			if (!!error_windows) {
-				error_windows.forEach(e => {
-					document.body.removeChild(e);
-				});
-				email.classList.remove('has-error');
-				email.parentElement.classList.remove('has-error');
-				password.classList.remove('has-error');
-				password.parentElement.classList.remove('has-error');
-			}
-			// Выводим окошки с ошибками и предупреждениями
-			if (success.error) {
-				for (const error_type in success.error) {
-					if (success.error.hasOwnProperty(error_type)) {
-						toast.create(success.error[error_type], error_type);
-					}
-				}
-				email.classList.add('has-error');
-				email.parentElement.classList.add('has-error');
-				password.classList.add('has-error');
-				password.parentElement.classList.add('has-error');
-			}
-			// Переадресация, если вход успешный
-			if (success.redirect) {
-				window.location = success.redirect;
-			}
+// function login() {
+// 	email = document.querySelector('[name="email"]');
+// 	password = document.querySelector('[name="password"]');
+// 	ajax(
+// 		'index.php?route=checkout/login/save',
+// 		'password='+password+'&email='+email,
+// 		// Если запрос отправлен успешно и получен какой-то ответ...
+// 		(success) => {
+// 			// Закрываем предыдущие сообщения об ошибках
+// 			let error_windows = document.querySelectorAll('.modal_window');
+// 			if (!!error_windows) {
+// 				error_windows.forEach(e => {
+// 					document.body.removeChild(e);
+// 				});
+// 				email.classList.remove('has-error');
+// 				email.parentElement.classList.remove('has-error');
+// 				password.classList.remove('has-error');
+// 				password.parentElement.classList.remove('has-error');
+// 			}
+// 			// Выводим окошки с ошибками и предупреждениями
+// 			if (success.error) {
+// 				for (const error_type in success.error) {
+// 					if (success.error.hasOwnProperty(error_type)) {
+// 						toast.create(success.error[error_type], error_type);
+// 					}
+// 				}
+// 				email.classList.add('has-error');
+// 				email.parentElement.classList.add('has-error');
+// 				password.classList.add('has-error');
+// 				password.parentElement.classList.add('has-error');
+// 			}
+// 			// Переадресация, если вход успешный
+// 			if (success.redirect) {
+// 				window.location = success.redirect;
+// 			}
 
-		},
-		null,
-		(comlpete) => {
-			console.log(comlpete);
-		},
-		(error) => {
-			console.log(error);
-		},
-		'POST',
-		'JSON',
-		true
-	);
-}
+// 		},
+// 		null,
+// 		(comlpete) => {
+// 			console.log(comlpete);
+// 		},
+// 		(error) => {
+// 			console.log(error);
+// 		},
+// 		'POST',
+// 		'JSON',
+// 		true
+// 	);
+// }
 
 
 
@@ -637,19 +576,19 @@ function loadMore() {
 		if (!!next_page) {
 			next_href = next_page.getElementsByTagName('a')[0];
 			if (!!next_href && typeof(next_href.href) !== 'undefined' && (typeof(next_href.attributes.rel) == 'undefined' || next_href.attributes.rel.value !== ('next' || 'last'))) {
-				ajax(next_href.href, null, function(resp){
-					var div = document.createElement('div');
-					div.innerHTML = resp;
-					var blocks = div.querySelectorAll('main .miniature, div[role="comment"]');
+				fetch(next_href.href).then(r=>{return r.text()}).then(r=> {
+					const div = document.createElement('div');
+					div.innerHTML = r;
+					const blocks = div.querySelectorAll('main .miniature, div[role="comment"]');
 					for (let index = 0; index < blocks.length; index++) {
 						const block = blocks[index];
 						document.querySelector('main .product.grid, main .article.grid, #js_reviews').insertAdjacentElement('beforeend', block);
 						countdown(block)
 					}
-					var next_text = next_href.innerText;
+					const next_text = next_href.innerText;
 					next_page.innerHTML = '<span>'+next_text+'</span>';
 					next_page.classList.add('active');
-				}, null, null, null, 'GET', 'text', true);
+				})
 			}
 		}
 	}
@@ -737,13 +676,12 @@ const searchFunction = (el) => {
 	clearTimeout(timeout);
 	let search_input = document.getElementById('search-input'), // 
 		search_word = search_input.value,
-	    inner_search = document.getElementById('search-results'),
-	    search_input_group = document.getElementById('search');
+	    inner_search = document.getElementById('search-results');
 
 	// Hide search results if input is empty
 	if (search_word.length < 1) {
 		inner_search.classList.remove('some-results');
-		inner_search.inert = true;
+		// inner_search.inert = true;
 		return;
 	}
 	timeout = setTimeout(function () {
