@@ -166,68 +166,27 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 
-
-	/* Search */
-	// $('#search input[name=\'search\']').parent().find('button').on('click', function() {
-	// 	var url = $('base').attr('href') + 'index.php?route=product/search';
-
-	// 	var value = $('header #search input[name=\'search\']').val();
-
-	// 	if (value) {
-	// 		url += '&search=' + encodeURIComponent(value);
-	// 	}
-
-	// 	location = url;
-	// });
-
-	// $('#search input[name=\'search\']').on('keydown', function(e) {
-	// 	if (e.keyCode == 13) {
-	// 		$('header #search input[name=\'search\']').parent().find('button').trigger('click');
-	// 	}
-	// });
-
-
-
-	// // Product List
-	// $('#list-view').click(function() {
-	// 	$('#content .product-grid > .clearfix').remove();
-
-	// 	$('#content .row > .product-grid').attr('class', 'product-layout product-list col-xs-12');
-	// 	$('#grid-view').removeClass('active');
-	// 	$('#list-view').addClass('active');
-
+	let search_input = document.getElementById('search-input');
+	let inner_search = document.getElementById('search-results');
+	let search_input_group = document.getElementById('search');
+	// Add event listeners for search input and result
+	// If click or focus outside search results or search input - close search
+	['click', 'focusin'].forEach(h => {
+		document.addEventListener(h, (e) => {
+			if ((search_input_group.contains(e.target) == false) && (inner_search.contains(e.target) == false)) {
+				inner_search.classList.remove('some-results');
+				inner_search.inert = true;
+			}
+		});
+	});
+	// Show previous search results if present
+	search_input.addEventListener('focusin', () => {
+		if (inner_search.childElementCount > 0) {
+			inner_search.classList.add('some-results');
+			inner_search.inert = false;
+		}
+	});
 	// 	localStorage.setItem('display', 'list');
-	// });
-
-	// // Product Grid
-	// $('#grid-view').click(function() {
-	// 	// What a shame bootstrap does not take into account dynamically loaded columns
-	// 	var cols = $('#column-right, #column-left').length;
-
-	// 	if (cols == 2) {
-	// 		$('#content .product-list').attr('class', 'product-layout product-grid col-lg-6 col-md-6 col-sm-12 col-xs-12');
-	// 	} else if (cols == 1) {
-	// 		$('#content .product-list').attr('class', 'product-layout product-grid col-lg-4 col-md-4 col-sm-6 col-xs-12');
-	// 	} else {
-	// 		$('#content .product-list').attr('class', 'product-layout product-grid col-lg-3 col-md-3 col-sm-6 col-xs-12');
-	// 	}
-
-	// 	$('#list-view').removeClass('active');
-	// 	$('#grid-view').addClass('active');
-
-	// 	localStorage.setItem('display', 'grid');
-	// });
-
-	// if (localStorage.getItem('display') == 'list') {
-	// 	$('#list-view').trigger('click');
-	// 	$('#list-view').addClass('active');
-	// } else {
-	// 	$('#grid-view').trigger('click');
-	// 	$('#grid-view').addClass('active');
-	// }
-
-
-
 });
 
 
@@ -277,23 +236,6 @@ var voucher = {
 		// });
 	}
 }
-
-
-
-var compare = {
-	'add': function(product_id) {
-		var url = 'index.php?route=product/compare/add';
-		var data = 'product_id=' + product_id;
-		ajax(url, data, function(r) {
-			dialog.create(r['table']);
-			document.querySelector('#compare-total').innerHTML = r['total'];
-		},null,null,null,"POST","json",true);
-	},
-	'remove': function() {
-
-	}
-}
-
 
 
 
@@ -644,19 +586,9 @@ let dialog = {
 			// Show modal - yet zero width and height, thus invisible
 			a.showModal();
 			// Calculate transform origin
-			var _wid = window.innerWidth,
-			_hei = window.innerHeight,
-			_mWid = a.offsetWidth,
-			_mHei = a.offsetHeight,
-				_x = event.clientX,
-			_y = event.clientY,
-			x,
-			y;
-			x = (_x - (_wid / 2)) + _mWid/2;
-			y = (_y - (_hei / 2)) + _mHei/2;
 			// Set transform origin to point where click happened
 			a.style.transformOrigin = [
-				x, 'px', ' ', y, 'px'
+				(event.clientX - (window.innerWidth / 2)) + a.offsetWidth/2, 'px', ' ', (event.clientY - (window.innerHeight / 2)) + a.offsetHeight/2, 'px'
 			].join('');
 			// Set transform origin to scale(1,1,1)
 			a.classList.toggle('visible');
@@ -747,12 +679,11 @@ let toast = {
 			t.style.top = alltoasts[alltoasts.length - 1].offsetHeight + alltoasts[alltoasts.length - 1].offsetTop + 10 + 'px';
 		}
 		let d = document.getElementsByTagName("DIALOG");
-		console.log(t[0]);
 		if (!d.length > 0) {
 			document.body.insertAdjacentElement('beforeend', t);
 		}
-		
-		t.focus();
+		// Focus on close button
+		t.firstElementChild.focus();
 	},
 	'close': function(e) {
 		if (e.target === undefined) {return}
@@ -801,53 +732,39 @@ function sendReview(t) {
 // Live search
 // Shows product drid with pictures, highlights search query in product description
 // Adds countdown() if such products present
-// TODO Maybe make this as a separate class?
 let timeout = null;
 const searchFunction = (el) => {
 	clearTimeout(timeout);
-	let search_input = document.getElementById('search-input');
-	let inner_search = document.getElementById('search-results');
-	let search_input_group = document.getElementById('search');
-	let data = search_input.value;
-	let url = 'index.php?route=product/search/find';
-	let response;
-	timeout = setTimeout(function () {
-		ajax(url, 'search='+data,
-			function(r) {
-				if (!!r && Object.keys(r).length !== 0) {
-					response = r;
-					let search_results = createElm(r);
-					// Add special price countdown for search results
-					countdown(search_results);
-	
-					inner_search.innerHTML = '';
-					inner_search.appendChild(search_results);
-					inner_search.classList.add('some-results');
-				}
-	
-			},
-			null,null,null,'POST','JSON',true
-		);
-    }, 400);
-	if (data.length < 1) {
+	let search_input = document.getElementById('search-input'), // 
+		search_word = search_input.value,
+	    inner_search = document.getElementById('search-results'),
+	    search_input_group = document.getElementById('search');
+
+	// Hide search results if input is empty
+	if (search_word.length < 1) {
 		inner_search.classList.remove('some-results');
+		inner_search.inert = true;
+		return;
 	}
-	// Add event listeners
-	// If click or focus outside search results or search input
-	// Then close search
-	['click', 'focusin'].forEach(h => {
-		document.addEventListener(h, function(e){
-			if ((search_input_group.contains(e.target) == false) && (inner_search.contains(e.target) == false)) {
-				inner_search.classList.remove('some-results');
+	timeout = setTimeout(function () {
+		const b = new FormData;
+		b.append('search', search_word)
+		fetch('index.php?route=product/search/find', {method: "POST", body:b}).then(r=>{return r.json()})
+		.then(r=>{
+			if (!!r && Object.keys(r).length !== 0) {
+				const search_results = createElm(r);
+				// Add countdown timer to product discounts
+				countdown(search_results);
+				// Clear previous results
+				inner_search.innerHTML = '';
+				// Add new results
+				inner_search.appendChild(search_results);
+				// Show block
+				inner_search.classList.add('some-results');
+				inner_search.inert = false;
 			}
 		});
-	});
-
-	search_input.addEventListener('focusin', function(){
-		if (typeof(response) == 'object' && Object.keys(response).length !== 0) {
-			inner_search.classList.add('some-results');
-		}
-	});
+    }, 400);
 }
 
 
@@ -1152,13 +1069,24 @@ const getZones = (country_select, zone_select) => {
 const compareModal = (el, ev) => {
 	fetch('index.php?route=product/compare/showCompareModal').then(r=>{return r.text()}).then(r=> {dialog.create(r, ev)})
 }
+
+const compareAdd = (el, ev) => {
+	const b = new FormData;
+	b.append('product_id', el.dataset.productId)
+	fetch('index.php?route=product/compare/add', {method: "POST", body:b}).then(r=>{return r.json()})
+	.then(r=>{
+		console.log(r);
+		dialog.create(r['table'], ev);
+		document.querySelector('#compare-total').innerHTML = r['total'];
+	});
+}
 const wishlistModal = (el, ev) => {
 	fetch('index.php?route=account/wishlist/showWishlistModal').then(r=>{return r.text()}).then(r=> {dialog.create(r, ev)})
 }
 const wishlistAdd = (el, ev) => {
-	const body = new FormData;
-	body.append('product_id', el.dataset.productId)
-	fetch('index.php?route=account/wishlist/add', {method: "POST", body}).then(r=>{return r.json()})
+	const b = new FormData;
+	b.append('product_id', el.dataset.productId);
+	fetch('index.php?route=account/wishlist/add', {method: "POST", body:b}).then(r=>{return r.json()})
 	.then(r=>{
 		dialog.create(r['table'], ev);
 		document.querySelector('#wishlist-total').innerHTML = r['total'];
@@ -1182,6 +1110,11 @@ const wishlistRemove = (el, ev) => {
 }
 const contactsModal = (el, ev) => {
 	fetch('index.php?route=information/contact/showContactsModal').then(r=>{return r.text()}).then(r=> {dialog.create(r, ev)})
+}
+
+const ajax = async (el, ev) => {
+	 let request = await fetch(el.dataset.action || el.action, {method: el.dataset.method || "POST"});
+	 let response = await request.then()
 }
 
 // Correct time in type="time" and type="datetimelocal" inputs to hours
@@ -1217,6 +1150,7 @@ const actions = {
 		cartRemove,
 		cartShowModal,
 		compareModal,
+		compareAdd,
 		wishlistModal,
 		wishlistAdd,
 		wishlistRemove,
