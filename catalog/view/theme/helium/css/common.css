@@ -11,7 +11,7 @@
 }
 :root {
     /* Backgrounds */
-    --bg-body:#ddd;
+    --bg-body: #dddb;
     --bg-main-blocks: #fffb;
     --bg-button: #fff;
     --bg-button-disabled: #999;
@@ -36,29 +36,36 @@
     --ph: 230;
     --ps: 76%;
     --pl: 59%;
-    --color-1: hsl( var(--ph), var(--ps), var(--pl) ); 
+    --color-1: hsl( var(
+    --ph), var(--ps), var(--pl) ); 
     /* Secondary color */
     --sh: 200;
     --ss: 76%;
     --sl: 59%;
-    --color-2: hsl( var(--sh), var(--ss), var(--sl)); 
+    --color-2: hsl( var(
+    --sh), var(--ss), var(--sl)); 
 
     /* Primary outline */
-    --outline: hsl(calc(var(--ph) - 20), calc(var(--ps) - 10%), calc(var(--pl) - 10%));
+    --outline: hsl(calc(var(
+    --ph) - 20), calc(var(--ps) - 10%), calc(var(--pl) - 10%));
     /* Middle color */
-    --color-5: hsl(calc((var(--ph) + var(--sh)) / 2), calc((var(--ps) + var(--ss)) / 5), calc(var(--pl) / 1.5));
+    --color-5: hsl(calc((var(
+    --ph) + var(--sh)) / 2), calc((var(--ps) + var(--ss)) / 5), calc(var(--pl) / 1.5));
 
 
     --lighten: 15%;
     --darken: -15%;
     /* --color-1-light:    hsl(var(--ph), calc(var(--ps) - 10%), calc(var(--pl) + var(--lighten))); */
-    --color-1-dark:     hsl(var(--ph), calc(var(--ps) - 10%), calc(var(--pl) + var(--darken)));
+    --color-1-dark:     hsl(var(
+    --ph), calc(var(--ps) - 10%), calc(var(--pl) + var(--darken)));
 
     --color-red: rgb(192, 1, 1);
     --danger:rgb(192, 77, 1);
 
-    --gardient: linear-gradient(to right, var(--color-1) 0%, var(--color-5)  51%, var(--color-2)  100%);
-    --gardient-2: linear-gradient(to right, var(--color-1) 0%, var(--color-5)  51%, var(--color-2)  100%);
+    --gardient: linear-gradient(to right, var(
+    --color-1) 0%, var(--color-5)  51%, var(--color-2)  100%);
+    --gardient-2: linear-gradient(to right, var(
+    --color-1) 0%, var(--color-5)  51%, var(--color-2)  100%);
 
     --icon-height: 1.3rem;
 
@@ -66,7 +73,7 @@
     --inputs-shadow: 0 0 8px #3333;
 }
 /* Neccessary */
-* {box-sizing: border-box; scroll-behavior:smooth}
+* {box-sizing: border-box;scroll-behavior:smooth}
 body {
     font-family:system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen,Ubuntu,Cantarell,Fira Sans,Droid Sans,Helvetica Neue,Segoe UI Emoji,Apple Color Emoji,Noto Color Emoji,sans-serif;
     font-family:'Roboto',sans-serif;
@@ -426,7 +433,7 @@ ul {margin: .5rem;padding: 0 .5rem;}
 /* Tables */
 table {border-collapse:collapse;margin-bottom:10px;width:100%;table-layout:fixed;border-radius: var(--radius);overflow: hidden;}
 table caption, td, th {text-align:left}
-td,th {padding:6px;vertical-align:top;word-wrap:break-word;}
+td,th {padding:6px;/* vertical-align:top; */word-wrap:break-word;}
 td:first-child{/* border-radius: var(--radius) 0 0 var(--radius); */}
 td:last-child{/* border-radius: 0 var(--radius) var(--radius) 0; */}
 
@@ -526,13 +533,14 @@ details[disabled], details[disabled] summary {color: var(--color-text-muted);poi
 
 /* Dialogs */
 /* dialog {border: none; outline: transparent; box-shadow: 0 0 5px #333; position: fixed; transition: transform var(--time) var(--style); transform: scale3d(0,0,0);  scrollbar-gutter: auto!important;} */
-dialog {border: none; outline: transparent; box-shadow: 0 0 5px #333; position: fixed; scrollbar-gutter: auto!important; backdrop-filter: blur(3px);}
+dialog {border:none;outline:transparent;box-shadow: 0 0 5px #333;position: fixed;scrollbar-gutter: auto!important;backdrop-filter: blur(3px);}
 dialog.animate{transition: transform var(--time) var(--style); transform: scale3d(0,0,0); }
 dialog.visible {transform: scale3d(1,1,1);}
 dialog::backdrop {
-    /* backdrop-filter: blur(5px); */
-    animation: blur-in 500ms forwards; /* Important */
-    background: #0003; /* Firefox does not support dialog::backdrop blur, so let it be just color*/
+    /* backdrop-filter: saturate(0.6); */
+    /* animation: blur-in 500ms forwards; */ /* Important */
+    background: #0007; /* Firefox does not support dialog::backdrop blur, so let it be just color*/
+    transform: translateZ(0); /*for older browsers*/
     will-change: transform;
 }
 
@@ -671,6 +679,7 @@ button:active, .button:active, .primary:active, button.active {
 .input-group {box-shadow: var(--inputs-shadow); border-radius: var(--radius)}
 .input-group > * {box-shadow: none}
 .btn-group.spaced {justify-content:space-between}
+.btn-group.spaced .primary {flex: 0;}
 /* Round corners on input groups */
 .input-group :first-child {border-radius: var(--radius) 0 0 var(--radius)}
 .input-group :last-child {border-radius: 0 var(--radius) var(--radius) 0}
@@ -1060,5 +1069,5 @@ input#input-quantity {text-align: center}
     hgroup .rating {justify-content: flex-start;}
 
     .mobile_buttons {display: none!important}
-    dialog {width: 800px;}
+    dialog {width: 880px;}
 }
