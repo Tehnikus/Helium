@@ -16,7 +16,7 @@ class ControllerProductCompare extends Controller {
 			if ($key !== false) {
 				unset($this->session->data['compare'][$key]);
 
-				$this->session->data['success'] = $this->language->get('text_remove');
+				$this->session->data['success'] = $this->language->get('text_removed');
 			}
 
 			$this->response->redirect($this->url->link('product/compare'));
@@ -107,7 +107,7 @@ class ControllerProductCompare extends Controller {
 			$key = array_search($this->request->get['remove'], $this->session->data['compare']);
 			if ($key !== false) {
 				unset($this->session->data['compare'][$key]);
-				$this->response->setOutput($this->language->get('text_remove'));
+				$this->response->setOutput($this->language->get('text_removed'));
 			}
 		}
 	}
@@ -119,86 +119,142 @@ class ControllerProductCompare extends Controller {
 		$data['review_status'] = $this->config->get('config_review_status');
 		$data['products'] = array();
 		$data['attribute_groups'] = array();
+
+		$table = [];
+		// Set first column with headers of compared data
+		// Product data is compared to this keys so if key doesn't exist in first column, it will not be added
+		$table['name'][]         = $this->language->get('text_name');
+		$table['thumb'][]        = $this->language->get('text_image');
+		$table['price'][]        = $this->language->get('text_price');
+		$table['model'][]        = $this->language->get('text_model');
+		$table['manufacturer'][] = $this->language->get('text_manufacturer');
+		$table['stock_status'][] = $this->language->get('text_availability');
+		$table['rating'][]       = $this->language->get('text_rating');
+		$table['reviews'][]      = $this->language->get('text_reviews');
+		$table['description'][]  = $this->language->get('text_summary');
+		$table['attributes'][]     = $this->language->get('text_features');
+		
+		// Service data to add product to cart, remove from comparison, fire some scripts etc
+		$table['product_id'][]        = '';
+		$table['href'][]              = '';
+		$table['special_date_end'][]  = '';
+		$table['discount_date_end'][] = '';
+		$table['discount_quantity'][] = '';
+		$table['price_value'][] = '';
+
+		// Service data that will NOT be displayed in table rows
+		$service = ['href', 'special_date_end', 'discount_date_end', 'discount_quantity', 'reviews', 'special', 'price_value'];
+		// Service var to create horizontal comparison table
+		$attrs = [];
+
 		if (isset($this->session->data['compare']) && is_array($this->session->data['compare'])) {
+			// Get products data
 			foreach ($this->session->data['compare'] as $key => $product_id) {
-				$product_info = $this->model_catalog_product->getProduct($product_id);
+				$product_list[] = $this->model_catalog_product->getProduct($product_id);
+			}
+			$products = $this->model_catalog_product->prepareProductList($product_list, null);
 
-				if ($product_info) {
-					if ($product_info['image']) {
-						$image = $this->model_tool_image->resize($product_info['image'], $this->config->get('image_product_width'), $this->config->get('image_product_height'));
-					} else {
-						$image = $this->model_tool_image->resize('no_image.webp', $this->config->get('image_product_width'), $this->config->get('image_product_height'));
-					}
-
-					if ($this->customer->isLogged() || !$this->config->get('config_customer_price')) {
-						$price = $this->currency->format($this->tax->calculate($product_info['price'], $product_info['tax_class_id'], $this->config->get('config_tax')), $this->session->data['currency']);
-					} else {
-						$price = false;
-					}
-
-					if (!is_null($product_info['special']) && (float)$product_info['special'] >= 0) {
-						$special = $this->currency->format($this->tax->calculate($product_info['special'], $product_info['tax_class_id'], $this->config->get('config_tax')), $this->session->data['currency']);
-					} else {
-						$special = false;
-					}
-
-					if ($product_info['quantity'] <= 0) {
-						$availability = $product_info['stock_status'];
-					} elseif ($this->config->get('config_stock_display')) {
-						$availability = $product_info['quantity'];
-					} else {
-						$availability = $this->language->get('text_instock');
-					}
-
-					$attribute_data = array();
-					$attribute_groups = $this->model_catalog_product->getProductAttributes($product_id);
-
-					foreach ($attribute_groups as $attribute_group) {
-						foreach ($attribute_group['attribute'] as $attribute) {
-							$attribute_data[$attribute['attribute_id']] = $attribute['text'];
-						}
-					}
-
-					$data['products'][$product_id] = array(
-						'product_id'   => $product_info['product_id'],
-						'name'         => $product_info['name'],
-						'thumb'        => $image,
-						'price'        => $price,
-						'special'      => $special,
-						'description'  => utf8_substr(strip_tags(html_entity_decode($product_info['description'], ENT_QUOTES, 'UTF-8')), 0, 200) . '...',
-						'model'        => $product_info['model'],
-						'manufacturer' => $product_info['manufacturer'],
-						'availability' => $availability,
-						'minimum'      => $product_info['minimum'] > 0 ? $product_info['minimum'] : 1,
-						'rating'       => (int)$product_info['rating'],
-						'reviews'      => sprintf($this->language->get('text_reviews'), (int)$product_info['reviews']),
-						'weight'       => $this->weight->format($product_info['weight'], $product_info['weight_class_id']),
-						'length'       => $this->length->format($product_info['length'], $product_info['length_class_id']),
-						'width'        => $this->length->format($product_info['width'], $product_info['length_class_id']),
-						'height'       => $this->length->format($product_info['height'], $product_info['length_class_id']),
-						'attribute'    => $attribute_data,
-						'href'         => $this->url->link('product/product', 'product_id=' . $product_id),
-						'remove'       => $this->url->link('product/compare', 'remove=' . $product_id)
-					);
-
-					foreach ($attribute_groups as $attribute_group) {
-						$data['attribute_groups'][$attribute_group['attribute_group_id']]['name'] = $attribute_group['name'];
-
-						foreach ($attribute_group['attribute'] as $attribute) {
-							$data['attribute_groups'][$attribute_group['attribute_group_id']]['attribute'][$attribute['attribute_id']]['name'] = $attribute['name'];
-						}
-					}
-
-				} else {
+			// Build horizontal table
+			foreach ($products as $product) {
+				// Check if product exists
+				if (!$product) {
+					// Delete from comparison if product doesn't exist
 					unset($this->session->data['compare'][$key]);
 				}
+				foreach ($product as $key => $product_feature) {
+					// Only existing keys allowed
+					if (isset($table[$key])) {
+						$table[$key][$product['product_id']] = $product_feature;
+					}
+				}
+
+				$attrs[$product['product_id']] = $this->model_catalog_product->getProductAttributes($product['product_id']);
+				// $attribute_groups = $this->model_catalog_product->getProductAttributes($product['product_id']);
+				// foreach ($attribute_groups as $attribute_group) {
+				// 	$attrs[$attribute_group['attribute_group_id']]['name'] = $attribute_group['name'];
+
+				// 	foreach ($attribute_group['attribute'] as $attribute) {
+				// 		$attrs[$attribute_group['attribute_group_id']]['values'][$product['product_id']][$attribute_group['attribute_group_id']]['name'] = $attribute['name'];
+				// 		$attrs[$attribute_group['attribute_group_id']]['values'][$product['product_id']][$attribute_group['attribute_group_id']]['text'] = $attribute['text'];
+
+				// 	}
+				// }
 			}
+			// $product_ids_attributes = array_keys($attrs);
+			// foreach ($product_ids_attributes as  $id) {
+			// 	print_r(array_diff($attrs[$id]));
+			// }
+			$temp_attrs = [];
+			foreach ($attrs as $product_id => $attr_group) {
+				// Check if product has attributes
+				if (!empty($attr_group)) {
+					foreach ($attr_group as $attr_set) {
+						$temp_attrs[$product_id][$attr_set['attribute_group_id']]['name'] = $attr_set['name'];
+						foreach ($attr_set['attribute'] as $attr) {
+							$temp_attrs[$product_id][$attr_set['attribute_group_id']]['values'][$attr['attribute_id']]['name'] = $attr['name'];
+							$temp_attrs[$product_id][$attr_set['attribute_group_id']]['values'][$attr['attribute_id']]['text'] = $attr['text'];
+						}
+					}
+				}
+			}
+
+			$attribute_table = $this->compareAndCopyFeatures($temp_attrs);
+			unset($temp_attrs);
+
+			$features = [];
+			foreach ($attribute_table as $product_id => $feature_set) {
+				foreach ($feature_set as $key => $feature) {
+					// print_r($feature);
+					$features[$key]['name'] = $feature['name'];
+					// $features[$key]['values'][$product_id] = $feature_set;
+				}
+				// print_r($feature_set);
+			}
+			// Pass data
+			$data['table'] = $table;
+			$data['service'] = $service;
+			$data['attribute_table'] = $features;
+
 		}
+		// print_r($attribute_table);
 		return $data;
 	}
 
 	public function showCompareModal(){
 		$data = $this->renderCompareProducts();
 		$this->response->setOutput($this->load->view('product/compare_table', $data));
+	}
+	// Compare features and pass '--' if product doesn't have the feature that other has
+	function compareAndCopyFeatures($allProductFeatures)
+	{
+		$allFeatures = [];
+
+		// Collect all features from all products
+		foreach ($allProductFeatures as $productFeatures) {
+			foreach ($productFeatures as $featureID => $feature) {
+				$allFeatures[$featureID] = $feature['name'];
+			}
+		}
+
+		// Add missing features to each product
+		foreach ($allProductFeatures as &$productFeatures) {
+			foreach ($allFeatures as $featureID => $featureName) {
+				if (!isset($productFeatures[$featureID])) {
+					$productFeatures[$featureID] = [
+						'name' => $featureName,
+						'values' => ['--'],
+					];
+				}
+			}
+		}
+
+		// Sort features by their IDs
+		// foreach ($allProductFeatures as &$productFeatures) {
+		// 	ksort($productFeatures);
+		// }
+
+		unset($productFeatures); // Unset the reference
+
+		return $allProductFeatures;
 	}
 }
