@@ -92,7 +92,7 @@ document.addEventListener('click', function(e) {
 document.addEventListener('DOMContentLoaded', function() {
 
 	// TODO Remove this 
-	fetch('index.php?route=common/cart/fetchSessionData', { method: "POST" }).then(r=>{return r.json()}).then(r=>{ console.info(r)})
+	// fetch('index.php?route=common/cart/fetchSessionData', { method: "POST" }).then(r=>{return r.json()}).then(r=>{ console.info(r)})
 
 	mobileMenu(); 			// Mobile menu buttons at the bottom of page
 	mainMenu(); 			// Main menu - render buttons, aria attributes and titles
@@ -100,12 +100,13 @@ document.addEventListener('DOMContentLoaded', function() {
 	stickyHeader(); 		// Sticky header
 	scrollslider(); 		// Sliders everywhere
 	anchorNav(); 			// Focus on hastag navigation element
+	toggleAddressForm()		// Collapse address form if user has registered address and checked on of them
 
 	// Country zones fetch
 	// Toggle postcode input
-	const counrty_select = document.getElementsByName('country_id');
-	const zone_select = document.getElementsByName('zone_id');
-	const postcode_input = document.getElementsByName('postcode');
+	const counrty_select 	= document.getElementsByName('country_id'),
+		  zone_select 		= document.getElementsByName('zone_id'),
+		  postcode_input 	= document.getElementsByName('postcode');
 	Array.from(counrty_select, c => {
 		Array.from(zone_select, z => {
 			// Get zones on initial page load
@@ -166,9 +167,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 
-	let search_input = document.getElementById('search-input');
-	let inner_search = document.getElementById('search-results');
-	let search_input_group = document.getElementById('search');
+	const search_input = document.getElementById('search-input'),
+	      inner_search = document.getElementById('search-results'),
+	      search_input_group = document.getElementById('search');
 	// Add event listeners for search input and result
 	// If click or focus outside search results or search input - close search
 	['click', 'focusin'].forEach(h => {
@@ -388,8 +389,8 @@ function phoneMask (phone, format) {
 
 
 // Mobile menu render
-// Find all div.mobile_menu,
-// create corresponding button in fixed botton panel,
+// Find all blcoks "div.mobile_menu" on page,
+// create corresponding button in fixed bottom panel visible on mobile devices,
 // order buttons by [data-order],
 // add icon from data-icon,
 // button name copied from elements [data-block-name]
@@ -401,18 +402,22 @@ function mobileMenu() {
 	let btns = {};
 	if (!!mb && mb.length > 0) {
 		for (var k = 0; k < mb.length; k++) {
-			let b = mb[k];
+			// Create button for each block found
+			let b = mb[k]; // Block itself
+			// New button for mobile menu
 			let btn = {
 				type: 'button',
 				attrs: {'class':'mobile_button button', 'aria-label':b.dataset.blockName},
 				props:{'innerHTML':'<i class="'+ b.dataset.icon +'"></i><span>'+ b.dataset.blockName+ '</span>'},
 				events:{
 					'click': function(e) {
+						// close other blocks when current is opened
 						for (a of mb) {
 							if (a !== b) {
 								a.classList.remove('open');
 							}
 						}
+						// Toggle .active class on button
 						for (c of document.getElementsByClassName('mobile_button')) {
 							if (c.contains(e.target)) {
 								c.classList.toggle('active');
@@ -420,12 +425,16 @@ function mobileMenu() {
 								c.classList.remove('active');
 							}
 						}
+						// Open current block
 						b.classList.toggle('open');
 					}
 				},
 			};
+			// Put button in array according to dataset.order
 			btns[mb[k].dataset.order] = btn;
 		}
+		// Catalog button
+		// Shows main menu with categories etc.
 		let catalog_btn  = {
 			type: 'button',
 			attrs: {'class':'mobile_button button', 'aria-label':js_lang.text_menu_button, 'data-action':'toggleMainMenu'},
@@ -434,6 +443,8 @@ function mobileMenu() {
 				'dataset' : {'accordionTarget':'main-menu'}
 			},
 		};
+		// Cart button
+		// Shows cart dialog window
 		let cart_btn  = {
 			type: 'button',
 			attrs: {'class':'mobile_button button', 'aria-label':js_lang.text_cart_button, 'data-action':'cartShowModal'},
@@ -441,12 +452,14 @@ function mobileMenu() {
 				'innerHTML':'<i class="icon-cart"></i><span>'+js_lang.text_cart_button+'</span>',
 			},
 		};
+		// Insert most important buttons the last, so they are always at the right side of mobile menu 
 		btns[9] = catalog_btn;
 		btns[10] = cart_btn;
 		let menu = {
 			attrs: {'class': 'mobile_buttons scroll-x'},
 			nest: btns
 		};
+		// Insert mobile menu to the page. createElm(menu) creates elements from object
 		document.body.insertAdjacentElement('beforeend', createElm(menu));
 	}
 }
@@ -672,9 +685,9 @@ function sendReview(t) {
 // Shows product drid with pictures, highlights search query in product description
 // Adds countdown() if such products present
 let timeout = null;
-const searchFunction = (el) => {
+const searchFunction = () => {
 	clearTimeout(timeout);
-	let search_input = document.getElementById('search-input'), // 
+	let search_input = document.getElementById('search-input'),
 		search_word = search_input.value,
 	    inner_search = document.getElementById('search-results');
 
@@ -707,7 +720,7 @@ const searchFunction = (el) => {
 
 
 
-// Data driven event handler
+// Data attribute driven event handler
 // Returns element, event and fires function from action object
 function handleEvents(evt) {
 	const origin = evt.target.closest("[data-action]");
@@ -862,7 +875,6 @@ const cartShowModal = async (el, ev) => {
 		modalDiv.innerHTML = modalContent;
 		let cart_dialog = dialog.create(modalDiv, ev);
 		quickCheckout(cart_dialog);
-
 	} catch (error) {
 		console.error(error);
 	}
@@ -872,9 +884,11 @@ const cartShowModal = async (el, ev) => {
 function togglePostcode(country_select, postcode_input) {
 	if (!!country_select && !!postcode_input) {
 		if (country_select.options[country_select.selectedIndex].dataset.postcodeRequired == '1') {
-			postcode_input.parentElement.style.cssText = ''
+			postcode_input.parentElement.style.cssText = '';
+			postcode_input.inert = false;
 		} else {
-			postcode_input.parentElement.style.cssText = 'display:none'
+			postcode_input.parentElement.style.cssText = 'display:none';
+			postcode_input.inert = true;
 		}
 	}
 }
@@ -885,9 +899,7 @@ const quickCheckout = (cart_dialog) =>{
 	const country_select = cart_dialog.querySelector('[name="shipping_address[country_id]"]');
 	const zone_select 	 = cart_dialog.querySelector('[name="shipping_address[zone_id]"]');
 	const postcode_input = cart_dialog.querySelector('[name="postcode"]');
-	// Registered customer fields, who has saved address
-	const existing_address = cart_dialog.querySelectorAll('[name="address_id"]');
-	const address_form 	   = cart_dialog.querySelector('#js_qc_address_form');
+
 
 	if (!!country_select) {
 		// Show postcode if required
@@ -895,26 +907,7 @@ const quickCheckout = (cart_dialog) =>{
 		// Get zones of selected country and add them to zones select
 		getZones(country_select, zone_select);
 	}
-	// Show or hide address form if there are existing addresses checked 
-	if(existing_address.length > 0) {
-		if (!!cart_dialog.querySelector('[name="address_id"]:checked')) {
-			address_form.style.cssText = 'height:0px; overflow:hidden; transition: height .5s;';
-		}
-		existing_address.forEach(ea => {
-			ea.addEventListener('change', (e)=> {
-				// Only one checkbox can be checked
-				existing_address.forEach(ea => {
-					if (e.target !== ea) {ea.checked = false}
-				});
-				
-				if (ea.checked) {
-					address_form.style.cssText = 'height:0px; overflow:hidden; transition: height .5s;';
-				} else {
-					address_form.style.cssText = `height: ${address_form.scrollHeight}px; transition: height .5s; overflow:hidden;`;
-				}
-			})
-		})
-	}
+	toggleAddressForm();
 
 	if (!!form) {
 		const formElements = Array.from(form.elements);
@@ -947,6 +940,43 @@ const quickCheckout = (cart_dialog) =>{
 	}
 }
 
+// Hide address form if customer has registered addresses and selected one of them
+// Show address form otherwise
+const toggleAddressForm = () => {
+	// Registered customer fields, who has saved address
+	const existing_address = document.querySelectorAll('[name="address_id"], #shipping_address_new');
+	
+	// Show or hide address form if there are existing addresses checked 
+	if(existing_address.length > 0) {
+		existing_address.forEach(ea => {
+			const address_form 	   = document.getElementById(ea.dataset.targetForm);
+			// Hide form if any address checked 
+			if (ea.checked) {collapseElement(address_form)}
+			// checkbox change events
+			ea.addEventListener('change', (e)=> {
+				// Only one checkbox can be checked
+				existing_address.forEach(ea => {
+					if (e.target !== ea) {ea.checked = false}
+				});
+				// Collapse and uncollapse form
+				if (ea.checked) {
+					collapseElement(address_form)
+				} else {
+					uncollapseElement(address_form)
+				}
+			})
+		})
+	}
+}
+
+const collapseElement = (e) => {
+	e.style.cssText = 'height:0px; overflow:hidden; transition: height .5s;';
+	e.inert = true;
+}
+const uncollapseElement = (e) => {
+	e.style.cssText = `height: ${e.scrollHeight}px; transition: height .5s; overflow:hidden;`;
+	e.inert = false;
+}
 
 const fetchDisplayShippingAndPayment = () => {
 	fetch('index.php?route=common/cart/fetchDisplayShippingHtml', { method: "POST" })
@@ -1058,7 +1088,7 @@ const ajax = async (el, ev) => {
 // Correct time in type="time" and type="datetimelocal" inputs to hours
 // So 13:23 will be corrected to 13:00,
 // And 13:49 to 14:00
-const correctTime = (el, ev) => {
+const correctTime = (el) => {
 	let date = '', time = '', hours = '', mins = '';
 	let value = el.value;
 	if (value.split('T')[1]) {
