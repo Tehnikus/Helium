@@ -678,7 +678,7 @@ button:active, .button:active, .primary:active, button.active {
 .input-group, .btn-group {display:flex;flex-direction:row;flex-wrap:nowrap;align-items:center}
 .input-group {box-shadow: var(--inputs-shadow); border-radius: var(--radius)}
 .input-group > * {box-shadow: none}
-.btn-group.spaced {justify-content:space-between}
+.btn-group.spaced {justify-content:space-between;padding: 0 0 1rem; flex-wrap:wrap}
 .btn-group.spaced .primary {flex: 0;}
 /* Round corners on input groups */
 .input-group :first-child {border-radius: var(--radius) 0 0 var(--radius)}
