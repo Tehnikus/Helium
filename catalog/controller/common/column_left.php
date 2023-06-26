@@ -6,7 +6,7 @@ class ControllerCommonColumnLeft extends Controller {
 	// Set routes where column will be cached
 	public $allowed_routes = ['product/category', 'product/product', 'common/home'];
 	// Set disallowed modules to ommit caching 
-	public $non_cached_modules = ['viewed'];
+	public $non_cached_modules = ['viewed', 'filter'];
 	
 	public function index() {
 		$this->load->model('design/layout');

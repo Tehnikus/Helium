@@ -97,9 +97,7 @@ class ControllerAccountWishList extends Controller {
 
 		if ($product_info) {
 			if ($this->customer->isLogged()) {
-				
-
-				// DONE Добавить сохранение вишлиста при логине или регистрации
+				// DONE Save wishlist upon login
 				$this->model_account_wishlist->addWishlist($this->request->post['product_id']);
 
 				$data['success'] = sprintf($this->language->get('text_success'), $this->url->link('product/product', 'product_id=' . (int)$this->request->post['product_id']), $product_info['name'], $this->url->link('account/wishlist'));

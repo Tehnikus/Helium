@@ -309,6 +309,12 @@ class ControllerProductCategory extends Controller {
 			$data['breadcrumbs']      = $this->renderBreadcrumbs($category_id);
 			$data['filter_links']     = $this->renderFilterLinksList($category_id);
 			$data['categories'] 	  = $this->renderChildCategories($category_id);
+			// HTML data
+			// $data['column_left'] 	  = $this->load->controller('common/column_left');
+			// $data['column_right'] 	  = $this->load->controller('common/column_right');
+			// $data['content_top']      = $this->load->controller('common/content_top');
+			// $data['content_bottom']   = $this->load->controller('common/content_bottom');
+			// $data['footer']           = $this->load->controller('common/footer');
 
 			$this->cache->set($cache_name, $data);
 		}
