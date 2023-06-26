@@ -511,6 +511,17 @@ class ControllerCommonCart extends Controller {
 		$this->response->setOutput($this->load->view('checkout/quick_checkout_payment', $data));
 	}
 
+	public function fetchSaveAddress()
+	{
+		$this->load->model('account/address');
+		if (isset($this->request->post['address_id']) && $this->request->post['address_id'] !== false) {
+			$data =  $this->model_account_address->getAddress($this->request->post['address_id']);
+			$this->session->data['shipping_address'] = $data;
+			$this->session->data['payment_address'] = $data;
+			// echo(json_encode($this->session->data));
+		}
+	}
+
 	public function getConfirmOrder() {
 		$json = [];
 		$json = $this->checkErrors();

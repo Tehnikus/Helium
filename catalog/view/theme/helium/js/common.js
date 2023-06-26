@@ -100,7 +100,6 @@ document.addEventListener('DOMContentLoaded', function() {
 	stickyHeader(); 		// Sticky header
 	scrollslider(); 		// Sliders everywhere
 	anchorNav(); 			// Focus on hastag navigation element
-	toggleAddressForm()		// Collapse address form if user has registered address and checked on of them
 
 	// Country zones fetch
 	// Toggle postcode input
@@ -944,30 +943,44 @@ const quickCheckout = (cart_dialog) =>{
 // Show address form otherwise
 const toggleAddressForm = () => {
 	// Registered customer fields, who has saved address
-	const existing_address = document.querySelectorAll('[name="address_id"], #shipping_address_new');
+	const existing_address = document.querySelectorAll('[name="address_id"]');
 	
 	// Show or hide address form if there are existing addresses checked 
-	if(existing_address.length > 0) {
+	if (existing_address.length > 0) {
 		existing_address.forEach(ea => {
-			const address_form 	   = document.getElementById(ea.dataset.targetForm);
-			// Hide form if any address checked 
-			if (ea.checked) {collapseElement(address_form)}
-			// checkbox change events
-			ea.addEventListener('change', (e)=> {
-				// Only one checkbox can be checked
-				existing_address.forEach(ea => {
-					if (e.target !== ea) {ea.checked = false}
-				});
-				// Collapse and uncollapse form
-				if (ea.checked) {
-					collapseElement(address_form)
+			const new_address_form = document.getElementById(ea.dataset.collapseTarget);
+			// If checked "I want to add new address" option - when customer has no registered address
+			if (ea.value && ea.checked) {
+				collapseElement(new_address_form)
+			}
+			ea.addEventListener('change', ()=> {
+				if (ea.value) {
+					collapseElement(new_address_form);
+					// Save existing address
+					const b = new FormData;
+					b.append('address_id', ea.value);
+					fetch('index.php?route=common/cart/fetchSaveAddress', {method: "POST", body:b})
+					fetchDisplayShippingAndPayment();
+					// fillFetchedAddressFields(r);
+					
 				} else {
-					uncollapseElement(address_form)
+					uncollapseElement(new_address_form)
 				}
 			})
 		})
 	}
 }
+
+// const fillFetchedAddressFields = (r) => {
+// 	for (const field_name in r) {
+// 		if (field_name == 'address_1') {field_name == 'address'}
+// 		let field = document.getElementsByName(field_name)[0];
+// 		if (!!field) {
+// 			console.log(r[field_name]);
+// 			field.value = r[field_name];
+// 		}
+// 	}
+// }
 
 const collapseElement = (e) => {
 	e.style.cssText = 'height:0px; overflow:hidden; transition: height .5s;';
