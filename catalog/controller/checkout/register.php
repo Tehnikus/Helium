@@ -237,6 +237,16 @@ class ControllerCheckoutRegister extends Controller {
 				$json['redirect'] = $this->url->link('account/success');
 			}
 
+			// Save Wishlist
+			if (isset($this->session->data['wishlist']) && is_array($this->session->data['wishlist'])) {
+				$this->load->model('account/wishlist');
+				// Save wishlist
+				foreach ($this->session->data['wishlist'] as $key => $product_id) {
+					$this->model_account_wishlist->addWishlist((int)$product_id);
+					unset($this->session->data['wishlist'][$key]);
+				}
+			}
+
 			unset($this->session->data['guest']);
 			unset($this->session->data['shipping_method']);
 			unset($this->session->data['shipping_methods']);

@@ -70,9 +70,9 @@ class ControllerAccountLogin extends Controller {
 			// Wishlist
 			if (isset($this->session->data['wishlist']) && is_array($this->session->data['wishlist'])) {
 				$this->load->model('account/wishlist');
-
+				// Save wislist
 				foreach ($this->session->data['wishlist'] as $key => $product_id) {
-					$this->model_account_wishlist->addWishlist($product_id);
+					$this->model_account_wishlist->addWishlist((int)$product_id);
 
 					unset($this->session->data['wishlist'][$key]);
 				}
