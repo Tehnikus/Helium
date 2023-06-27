@@ -3,7 +3,13 @@
   {% for address in addresses %}
     <div class="form-control">
       <input data-collapse-target="js_qc_address_form" role="radio" type="radio" name="address_id" id="address_{{ address.address_id }}" value="{{ address.address_id }}" {% if address.address_id == address_id %} checked="checked" {% endif %}/>
-      <label for="address_{{ address.address_id }}">{% if address.address_id == address_id %}<i class="icon-home"></i> {% endif %}{{ address.firstname }} {{ address.lastname }}, <b>{{ address.address_1 }}, {{ address.city }}, {{address.country }}</b></label>
+      <label for="address_{{ address.address_id }}">
+        {% if address.address_id == address_id %}
+          <i class="icon-home"></i> 
+        {% endif %}
+        {{ address.firstname }} {{ address.lastname }}, <b>{{ address.address_1 }}, {{ address.city }}, {{address.country }}</b>
+        {# <button data-edit-address="{{ address.address_id }}"> Edit </button> #}
+      </label>
     </div>
   {% endfor %}
   <div class="form-control">

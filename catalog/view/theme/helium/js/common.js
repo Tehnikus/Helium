@@ -959,10 +959,10 @@ const toggleAddressForm = () => {
 					// Save existing address
 					const b = new FormData;
 					b.append('address_id', ea.value);
-					fetch('index.php?route=common/cart/fetchSaveAddress', {method: "POST", body:b})
+					fetch('index.php?route=common/cart/fetchSaveExistingAddress', {method: "POST", body:b})
+					// .then(r =>{return r.text()}).then(r=>{console.log(JSON.parse(r));})
 					fetchDisplayShippingAndPayment();
 					// fillFetchedAddressFields(r);
-					
 				} else {
 					uncollapseElement(new_address_form)
 				}
@@ -973,7 +973,7 @@ const toggleAddressForm = () => {
 
 // const fillFetchedAddressFields = (r) => {
 // 	for (const field_name in r) {
-// 		if (field_name == 'address_1') {field_name == 'address'}
+// 		// if (field_name == 'address_1') {field_name == 'address'}
 // 		let field = document.getElementsByName(field_name)[0];
 // 		if (!!field) {
 // 			console.log(r[field_name]);
