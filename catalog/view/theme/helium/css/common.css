@@ -198,7 +198,7 @@ form {
     /* grid-template-rows: 1fr; */
     /* max-width: 100%; */
 }
-label {cursor:pointer; user-select: none;-webkit-user-select: none;-moz-user-select: none;-ms-user-select: none;}
+label {cursor:pointer;user-select: none;-webkit-user-select: none;-moz-user-select: none;-ms-user-select: none;display: flex;flex-direction: row;align-items: center;}
 .form-group {display: flex;flex: 1;align-items: center; padding: 0.5rem;  border-radius: var(--radius); flex-wrap: wrap; }
 .form-group label {flex: 1 1 auto;max-width: 8rem}
 /* For multiple lined up inputs in form group */
