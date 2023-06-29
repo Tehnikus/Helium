@@ -1,7 +1,5 @@
 <?php
 
-
-
 $_['heading_title'] 		 = 'Ваш заказ #%s сформирован!';
 $_['heading_title_customer'] = 'Ваш заказ #%s сформирован!';
 
