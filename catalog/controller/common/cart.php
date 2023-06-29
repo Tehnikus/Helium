@@ -709,7 +709,7 @@ class ControllerCommonCart extends Controller {
 		
 		// Now just print out data, so I'll see if something missing
 		// TODO Remove when tested properly, output only errors
-		echo(json_encode($this->request->post));
+		// echo(json_encode($this->request->post));
 		// echo(json_encode($this->session->data));
 	}
 

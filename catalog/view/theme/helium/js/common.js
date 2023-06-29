@@ -843,8 +843,9 @@ function saveShippingMethod(input) {
 		let data = new FormData(form);
 		let response = await fetch('index.php?route=common/cart/fetchSaveQuickCheckoutfields', { method: "POST", body: data });
 		// TODO remove this
-		let result = await response.json();
-		console.log(result);
+		// let result = await response.json();
+		// console.log(result);
+		return response;
 
 		// return result;
 	} catch (error) {
@@ -907,8 +908,14 @@ const quickCheckout = (cart_dialog) =>{
 		getZones(country_select, zone_select);
 	}
 	toggleAddressForm();
-
+	
 	if (!!form) {
+		// Save fields initially so payment and shipping can be displayed
+		saveCheckoutfields(form).then(r =>{return r.ok}).then(r=>{
+			if (r) {
+				fetchDisplayShippingAndPayment();
+			}
+		});
 		const formElements = Array.from(form.elements);
 		formElements.forEach((input) => {
 			if (input.name.includes('country') || input.name.includes('zone')) {
@@ -961,7 +968,10 @@ const toggleAddressForm = () => {
 					b.append('address_id', ea.value);
 					fetch('index.php?route=common/cart/fetchSaveExistingAddress', {method: "POST", body:b})
 					// .then(r =>{return r.text()}).then(r=>{console.log(JSON.parse(r));})
-					fetchDisplayShippingAndPayment();
+
+					// Fetch shipping and payment as customer address may be in different zones, coutries
+					// with different shipping and payment methods
+					fetchDisplayShippingAndPayment(); 
 					// fillFetchedAddressFields(r);
 				} else {
 					uncollapseElement(new_address_form)
@@ -994,7 +1004,7 @@ const uncollapseElement = (e) => {
 const fetchDisplayShippingAndPayment = () => {
 	fetch('index.php?route=common/cart/fetchDisplayShippingHtml', { method: "POST" })
 	.then(r=>{return r.text()}).then(r=>{
-		// console.log(r);
+		console.log(r);
 		const shipping = document.getElementById('js_qc_delivery');
 		if (!!shipping) {
 			shipping.innerHTML = r;
@@ -1002,7 +1012,7 @@ const fetchDisplayShippingAndPayment = () => {
 	});
 	fetch('index.php?route=common/cart/fetchDisplayPaymentHtml', { method: "POST" })
 	.then(r=>{return r.text()}).then(r=>{
-		// console.log(r);
+		console.log(r);
 		const payment = document.getElementById('js_qc_payment');
 		if (!!payment) {
 			payment.innerHTML = r;
