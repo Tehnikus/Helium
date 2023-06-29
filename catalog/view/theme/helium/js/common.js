@@ -1004,7 +1004,6 @@ const uncollapseElement = (e) => {
 const fetchDisplayShippingAndPayment = () => {
 	fetch('index.php?route=common/cart/fetchDisplayShippingHtml', { method: "POST" })
 	.then(r=>{return r.text()}).then(r=>{
-		console.log(r);
 		const shipping = document.getElementById('js_qc_delivery');
 		if (!!shipping) {
 			shipping.innerHTML = r;
@@ -1012,7 +1011,6 @@ const fetchDisplayShippingAndPayment = () => {
 	});
 	fetch('index.php?route=common/cart/fetchDisplayPaymentHtml', { method: "POST" })
 	.then(r=>{return r.text()}).then(r=>{
-		console.log(r);
 		const payment = document.getElementById('js_qc_payment');
 		if (!!payment) {
 			payment.innerHTML = r;
