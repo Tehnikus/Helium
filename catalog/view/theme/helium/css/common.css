@@ -578,7 +578,7 @@ tr[id^='product_id_'] button.close {background: transparent;box-shadow: none;}
 
 /* Main menu */
 #main-menu .menu {position: relative;overflow: hidden;height: 50vh;scrollbar-gutter: auto;background: #fff;box-shadow: var(--blocks-shadow);border-radius: var(--radius)}
-#main-menu ul {transition: var(--style) var(--time);background: #fff;margin: 0;padding: .2rem;overflow-y: auto;height: 50vh}
+#main-menu ul {transition: var(--style) var(--time);background: #fff;margin: 0;/* padding: .2rem; */overflow-y: auto;height: 50vh}
 #main-menu li {list-style-type: none;margin: .1rem 0;padding: 0;display: grid;grid-template-columns: 300px 40px 40px;align-items: center;grid-template-rows: 50px}
 #main-menu a {padding: .5rem}
 #main-menu ul:not([data-parent="0"]) {position: absolute;top: 0;left: 0;transform: translateX(110%)}
