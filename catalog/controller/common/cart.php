@@ -710,7 +710,7 @@ class ControllerCommonCart extends Controller {
 		// Now just print out data, so I'll see if something missing
 		// TODO Remove when tested properly, output only errors
 		// echo(json_encode($this->request->post));
-		// echo(json_encode($this->session->data));
+		echo(json_encode($this->session->data));
 	}
 
 	// Check if all address fields filled correctly
@@ -768,7 +768,21 @@ class ControllerCommonCart extends Controller {
 			}
 		}
 
-		// TODO Check custom fields
+		// DONE Check custom fields
+		$this->load->model('account/custom_field');
+		$custom_fields = $this->model_account_custom_field->getCustomFields($this->config->get('config_customer_group_id'));
+
+		foreach ($custom_fields as $custom_field) {
+			if ($custom_field['location'] == 'address') {
+				// Name of custom field that corresponds input name i.e. <input name=custom_field[address][2] ...>
+				$custom_field_name = 'custom_field[address]['.$custom_field['custom_field_id'].']';
+				if ($custom_field['required'] && empty($data['custom_field'][$custom_field['location']][$custom_field['custom_field_id']])) {
+					$json['error'][$custom_field_name] = sprintf($this->language->get('error_custom_field'), $custom_field['name']);
+				} elseif (($custom_field['type'] == 'text') && !empty($custom_field['validation']) && !filter_var($data['custom_field'][$custom_field['location']][$custom_field['custom_field_id']], FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => $custom_field['validation'])))) {
+					$json['error'][$custom_field_name] = sprintf($this->language->get('error_custom_field'), $custom_field['name']);
+				}
+			}
+		}
 			
 		if (!isset($data['payment_method'])) {
 			$json['error']['payment_method'] = $this->language->get('error_payment');
