@@ -147,7 +147,7 @@ class ControllerProductCompare extends Controller {
 		// Service var to create horizontal comparison table
 		$attrs = [];
 
-		if (isset($this->session->data['compare']) && is_array($this->session->data['compare'])) {
+		if (isset($this->session->data['compare']) && is_array($this->session->data['compare']) && count($this->session->data['compare']) > 0) {
 			// Get products data
 			foreach ($this->session->data['compare'] as $key => $product_id) {
 				$product_list[] = $this->model_catalog_product->getProduct($product_id);
