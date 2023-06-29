@@ -627,7 +627,7 @@ class ControllerCommonCart extends Controller {
 		$this->session->data['payment_address']['customer_group_id'] 		= $this->config->get('config_customer_group_id');
 		
 		// Set empty email
-		$this->session->data['guest']['email'] = '';
+		// $this->session->data['guest']['email'] = '';
 		
 		if (isset($data['firstname'])) {
 			$this->session->data['guest']['firstname'] 				= $data['firstname'];
@@ -643,6 +643,11 @@ class ControllerCommonCart extends Controller {
 			$this->session->data['guest']['telephone'] 				= $data['phone'];
 			$this->session->data['shipping_address']['telephone'] 	= $data['phone'];
 			$this->session->data['payment_address']['telephone'] 	= $data['phone'];
+		}
+		if (isset($data['email'])) {
+			$this->session->data['guest']['email'] 				= $data['email'];
+			$this->session->data['shipping_address']['email'] 	= $data['email'];
+			$this->session->data['payment_address']['email'] 	= $data['email'];
 		}
 		if (isset($data['city'])) {
 			$this->session->data['guest']['city'] 					= $data['city'];
