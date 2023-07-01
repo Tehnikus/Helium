@@ -30,6 +30,8 @@ class ControllerCheckoutCheckout extends Controller {
 		$this->document->setTitle($this->language->get('heading_title'));
 		$this->document->setRobots('noindex,nofollow');
 
+		$this->document->addScript('catalog/view/theme/helium/js/checkout.js');
+
 
 		// Required by klarna
 		// if ($this->config->get('payment_klarna_account') || $this->config->get('payment_klarna_invoice')) {
@@ -156,5 +158,11 @@ class ControllerCheckoutCheckout extends Controller {
 
 		$this->response->addHeader('Content-Type: application/json');
 		$this->response->setOutput(json_encode($json));
+	}
+
+	public function fetchCustomerIsLogged() {
+		$is_logged = false;
+		$is_logged = $this->customer->isLogged();
+		echo($is_logged);
 	}
 }

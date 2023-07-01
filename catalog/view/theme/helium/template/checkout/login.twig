@@ -35,6 +35,8 @@
         <label for="input-password">{{ entry_password }}</label>
         <input type="password" name="password" value="" placeholder="{{ entry_password }}" id="input-password" />
       </div>
-      <button type="button" id="button-login" class="primary">{{ button_login }}</button>
-      <a class="button" href="{{ forgotten }}">{{ text_forgotten }}</a>
+      <div class="btn-group spaced">
+        <button type="button" id="button-login" class="primary">{{ button_login }}</button>
+        <a class="button" href="{{ forgotten }}">{{ text_forgotten }}</a>
+      </div>
     </fieldset>
