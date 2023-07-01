@@ -324,41 +324,38 @@ class ControllerProductCategory extends Controller {
 
 	// DONE Отображение и кеширование списчка дочерних категорий
 	public function renderChildCategories($category_id) {
-		// $cache_name = 'category_child_categories.'.(int)$this->config->get('config_store_id').'.'.(int)$this->config->get('config_language_id').'.'.$category_id;
-		// $child_categories = $this->cache->get($cache_name);
-		// if (!$child_categories) {
-			$child_categories = array();
-			$results = $this->model_catalog_category->getCategories($category_id);
 
-			foreach ($results as $result) {
-				// Фильтр для подсчета кол-ва товаров в дочерней категории
-				if ($this->config->get('config_product_count') !== null) {
-					$filter_data = array(
-						'filter_category_id'  => $result['category_id'],
-						'filter_sub_category' => true
-					);
-					$subcategory_product_count = $this->model_catalog_product->getTotalProducts($filter_data);
-				}
+		$child_categories = array();
+		$results = $this->model_catalog_category->getCategories($category_id);
 
-				// Изображение дочерней категории
-				// DONE - добавить картинку no_image.webp
-				if ($result['image']) {
-					$image['thumb'] = $this->model_tool_image->resize($result['image'], $this->config->get('image_category_width'), $this->config->get('image_category_height'));
-				} else {
-					$image['thumb'] = $this->model_tool_image->resize('no_image.webp', $this->config->get('image_category_width'), $this->config->get('image_category_height'));
-				}
-
-				$child_categories[] = array(
-					'name' => $result['name'],
-					'product_count' => $subcategory_product_count ?: '',
-					'href' => $this->url->link('product/category', 'path=' . $this->request->get['path'] . '_' . $result['category_id']),
-					'thumb' => $image['thumb'],
-					'width' => $this->config->get('image_category_width'),
-					'height' => $this->config->get('image_category_height')
+		foreach ($results as $result) {
+			// Фильтр для подсчета кол-ва товаров в дочерней категории
+			if ($this->config->get('config_product_count') !== null) {
+				$filter_data = array(
+					'filter_category_id'  => $result['category_id'],
+					'filter_sub_category' => true
 				);
+				$subcategory_product_count = $this->model_catalog_product->getTotalProducts($filter_data);
 			}
-		// 	$this->cache->set($cache_name, $child_categories);
-		// }
+
+			// Изображение дочерней категории
+			// DONE - добавить картинку no_image.webp
+			if ($result['image']) {
+				$image['thumb'] = $this->model_tool_image->resize($result['image'], $this->config->get('image_category_width'), $this->config->get('image_category_height'));
+			} else {
+				$image['thumb'] = $this->model_tool_image->resize('no_image.webp', $this->config->get('image_category_width'), $this->config->get('image_category_height'));
+			}
+
+			$child_categories[] = array(
+				'name' => $result['name'],
+				'product_count' => $subcategory_product_count ?: '',
+				'href' => $this->url->link('product/category', 'path=' . $this->request->get['path'] . '_' . $result['category_id']),
+				'thumb' => $image['thumb'],
+				'width' => $this->config->get('image_category_width'),
+				'height' => $this->config->get('image_category_height')
+			);
+		}
+
 		return $child_categories;
 	}
 	
