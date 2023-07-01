@@ -490,6 +490,8 @@ class ControllerCommonCart extends Controller {
 	// Native method saves data to session
 	public function getShippingMethods() {
 		$data = $this->load->controller('checkout/shipping_method/getShippingMethodsData');
+		// If shipping method is requested by fetch, we need to add customer selected method value, if present
+		$data['selected_shipping_method'] = (isset($this->session->data['shipping_method']) && isset($this->session->data['shipping_method']['code'])) ? $this->session->data['shipping_method']['code'] : '';
 		return $data;
 	}
 
@@ -503,6 +505,8 @@ class ControllerCommonCart extends Controller {
 	// Get payment methods
 	public function getPaymentMethods() {
 		$data = $this->load->controller('checkout/payment_method/getPaymentMethodsData');
+		// If payment method is requested by fetch, we need to add customer selected method value, if present
+		$data['selected_payment_method'] = (isset($this->session->data['payment_method']) && isset($this->session->data['payment_method']['code'])) ? $this->session->data['payment_method']['code'] : '';
 		return $data;
 	}
 

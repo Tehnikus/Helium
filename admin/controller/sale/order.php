@@ -224,17 +224,22 @@ class ControllerSaleOrder extends Controller {
 
 		$results = $this->model_sale_order->getOrders($filter_data);
 
+		// print_r($results);
+
 		foreach ($results as $result) {
 			$data['orders'][] = array(
-				'order_id'      => $result['order_id'],
-				'customer'      => $result['customer'],
-				'order_status'  => $result['order_status'] ? $result['order_status'] : $this->language->get('text_missing'),
-				'total'         => $this->currency->format($result['total'], $result['currency_code'], $result['currency_value']),
-				'date_added'    => date($this->language->get('date_format_short'), strtotime($result['date_added'])),
-				'date_modified' => date($this->language->get('date_format_short'), strtotime($result['date_modified'])),
-				'shipping_code' => $result['shipping_code'],
-				'view'          => $this->url->link('sale/order/info', 'user_token=' . $this->session->data['user_token'] . '&order_id=' . $result['order_id'] . $url, true),
-				'edit'          => $this->url->link('sale/order/edit', 'user_token=' . $this->session->data['user_token'] . '&order_id=' . $result['order_id'] . $url, true)
+				'order_id'      		 => $result['order_id'],
+				'customer'      		 => $result['customer'],
+				'shipping_customer'      => ($result['shipping_firstname'] !== '' && $result['shipping_firstname'] !=='') ? $result['shipping_firstname'].' '.$result['shipping_firstname'] : false,
+				
+				'telephone'      		 => $result['telephone'],
+				'order_status'  		 => $result['order_status'] ? $result['order_status'] : $this->language->get('text_missing'),
+				'total'         		 => $this->currency->format($result['total'], $result['currency_code'], $result['currency_value']),
+				'date_added'    		 => date($this->language->get('date_format_short'), strtotime($result['date_added'])),
+				'date_modified' 		 => date($this->language->get('date_format_short'), strtotime($result['date_modified'])),
+				'shipping_code' 		 => $result['shipping_code'],
+				'view'          		 => $this->url->link('sale/order/info', 'user_token=' . $this->session->data['user_token'] . '&order_id=' . $result['order_id'] . $url, true),
+				'edit'          		 => $this->url->link('sale/order/edit', 'user_token=' . $this->session->data['user_token'] . '&order_id=' . $result['order_id'] . $url, true)
 			);
 		}
 

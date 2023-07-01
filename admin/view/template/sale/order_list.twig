@@ -127,7 +127,7 @@
                     {% endif %}
                     <input type="hidden" name="shipping_code[]" value="{{ order.shipping_code }}" /></td>
                   <td class="text-right">{{ order.order_id }}</td>
-                  <td class="text-left">{{ order.customer }}</td>
+                  <td class="text-left">{{ order.customer }}{% if order.shipping_customer %} <br/>({{order.shipping_customer}}){% endif %} <br/><b>{{order.telephone}}</b></td>
                   <td class="text-left">{{ order.order_status }}</td>
                   <td class="text-right">{{ order.total }}</td>
                   <td class="text-left">{{ order.date_added }}</td>

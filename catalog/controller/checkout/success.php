@@ -12,6 +12,14 @@ class ControllerCheckoutSuccess extends Controller {
 			unset($this->session->data['payment_method']);
 			unset($this->session->data['payment_methods']);
 			// unset($this->session->data['guest']);
+			// Unset custom fields if present
+			if (($this->session->data['shipping_address']['custom_field'] ?? null) !== null) {
+				unset($this->session->data['shipping_address']['custom_field']);
+			}
+			if (($this->session->data['payment_address']['custom_field'] ?? null) !== null) {
+				unset($this->session->data['payment_address']['custom_field']);
+			}
+			unset($this->session->data['customer']['custom_field']);
 			unset($this->session->data['comment']);
 			unset($this->session->data['order_id']);
 			unset($this->session->data['coupon']);
