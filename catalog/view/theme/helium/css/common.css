@@ -397,7 +397,7 @@ input[type="radio"]:disabled, input[type="radio"]:disabled+label {
 
 
 /* Blocks with gap */
-header, footer, main, aside, nav, nav > div, hgroup, #content-top, #content-bottom {
+header, footer, main, aside, nav, nav > div, hgroup, #content_top, #content_bottom {
     display:flex;
     gap:1rem;
 }
@@ -408,11 +408,14 @@ footer, main, aside > div, [data-accordion] {
     overflow: hidden;
 }
 
-main, aside, #content-top, #content-bottom  {
+main, aside, #content_top, #content_bottom  {
     flex-direction: column;
     flex: 1 0 100%; /* 100% width for mobile */
     max-width: 100%;
 }
+
+#content_top, #content_bottom {flex:0}
+
 body {
     flex-direction: row;
     flex: 1 0 100%; /* 100% width for mobile */
@@ -462,7 +465,7 @@ nav, footer, main, main#home .module, aside > div, [data-accordion], .block {
 header              {order: 0}
 nav                 {order: 1}
 main                {order: 2}
-#content-bottom     {order: 3}
+#content_bottom     {order: 3}
 aside#column-left   {order: 4}
 aside#column-right  {order: 5}
 footer              {order: 6}
@@ -1092,7 +1095,7 @@ input#input-quantity {text-align: center}
     /* Ordering */
     aside#column-left {order: 2}
     main {order: 3}
-    #content-bottom     {order: 4}
+    #content_bottom     {order: 4}
     
     /*  Scrollbar  */
     ::-webkit-scrollbar {height:10px;width:10px}

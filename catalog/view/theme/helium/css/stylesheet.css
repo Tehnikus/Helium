@@ -120,11 +120,11 @@ body, header, main, footer {
 body > * {background:var(--background-blocks);padding: var(--padding);}
 
 /* Ordering */
-#content-top{order:0}
+#content_top{order:0}
 aside#column-left {order:1;max-width:max(20%, 360px);}
 main {flex:1;order:2;}
 aside#column-right {order:4; max-width: max(20%, 360px);}
-#content-bottom{order:4}
+#content_bottom{order:4}
 header, footer {flex: 1 0 100%;}
 footer {column-gap: 1rem;order: 6;}
 
