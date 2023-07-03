@@ -74,7 +74,6 @@ class ControllerCommonContentTop extends Controller {
 					$module_data = $this->cache->get($cache_name); 			// Try to get cache
 					// If no cache present
 					if ($module_data === false) {
-						echo('caching');
 						$module_data = $this->load->controller('extension/module/' . $part[0]); // Get module data 
 						if ($module_data) {
 							$this->cache->set($cache_name, $module_data);  // Set module data to cache
@@ -97,7 +96,6 @@ class ControllerCommonContentTop extends Controller {
 					$cache_name = $this->renderCacheName([$module_name, $part[1]]);
 					$output = $this->cache->get($cache_name);
 					if ($output === false) {
-						echo('caching');
 						$setting_info = $this->model_setting_module->getModule($part[1]);
 						if ($setting_info && $setting_info['status']) {
 							$output = $this->load->controller('extension/module/' . $part[0], $setting_info);
