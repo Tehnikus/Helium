@@ -74,6 +74,7 @@ class ControllerCommonContentTop extends Controller {
 					$module_data = $this->cache->get($cache_name); 			// Try to get cache
 					// If no cache present
 					if ($module_data === false) {
+						echo('caching');
 						$module_data = $this->load->controller('extension/module/' . $part[0]); // Get module data 
 						if ($module_data) {
 							$this->cache->set($cache_name, $module_data);  // Set module data to cache
@@ -96,6 +97,7 @@ class ControllerCommonContentTop extends Controller {
 					$cache_name = $this->renderCacheName([$module_name, $part[1]]);
 					$output = $this->cache->get($cache_name);
 					if ($output === false) {
+						echo('caching');
 						$setting_info = $this->model_setting_module->getModule($part[1]);
 						if ($setting_info && $setting_info['status']) {
 							$output = $this->load->controller('extension/module/' . $part[0], $setting_info);
@@ -129,7 +131,7 @@ class ControllerCommonContentTop extends Controller {
 			'store_id'   => (int) $this->config->get('config_store_id'), 							 // store id
 			'lang_id'    => (int) $this->config->get('config_language_id'), 						 // language id
 			'route_name' => explode('/', $this->request->get['route'])[1], 							 // route name: product, category, manufacturer, home, etc
-			'route_id'   => isset($this->request->get['path']) ? $this->request->get['path'] : null, // id of route if present: category.1, product.15, etc
+			'route_id'   => isset($this->request->get['path']) ? $this->request->get['path'] : '0',  // id of route if present: category.1, product.15, etc
 			'cache_id'   => 'content_top', 														     // cache name: content_bottom, content_top, etc
 		];
 		// remove null values if route ID is not set

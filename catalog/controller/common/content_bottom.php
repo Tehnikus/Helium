@@ -129,7 +129,7 @@ class ControllerCommonContentBottom extends Controller {
 			'store_id'   => (int) $this->config->get('config_store_id'), 							 // store id
 			'lang_id'    => (int) $this->config->get('config_language_id'), 						 // language id
 			'route_name' => explode('/', $this->request->get['route'])[1], 							 // route name: product, category, manufacturer, home, etc
-			'route_id'   => isset($this->request->get['path']) ? $this->request->get['path'] : null, // id of route if present: category.1, product.15, etc
+			'route_id'   => isset($this->request->get['path']) ? $this->request->get['path'] : '0',  // id of route if present: category.1, product.15, etc
 			'cache_id'   => 'content_bottom', 														 // cache name: content_bottom, content_top, etc
 		];
 		// remove null values if route ID is not set
