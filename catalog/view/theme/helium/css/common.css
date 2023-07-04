@@ -753,6 +753,7 @@ button:active, .button:active, .primary:active, button.active {
 .input-group > * {box-shadow: none}
 .btn-group.spaced {justify-content:space-between;padding: 0 0 1rem; flex-wrap:wrap}
 .btn-group.spaced .primary {flex: 0;}
+.btn-group.stacked {flex-wrap: wrap;}
 /* Round corners on input groups */
 .input-group :first-child {border-radius: var(--radius) 0 0 var(--radius)}
 .input-group :last-child {border-radius: 0 var(--radius) var(--radius) 0}
