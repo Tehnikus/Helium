@@ -156,9 +156,12 @@ class ControllerInformationContact extends Controller {
 
 	public function showContactsModal()
 	{
-		$data = $this->getContacts();
-		$this->response->setOutput($this->load->view('information/contact_grid', $data));
-		// echo(json_encode($data));
+
+		$response = [];
+		$response['dialog'] = $this->load->view('information/contact_grid', $this->getContacts());
+		$this->response->addHeader('Content-Type: application/json');
+		$this->response->setOutput(json_encode($response));
+		
 	}
 
 	public function getContacts(&$data = null)

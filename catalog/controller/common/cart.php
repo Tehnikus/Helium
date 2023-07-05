@@ -498,8 +498,13 @@ class ControllerCommonCart extends Controller {
 	// Display shipping methods html
 	public function fetchDisplayShippingHtml() {
 		$this->load->language('common/cart');
+		$data = [];
+		$response = [];
 		$data = $this->getShippingMethods();
-		$this->response->setOutput($this->load->view('checkout/quick_checkout_shipping', $data));
+		$data['selected_shipping_method'] = $this->session->data['shipping_method']['code'];
+		$response['html']['replace']['#js_qc_delivery'] = $this->load->view('checkout/quick_checkout_shipping', $data);
+		$this->response->addHeader('Content-Type: application/json');
+		$this->response->setOutput(json_encode($response));
 	}
 
 	// Get payment methods
@@ -512,8 +517,13 @@ class ControllerCommonCart extends Controller {
 
 	public function fetchDisplayPaymentHtml() {
 		$this->load->language('common/cart');
+		$data = [];
+		$response = [];
 		$data = $this->getPaymentMethods();
-		$this->response->setOutput($this->load->view('checkout/quick_checkout_payment', $data));
+		$data['selected_payment_method'] = $this->session->data['payment_method']['code'];
+		$response['html']['replace']['#js_qc_payment'] = $this->load->view('checkout/quick_checkout_payment', $data);
+		$this->response->addHeader('Content-Type: application/json');
+		$this->response->setOutput(json_encode($response));
 	}
 
 	public function fetchSaveExistingAddress()

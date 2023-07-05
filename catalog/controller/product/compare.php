@@ -91,8 +91,8 @@ class ControllerProductCompare extends Controller {
 
 			$json['success'] = sprintf($this->language->get('text_success'), $this->url->link('product/product', 'product_id=' . $this->request->post['product_id']), $product_info['name'], $this->url->link('product/compare'));
 			$table = $this->renderCompareProducts();
-			$json['table'] = $this->load->view('product/compare_table', $table);
-			$json['total'] = '<i class="icon-compare"></i>'.sprintf($this->language->get('text_compare'), (isset($this->session->data['compare']) ? count($this->session->data['compare']) : 0));
+			$json['dialog'] = $this->load->view('product/compare_table', $table);
+			$json['html']['replace']['#compare-total'] = '<i class="icon-compare"></i>'.sprintf($this->language->get('text_compare'), (isset($this->session->data['compare']) ? count($this->session->data['compare']) : 0));
 		}
 
 		$this->response->addHeader('Content-Type: application/json');
@@ -221,8 +221,12 @@ class ControllerProductCompare extends Controller {
 	}
 
 	public function showCompareModal(){
+		$data = [];
+		$response = [];
 		$data = $this->renderCompareProducts();
-		$this->response->setOutput($this->load->view('product/compare_table', $data));
+		$response['dialog'] = $this->load->view('product/compare_table', $data);
+		$this->response->addHeader('Content-Type: application/json');
+		$this->response->setOutput(json_encode($response));
 	}
 	// Compare features and pass '--' if product doesn't have the feature that other has
 	function compareAndCopyFeatures($allProductFeatures)

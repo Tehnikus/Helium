@@ -102,7 +102,7 @@ class ControllerAccountWishList extends Controller {
 
 				$data['success'] = sprintf($this->language->get('text_success'), $this->url->link('product/product', 'product_id=' . (int)$this->request->post['product_id']), $product_info['name'], $this->url->link('account/wishlist'));
 				$total_wishlist_products = $this->customer->isLogged() ? $this->model_account_wishlist->getTotalWishlist() : (isset($this->session->data['wishlist']) ? count($this->session->data['wishlist']) : 0);
-				$data['total'] = sprintf($this->language->get('text_wishlist'), $total_wishlist_products);
+				$data['html']['replace']['#wishlist-total'] = sprintf($this->language->get('text_wishlist'), $total_wishlist_products);
 			} else {
 				if (!isset($this->session->data['wishlist'])) {
 					$this->session->data['wishlist'] = array();
@@ -117,12 +117,12 @@ class ControllerAccountWishList extends Controller {
 					$this->url->link('account/register', '', true), 
 				);
 				$total_wishlist_products = $this->customer->isLogged() ? $this->model_account_wishlist->getTotalWishlist() : (isset($this->session->data['wishlist']) ? count($this->session->data['wishlist']) : 0);
-				$data['total'] = sprintf($this->language->get('text_wishlist'), $total_wishlist_products);
+				$data['html']['replace']['#wishlist-total'] = sprintf($this->language->get('text_wishlist'), $total_wishlist_products);
 			}
 		}
 
 		$data['products'] = $this->renderWishlistProducts();
-		$data['table'] = $this->load->view('account/wishlist_table', $data);
+		$data['dialog'] = $this->load->view('account/wishlist_table', $data);
 		$this->response->addHeader('Content-Type: application/json');
 		$this->response->setOutput(json_encode($data));
 	}
@@ -138,23 +138,30 @@ class ControllerAccountWishList extends Controller {
 
 			if ($this->customer->isLogged()) {
 				$this->model_account_wishlist->deleteWishlist($product_id);
-				$data['remove'] = $this->language->get('text_remove');
 			} else {
 				$key = array_search($product_id, $this->session->data['wishlist']);
 				if ($key !== false) {
 					unset($this->session->data['wishlist'][$key]);
-					$data['remove'] = $this->language->get('text_remove');
 				}
 			}
-
+			$response['toasts']['success'][] = $this->language->get('text_remove');
+			$total_wishlist_products = $this->customer->isLogged() ? $this->model_account_wishlist->getTotalWishlist() : (isset($this->session->data['wishlist']) ? count($this->session->data['wishlist']) : 0);
+			if ($total_wishlist_products > 0) {
+				$response['html']['replace']['#wishlist-total'] = sprintf($this->language->get('text_wishlist'), ($total_wishlist_products > 0) ?: '');
+				// The "#product_id_'.$product_id" selector will be removed by js
+				$response['html']['remove']['#product_id_'.$product_id] = ''; 
+			} else {
+				// If no products, just display empty template
+				$data = [];
+				$response['dialog'] = $this->load->view('account/wishlist_table', $data);
+				$response['html']['replace']['#wishlist-total'] = sprintf($this->language->get('text_wishlist'), '');
+			}
 		} else {
-			$data['remove'] = $this->language->get('text_no_such_product');
+			$response['toasts']['error'][] = $this->language->get('text_no_such_product');
 		}
 
-		$total_wishlist_products = $this->customer->isLogged() ? $this->model_account_wishlist->getTotalWishlist() : (isset($this->session->data['wishlist']) ? count($this->session->data['wishlist']) : 0);
-		$data['total'] = sprintf($this->language->get('text_wishlist'), ($total_wishlist_products > 0) ?: '');
 		$this->response->addHeader('Content-Type: application/json');
-		$this->response->setOutput(json_encode($data));
+		$this->response->setOutput(json_encode($response));
 	}
 
 	public function renderWishlistProducts()
@@ -231,9 +238,13 @@ class ControllerAccountWishList extends Controller {
 		return $products;
 	}
 
-	public function showWishlistModal(){
+	public function showWishlistModal() {
+		$data = [];
+		$response = [];
 		$this->load->language('account/wishlist');
 		$data['products'] = $this->renderWishlistProducts();
-		$this->response->setOutput($this->load->view('account/wishlist_table', $data));
+		$response['dialog'] = $this->load->view('account/wishlist_table', $data);
+		$this->response->addHeader('Content-Type: application/json');
+		$this->response->setOutput(json_encode($response));
 	}
 }
