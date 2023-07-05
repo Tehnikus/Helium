@@ -629,9 +629,11 @@ let toast = {
 		if (typeof(alltoasts[alltoasts.length - 1]) !== 'undefined') {
 			t.style.top = alltoasts[alltoasts.length - 1].offsetHeight + alltoasts[alltoasts.length - 1].offsetTop + 10 + 'px';
 		}
-		let d = document.getElementsByTagName("DIALOG");
-		if (!d.length > 0) {
+		let di = document.getElementsByTagName("DIALOG");
+		if (!di.length > 0) {
 			document.body.insertAdjacentElement('beforeend', t);
+		} else {
+			di[0].insertAdjacentElement('beforeend', t);
 		}
 		// Focus on close button
 		t.firstElementChild.focus();
@@ -640,7 +642,7 @@ let toast = {
 		if (e.target === undefined) {return}
 		let m = e.target.closest('.toast') || d.querySelector('.toast');
 		if (!!m) {
-			d.body.removeChild(d.querySelector('.toast'));
+			m.remove();
 		}
 		recalcPositions();
 		function recalcPositions() {
@@ -719,16 +721,7 @@ const searchFunction = () => {
 
 
 
-// Data attribute driven event handler
-// Returns element, event and fires function from action object
-function handleEvents(evt) {
-	const origin = evt.target.closest("[data-action]");
-	return origin &&
-		actions[evt.type] &&
-		actions[evt.type][origin.dataset.action] &&
-		actions[evt.type][origin.dataset.action](origin, evt) ||
-		true;
-}
+
 
 const reviewModal = (el, ev) => {
 	fetch('index.php?route='+el.dataset.type+'/displayReviewModal&entity_id=' + el.dataset.id, {method: "POST"})
@@ -1002,20 +995,8 @@ const uncollapseElement = (e) => {
 }
 
 const fetchDisplayShippingAndPayment = () => {
-	fetch('index.php?route=common/cart/fetchDisplayShippingHtml', { method: "POST" })
-	.then(r=>{return r.text()}).then(r=>{
-		const shipping = document.getElementById('js_qc_delivery');
-		if (!!shipping) {
-			shipping.innerHTML = r;
-		}
-	});
-	fetch('index.php?route=common/cart/fetchDisplayPaymentHtml', { method: "POST" })
-	.then(r=>{return r.text()}).then(r=>{
-		const payment = document.getElementById('js_qc_payment');
-		if (!!payment) {
-			payment.innerHTML = r;
-		}
-	});
+	ajax('common/cart/fetchDisplayShippingHtml');
+	ajax('common/cart/fetchDisplayPaymentHtml');
 }
 
 const getZones = (country_select, zone_select) => {
@@ -1055,56 +1036,55 @@ const getZones = (country_select, zone_select) => {
 	}
 }
 
-const compareModal = (el, ev) => {
-	fetch('index.php?route=product/compare/showCompareModal').then(r=>{return r.text()}).then(r=> {dialog.create(r, ev)})
-}
+// const compareModal = (el, ev) => {
+// 	fetch('index.php?route=product/compare/showCompareModal').then(r=>{return r.text()}).then(r=> {dialog.create(r, ev)})
+// }
 
-const compareAdd = (el, ev) => {
-	const b = new FormData;
-	b.append('product_id', el.dataset.productId)
-	fetch('index.php?route=product/compare/add', {method: "POST", body:b}).then(r=>{return r.json()})
-	.then(r=>{
-		console.log(r);
-		dialog.create(r['table'], ev);
-		document.querySelector('#compare-total').innerHTML = r['total'];
-	});
-}
-const wishlistModal = (el, ev) => {
-	fetch('index.php?route=account/wishlist/showWishlistModal').then(r=>{return r.text()}).then(r=> {dialog.create(r, ev)})
-}
-const wishlistAdd = (el, ev) => {
-	const b = new FormData;
-	b.append('product_id', el.dataset.productId);
-	fetch('index.php?route=account/wishlist/add', {method: "POST", body:b}).then(r=>{return r.json()})
-	.then(r=>{
-		dialog.create(r['table'], ev);
-		document.querySelector('#wishlist-total').innerHTML = r['total'];
-	});
-}
-const wishlistRemove = (el, ev) => {
-	const b = new FormData;
-	b.append('product_id', el.dataset.productId)
-	fetch('index.php?route=account/wishlist/remove', {method: "POST", body:b}).then(r=>{return r.json()})
-	.then(r=>{
-		console.log(r);
-		if ('remove' in r) {
-			toast.create(r.remove, 'success');
-		}
-		document.querySelector('#wishlist-total').innerHTML = r['total'];
-		const i = document.querySelector('#js_wishlist_table #product_id_'+el.dataset.productId);
-		if (!!i) {
-			i.remove();
-		}
-	});
-}
-const contactsModal = (el, ev) => {
-	fetch('index.php?route=information/contact/showContactsModal').then(r=>{return r.text()}).then(r=> {dialog.create(r, ev)})
-}
+// const compareAdd = (el, ev) => {
+// 	const b = new FormData;
+// 	b.append('product_id', el.dataset.productId)
+// 	fetch('index.php?route=product/compare/add', {method: "POST", body:b}).then(r=>{return r.json()})
+// 	.then(r=>{
+// 		console.log(r);
+// 		dialog.create(r['table'], ev);
+// 		document.querySelector('#compare-total').innerHTML = r['total'];
+// 	});
+// }
+// const wishlistModal = (el, ev) => {
+// 	fetch('index.php?route=account/wishlist/showWishlistModal').then(r=>{return r.text()}).then(r=> {dialog.create(r, ev)})
+// }
 
-const ajax = async (el, ev) => {
-	 let request = await fetch(el.dataset.action || el.action, {method: el.dataset.method || "POST"});
-	 let response = await request.then()
-}
+// const wishlistAdd = (el, ev) => {
+// 	const b = new FormData;
+// 	b.append('product_id', el.dataset.productId);
+// 	fetch('index.php?route=account/wishlist/add', {method: "POST", body:b}).then(r=>{return r.json()})
+// 	.then(r=>{
+// 		dialog.create(r['table'], ev);
+// 		document.querySelector('#wishlist-total').innerHTML = r['total'];
+// 	});
+// }
+// const wishlistRemove = (el, ev) => {
+	// ajax(el, ev, )
+	// const b = new FormData;
+	// b.append('product_id', el.dataset.productId)
+	// fetch('index.php?route=account/wishlist/remove', {method: "POST", body:b}).then(r=>{return r.json()})
+	// .then(r=>{
+	// 	// console.log(r);
+	// 	if ('remove' in r) {
+	// 		toast.create(r.remove, 'success');
+	// 	}
+	// 	document.querySelector('#wishlist-total').innerHTML = r['total'];
+	// 	const i = document.querySelector('#js_wishlist_table #product_id_'+el.dataset.productId);
+	// 	if (!!i) {
+	// 		i.remove();
+	// 	}
+	// });
+// }
+// const contactsModal = (el, ev) => {
+// 	fetch('index.php?route=information/contact/showContactsModal').then(r=>{return r.text()}).then(r=> {dialog.create(r, ev)})
+// }
+
+
 
 // Correct time in type="time" and type="datetimelocal" inputs to hours
 // So 13:23 will be corrected to 13:00,
@@ -1130,32 +1110,7 @@ const correctTime = (el) => {
 	el.value = `${date}` + `${hours}:${mins}`;
 }
 
-// List of functions
-// event: function
-const actions = {
-	click: {
-		reviewModal,
-		cartAdd,
-		cartRemove,
-		cartShowModal,
-		compareModal,
-		compareAdd,
-		wishlistModal,
-		wishlistAdd,
-		wishlistRemove,
-		contactsModal,
-		validateQuickCheckout,
-	},
-	input: {
-		searchFunction,
-		correctTime,
-	},
-	change: {
-		saveShippingMethod
-	}
-};
-// Add event listener to document
-Object.keys(actions).forEach(key => document.addEventListener(key, handleEvents));
+
 
 // Main menu
 // Adds buttons in the main megamenu
@@ -1741,7 +1696,129 @@ function handleErrors(result, form_with_errors) {
 
 function removeElementsByClass(className) {
 	const elements = document.getElementsByClassName(className);
+	console.log(elements);
 	while(elements.length > 0) {
 	  elements[0].parentNode.removeChild(elements[0]);
 	}
+}
+
+const ajax = async (el, ev, callback)=> {
+    // const url = (typeof(el.dataset.url) !== 'undefined') ? el.dataset.url : el;
+	let url = '', m = "GET", settings = {};
+	if (el.dataset) {
+		url = el.dataset.url;
+		if (el.dataset.form) {
+			m = "POST";
+			const form = document.querySelector(el.dataset.form);
+			settings.body = new FormData(form);
+		}
+		
+		// If any elements present in dataset except action or form
+		if (Object.values(el.dataset).some(el => el !== 'action' || el !== 'form')) {
+			// create new form data
+			const b = new FormData;
+			// Append pair key:value to form data
+			for (key in el.dataset) {
+				if (key !=='form' || key !== 'action') {
+					b.append(key, el.dataset[key])
+				}
+			}
+			m = "POST";
+			// Append body to settings
+			settings.body = b;
+		}
+	} else {
+		url = el;
+	}
+
+    settings.method = m;
+    
+    return await fetch('index.php?route='+url, settings).then(r =>{return r.json()}).then(r=>{
+        //Callback function
+		if (typeof(callback) !== "undefined") {
+            callback(r);
+        }
+        // Create dialog
+        if ('dialog' in r) {
+            dialog.create(r.dialog,ev);
+        }
+        // Create toast
+        if ('toasts' in r) {
+			for (reason in r.toasts) {
+				for (t in r.toasts[reason]) {
+					// console.log(r.toasts[reason][t], reason);
+                    toast.create(r.toasts[reason][t], reason);
+                }
+            }
+        }
+        // return html
+        if ('html' in r) {
+			for (action in r.html) {
+				for (selector in r.html[action]) {
+					if (action == 'replace') {
+						document.querySelectorAll(selector).forEach(e =>{
+							e.innerHTML = r.html[action][selector];
+						});
+					}
+					if (action == 'append') {
+						e.insertAdjacentHTML('beforeend', e.innerHTML = r.html[action][selector])
+					}
+					if (action == 'prepend') {
+						e.insertAdjacentHTML('afterbegin', el.innerHTML = r.html[action][selector])
+					}
+					if (action == 'remove') {
+						for (const element of document.querySelectorAll(selector)) {
+							element.remove();
+						}
+					}
+				}
+			}
+            return r.html;
+        }
+		return r;
+    })
+}
+
+// const ajax = async (el, ev) => {
+// 	let request = await fetch(el.dataset.action || el.action, {method: el.dataset.method || "POST"});
+// 	let response = await request.then()
+// }
+
+// List of functions
+// event: function
+const actions = {
+	click: {
+		reviewModal,
+		cartAdd,
+		cartRemove,
+		cartShowModal,
+		// compareModal,
+		// compareAdd,
+		// wishlistModal,
+		// wishlistAdd,
+		// wishlistRemove,
+		// contactsModal,
+		validateQuickCheckout,
+		ajax,
+	},
+	input: {
+		searchFunction,
+		correctTime,
+	},
+	change: {
+		saveShippingMethod
+	}
+};
+// Add event listener to document
+Object.keys(actions).forEach(key => document.addEventListener(key, handleEvents));
+
+// Data attribute driven event handler
+// Returns element, event and fires function from action object
+function handleEvents(evt) {
+	const origin = evt.target.closest("[data-action]");
+	return origin &&
+		actions[evt.type] &&
+		actions[evt.type][origin.dataset.action] &&
+		actions[evt.type][origin.dataset.action](origin, evt) ||
+		true;
 }
