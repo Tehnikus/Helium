@@ -56,6 +56,26 @@ class ModelExtensionShippingFree extends Model {
 				'sort_order' => $this->config->get('shipping_free_sort_order'),
 				'error'      => false
 			);
+		} else {
+			$quote_data = array();
+
+			$quote_data['free'] = array(
+				'code'         => 'free.free',
+				'title'        => $this->language->get('text_description'),
+				'cost'         => 0.00,
+				'tax_class_id' => 0,
+				'text'         => sprintf($this->language->get('spend_for_free_shipping'), $this->currency->format(($this->config->get('shipping_free_total') - $this->cart->getSubTotal()), $this->session->data['currency'])),
+				'disabled'     => true
+			);
+
+			$method_data = array(
+				'code'       => 'free',
+				'title'      => $this->language->get('text_title'),
+				'quote'      => $quote_data,
+				'sort_order' => $this->config->get('shipping_free_sort_order'),
+				'error'      => false,
+				'disabled'   => true
+			);
 		}
 
 		return $method_data;
