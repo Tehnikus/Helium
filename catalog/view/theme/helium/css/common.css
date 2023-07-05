@@ -264,7 +264,7 @@ input[type="date"]::after, input[type="datetime-local"]::after {
 
 
 /* Forms */
-label {cursor:pointer;user-select: none;-webkit-user-select: none;-moz-user-select: none;-ms-user-select: none;display: flex;flex-direction: row;align-items: center;}
+label {cursor:pointer;user-select: none;-webkit-user-select: none;-moz-user-select: none;-ms-user-select: none;display: flex;flex-direction: row;align-items: center; display: inline-block;}
 .form-group {display: flex;flex: 1;align-items: center; padding: 0.5rem;  border-radius: var(--radius); flex-wrap: wrap; position: relative;}
 .form-group label {flex: 1 1 auto;max-width: 8rem}
 /* For multiple lined up inputs in form group */
@@ -565,11 +565,7 @@ h3,.h3 {font-size: 1.25rem}
 h4,.h4 {font-size: 1.2rem}
 h5,.h5 {font-size: 1.15rem}
 h6,.h6 {font-size: 1.1rem}
-
-b,h1,h2,h3,h4,h5,h6,strong,th {
-    color:var(--color-text-bright);
-    font-weight:600
-}
+h1,h2,h3,h4,h5,h6,th,.h1,.h2,.h3,.h4,.h5,.h6 {color:var(--color-text-bright);font-weight:600}
 
 /* Components */
 /* Components - Accrodion */
@@ -1143,5 +1139,5 @@ input#input-quantity {text-align: center}
     hgroup .rating {justify-content: flex-start;}
 
     .mobile_buttons {display: none!important}
-    dialog {width: 880px;}
+    dialog {width: 980px;min-height: 160px;}
 }
