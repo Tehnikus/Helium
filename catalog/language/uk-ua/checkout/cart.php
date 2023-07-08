@@ -1,7 +1,7 @@
 <?php
 
+$_['text_header_cart']          = 'Кошик';
 $_['heading_title']             = 'Ваш кошик';
-
 $_['text_success']              = '<a href="%s">%s</a> доданий <a href="%s">в кошик</a>';
 $_['text_remove']               = 'Змінено успішно';
 $_['text_login']                = 'Необхідно <a href="%s">увійни</a> або <a href="%s">створити обліковий запис</a> для перегляду цін';

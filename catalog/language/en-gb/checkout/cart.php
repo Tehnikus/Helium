@@ -1,7 +1,7 @@
 <?php
 
+$_['text_header_cart']         = 'Cart';
 $_['heading_title']            = 'Shopping Cart';
-
 $_['text_success']             = 'Success: You have added <a href="%s">%s</a> to your <a href="%s">shopping cart</a>!';
 $_['text_remove']              = 'Success: You have modified your shopping cart!';
 $_['text_login']               = 'Attention: You must <a href="%s">login</a> or <a href="%s">create an account</a> to view prices!';
@@ -17,6 +17,8 @@ $_['text_month']               = 'month';
 $_['text_year']                = 'year';
 $_['text_trial']               = '%s every %s %s for %s payments then ';
 $_['text_recurring']           = '%s every %s %s';
+$_['text_length']              = 'payments qty: %s';
+$_['text_until_cancelled']     = 'until cancelled';
 $_['text_recurring_item']      = 'Recurring Item';
 $_['text_payment_recurring']   = 'Payment Profile';
 $_['text_trial_description']   = '%s every %d %s(s) for %d payment(s) then';
