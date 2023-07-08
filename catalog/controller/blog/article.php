@@ -377,17 +377,20 @@ class ControllerBlogArticle extends Controller {
 	}
 
 	// Display review modal window 
-	public function displayReviewModal() {
+	public function showReviewModal() {
+		$data = [];
+		$response = [];
 		$this->load->language('blog/article');
 		$data['entity_id'] = (int)$this->request->get['entity_id'];
 		$data['type'] = 'blog/article';
-		$this->response->setOutput($this->load->view('common/review_form', $data));
+		$response['dialog'] = $this->load->view('common/review_form', $data);
+		$this->response->setOutput(json_encode($response));
 	}
 	
 	public function sendReview() {
 		$this->load->language('blog/article');
 
-		$json = array();
+		$json = [];
 
 		if ($this->request->server['REQUEST_METHOD'] == 'POST') {
 			if ((utf8_strlen($this->request->post['name']) < 3) || (utf8_strlen($this->request->post['name']) > 25)) {
@@ -416,7 +419,7 @@ class ControllerBlogArticle extends Controller {
 
 				$this->model_blog_review->addReview($this->request->get['entity_id'], $this->request->post);
 
-				$json['success'] = $this->language->get('text_success');
+				$json['dialog'] = $this->language->get('text_success');
 			}
 		}
 

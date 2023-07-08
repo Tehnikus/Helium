@@ -157,15 +157,27 @@ class ControllerCommonCart extends Controller {
 	}
 
 	// Отображение модального окна
-	public function displayCartModal() {
+	public function showCartModal() {
 		$data = [];
+		$response = [];
 		$data = $this->getCartData();
 		$this->getQuickCheckoutData($data);
-		echo($this->load->view('common/cart_modal', $data));
+		$response['dialog'] = $this->load->view('common/cart_modal', $data);
+		$this->response->addHeader('Content-Type: application/json');
+		$this->response->setOutput(json_encode($response));
 	}
 
 	// Display additional modal window upon adding to cart, if product has required options
-	public function displayAdditionalModal() {
+	public function showAdditionalModal() {
+		if (isset($this->request->post['product_id'])) {
+			$data = $this->renderAdditionalModal();
+			$json = array();
+			$json['data'] = $this->load->view('common/cart_select_options', $data);
+			$this->response->addHeader('Content-Type: application/json');
+			$this->response->setOutput(json_encode($json));
+		}
+	}
+	public function renderAdditionalModal() {
 		if (isset($this->request->post['product_id'])) {
 			$this->load->model('catalog/product');
 			$this->load->model('tool/image');
@@ -302,22 +314,14 @@ class ControllerCommonCart extends Controller {
 				}
 			}
 			$data['json_prices'] = json_encode($json_prices);
-			////////////////////////////////////////////////////
-			$data['json_prices'] = json_encode($json_prices);
-			$json = array();
-			$json['data'] = $this->load->view('common/cart_select_options', $data);
-			$json['script'] = 'var json_prices='.json_encode($json_prices);
-			$this->response->addHeader('Content-Type: application/json');
-			$this->response->setOutput(json_encode($json));
-			// echo($this->load->view('common/cart_select_options', $data));
-		} else {
-			echo('product ID not set');
-			return;
+			return $data;
 		}
 	}
+
 	public function fetchProductCount() {
 		echo($this->cart->countProducts());
 	}
+
 
 	// Fill entries of Quick checkout inputs
 	// Should comly with regular checkout so if you fill one form they will appear in all other forms
@@ -501,7 +505,7 @@ class ControllerCommonCart extends Controller {
 		$data = [];
 		$response = [];
 		$data = $this->getShippingMethods();
-		$data['selected_shipping_method'] = $this->session->data['shipping_method']['code'];
+		// $data['selected_shipping_method'] = $this->session->data['shipping_method']['code'];
 		$response['html']['replace']['#js_qc_delivery'] = $this->load->view('checkout/quick_checkout_shipping', $data);
 		$this->response->addHeader('Content-Type: application/json');
 		$this->response->setOutput(json_encode($response));
@@ -520,7 +524,10 @@ class ControllerCommonCart extends Controller {
 		$data = [];
 		$response = [];
 		$data = $this->getPaymentMethods();
-		$data['selected_payment_method'] = $this->session->data['payment_method']['code'];
+		// if (($this->session->data['shipping_address']['custom_field'] ?? null) !== null) {
+		// 	unset($this->session->data['shipping_address']['custom_field']);
+		// }
+		// $data['selected_payment_method'] = $this->session->data['payment_method']['code'];
 		$response['html']['replace']['#js_qc_payment'] = $this->load->view('checkout/quick_checkout_payment', $data);
 		$this->response->addHeader('Content-Type: application/json');
 		$this->response->setOutput(json_encode($response));
@@ -595,6 +602,7 @@ class ControllerCommonCart extends Controller {
 					$json['html'] = $this->load->controller('extension/payment/' . $this->session->data['payment_method']['code']);
 				}
 			// }
+			
 			echo(json_encode($json));
 			die;
 		}
@@ -602,11 +610,11 @@ class ControllerCommonCart extends Controller {
 
 	// Debug only 
 	// TODO Remove
-	public function fetchSessionData() {
-		$data = $this->session->data;
-		// unset($this->session->data);
-		echo(json_encode($data));
-	}
+	// public function fetchSessionData() {
+	// 	$data = $this->session->data;
+	// 	// unset($this->session->data);
+	// 	echo(json_encode($data));
+	// }
 
 	// Save fields from fetch request while typing
 	public function fetchSaveQuickCheckoutfields() {
@@ -728,11 +736,6 @@ class ControllerCommonCart extends Controller {
 			$this->session->data['shipping_address']['postcode']  = '';
 			$this->session->data['payment_address']['postcode']   = '';
 		}
-		
-		// Now just print out data, so I'll see if something missing
-		// TODO Remove when tested properly, output only errors
-		// echo(json_encode($this->request->post));
-		// echo(json_encode($this->session->data['shipping_address']['custom_field']));
 	}
 
 	// Check if all address fields filled correctly

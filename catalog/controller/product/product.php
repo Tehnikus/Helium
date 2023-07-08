@@ -400,11 +400,14 @@ class ControllerProductProduct extends Controller {
 	}
 
 	// Display review modal window 
-	public function displayReviewModal() {
+	public function showReviewModal() {
+		$data = [];
+		$response = [];
 		$this->load->language('product/product');
 		$data['entity_id'] = (int)$this->request->get['entity_id'];
 		$data['type'] = 'product/product';
-		$this->response->setOutput($this->load->view('common/review_form', $data));
+		$response['dialog'] = $this->load->view('common/review_form', $data);
+		$this->response->setOutput(json_encode($response));
 	}
 
 	public function sendReview() {
@@ -414,15 +417,15 @@ class ControllerProductProduct extends Controller {
 
 		if (isset($this->request->get['entity_id']) && $this->request->get['entity_id']) {
 			if ($this->request->server['REQUEST_METHOD'] == 'POST') {
-				if ((utf8_strlen($this->request->post['name']) < 3) || (utf8_strlen($this->request->post['name']) > 25)) {
+				if (!isset($this->request->post['name']) || (utf8_strlen($this->request->post['name']) < 3) || (utf8_strlen($this->request->post['name']) > 25)) {
 					$json['error']['name'] = $this->language->get('error_name');
 				}
 
-				if ((utf8_strlen($this->request->post['text']) < 25) || (utf8_strlen($this->request->post['text']) > 1000)) {
+				if (!isset($this->request->post['text']) || (utf8_strlen($this->request->post['text']) < 25) || (utf8_strlen($this->request->post['text']) > 1000)) {
 					$json['error']['text'] = $this->language->get('error_text');
 				}
 
-				if (empty($this->request->post['rating']) || $this->request->post['rating'] < 0 || $this->request->post['rating'] > 5) {
+				if (!isset($this->request->post['rating']) || empty($this->request->post['rating']) || $this->request->post['rating'] < 0 || $this->request->post['rating'] > 5) {
 					$json['error']['rating'] = $this->language->get('error_rating');
 				}
 
@@ -440,7 +443,7 @@ class ControllerProductProduct extends Controller {
 
 					$this->model_catalog_review->addReview($this->request->get['entity_id'], $this->request->post);
 
-					$json['success'] = $this->language->get('text_success');
+					$json['dialog'] = $this->language->get('text_success');
 				}
 			}
 		} else {

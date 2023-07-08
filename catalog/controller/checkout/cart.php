@@ -302,8 +302,15 @@ class ControllerCheckoutCart extends Controller {
 					$required_options[] = $product_option['name'];
 				}
 			}
+
+			// If required options not selected
 			if (!empty($required_options)) {
-				$json['error']['option'] = sprintf($this->language->get('error_required'), implode(', ', $required_options));
+				// $json['error']['option'] = sprintf($this->language->get('error_required'), implode(', ', $required_options));
+				$additional_modal = $this->load->controller('common/cart/renderAdditionalModal');
+				$additional_modal['additional_header'] = sprintf($this->language->get('error_required'), implode(', ', $required_options));
+				$json['dialog'] = $this->load->view('common/cart_select_options', $additional_modal);
+				// $this->response->addHeader('Content-Type: application/json');
+				// return $this->response->setOutput(json_encode($json));
 			}
 
 			if (isset($this->request->post['recurring_id'])) {
@@ -390,12 +397,9 @@ class ControllerCheckoutCart extends Controller {
 				// );
 
 				// Данные для обновления кнопки
-				$json['product_count'] = $this->cart->countProducts();
-				$json['total_cart'] = $this->currency->format($total, $this->session->data['currency']);
-			} else {
-				// DONE здесь убрать редирект
-				// Вывести окно с выбором опций товара
-				// $json['redirect'] = str_replace('&amp;', '&', $this->url->link('product/product', 'product_id=' . $this->request->post['product_id']));
+				$json['cart_count'] = $this->cart->countProducts();
+				$json['html']['replace']['.cart_count'] = ($this->cart->countProducts() > 0) ? $this->cart->countProducts() : '';
+				$json['html']['replace']['.cart_title'] = ($this->cart->countProducts() > 0) ? $this->currency->format($total, $this->session->data['currency']) : $this->language->get('text_header_cart');
 			}
 		}
 
@@ -491,9 +495,10 @@ class ControllerCheckoutCart extends Controller {
 
 				array_multisort($sort_order, SORT_ASC, $totals);
 			}
-			$json['product_count'] = $this->cart->countProducts();
-			$json['total_cart'] = $this->currency->format($total, $this->session->data['currency']);
-			$json['total'] = sprintf($this->language->get('text_items'), $this->cart->countProducts() + (isset($this->session->data['vouchers']) ? count($this->session->data['vouchers']) : 0), $this->currency->format($total, $this->session->data['currency']));
+			$json['cart_count'] = $this->cart->countProducts();
+			$json['html']['replace']['.cart_count'] = ($this->cart->countProducts() > 0) ? $this->cart->countProducts() : '';
+			$json['html']['replace']['.cart_title'] = ($this->cart->countProducts() > 0) ? $this->currency->format($total, $this->session->data['currency']) : $this->language->get('text_header_cart');
+			// $json['html']['replace']['.total'] = sprintf($this->language->get('text_items'), $this->cart->countProducts() + (isset($this->session->data['vouchers']) ? count($this->session->data['vouchers']) : 0), $this->currency->format($total, $this->session->data['currency']));
 		}
 
 		$this->response->addHeader('Content-Type: application/json');
