@@ -20,7 +20,7 @@ class Cache {
 	 * @param	int		$expire		Optional parameters
 	 *
  	*/
-	public function __construct($adaptor, $expire = 3600) {
+	public function __construct($adaptor, $expire = 24*3600) {
 		$class = 'Cache\\' . $adaptor;
 
 		if (class_exists($class)) {
