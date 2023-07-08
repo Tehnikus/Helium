@@ -200,39 +200,10 @@ var voucher = {
 
 		var url = 'index.php?route=checkout/cart/remove';
 		var data = 'key=' + key;
-		ajax(url, data, function(r) {
-			ajax('index.php?route=common/cart/info', null, function(n) {
-				document.getElementById('cart').innerHTML = n;
-			},null,null,null,"GET","text",true);
-		});
-
-
-		// $.ajax({
-		// 	url: 'index.php?route=checkout/cart/remove',
-		// 	type: 'post',
-		// 	data: 'key=' + key,
-		// 	dataType: 'json',
-		// 	beforeSend: function() {
-		// 		$('#cart > button').button('loading');
-		// 	},
-		// 	complete: function() {
-		// 		$('#cart > button').button('reset');
-		// 	},
-		// 	success: function(json) {
-		// 		// Need to set timeout otherwise it wont update the total
-		// 		setTimeout(function () {
-		// 			$('#cart > button').html('<span id="cart-total"><i class="icon-cart"></i> ' + json['total'] + '</span>');
-		// 		}, 100);
-
-		// 		if (getURLVar('route') == 'checkout/cart' || getURLVar('route') == 'checkout/checkout') {
-		// 			location = 'index.php?route=checkout/cart';
-		// 		} else {
-		// 			$('#cart > ul').load('index.php?route=common/cart/info ul li');
-		// 		}
-		// 	},
-		// 	error: function(xhr, ajaxOptions, thrownError) {
-		// 		alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
-		// 	}
+		// ajax(url, data, function(r) {
+		// 	ajax('index.php?route=common/cart/info', null, function(n) {
+		// 		document.getElementById('cart').innerHTML = n;
+		// 	},null,null,null,"GET","text",true);
 		// });
 	}
 }
@@ -264,12 +235,6 @@ document.addEventListener('click', function(e) {
 	if (e.target.tagName === 'A' && e.target.href.indexOf('review&product') != '-1') {
 		e.preventDefault();
 		fetch(e.target.href).then(r => {return r.text()}).then(r => {document.getElementById('js_reviews').innerHTML = r});
-	}
-
-	// Отзывы
-	if (e.target.id == 'button-review') {
-		e.preventDefault();
-		sendReview(e.target);
 	}
 
 	if (e.target.id == 'button-login') {
@@ -313,21 +278,6 @@ function phoneMask (phone, format) {
 	.replace(/(-\d{4})\d+?$/, '$1'); 		// 4. Pass first group here XXX = {4}
 }
 
-
-// // var restURL = "index.php?route=checkout/cart/add" + encodeURIComponent(document.getElementById('email').value)
-// var url = "index.php?route=checkout/cart/add&" + 'product_id=' + product_id + '&quantity=' + (typeof(quantity) != 'undefined' ? quantity : 1)
-// var opts = {
-// 	method: 'POST',
-// 	headers: {
-// 		'Content-Type': 'application/json',
-// 		'Accept': 'application/json'
-// 	}
-// };
-// fetch(url, opts).then(function (response) {
-// 	console.log(response);
-// 	// return response.json();
-// });
-// // e.preventDefault();
 
 // function login() {
 // 	email = document.querySelector('[name="email"]');
@@ -661,27 +611,6 @@ let toast = {
 	}
 }
 
-
-// Update reviews form, remove obsolete code
-function sendReview(t) {
-	let review_form = document.getElementById('form-review');
-	// Получаем форму, превращаем данные в строку вида:
-	// &name='Вася'&review='ололо'
-	// let review = new URLSearchParams(new FormData(review_form)).toString();
-	let review_url = 'index.php?route='+t.dataset.type+'/sendReview&entity_id=' + t.dataset.id;
-	let data = new FormData(review_form);
-	fetch(review_url, {method: "POST", body: data})
-	.then(r => {return r.json()})
-	.then(r => {
-		if (!handleErrors(r, review_form) && 'success' in r) {
-			dialog.create(r.success);
-			// toast.create(r.success, 'success');
-		}
-	})
-}
-
-
-
 // Live search
 // Shows product drid with pictures, highlights search query in product description
 // Adds countdown() if such products present
@@ -695,7 +624,7 @@ const searchFunction = () => {
 	// Hide search results if input is empty
 	if (search_word.length < 1) {
 		inner_search.classList.remove('some-results');
-		// inner_search.inert = true;
+		inner_search.inert = true;
 		return;
 	}
 	timeout = setTimeout(function () {
@@ -722,157 +651,6 @@ const searchFunction = () => {
 
 
 
-
-const reviewModal = (el, ev) => {
-	fetch('index.php?route='+el.dataset.type+'/displayReviewModal&entity_id=' + el.dataset.id, {method: "POST"})
-	.then(r => {return r.text();})
-	.then(resp => {
-		dialog.create(resp, ev);
-	});
-}
-
-// Replace AJAX function
-// Chains fetch with callback, returns result text
-// Sets default header to post form data
-async function fetchFunction({url, m, h, b, callback, arg, ev}) {
-	let [a, method, headers, body, e, f, event] = [url, m || 'POST', h || {"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"}, b || '', callback || '', arg || '', ev || ''];
-	return fetch(a, {method, headers, body})
-	.then(r => {return r.text()})
-	.then(resp => {
-		if (e === '') {
-			return resp;
-		}
-		if (arg !== '' || typeof(arg) !== 'undefined') {
-			e[f](resp, event);
-		} else {
-			e(resp, event);
-		}
-		return resp;
-	})
-}
-
-const cartRemove =  async (el, ev) => {
-	// Request
-	let r = await fetchFunction({url: 'index.php?route=checkout/cart/remove', b: 'key='+el.dataset.key });
-	let resp = JSON.parse(r);
-	cartShowModal();
-	// Update button in header
-	cartUpdateHeaderButton(resp);
-	// Update favicon
-	setIcon(resp.product_count);
-	// fetch('index.php?route=checkout/cart/remove', {method:"POST", body: 'key='+el.dataset.key}).then(r=>{return r.text()}).then(r=> {console.log(r);})
-}
-
-const cartAdd =  async (el, ev) => {
-	// Product ID
-	const product_id = el.dataset.product_id;
-	// Quantity. If input quantity is present, use it value. If minimum quantity in dataset is present, use it. If no - then just use 1
-	const qty = (!!document.getElementById('input-quantity')) ? document.getElementById('input-quantity').value : el.dataset.minimum_qty || 1;
-	
-	// Product options
-	const options_inputs = Array.from(document.querySelectorAll('input[name^="option"]:checked, select[name^="option"]'));
-	let options = options_inputs.map(element => {
-		if (element.tagName === 'SELECT') {
-			return `${element.name}=${element.options[element.selectedIndex].value}`;
-		} else {
-			return `${element.name}=${element.value}`;
-		}
-	}).join('&');
-
-	// All neccessary data
-	let data = 'product_id=' + product_id + '&quantity=' + qty + ((options.length > 0) ? '&' + options : '');
-	
-	// Request
-	let r = await fetchFunction({url: 'index.php?route=checkout/cart/add', b: data});
-	let resp = JSON.parse(r);
-	
-	// If added successfully
-	if ('success' in resp) {
-		// Update button in header
-		cartUpdateHeaderButton(resp);
-		// Show dialog
-		cartShowModal(el,ev);
-		// Update favicon
-		setIcon(resp.product_count);
-	}
-	
-	// Additional window if product options are required
-	if ('error' in resp) {
-		const h1_options = resp.error.option;
-		let er = await fetchFunction({url:'index.php?route=common/cart/displayAdditionalModal', b: 'product_id=' + el.dataset.product_id});
-		er  = JSON.parse(er);
-		// Add header pointing on missing options
-		dialog.create('<span class="h1">'+h1_options+'</span>'+er.data, ev);
-	}
-	// That's all, folks!
-}
-
-const cartUpdateHeaderButton = (r) => {
-	if ('total_cart' in r && 'product_count' in r) {
-		document.getElementById('total_cart').innerHTML = r.total_cart;
-		document.getElementById('product_count').innerText = r.product_count;
-	}
-}
-
-
-function saveShippingMethod(input) {
-	// console.log(input);
-	const [m, v] = [input.name, input.value];
-	let url = 'index.php?route=checkout/'+m+'/save';
-	let data = new FormData;
-	data.append(m, v)
-	// for (const pair of data.entries()) {
-	// 	console.log(`${pair[0]}, ${pair[1]}`);
-	// }
-	fetch(url, {method:"post", body: data})
-	// .then((r) => {return r.text();})
-	// .then((r) => {console.log(r);})
-}
-
-
-// Refactored saveCheckoutfields function
- const saveCheckoutfields = async (form) => {
-	try {
-		let data = new FormData(form);
-		let response = await fetch('index.php?route=common/cart/fetchSaveQuickCheckoutfields', { method: "POST", body: data });
-		// TODO remove this
-		// let result = await response.json();
-		// console.log(result);
-		return response;
-
-		// return result;
-	} catch (error) {
-		console.error(error);
-	}
-}
-
-// Chech errors in quick checkout
-// If no errors occured - redirect to successful order page
-const validateQuickCheckout = (el, ev) => {
-	fetch('index.php?route=common/cart/getConfirmOrder', {method:"POST"})
-	.then(r =>{ return r.json()})
-	.then(r =>{
-		// console.log(r);
-		handleErrors(r, document.getElementById('js_quick_ckeckout'));
-		if ('redirect' in r) {
-			window.location = r.redirect;
-		}
-	})
-}
-
-const cartShowModal = async (el, ev) => {
-	try {
-		let response = await fetch('index.php?route=common/cart/displayCartModal', { method: "POST" });
-		let modalContent = await response.text();
-		let modalDiv = document.createElement('div');
-		modalDiv.innerHTML = modalContent;
-		let cart_dialog = dialog.create(modalDiv, ev);
-		quickCheckout(cart_dialog);
-	} catch (error) {
-		console.error(error);
-	}
-};
-
 // Show postode input if country requires postcode
 function togglePostcode(country_select, postcode_input) {
 	if (!!country_select && !!postcode_input) {
@@ -886,12 +664,12 @@ function togglePostcode(country_select, postcode_input) {
 	}
 }
 
-const quickCheckout = (cart_dialog) =>{
+const quickCheckout = () =>{
 	// Quick checkout form elements
-	const form 			 = cart_dialog.querySelector('#js_quick_ckeckout');
-	const country_select = cart_dialog.querySelector('[name="shipping_address[country_id]"]');
-	const zone_select 	 = cart_dialog.querySelector('[name="shipping_address[zone_id]"]');
-	const postcode_input = cart_dialog.querySelector('[name="postcode"]');
+	const form 			 = document.querySelector('#js_quick_ckeckout'),
+		  country_select = document.querySelector('[name="shipping_address[country_id]"]'),
+		  zone_select 	 = document.querySelector('[name="shipping_address[zone_id]"]'),
+		  postcode_input = document.querySelector('[name="postcode"]');
 
 
 	if (!!country_select) {
@@ -906,7 +684,7 @@ const quickCheckout = (cart_dialog) =>{
 		// Save fields initially so payment and shipping can be displayed
 		saveCheckoutfields(form).then(r =>{return r.ok}).then(r=>{
 			if (r) {
-				fetchDisplayShippingAndPayment();
+				fetchShippingPayment();
 			}
 		});
 		const formElements = Array.from(form.elements);
@@ -916,9 +694,8 @@ const quickCheckout = (cart_dialog) =>{
 				// So delivery and payment are updated instantly
 				input.addEventListener('change', () => {
 					saveCheckoutfields(form);
-					fetchDisplayShippingAndPayment();
+					fetchShippingPayment();
 					getZones(country_select, zone_select);
-					// Show postcode if required
 					togglePostcode(country_select, postcode_input);
 				});
 			} else if (input.name.includes('shipping_method') || input.name.includes('payment_method')) {
@@ -929,7 +706,7 @@ const quickCheckout = (cart_dialog) =>{
 			// Text fields and other not involved in delivery and payment are updatetd on focusout
 			// This fires anyway after user interaction
 			input.addEventListener('focusout', ()=>{
-				// Only save, do not fetchDisplayShippingAndPayment() here
+				// Only save, do not fetchShippingPayment() here
 				// because otherways if user clicks on delivery or payment after any field filled
 				// this will cause reload delivery and payment inputs and will look like a glitch
 				// forsing user to click one more time
@@ -960,11 +737,9 @@ const toggleAddressForm = () => {
 					const b = new FormData;
 					b.append('address_id', ea.value);
 					fetch('index.php?route=common/cart/fetchSaveExistingAddress', {method: "POST", body:b})
-					// .then(r =>{return r.text()}).then(r=>{console.log(JSON.parse(r));})
 
-					// Fetch shipping and payment as customer address may be in different zones, coutries
-					// with different shipping and payment methods
-					fetchDisplayShippingAndPayment(); 
+					// Fetch shipping and payment as customer address may be in different zones, coutries with different shipping and payment methods
+					fetchShippingPayment(); 
 					// fillFetchedAddressFields(r);
 				} else {
 					uncollapseElement(new_address_form)
@@ -985,19 +760,9 @@ const toggleAddressForm = () => {
 // 	}
 // }
 
-const collapseElement = (e) => {
-	e.style.cssText = 'height:0px; overflow:hidden; transition: height .5s;';
-	e.inert = true;
-}
-const uncollapseElement = (e) => {
-	e.style.cssText = `height: ${e.scrollHeight}px; transition: height .5s; overflow:hidden;`;
-	e.inert = false;
-}
+const collapseElement = (e) => {e.style.cssText = 'height:0px; overflow:hidden; transition: height .5s;';e.inert = true;}
+const uncollapseElement = (e) => {e.style.cssText = `height: ${e.scrollHeight}px; transition: height .5s; overflow:hidden;`;e.inert = false;}
 
-const fetchDisplayShippingAndPayment = () => {
-	ajax('common/cart/fetchDisplayShippingHtml');
-	ajax('common/cart/fetchDisplayPaymentHtml');
-}
 
 const getZones = (country_select, zone_select) => {
 	let zone_block = country_select.parentElement.nextElementSibling;
@@ -1036,55 +801,6 @@ const getZones = (country_select, zone_select) => {
 	}
 }
 
-// const compareModal = (el, ev) => {
-// 	fetch('index.php?route=product/compare/showCompareModal').then(r=>{return r.text()}).then(r=> {dialog.create(r, ev)})
-// }
-
-// const compareAdd = (el, ev) => {
-// 	const b = new FormData;
-// 	b.append('product_id', el.dataset.productId)
-// 	fetch('index.php?route=product/compare/add', {method: "POST", body:b}).then(r=>{return r.json()})
-// 	.then(r=>{
-// 		console.log(r);
-// 		dialog.create(r['table'], ev);
-// 		document.querySelector('#compare-total').innerHTML = r['total'];
-// 	});
-// }
-// const wishlistModal = (el, ev) => {
-// 	fetch('index.php?route=account/wishlist/showWishlistModal').then(r=>{return r.text()}).then(r=> {dialog.create(r, ev)})
-// }
-
-// const wishlistAdd = (el, ev) => {
-// 	const b = new FormData;
-// 	b.append('product_id', el.dataset.productId);
-// 	fetch('index.php?route=account/wishlist/add', {method: "POST", body:b}).then(r=>{return r.json()})
-// 	.then(r=>{
-// 		dialog.create(r['table'], ev);
-// 		document.querySelector('#wishlist-total').innerHTML = r['total'];
-// 	});
-// }
-// const wishlistRemove = (el, ev) => {
-	// ajax(el, ev, )
-	// const b = new FormData;
-	// b.append('product_id', el.dataset.productId)
-	// fetch('index.php?route=account/wishlist/remove', {method: "POST", body:b}).then(r=>{return r.json()})
-	// .then(r=>{
-	// 	// console.log(r);
-	// 	if ('remove' in r) {
-	// 		toast.create(r.remove, 'success');
-	// 	}
-	// 	document.querySelector('#wishlist-total').innerHTML = r['total'];
-	// 	const i = document.querySelector('#js_wishlist_table #product_id_'+el.dataset.productId);
-	// 	if (!!i) {
-	// 		i.remove();
-	// 	}
-	// });
-// }
-// const contactsModal = (el, ev) => {
-// 	fetch('index.php?route=information/contact/showContactsModal').then(r=>{return r.text()}).then(r=> {dialog.create(r, ev)})
-// }
-
-
 
 // Correct time in type="time" and type="datetimelocal" inputs to hours
 // So 13:23 will be corrected to 13:00,
@@ -1109,7 +825,6 @@ const correctTime = (el) => {
 	mins = '00';
 	el.value = `${date}` + `${hours}:${mins}`;
 }
-
 
 
 // Main menu
@@ -1696,110 +1411,158 @@ function handleErrors(result, form_with_errors) {
 
 function removeElementsByClass(className) {
 	const elements = document.getElementsByClassName(className);
-	console.log(elements);
 	while(elements.length > 0) {
 	  elements[0].parentNode.removeChild(elements[0]);
 	}
 }
 
-const ajax = async (el, ev, callback)=> {
-    // const url = (typeof(el.dataset.url) !== 'undefined') ? el.dataset.url : el;
-	let url = '', m = "GET", settings = {};
-	if (el.dataset) {
-		url = el.dataset.url;
-		if (el.dataset.form) {
-			m = "POST";
-			const form = document.querySelector(el.dataset.form);
-			settings.body = new FormData(form);
+const fetchShippingPayment = () => {ajax('common/cart/fetchDisplayShippingHtml');ajax('common/cart/fetchDisplayPaymentHtml');}
+const reviewModal 		= (el, ev) => {ajax(el.dataset.type+'/showReviewModal&entity_id=' + el.dataset.id, {ev})}
+const sendReview 		= (el, ev) => {ajax(el.dataset.type+'/sendReview&entity_id=' + el.dataset.id, {el, ev})}
+const wishlistModal 	= (el, ev) => {ajax('account/wishlist/showWishlistModal', {el,ev})}
+const wishlistAdd 		= (el, ev) => {ajax('account/wishlist/add', {el,ev})}
+const wishlistRemove 	= (el, ev) => {ajax('account/wishlist/remove', {el,ev})}
+const compareModal 		= (el, ev) => {ajax('product/compare/showCompareModal', {el,ev})}
+const compareAdd 		= (el, ev) => {ajax('product/compare/add', {el,ev})}
+const compareRemove 	= (el, ev) => {ajax('product/compare/remove', {el,ev})}
+const contactsModal 	= (el, ev) => {ajax('information/contact/showContactsModal', {el,ev})}
+const cartRemove 	    = (el, ev) => {ajax('checkout/cart/remove', {el,ev}).then(r=>{cartShowModal();setIcon(r.cart_count)})}
+const cartShowModal     = (el, ev) => {ajax('common/cart/showCartModal', {el, ev}).then(r=>{quickCheckout()})
+	// try {
+	// 	let response = await fetch('index.php?route=common/cart/displayCartModal', { method: "POST" });
+	// 	let modalContent = await response.text();
+	// 	let modalDiv = document.createElement('div');
+	// 	modalDiv.innerHTML = modalContent;
+	// 	let cart_dialog = dialog.create(modalDiv, ev);
+	// 	quickCheckout(cart_dialog);
+	// } catch (error) {
+	// 	console.error(error);
+	// }
+};
+const cartAdd =  async (el, ev) => {
+	let body = new FormData;
+	body.append('product_id', el.dataset.product_id);
+	body.append('quntity', (!!document.getElementById('input-quantity')) ? document.getElementById('input-quantity').value : el.dataset.minimum_qty || 1);
+	// Product options
+	const options_inputs = Array.from(document.querySelectorAll('input[name^="option"]:checked, select[name^="option"]'));
+	options_inputs.map(element => {
+		if (element.tagName === 'SELECT') {
+			body.append(element.name, element.options[element.selectedIndex].value);
+		} else {
+			body.append(element.name, element.value);
 		}
-		
-		// If any elements present in dataset except action or form
-		if (Object.values(el.dataset).some(el => el !== 'action' || el !== 'form')) {
-			// create new form data
-			const b = new FormData;
-			// Append pair key:value to form data
-			for (key in el.dataset) {
-				if (key !=='form' || key !== 'action') {
-					b.append(key, el.dataset[key])
-				}
-			}
-			m = "POST";
-			// Append body to settings
-			settings.body = b;
+	})
+	ajax('checkout/cart/add', {body, el, ev}).then(r=>{
+		if ('success' in r) {
+			cartShowModal(el, ev);
+			setIcon(r.cart_count);
 		}
-	} else {
-		url = el;
-	}
-
-    settings.method = m;
-    
-    return await fetch('index.php?route='+url, settings).then(r =>{return r.json()}).then(r=>{
-        //Callback function
-		if (typeof(callback) !== "undefined") {
-            callback(r);
-        }
-        // Create dialog
-        if ('dialog' in r) {
-            dialog.create(r.dialog,ev);
-        }
-        // Create toast
-        if ('toasts' in r) {
-			for (reason in r.toasts) {
-				for (t in r.toasts[reason]) {
-					// console.log(r.toasts[reason][t], reason);
-                    toast.create(r.toasts[reason][t], reason);
-                }
-            }
-        }
-        // return html
-        if ('html' in r) {
-			for (action in r.html) {
-				for (selector in r.html[action]) {
-					if (action == 'replace') {
-						document.querySelectorAll(selector).forEach(e =>{
-							e.innerHTML = r.html[action][selector];
-						});
-					}
-					if (action == 'append') {
-						e.insertAdjacentHTML('beforeend', e.innerHTML = r.html[action][selector])
-					}
-					if (action == 'prepend') {
-						e.insertAdjacentHTML('afterbegin', el.innerHTML = r.html[action][selector])
-					}
-					if (action == 'remove') {
-						for (const element of document.querySelectorAll(selector)) {
-							element.remove();
-						}
-					}
-				}
-			}
-            return r.html;
-        }
-		return r;
-    })
+	})
+}
+function saveShippingMethod(input) {
+	// console.log(input);
+	const [m, v] = [input.name, input.value];
+	let url = 'index.php?route=checkout/'+m+'/save';
+	let data = new FormData;
+	data.append(m, v)
+	// for (const pair of data.entries()) {
+	// 	console.log(`${pair[0]}, ${pair[1]}`);
+	// }
+	fetch(url, {method:"post", body: data})
+	// .then((r) => {return r.text();})
+	// .then((r) => {console.log(r);})
 }
 
-// const ajax = async (el, ev) => {
-// 	let request = await fetch(el.dataset.action || el.action, {method: el.dataset.method || "POST"});
-// 	let response = await request.then()
-// }
+// Refactored saveCheckoutfields function
+const saveCheckoutfields = async (form) => {
+	try {
+		let data = new FormData(form);
+		let response = await fetch('index.php?route=common/cart/fetchSaveQuickCheckoutfields', { method: "POST", body: data });
+		// TODO remove this
+		return response;
+
+		// return result;
+	} catch (error) {
+		console.error(error);
+	}
+}
+
+// Chech errors in quick checkout
+// If no errors occured - redirect to successful order page
+const validateQuickCheckout = (el, ev) => {
+	fetch('index.php?route=common/cart/getConfirmOrder', {method:"POST"})
+	.then(r =>{ return r.json()})
+	.then(r =>{
+		// console.log(r);
+		handleErrors(r, document.getElementById('js_quick_ckeckout'));
+		if ('redirect' in r) {
+			window.location = r.redirect;
+		}
+	})
+}
+
+const ajax = async (url, s) => {
+	let method = "POST", body, headers, settings = s || {}, el, ev;
+
+	if (!!settings.el && !!settings.el.dataset) {
+		el = settings.el;
+		url = el.dataset.url || el.action || url;
+		if (Object.values(el.dataset).some(k => k !== 'action' || k !== 'form' || k !== 'url')) {
+			body = new FormData;
+			for (key in el.dataset) {
+				if (key !=='form' || key !== 'action' || key !== 'url') {
+					body.append(key, el.dataset[key])
+				}
+			}
+		}
+		if ('form' in el.dataset) {
+			body = new FormData(document.getElementById(el.dataset.form))
+		}
+	}
+	if ('body' in settings) {body = settings.body}
+	if ('ev' in settings) {ev = settings.ev}
+
+	return await fetch('index.php?route='+url, {method, body}).then(r=>{return r.json()}).then(r=>{
+		// console.log(r);
+		if ('redirect' in r) {window.location = r.redirect}
+		if ('dialog' in r) {dialog.create(r.dialog, ev)}
+		if ('toasts' in r) {for (c in r.toasts) {for (t in r.toasts[c]) {toast.create(r.toasts[c][t], c)}}}
+		if ('error' in r) {handleErrors(r, document)}
+		if ('html' in r) {
+			for (a in r.html) {
+				for (s in r.html[a]) {
+					if (a == 'replace') {document.querySelectorAll(s).forEach(e =>{e.innerHTML = r.html[a][s]})}
+					if (a == 'append') 	{e.insertAdjacentHTML('beforeend', e.innerHTML = r.html[a][s])}
+					if (a == 'prepend') {e.insertAdjacentHTML('afterbegin', el.innerHTML = r.html[a][s])}
+					if (a == 'remove') 	{for (const e of document.querySelectorAll(s)) {e.remove()}}
+				}
+			}
+		}
+		return r
+	})
+}
 
 // List of functions
 // event: function
 const actions = {
 	click: {
+		sendReview,
 		reviewModal,
+
 		cartAdd,
 		cartRemove,
 		cartShowModal,
-		// compareModal,
-		// compareAdd,
-		// wishlistModal,
-		// wishlistAdd,
-		// wishlistRemove,
-		// contactsModal,
+
+		compareModal,
+		compareAdd,
+		compareRemove,
+
+		wishlistModal,
+		wishlistAdd,
+		wishlistRemove,
+
+		contactsModal,
 		validateQuickCheckout,
-		ajax,
 	},
 	input: {
 		searchFunction,
@@ -1810,7 +1573,7 @@ const actions = {
 	}
 };
 // Add event listener to document
-Object.keys(actions).forEach(key => document.addEventListener(key, handleEvents));
+Object.keys(actions).forEach(key => document.addEventListener(key, handleEvents, {passive: true}));
 
 // Data attribute driven event handler
 // Returns element, event and fires function from action object
