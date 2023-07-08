@@ -158,8 +158,8 @@
           </button>
         </div>
         <div class="btn-group">
-          <button type="button" data-action="ajax" data-url="account/wishlist/add" data-product_id="{{ product_id }}" aria-haspopup="dialog" class="wishlist" title="{{ button_wishlist }}"><i class="icon-heart"></i></button>
-          <button type="button" data-action="ajax" data-url="product/compare/add" data-product_id="{{ product_id }}" aria-haspopup="dialog" class="compare" title="{{ button_compare }}" ><i class="icon-compare"></i></button>
+          <button type="button" data-action="wishlistAdd" data-product_id="{{ product_id }}" aria-haspopup="dialog" class="wishlist" title="{{ button_wishlist }}"><i class="icon-heart"></i></button>
+          <button type="button" data-action="compareAdd" data-product_id="{{ product_id }}" aria-haspopup="dialog" class="compare" title="{{ button_compare }}" ><i class="icon-compare"></i></button>
           {% if review_guest %}
             <button type="button" data-id="{{ product_id }}" data-type="product/product" aria-haspopup="dialog" id="write-review" data-action="reviewModal"><i class="icon-edit"></i>{{ text_write }}</button>
           {% else %}

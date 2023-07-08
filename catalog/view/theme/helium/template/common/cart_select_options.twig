@@ -1,4 +1,7 @@
-<h1 class="product-name">{{ name }}</h1>
+{% if additional_header %}
+  <h1>{{ additional_header }}</h1>
+{% endif %}
+<h2 class="product-name">{{ name }}</h2>
 <div class="row" data-product-id="{{ product_id }}" data-json-prices={{json_prices}}>
   <div class="left-side">
   {% if image %}
