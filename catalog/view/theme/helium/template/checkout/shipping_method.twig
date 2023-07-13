@@ -12,9 +12,9 @@
           <div class="form-control">
             {% if quote.code == code or not code %}
               {% set code = quote.code %}
-                <input id="{{ quote.code }}" type="radio" name="shipping_method" value="{{ quote.code }}" checked="checked" />
+                <input id="{{ quote.code }}" type="radio" name="shipping_method" value="{{ quote.code }}" checked="checked" {% if shipping_method.disabled %} disabled {% endif %}/>
               {% else %}
-                <input id="{{ quote.code }}" type="radio" name="shipping_method" value="{{ quote.code }}" />
+                <input id="{{ quote.code }}" type="radio" name="shipping_method" value="{{ quote.code }}" {% if shipping_method.disabled %} disabled {% endif %}/>
               {% endif %}
             <label for="{{ quote.code }}">{{ quote.title }} - {{ quote.text }}</label>
           </div>

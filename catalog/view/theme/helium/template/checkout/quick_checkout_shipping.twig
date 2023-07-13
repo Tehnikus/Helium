@@ -7,17 +7,17 @@
         {% for quote in shipping_method.quote %}
           <div class="form-control">
             {% if selected_shipping_method == quote.code %}
-              <input data-action="saveShippingMethod" id="{{ quote.code }}" type="radio" name="shipping_method" value="{{ quote.code }}" checked="checked" />
+              <input data-action="saveShippingMethod" id="{{ quote.code }}" type="radio" name="shipping_method" value="{{ quote.code }}" checked="checked" {% if shipping_method.disabled %} disabled {% endif %}/>
             {% else %}
-              <input data-action="saveShippingMethod" id="{{ quote.code }}" type="radio" name="shipping_method" value="{{ quote.code }}" />
+              <input data-action="saveShippingMethod" id="{{ quote.code }}" type="radio" name="shipping_method" value="{{ quote.code }}" {% if shipping_method.disabled %} disabled {% endif %}/>
             {% endif %}
-            <label for="{{ quote.code }}">{{ quote.title }} - {{ quote.text }}</label>
+            <label for="{{ quote.code }}"><b>{{ quote.title }}</b> - {{ quote.text }}</label>
           </div>
         {% endfor %}
       {% else %}
         {% if shipping_method.status == 1 %}
           <div class="form-control">
-            <input data-action="saveShippingMethod" type="radio" value="{{ shipping_method.code }}" id="shipping_{{ shipping_method.code }}" name="shipping_method" {% if loop.first %} checked {% endif %}/>
+            <input data-action="saveShippingMethod" type="radio" value="{{ shipping_method.code }}" id="shipping_{{ shipping_method.code }}" name="shipping_method" {% if loop.first %} checked {% endif %}{% if shipping_method.disabled %} disabled {% endif %}/>
             <label for="shipping_{{ shipping_method.code }}">{{ shipping_method.title }}</label>
           </div>
         {% endif %}
@@ -26,5 +26,4 @@
       <div role="alert" class="alert-danger">{{ shipping_method.error }}</div>
     {% endif %}
   {% endfor %}
-
 {% endif %}
