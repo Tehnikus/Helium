@@ -2,11 +2,8 @@
 {% include 'helium/template/common/breadcrumbs.twig' %}
 <main role="main" id="account-wishlist">
   {{ content_top }}
-      
-      {% include 'helium/template/account/wishlist_table.twig' with {products: products, success:success} %}
-      
-      <div class="pull-right"><a href="{{ continue }}" class="primary">{{ button_continue }}</a></div>
-      
+  {% include 'helium/template/account/wishlist_table.twig' with {products: products, success:success} %}
+  <div class="pull-right"><a href="{{ continue }}" class="primary">{{ button_continue }}</a></div>
   {{ content_bottom }}
 </main>
 {{ column_left }}

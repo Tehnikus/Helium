@@ -42,11 +42,10 @@
                 {% endif %}
                 class="add-to-cart primary" 
                 title="{{ button_cart }} {{ product.name }}">
-                <i class="icon-cart"></i>
+                <i class="icon-cart"></i>{{ button_cart }}
               </button>
               <button 
-                data-action="ajax" 
-                data-url="account/wishlist/remove" 
+                data-action="wishlistRemove" 
                 data-product_id="{{ product.product_id }}" 
                 title="{{ button_remove }}" 
                 class="close">
