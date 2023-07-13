@@ -1,18 +1,18 @@
 <div id="photos" class="{{ class }}">
   {% if thumb %}
     <link rel="preload" as="image" href="{{ thumb.link }}">
-    <figure class="image">
+    <figure>
       <a role="img" aria-label="{{ heading_title }}" class="thumbnail" href="{{ popup }}" title="{{ heading_title }}">
-        <img src="{{ thumb.link }}" width="{{ thumb.width }}" height="{{ thumb.height }}" title="{{ heading_title }}" alt="{{ heading_title }}" />
+        <img class="js_image_primary" src="{{ thumb.link }}" width="{{ thumb.width }}" height="{{ thumb.height }}" title="{{ heading_title }}" alt="{{ heading_title }}" />
       </a>
-    <figcaption>{{ heading_title }}</figcaption>
+      <figcaption>{{ heading_title }}</figcaption>
     </figure>
   {% endif %}
   {% if images %}
     <div class="scroll-x">
       {% for image in images %}
         <a role="img" aria-label="{{ heading_title }}" class="thumbnail" href="{{ image.popup }}" title="{{ heading_title }}"> 
-          <img loading="lazy" width="{{ image.width }}" height="{{ image.height }}" data-large-img="{{ image.thumb }}" src="{{ image.thumb }}" title="{{ heading_title }}" alt="{{ heading_title }}" />
+          <img class="js_img_additional" loading="lazy" width="{{ image.width }}" height="{{ image.height }}" data-large-img="{{ image.popup }}" src="{{ image.thumb }}" title="{{ heading_title }}" alt="{{ heading_title }}" />
         </a>
       {% endfor %}
     </div>
