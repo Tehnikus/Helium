@@ -471,8 +471,8 @@ class ControllerCommonCart extends Controller {
 		$data['custom_fields'] = $this->model_account_custom_field->getCustomFields();
 		foreach ($data['custom_fields'] as &$custom_field) {
 			if (isset($this->session->data['shipping_address'])) {
-				if (isset($this->session->data['shipping_address']['custom_field']) && isset($this->session->data['shipping_address']['custom_field']['address'])) {
-					foreach ($this->session->data['shipping_address']['custom_field']['address'] as $key => $user_custom_field) {
+				if (isset($this->session->data['shipping_address']['custom_field'])) {
+					foreach ($this->session->data['shipping_address']['custom_field'] as $key => $user_custom_field) {
 						if ($custom_field['custom_field_id'] == $key) {
 							$custom_field['value'] = $user_custom_field;
 						}
@@ -801,7 +801,8 @@ class ControllerCommonCart extends Controller {
 			if ($custom_field['location'] == 'address') {
 				// Name of custom field that corresponds input name i.e. <input name=custom_field[address][2] ...>
 				$custom_field_name = 'custom_field[address]['.$custom_field['custom_field_id'].']';
-				if ($custom_field['required'] && empty($data['custom_field'][$custom_field['location']][$custom_field['custom_field_id']])) {
+				if ($custom_field['required'] 
+					&& empty($data['shipping_address']['custom_field'][$custom_field['custom_field_id']])) {
 					$json['error'][$custom_field_name] = sprintf($this->language->get('error_custom_field'), $custom_field['name']);
 				} elseif (($custom_field['type'] == 'text') && !empty($custom_field['validation']) && !filter_var($data['custom_field'][$custom_field['location']][$custom_field['custom_field_id']], FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => $custom_field['validation'])))) {
 					$json['error'][$custom_field_name] = sprintf($this->language->get('error_custom_field'), $custom_field['name']);
@@ -812,6 +813,7 @@ class ControllerCommonCart extends Controller {
 		if (!isset($data['payment_method'])) {
 			$json['error']['payment_method'] = $this->language->get('error_payment');
 		}
+		// $json['data'] = $data;
 		return $json;
 	}
 
