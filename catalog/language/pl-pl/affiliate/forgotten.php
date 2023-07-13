@@ -1,0 +1,10 @@
+<?php
+$_['heading_title']   = 'Nie pamiętasz hasła?';
+$_['text_account']    = 'Konto';
+$_['text_forgotten']  = 'Zapomniane hasło';
+$_['text_your_email'] = 'Twój adres e-mail';
+$_['text_email']      = 'Wprowadź adres e-mail powiązany z Twoim kontem. Kliknij "Wyślij", a hasło zostanie wysłane na Twój adres e-mail';
+$_['text_success']    = 'Sukces: Nowe hasło zostało wysłane na Twój adres e-mail.';
+$_['entry_email']     = 'Adres e-mail';
+$_['error_email']     = 'Ostrzeżenie: Adres e-mail nie został znaleziony w naszych danych, proszę spróbuj ponownie!';
+$_['error_approved']  = 'Twoje konto wymaga zatwierdzenia, zanim będziesz mógł się zalogować.';
