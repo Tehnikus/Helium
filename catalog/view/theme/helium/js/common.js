@@ -9,7 +9,7 @@ var byId = (i) => document.getElementById(i);
 var qs = (q) => document.querySelector(q);
 var qsAll = (q) => document.querySelectorAll(q);
 
-// Scroll horizontal scrolling containers by mouse wheel
+// // Scroll horizontal scrolling containers by mouse wheel
 // function horizontalScroll(element) {
 // 	element.addEventListener("wheel", (event) => {
 // 		event.preventDefault();
@@ -27,7 +27,7 @@ var qsAll = (q) => document.querySelectorAll(q);
 // 	});
 // 	// requestAnimationFrame(horizontalScroll);
 // }
-// let horizontal_scrolling_containers = d.getElementsByClassName('module-product-list');
+// let horizontal_scrolling_containers = d.getElementsByClassName('scroll-x');
 // for (var i = 0; i < horizontal_scrolling_containers.length; i++) {
 // 	horizontalScroll(horizontal_scrolling_containers[i]);
 // }
@@ -90,10 +90,9 @@ document.addEventListener('click', function(e) {
 // }
 
 document.addEventListener('DOMContentLoaded', function() {
-
-	// TODO Remove this 
-	// fetch('index.php?route=common/cart/fetchSessionData', { method: "POST" }).then(r=>{return r.json()}).then(r=>{ console.info(r)})
-
+	fetch('index.php?route=common/cart/fetchProductCount').then(r => {return r.text()}).then(r => {
+		if (r !=='0') {setIcon(r)}
+	})
 	mobileMenu(); 			// Mobile menu buttons at the bottom of page
 	mainMenu(); 			// Main menu - render buttons, aria attributes and titles
 	countdown(document); 	// Countdown to the end date of discounts
@@ -124,7 +123,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	});
 
 	// Set product count on favicon on page load 
-	fetch('index.php?route=common/cart/fetchProductCount').then(r => {return r.text()}).then(resp => {setIcon(resp)})
+	
 
 	// TODO Move this to it's function
 	let pagination = document.querySelector('main ul.pagination');
@@ -397,9 +396,14 @@ function mobileMenu() {
 		let cart_btn  = {
 			type: 'button',
 			attrs: {'class':'mobile_button button', 'aria-label':js_lang.text_cart_button, 'data-action':'cartShowModal'},
-			props: {
-				'innerHTML':'<i class="icon-cart"></i><span>'+js_lang.text_cart_button+'</span>',
-			},
+			props: {'innerHTML':'<i class="icon-cart"></i><span>'+js_lang.text_cart_button+'</span>'},
+			nest: {
+				0:{
+					type: 'span',
+					attrs: {'class': 'c_count product-count'},
+					
+				}
+			}
 		};
 		// Insert most important buttons the last, so they are always at the right side of mobile menu 
 		btns[9] = catalog_btn;
@@ -1093,8 +1097,8 @@ function anchorNav() {
 function setIcon(productCount) {
 	const bg = getComputedStyle(document.body).getPropertyValue('--color-1') || '#ff0000';
 	const favicon = document.querySelector("link[rel~='icon']");
-	if (productCount === '0' || (typeof(favicon) === 'undefined' && favicon == null)) {return}
-	let faviconSize = 16;
+	if (typeof(favicon) === 'undefined' || favicon == null || typeof(productCount) === 'undefined') {return}
+	faviconSize = 16;
 	let canvas = document.createElement('canvas');
 	canvas.width = faviconSize;
 	canvas.height = faviconSize;
@@ -1106,7 +1110,7 @@ function setIcon(productCount) {
 		context.drawImage(img, 0, 0, faviconSize, faviconSize);
 		// Draw Notification Circle
 		context.beginPath();
-		context.arc( canvas.width - faviconSize / 3 , faviconSize / 3, faviconSize / 3, 0, 2*Math.PI);
+		context.arc(canvas.width - faviconSize / 3 , faviconSize / 3, faviconSize / 3, 0, 2*Math.PI);
 		context.fillStyle = bg;
 		context.fill();
 		// Draw Notification Number
@@ -1254,7 +1258,7 @@ function animatePrice() {
 	// Quantity discounts
 	if ('discounts' in price_list[product_id]) {
 		for (discount_qty in price_list[product_id].discounts) {
-			if (qty >= discount_qty) {
+			if (qty >= parseInt(discount_qty)) {
 				end = parseFloat(price_list[product_id].discounts[discount_qty]);
 			}
 		}
@@ -1442,7 +1446,7 @@ const cartShowModal     = (el, ev) => {ajax('common/cart/showCartModal', {el, ev
 const cartAdd =  async (el, ev) => {
 	let body = new FormData;
 	body.append('product_id', el.dataset.product_id);
-	body.append('quntity', (!!document.getElementById('input-quantity')) ? document.getElementById('input-quantity').value : el.dataset.minimum_qty || 1);
+	body.append('quantity', (!!document.getElementById('input-quantity')) ? document.getElementById('input-quantity').value : el.dataset.minimum_qty || 1);
 	// Product options
 	const options_inputs = Array.from(document.querySelectorAll('input[name^="option"]:checked, select[name^="option"]'));
 	options_inputs.map(element => {
@@ -1460,17 +1464,11 @@ const cartAdd =  async (el, ev) => {
 	})
 }
 function saveShippingMethod(input) {
-	// console.log(input);
 	const [m, v] = [input.name, input.value];
 	let url = 'index.php?route=checkout/'+m+'/save';
 	let data = new FormData;
-	data.append(m, v)
-	// for (const pair of data.entries()) {
-	// 	console.log(`${pair[0]}, ${pair[1]}`);
-	// }
-	fetch(url, {method:"post", body: data})
-	// .then((r) => {return r.text();})
-	// .then((r) => {console.log(r);})
+	data.append(m, v);
+	fetch(url, {method:"post", body: data});
 }
 
 // Refactored saveCheckoutfields function
@@ -1478,10 +1476,7 @@ const saveCheckoutfields = async (form) => {
 	try {
 		let data = new FormData(form);
 		let response = await fetch('index.php?route=common/cart/fetchSaveQuickCheckoutfields', { method: "POST", body: data });
-		// TODO remove this
 		return response;
-
-		// return result;
 	} catch (error) {
 		console.error(error);
 	}
@@ -1490,15 +1485,7 @@ const saveCheckoutfields = async (form) => {
 // Chech errors in quick checkout
 // If no errors occured - redirect to successful order page
 const validateQuickCheckout = (el, ev) => {
-	fetch('index.php?route=common/cart/getConfirmOrder', {method:"POST"})
-	.then(r =>{ return r.json()})
-	.then(r =>{
-		// console.log(r);
-		handleErrors(r, document.getElementById('js_quick_ckeckout'));
-		if ('redirect' in r) {
-			window.location = r.redirect;
-		}
-	})
+	ajax('common/cart/getConfirmOrder', {el, ev})
 }
 
 const ajax = async (url, s) => {
@@ -1524,14 +1511,14 @@ const ajax = async (url, s) => {
 
 	return await fetch('index.php?route='+url, {method, body}).then(r=>{return r.json()}).then(r=>{
 		// console.log(r);
-		if ('redirect' in r) {window.location = r.redirect}
 		if ('dialog' in r) {dialog.create(r.dialog, ev)}
 		if ('toasts' in r) {for (c in r.toasts) {for (t in r.toasts[c]) {toast.create(r.toasts[c][t], c)}}}
-		if ('error' in r) {handleErrors(r, document)}
+		if ('error' in r) {return handleErrors(r, document)}
+		if ('redirect' in r) {window.location = r.redirect}
 		if ('html' in r) {
 			for (a in r.html) {
 				for (s in r.html[a]) {
-					if (a == 'replace') {document.querySelectorAll(s).forEach(e =>{e.innerHTML = r.html[a][s]})}
+					if (a == 'replace') {document.querySelectorAll(s).forEach(e =>{e.innerHTML = r.html[a][s]}); }
 					if (a == 'append') 	{e.insertAdjacentHTML('beforeend', e.innerHTML = r.html[a][s])}
 					if (a == 'prepend') {e.insertAdjacentHTML('afterbegin', el.innerHTML = r.html[a][s])}
 					if (a == 'remove') 	{for (const e of document.querySelectorAll(s)) {e.remove()}}
@@ -1585,3 +1572,15 @@ function handleEvents(evt) {
 		actions[evt.type][origin.dataset.action](origin, evt) ||
 		true;
 }
+
+function hoverImage() {
+	[].forEach.call(document.querySelectorAll('.js_img_additional'), additional_img =>{
+		additional_img.addEventListener('mouseenter', ev =>{
+			[].forEach.call(document.querySelectorAll('.js_image_primary'), primary_img =>{
+				primary_img.src = additional_img.dataset.largeImg;
+			});
+		})
+	})
+}
+
+hoverImage()
