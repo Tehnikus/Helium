@@ -17,3 +17,5 @@ image/*.*
 catalog/view/theme/helium/js/slider.html
 
 *.jpg
+*.png
+/**/.htaccess
