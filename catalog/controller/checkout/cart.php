@@ -398,7 +398,7 @@ class ControllerCheckoutCart extends Controller {
 
 				// Данные для обновления кнопки
 				$json['cart_count'] = $this->cart->countProducts();
-				$json['html']['replace']['.cart_count'] = ($this->cart->countProducts() > 0) ? $this->cart->countProducts() : '';
+				$json['html']['replace']['.c_count'] = ($this->cart->countProducts() > 0) ? (int)$this->cart->countProducts() : '';
 				$json['html']['replace']['.cart_title'] = ($this->cart->countProducts() > 0) ? $this->currency->format($total, $this->session->data['currency']) : $this->language->get('text_header_cart');
 			}
 		}
@@ -496,7 +496,7 @@ class ControllerCheckoutCart extends Controller {
 				array_multisort($sort_order, SORT_ASC, $totals);
 			}
 			$json['cart_count'] = $this->cart->countProducts();
-			$json['html']['replace']['.cart_count'] = ($this->cart->countProducts() > 0) ? $this->cart->countProducts() : '';
+			$json['html']['replace']['.c_count'] = ($this->cart->countProducts() > 0) ? $this->cart->countProducts() : '';
 			$json['html']['replace']['.cart_title'] = ($this->cart->countProducts() > 0) ? $this->currency->format($total, $this->session->data['currency']) : $this->language->get('text_header_cart');
 			// $json['html']['replace']['.total'] = sprintf($this->language->get('text_items'), $this->cart->countProducts() + (isset($this->session->data['vouchers']) ? count($this->session->data['vouchers']) : 0), $this->currency->format($total, $this->session->data['currency']));
 		}
