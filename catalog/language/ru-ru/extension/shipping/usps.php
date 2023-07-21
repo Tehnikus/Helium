@@ -1,6 +1,4 @@
 <?php
-
-
-$_['text_title']  = 'United States Postal Service';
+$_['text_title']  = 'USPS';
 $_['text_weight'] = 'Вес:';
-$_['text_eta']    = 'Estimated Time:';
+$_['text_eta']    = 'Примерное время доставки:';

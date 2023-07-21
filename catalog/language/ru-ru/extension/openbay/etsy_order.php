@@ -1,6 +1,4 @@
 <?php
-
-
 $_['text_total_shipping']		= 'Доставка';
 $_['text_total_discount']		= 'Скидка';
 $_['text_total_tax']			= 'Без НДС';

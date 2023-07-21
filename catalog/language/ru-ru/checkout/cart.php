@@ -1,5 +1,4 @@
 <?php
-
 $_['text_header_cart']          = 'Корзина';
 $_['heading_title']    			= 'Корзина покупок';
 $_['text_success']    			= 'Товар <a href="%s">%s</a> добавлен в <a href="%s">корзину покупок</a>!';

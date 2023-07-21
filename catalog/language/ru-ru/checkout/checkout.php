@@ -1,5 +1,4 @@
 <?php
-
 $_['heading_title'] 		         = 'Оформление заказа';
 $_['heading_title_customer']         = 'Заказ #%s оформлен';
 

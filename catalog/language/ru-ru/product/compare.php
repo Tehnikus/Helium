@@ -1,5 +1,4 @@
 <?php
-
 $_['heading_title']     = 'Сравнение товаров';
 $_['text_product']      = 'Описание';
 $_['text_name']         = 'Товар';

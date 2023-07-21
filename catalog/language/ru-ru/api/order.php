@@ -1,9 +1,5 @@
 <?php
-
-
 $_['text_success']           = 'Ваш заказ обновлен!';
-
-// Error
 $_['error_permission']       = 'Вы не имеете разрешения на доступ к API!';
 $_['error_customer']         = 'Укажите данные Покупателя!';
 $_['error_payment_address']  = 'Укажите платежный адрес!';

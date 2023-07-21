@@ -1,9 +1,5 @@
 <?php
-
-
-
 $_['heading_title']             = 'Способ оплаты';
-
 $_['text_account']              = 'Аккаунт';
 $_['text_payment']              = 'Платеж';
 $_['text_your_payment']         = 'Платёжные реквизиты';

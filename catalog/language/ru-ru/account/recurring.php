@@ -1,6 +1,4 @@
 <?php
-
-
 $_['heading_title'] 							= 'Регулярные платежи';
 $_['button_continue'] 							= 'Продолжить';
 $_['button_view'] 								= 'Просмотр';

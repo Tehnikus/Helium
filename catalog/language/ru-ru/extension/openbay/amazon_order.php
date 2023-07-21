@@ -1,6 +1,4 @@
 <?php
-
-
 $_['text_paid_amazon'] 			= 'Выплата на Amazon';
 $_['text_total_shipping'] 		= 'Доставка';
 $_['text_total_shipping_tax'] 	= 'Доставка НДС';

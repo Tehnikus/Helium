@@ -1,7 +1,5 @@
 <?php
-
-
-$_['text_title']           = 'United Parcel Service';
+$_['text_title']           = 'UPS';
 $_['text_weight']          = 'Вес:';
 $_['text_us_origin_01']    = 'UPS Next Day Air';
 $_['text_us_origin_02']    = 'UPS 2nd Day Air';

@@ -1,9 +1,5 @@
 <?php
-
-
-
 $_['heading_title']        = 'Партнерcкий раздел';
-
 $_['text_account']         = 'Кабинет Партнера';
 $_['text_my_account']      = 'Моя учетная запись';
 $_['text_my_tracking']     = 'Мои рефералы';

@@ -1,9 +1,5 @@
 <?php
-
-
-
 $_['heading_title']    = 'Партнерский раздел';
-
 $_['text_register']    = 'Регистрация';
 $_['text_login']       = 'Вход';
 $_['text_logout']      = 'Выход';

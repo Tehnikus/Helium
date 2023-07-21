@@ -1,9 +1,5 @@
 <?php
-
-
-
 $_['heading_title']     = 'Новинки';
-
 $_['text_empty']        = 'Нет новинок.';
 $_['text_quantity']     = 'Количество:';
 $_['text_manufacturer'] = 'Производитель:';

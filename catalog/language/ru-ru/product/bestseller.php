@@ -1,9 +1,5 @@
 <?php
-
-
-
 $_['heading_title']     = 'Хиты Продаж';
-
 $_['text_empty']        = 'Нет Хитов Продаж.';
 $_['text_quantity']     = 'Кол-во:';
 $_['text_manufacturer'] = 'Производитель:';

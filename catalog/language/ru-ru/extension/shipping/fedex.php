@@ -1,6 +1,4 @@
 <?php
-
-
 $_['text_title']                               = 'Fedex';
 $_['text_weight']                              = 'Вес:';
 $_['text_eta']                                 = 'Estimated Time:';

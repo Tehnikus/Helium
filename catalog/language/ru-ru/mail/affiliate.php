@@ -14,3 +14,8 @@ $_['text_lastname']		        = 'Фамилия:';
 $_['text_company']		        = 'Компания:';
 $_['text_email']		        = 'E-Mail:';
 $_['text_telephone']	        = 'Телефон:';
+
+$_['text_order_id']             = 'Номер заказа:';
+$_['text_transaction_subject']  = '%s - комиссия партнера';
+$_['text_transaction_received'] = 'Комиссия %s получена!';
+$_['text_transaction_total']    = 'Общая сумма комиссии: %s.';
