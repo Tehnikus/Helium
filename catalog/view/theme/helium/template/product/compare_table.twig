@@ -1,62 +1,55 @@
 {% if table %}
-  {# {{ attribute_table | json_encode(constant('JSON_PRETTY_PRINT')) }} #}
-  <h1>{{ heading_title }}</h1>
-  <table class="compare_table">
-    {% for row_key, row in table %}
-      {# Hide service data #}
-      {% if row_key not in service %}
-        <tr>
-          {% for cell_key, cell in row %}
-            {# first in loop either first column or product name #}
-            {% if loop.first %}
-              <th>
-                {{cell}}
-                {% if row_key == 'attributes' %}
-                  {% for key, name in attribute_table %}
-                    <tr data-attribute-id="key"><td>{{ name.name }}</td></tr>
-                  {% endfor %}
-                {% endif %}
-              </th>
+  <table>
+  {% for column_name, column in table %}
+    {% for attribute_id, name in column.line_name %}
+      <tr>
+        <th>{{name}}</th>
+        {% for product_id, values in column.value %}
+          {# <td>{{ values | json_encode(constant('JSON_UNESCAPED_UNICODE'), constant('JSON_PRETTY_PRINT')) }}</td> #}
+          <td>
+            {% if column_name == 'name' %}
+              <h3><a href="{{ table.name.value[product_id].href }}" title="{{ table.name.value[product_id].name }}">{{ values.name }}</a></h3>
+            {% elseif column_name == 'thumb' %}
+              <figure data-special-date-end="{{ table.price.value[product_id].special_date_end }}">
+                <a href="{{ table.name.value[product_id].href }}" title="{{ table.name.value[product_id].name }}">
+                  <img decoding="async" loading="lazy" src="{{ values }}" alt="{{ table.price.value[product_id].name }}" title="{{ table.name.value[product_id].name }}"/>
+                </a>
+              </figure>
+            {% elseif column_name == 'price' %}
+              
+            {% elseif column_name == 'rating' %}
+              {% if values.rating and values.reviews %}
+                {% include 'helium/template/common/rating_stars.twig' with {rating: values.rating, count: values.reviews} %}
+              {% else %}
+                --
+              {% endif %}
+            {% elseif column_name == 'attributes' %}
+              {% if values[attribute_id] %}
+                {{ values[attribute_id] | join(',<br/>') }}
+              {% else %}
+                --
+              {% endif %}
+            {% elseif column_name == 'actions' %}
+              <div class="btn-group">
+                <button type="button" {% if table.price_value[cell_key] != 0 %} data-action="cartAdd" data-product_id="{{ product_id }}" data-minimum_qty="{{ product.minimum }}" aria-haspopup="dialog"{% else %} disabled {% endif %} title="{{ button_cart }} {{ table.name.value[product_id] }}" class="add-to-cart primary">
+                  <i class="icon-cart"></i>
+                </button>
+                <button type="button" data-action="compareRemove" data-product_id="{{ product_id }}" title="{{ text_remove }} {{ table.name.value[product_id] }}">
+                  <i class="icon-trash"></i>
+                </button>
+              </div>
             {% else %}
-              <td data-product_id="{{ table.product_id[cell_key] }}">
-                {% if row_key == 'thumb' %}
-                  <a href="{{ table.href[cell_key] }}">
-                    <img decoding="async" loading="lazy" src="{{ cell }}" alt="{{ table.name[cell_key] }}" title="{{ table.name[cell_key] }}"/>
-                  </a>
-                  
-                {% elseif row_key == 'name' %}
-                  <a href="{{ table.href[cell_key] }}">
-                    <h3>{{cell}}</h3>
-                  </a>
-                {% elseif row_key == 'rating' %}
-                  {% include 'helium/template/common/rating_stars.twig' with {rating: cell, count: table.reviews[cell_key]} %}
-                
-                {% elseif row_key == 'attributes' %}
-                  {% for attr_id, attr in table.attributes %}
-                    {# {{ attr_id }}<br/> #}
-                  {% endfor %}
-                {% elseif row_key == 'product_id' %}
-                  <div class="btn-group">
-                    <button type="button" {% if table.price_value[cell_key] != 0 %} data-action="cartAdd" data-product_id="{{ table.product_id[cell_key] }}" data-minimum_qty="{{ product.minimum }}" aria-haspopup="dialog" {% endif %} title="{{ button_cart }} {{ table.name[cell_key] }}" class="add-to-cart primary">
-                      <i class="icon-cart"></i>{{ button_cart }}
-                    </button>
-                    <button type="button" data-action="compareRemove" data-product_id="{{ table.product_id[cell_key] }}" title="{{ text_remove }} {{ table.name[cell_key] }}">
-                      <i class="icon-trash"></i>{{ text_remove }}
-                    </button>
-                  </div>
-                {% else %}
-                  {{cell}}
-                {% endif %}
-              </td>
+              {{ values }}
             {% endif %}
-          {% endfor %}
-        </tr>
-      {% endif %}
+          </td>
+        {% endfor %}
+      </tr>
     {% endfor %}
-    </table>
+  {% endfor %}
+  </table>
 {% else %}
-    <p>{{ text_empty }}</p>
-    <div class="buttons">
-      <div class="pull-right"><a href="{{ continue }}" class="default">{{ button_continue }}</a></div>
-    </div>
+  <p>{{ text_empty }}</p>
+  <div class="buttons">
+    <div class="pull-right"><a href="{{ continue }}" class="default">{{ button_continue }}</a></div>
+  </div>
 {% endif %}
