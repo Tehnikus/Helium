@@ -534,63 +534,63 @@ class ControllerProductSearch extends Controller {
 				}
 
 				// Prices
-				$prices = array();
+				$prices = [];
 				if($product['special'] == false) {
-					$prices = array(
-						'price' => array(
+					$prices = [
+						'price' => [
 							'type' => 'span',
-							'attrs' => array('class' => 'price'),
-							'props' => array('innerHTML' => $product['price'])
-						),
-					);
+							'attrs' => ['class' => 'price'],
+							'props' => ['innerHTML' => $product['price']]
+						],
+					];
 				} else {
-					$prices = array(
-						'price-new' => array(
+					$prices = [
+						'price-new' => [
 							'type' => 'span',
-							'attrs' => array('class' => 'price-new'),
-							'props' => array('innerHTML' => $product['special'], 'dataset' =>array('specialDateEnd' => $product['special_date_end'] ?: ''))
-						),
-						'price-old' => array(
+							'attrs' => ['class' => 'price-new'],
+							'props' => ['innerHTML' => $product['special']]
+						],
+						'price-old' => [
 							'type' => 'span',
-							'attrs' => array('class' => 'price-old'),
-							'props' => array('innerHTML' =>  $product['price']),
-						)
-					);
+							'attrs' => ['class' => 'price-old'],
+							'props' => ['innerHTML' =>  $product['price']]
+						]
+					];
 				}
 
 				// Ratings
 				if (isset($product['rating']) && $product['rating'] !== false && $product['rating'] > 0) {
-					$rating = array(
-						'attrs' => array('class' => 'rating'),
-						'props' => array('role' =>'presentation')
-					);
+					$rating = [
+						'attrs' => ['class' => 'rating'],
+						'props' => ['role' =>'presentation']
+					];
 					$i = 1;
 					while ($i <= 5) {
 						if ($i <= $product['rating']) {
-							$rating['nest'][$i] = array(
+							$rating['nest'][$i] = [
 								'type' => 'i',
-								'attrs' => array('class' => 'icon-star')
-							);
+								'attrs' => ['class' => 'icon-star']
+							];
 						} else {
 							if ($i - (float)$product['rating'] > 0) {
-								$rating['nest'][$i] = array(
+								$rating['nest'][$i] = [
 									'type' => 'i',
-									'attrs' => array('class' => 'icon-star-half')
-								);
+									'attrs' => ['class' => 'icon-star-half']
+								];
 							} else {
-								$rating['nest'][$i] = array(
+								$rating['nest'][$i] = [
 									'type' => 'i',
-									'attrs' => array('class' => 'icon-star-empty')
-								);
+									'attrs' => ['class' => 'icon-star-empty']
+								];
 							}
 						}
 						$i++;
 					}
-					$rating['nest'][] = array(
+					$rating['nest'][] = [
 						'type' => 'span',
-						'attrs' => array('class' => 'reviews-count'),
-						'props' => array('innerText' => '('.(int)$product['reviews'].')')
-					);
+						'attrs' => ['class' => 'reviews-count'],
+						'props' => ['innerText' => '('.(int)$product['reviews'].')']
+					];
 				} else {
 					$rating = '';
 				}
@@ -599,71 +599,72 @@ class ControllerProductSearch extends Controller {
 				$flags = [];
 				if (isset($product['product_flags'])) {
 					foreach ($product['product_flags'] as $type => $flag) {
-						$flags[] = array(
-							'type' => 'span',
-							'attrs' => array('class' => 'product-flag '.$type),
-							'props' => array('innerHTML' => $flag)
-						);
+						$flags[] = [
+							'type' 	=> 'span',
+							'attrs' => ['class' => 'product-flag '.$type],
+							'props' => ['innerHTML' => $flag]
+						];
 					}
 				}
 
-				$result_products[] = array(
-					'type' => 'article',
-					'attrs' => array('class' => 'miniature'),
-					'nest' => array(
-						'figure' => array (
-							'type' => 'figure',
-							'attrs' => array('class' => 'image'),
-							'nest' => array(
-								'a' => array(
-									'type' => 'a',
-									'props' => array('href' => $product['href']),
-									'nest' => array(
-										'img' => array(
-											'type' => 'img',
-											'attrs' => array('class' => 'img-responsive'),
-											'props' => array('loading' => 'lazy', 'width' => '400', 'height'=> '400', 'src' => $product['thumb']),
-										)
-									)
-								)
-							)
-						),
-						'flags' => array(
-							'attrs' => array('class' => 'flags'),
-							'nest' => $flags,
-						),
-						'infos' => array(
-							'attrs' => array('class' => 'infos'),
-							'nest' => array(
-								'div' => array(
-									'attrs' => array('class' => 'caption'),
-									'nest' => array(
-										'h3' => array(
-											'type' => 'h3',
-											'nest' => array(
-												'a' => array(
-													'type' => 'a',
-													'props' => array('href' => $product['href'], 'innerText' => $product['name'])
-												)
-											)
-										),
-										'descr' => array(
-											'type' => 'p',
-											'attrs' => array('class' => 'short-description'),
-											'props' => array('innerHTML' => $description)
-										),
+				$result_products[] = [
+					'type' 	=> 'article',
+					'attrs' => ['class' => 'miniature'],
+					'nest' 	=> [
+						'figure' => [
+							'type' 	=> 'figure',
+							'attrs' => ['class' => 'image'],
+							'props' => ['dataset' => ['specialDateEnd' => $product['special_date_end'] ?: '']],
+							'nest' 	=> [
+								'a' => [
+									'type' 	=> 'a',
+									'props' => ['href' => $product['href']],
+									'nest' 	=> [
+										'img' => [
+											'type' 	=> 'img',
+											'attrs' => ['class' => 'img-responsive'],
+											'props' => ['loading' => 'lazy', 'width' => '400', 'height'=> '400', 'src' => $product['thumb']],
+										]
+									]
+								]
+							]
+						],
+						'flags' => [
+							'attrs' => ['class' => 'flags'],
+							'nest' 	=> $flags,
+						],
+						'infos' => [
+							'attrs' => ['class' => 'infos'],
+							'nest' 	=> [
+								'div' => [
+									'attrs' => ['class' => 'caption'],
+									'nest' 	=> [
+										'h3' => [
+											'type' 	=> 'h3',
+											'nest' 	=> [
+												'a' => [
+													'type' 	=> 'a',
+													'props' => ['href' => $product['href'], 'innerText' => $product['name']]
+												]
+											]
+										],
+										'descr' => [
+											'type' 	=> 'p',
+											'attrs' => ['class' => 'short-description'],
+											'props' => ['innerHTML' => $description]
+										],
 										'rating' => $rating,
-										'prices' => array(
-											'type' => 'p',
-											'attrs' => array('class' => 'prices h3'),
-											'nest' => $prices
-										)
-									)
-								)
-							)
-						)
-					)
-				);
+										'prices' => [
+											'type' 	=> 'p',
+											'attrs' => ['class' => 'prices h3'],
+											'nest' 	=> $prices
+										]
+									]
+								]
+							]
+						]
+					]
+				];
 
 				$results['nest']['products']['nest'] = $result_products;
 			}
