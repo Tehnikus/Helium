@@ -99,6 +99,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	stickyHeader(); 		// Sticky header
 	scrollslider(); 		// Sliders everywhere
 	anchorNav(); 			// Focus on hastag navigation element
+	hoverImage();			// Change product image
 
 	// Country zones fetch
 	// Toggle postcode input
@@ -480,6 +481,7 @@ let dialog = {
 		});
 		// Append dialog to document
 		document.body.insertAdjacentElement('beforeend', a);
+		countdown(a);
 		// Prevent body scrolling
 		document.body.style.cssText = 'overflow: hidden;'
 		// Open dialog
@@ -501,7 +503,7 @@ let dialog = {
 		} else {
 			a.showModal();
 		}
-
+		
 		return a;
 	},
 	close: () => {
@@ -1347,13 +1349,16 @@ function countdown(element) {
 	function timer(finalDate) {
 		let now = new Date().getTime();
 		let diff = (finalDate - now);
-		let t = {
-			days: Math.floor(diff / (864*10e4)),
-			hours: Math.floor(diff % (864*10e4) / (1000*60*60)),
-			mins: Math.floor(diff % (1000*60*60)/ (1000*60)),
-			secs: Math.floor(diff % (1000*60) / 1000)
-		};
-		return t
+		if (diff > 0) {
+			return {
+				days: Math.floor(diff / (864*10e4)),
+				hours: Math.floor(diff % (864*10e4) / (1000*60*60)),
+				mins: Math.floor(diff % (1000*60*60)/ (1000*60)),
+				secs: Math.floor(diff % (1000*60) / 1000)
+			};
+		} else {
+			return {days:0,hours:0,mins:0,secs:0}
+		}
 	}
 }
 
@@ -1419,7 +1424,7 @@ function removeElementsByClass(className) {
 	  elements[0].parentNode.removeChild(elements[0]);
 	}
 }
-
+const validateQuickCheckout = (el, ev) => {ajax('common/cart/getConfirmOrder', {el, ev})}
 const fetchShippingPayment = () => {ajax('common/cart/fetchDisplayShippingHtml');ajax('common/cart/fetchDisplayPaymentHtml');}
 const reviewModal 		= (el, ev) => {ajax(el.dataset.type+'/showReviewModal&entity_id=' + el.dataset.id, {ev})}
 const sendReview 		= (el, ev) => {ajax(el.dataset.type+'/sendReview&entity_id=' + el.dataset.id, {el, ev})}
@@ -1428,7 +1433,7 @@ const wishlistAdd 		= (el, ev) => {ajax('account/wishlist/add', {el,ev})}
 const wishlistRemove 	= (el, ev) => {ajax('account/wishlist/remove', {el,ev})}
 const compareModal 		= (el, ev) => {ajax('product/compare/showCompareModal', {el,ev})}
 const compareAdd 		= (el, ev) => {ajax('product/compare/add', {el,ev})}
-const compareRemove 	= (el, ev) => {ajax('product/compare/remove', {el,ev})}
+const compareRemove 	= (el, ev) => {ajax('product/compare/remove', {el,ev}).then(r=>{compareModal()})}
 const contactsModal 	= (el, ev) => {ajax('information/contact/showContactsModal', {el,ev})}
 const cartRemove 	    = (el, ev) => {ajax('checkout/cart/remove', {el,ev}).then(r=>{cartShowModal();setIcon(r.cart_count)})}
 const cartShowModal     = (el, ev) => {ajax('common/cart/showCartModal', {el, ev}).then(r=>{quickCheckout()})
@@ -1471,7 +1476,6 @@ function saveShippingMethod(input) {
 	fetch(url, {method:"post", body: data});
 }
 
-// Refactored saveCheckoutfields function
 const saveCheckoutfields = async (form) => {
 	try {
 		let data = new FormData(form);
@@ -1482,11 +1486,7 @@ const saveCheckoutfields = async (form) => {
 	}
 }
 
-// Chech errors in quick checkout
-// If no errors occured - redirect to successful order page
-const validateQuickCheckout = (el, ev) => {
-	ajax('common/cart/getConfirmOrder', {el, ev})
-}
+
 
 const ajax = async (url, s) => {
 	let method = "POST", body, headers, settings = s || {}, el, ev;
@@ -1574,13 +1574,13 @@ function handleEvents(evt) {
 }
 
 function hoverImage() {
-	[].forEach.call(document.querySelectorAll('.js_img_additional'), additional_img =>{
-		additional_img.addEventListener('mouseenter', ev =>{
-			[].forEach.call(document.querySelectorAll('.js_image_primary'), primary_img =>{
-				primary_img.src = additional_img.dataset.largeImg;
-			});
+	[].forEach.call(document.querySelectorAll('.js_img_additional'), additional_img => {
+		['click', 'mouseenter'].forEach(event => {
+			additional_img.addEventListener(event, () => {
+				[].forEach.call(document.querySelectorAll('.js_image_primary'), primary_img =>{
+					primary_img.src = additional_img.dataset.largeImg;
+				});
+			}, {passive:true})
 		})
 	})
 }
-
-hoverImage()
