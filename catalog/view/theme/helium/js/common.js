@@ -1515,6 +1515,12 @@ const ajax = async (url, s) => {
 		if ('toasts' in r) {for (c in r.toasts) {for (t in r.toasts[c]) {toast.create(r.toasts[c][t], c)}}}
 		if ('error' in r) {return handleErrors(r, document)}
 		if ('redirect' in r) {window.location = r.redirect}
+		if ('function' in r) {
+			for (f in r.function) {
+				let a = new Function(r.function[f]);
+				a();
+			}
+		}
 		if ('html' in r) {
 			for (a in r.html) {
 				for (s in r.html[a]) {
@@ -1528,7 +1534,6 @@ const ajax = async (url, s) => {
 		return r
 	})
 }
-
 // List of functions
 // event: function
 const actions = {
@@ -1573,7 +1578,8 @@ function handleEvents(evt) {
 		true;
 }
 
-function hoverImage() {
+// Change image on hover
+const hoverImage = () => {
 	[].forEach.call(document.querySelectorAll('.js_img_additional'), additional_img => {
 		['click', 'mouseenter'].forEach(event => {
 			additional_img.addEventListener(event, () => {
@@ -1584,3 +1590,33 @@ function hoverImage() {
 		})
 	})
 }
+// Micro gallery
+const imageGallery = () => {
+	const src = [];
+	const images = {};
+	const primary_img = document.querySelector('.js_image_primary');
+	const additional_img = document.querySelectorAll('.js_img_additional');
+	
+	src.push(primary_img.src);
+	[].forEach.call(additional_img, img => {
+		src.push(img.dataset.largeImg);
+	});
+	primary_img.addEventListener('click', (e)=> {
+		e.preventDefault();
+		src.forEach((s, k) =>{
+			images[k] = {
+				type: 'img',
+				props: {'src': s}
+			}
+		})
+		const gallery = createElm({
+			type: 'div',
+			attrs: {'class': 'scroll-x js_scroll'},
+			nest: images
+		})
+		dialog.create(gallery, e);
+		// TODO: Add scrollSlider()
+	})
+}
+
+imageGallery()
