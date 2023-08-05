@@ -149,9 +149,9 @@ class ControllerBlogArticle extends Controller {
 			$data['description']    = html_entity_decode($article_info['description'], ENT_QUOTES, 'UTF-8');
 
 			// Main image
-			$data['thumb']['link']   = $this->model_tool_image->resize($article_info['image'], $this->config->get('article_miniature_image_width'), $this->config->get('article_miniature_image_height'));
-			$data['thumb']['width']  = $this->config->get('article_miniature_image_width');
-			$data['thumb']['height'] = $this->config->get('article_miniature_image_height');
+			$data['thumb']['link']   = $this->model_tool_image->resize($article_info['image'], $this->config->get('configblog_article_miniature_image_width'), $this->config->get('configblog_article_miniature_image_height'));
+			$data['thumb']['width']  = $this->config->get('configblog_article_miniature_image_width');
+			$data['thumb']['height'] = $this->config->get('configblog_article_miniature_image_height');
 
 			
 
@@ -163,9 +163,9 @@ class ControllerBlogArticle extends Controller {
 			foreach ($results as $result) {
 				$image = [];
 				if ($result['image']) {
-					$image = $this->model_tool_image->resize($result['image'], $this->config->get('article_miniature_image_width'), $this->config->get('article_miniature_image_height'));
+					$image = $this->model_tool_image->resize($result['image'], $this->config->get('configblog_article_miniature_image_width'), $this->config->get('configblog_article_miniature_image_height'));
 				} else {
-					$image = $this->model_tool_image->resize('no_image.webp', $this->config->get('article_miniature_image_width'), $this->config->get('article_miniature_image_height'));
+					$image = $this->model_tool_image->resize('no_image.webp', $this->config->get('configblog_article_miniature_image_width'), $this->config->get('configblog_article_miniature_image_height'));
 				}
 				
 				
@@ -179,8 +179,8 @@ class ControllerBlogArticle extends Controller {
 				$data['articles'][] = array(
 					'article_id' 		=> $result['article_id'],
 					'thumb'   			=> $image,
-					'width' 			=> $this->config->get('article_miniature_image_width'),
-					'height' 			=> $this->config->get('article_miniature_image_height'),
+					'width' 			=> $this->config->get('configblog_article_miniature_image_width'),
+					'height' 			=> $this->config->get('configblog_article_miniature_image_height'),
 					'name'    	 		=> $result['name'],
 					'description' 		=> utf8_substr(strip_tags(html_entity_decode($result['description'], ENT_QUOTES, 'UTF-8')), 0, $this->config->get('configblog_article_description_length')) . '..',
 					'rating'     		=> $rating,

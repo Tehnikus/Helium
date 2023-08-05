@@ -346,14 +346,14 @@ class ControllerBlogCategory extends Controller {
 		$this->load->model('tool/image');
 
 		if (isset($this->request->post['image']) && is_file(DIR_IMAGE . $this->request->post['image'])) {
-			$data['thumb'] = $this->model_tool_image->resize($this->request->post['image'], $this->config->get('blog_category_image_width'), $this->config->get('blog_category_image_height'));
+			$data['thumb'] = $this->model_tool_image->resize($this->request->post['image'], $this->config->get('configblog_article_miniature_image_width'), $this->config->get('configblog_article_miniature_image_height'));
 		} elseif (!empty($category_info) && is_file(DIR_IMAGE . $category_info['image'])) {
-			$data['thumb'] = $this->model_tool_image->resize($category_info['image'], $this->config->get('blog_category_image_width'), $this->config->get('blog_category_image_height'));
+			$data['thumb'] = $this->model_tool_image->resize($category_info['image'], $this->config->get('configblog_article_miniature_image_width'), $this->config->get('configblog_article_miniature_image_height'));
 		} else {
-			$data['thumb'] = $this->model_tool_image->resize('no_image.webp', $this->config->get('blog_category_image_width'), $this->config->get('blog_category_image_height'));
+			$data['thumb'] = $this->model_tool_image->resize('no_image.webp', $this->config->get('configblog_article_miniature_image_width'), $this->config->get('configblog_article_miniature_image_height'));
 		}
 
-		$data['placeholder'] = $this->model_tool_image->resize('no_image.webp', $this->config->get('blog_category_image_width'), $this->config->get('blog_category_image_height'));
+		$data['placeholder'] = $this->model_tool_image->resize('no_image.webp', $this->config->get('configblog_article_miniature_image_width'), $this->config->get('configblog_article_miniature_image_height'));
 
 		if (isset($this->request->post['top'])) {
 			$data['top'] = $this->request->post['top'];

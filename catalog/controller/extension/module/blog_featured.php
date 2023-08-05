@@ -23,9 +23,9 @@ class ControllerExtensionModuleBlogFeatured extends Controller {
 
 				if ($article_info) {
 					if ($article_info['image']) {
-						$image = $this->model_tool_image->resize($article_info['image'], $this->config->get('article_miniature_image_width'), $this->config->get('article_miniature_image_height'));
+						$image = $this->model_tool_image->resize($article_info['image'], $this->config->get('configblog_article_miniature_image_width'), $this->config->get('configblog_article_miniature_image_height'));
 					} else {
-						$image = $this->model_tool_image->resize('no_image.webp', $this->config->get('article_miniature_image_width'), $this->config->get('article_miniature_image_height'));
+						$image = $this->model_tool_image->resize('no_image.webp', $this->config->get('configblog_article_miniature_image_width'), $this->config->get('configblog_article_miniature_image_height'));
 					}
 
 					if ($this->config->get('configblog_review_status')) {
@@ -37,8 +37,8 @@ class ControllerExtensionModuleBlogFeatured extends Controller {
 					$data['articles'][] = array(
 						'article_id'   		=> $article_info['article_id'],
 						'thumb'        		=> $image,
-						'width'		   		=> $this->config->get('article_miniature_image_width'),
-						'height'	   		=> $this->config->get('article_miniature_image_height'),
+						'width'		   		=> $this->config->get('configblog_article_miniature_image_width'),
+						'height'	   		=> $this->config->get('configblog_article_miniature_image_height'),
 						'name'         		=> $article_info['name'],
 						'description'  		=> utf8_substr(strip_tags(html_entity_decode($article_info['description'], ENT_QUOTES, 'UTF-8')), 0, $this->config->get('configblog_article_description_length')) . '..',
 						'rating'       		=> $rating,

@@ -82,7 +82,8 @@ class ModelToolImage extends Model {
 	
 			// Resize
 			$image = new Image(DIR_IMAGE . $filename);
-			$image->resize($width, $height);
+			// Set default image sizes so if something went wrong when getting settings, library doesn't crash
+			$image->resize($width = 400, $height = 400);
 			$resized = $image->getImage();
 
 			// Create WEBP image and save
@@ -111,7 +112,8 @@ class ModelToolImage extends Model {
 			}
 
 			$image = new Image(DIR_IMAGE . $filename);
-			$image->resize($width, $height);
+			// Set default image sizes so if something went wrong when getting settings, library doesn't crash
+			$image->resize($width = 400, $height = 400);
 			$image->save(DIR_IMAGE . $jpg_image);
 		}
 

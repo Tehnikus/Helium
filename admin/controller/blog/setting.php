@@ -21,47 +21,47 @@ class ControllerBlogSetting extends Controller {
 
 		$data['heading_title'] = $this->language->get('heading_title');
 
-		$data['text_edit'] = $this->language->get('text_edit');
-		$data['text_yes'] = $this->language->get('text_yes');
-		$data['text_no'] = $this->language->get('text_no');
-		$data['text_article'] = $this->language->get('text_article');
-		$data['text_review'] = $this->language->get('text_review');
-		$data['entry_article_limit'] = $this->language->get('entry_article_limit');
+		$data['text_edit']                        = $this->language->get('text_edit');
+		$data['text_yes']                         = $this->language->get('text_yes');
+		$data['text_no']                          = $this->language->get('text_no');
+		$data['text_article']                     = $this->language->get('text_article');
+		$data['text_review']                      = $this->language->get('text_review');
+		$data['entry_article_limit']              = $this->language->get('entry_article_limit');
 		$data['entry_article_description_length'] = $this->language->get('entry_article_description_length');
-		$data['entry_limit_admin'] = $this->language->get('entry_limit_admin');
-		$data['entry_article_count'] = $this->language->get('entry_article_count');
-		$data['entry_blog_menu'] = $this->language->get('entry_blog_menu');
-		$data['entry_article_download'] = $this->language->get('entry_article_download');
-		$data['entry_review'] = $this->language->get('entry_review');
-		$data['entry_review_guest'] = $this->language->get('entry_review_guest');
-		$data['entry_review_mail'] = $this->language->get('entry_review_mail');
-		$data['entry_image_category'] = $this->language->get('entry_image_category');
-		$data['entry_image_article'] = $this->language->get('entry_image_article');
-		$data['entry_image_related'] = $this->language->get('entry_image_related');
-		$data['entry_width'] = $this->language->get('entry_width');
-		$data['entry_height'] = $this->language->get('entry_height');
-		$data['entry_name'] = $this->language->get('entry_name');
-		$data['entry_html_h1'] = $this->language->get('entry_html_h1');
-		$data['entry_meta_title'] = $this->language->get('entry_meta_title');
-		$data['entry_meta_description'] = $this->language->get('entry_meta_description');
-		$data['entry_meta_keyword'] = $this->language->get('entry_meta_keyword');
+		$data['entry_limit_admin']                = $this->language->get('entry_limit_admin');
+		$data['entry_article_count']              = $this->language->get('entry_article_count');
+		$data['entry_blog_menu']                  = $this->language->get('entry_blog_menu');
+		$data['entry_article_download']           = $this->language->get('entry_article_download');
+		$data['entry_review']                     = $this->language->get('entry_review');
+		$data['entry_review_guest']               = $this->language->get('entry_review_guest');
+		$data['entry_review_mail']                = $this->language->get('entry_review_mail');
+		$data['entry_image_category']             = $this->language->get('entry_image_category');
+		$data['entry_image_article']              = $this->language->get('entry_image_article');
+		$data['entry_image_related']              = $this->language->get('entry_image_related');
+		$data['entry_width']                      = $this->language->get('entry_width');
+		$data['entry_height']                     = $this->language->get('entry_height');
+		$data['entry_name']                       = $this->language->get('entry_name');
+		$data['entry_html_h1']                    = $this->language->get('entry_html_h1');
+		$data['entry_meta_title']                 = $this->language->get('entry_meta_title');
+		$data['entry_meta_description']           = $this->language->get('entry_meta_description');
+		$data['entry_meta_keyword']               = $this->language->get('entry_meta_keyword');
 
-		$data['help_comment'] = $this->language->get('help_comment');
-		$data['help_article_limit'] = $this->language->get('help_article_limit');
+		$data['help_comment']                    = $this->language->get('help_comment');
+		$data['help_article_limit']              = $this->language->get('help_article_limit');
 		$data['help_article_description_length'] = $this->language->get('help_article_description_length');
-		$data['help_limit_admin'] = $this->language->get('help_limit_admin');
-		$data['help_article_count'] = $this->language->get('help_article_count');
-		$data['help_blog_menu'] = $this->language->get('help_blog_menu');
-		$data['help_review'] = $this->language->get('help_review');
-		$data['help_review_guest'] = $this->language->get('help_review_guest');
-		$data['help_review_mail'] = $this->language->get('help_review_mail');
+		$data['help_limit_admin']                = $this->language->get('help_limit_admin');
+		$data['help_article_count']              = $this->language->get('help_article_count');
+		$data['help_blog_menu']                  = $this->language->get('help_blog_menu');
+		$data['help_review']                     = $this->language->get('help_review');
+		$data['help_review_guest']               = $this->language->get('help_review_guest');
+		$data['help_review_mail']                = $this->language->get('help_review_mail');
 
-		$data['button_save'] = $this->language->get('button_save');
+		$data['button_save']   = $this->language->get('button_save');
 		$data['button_cancel'] = $this->language->get('button_cancel');
 
 		$data['tab_general'] = $this->language->get('tab_general');
-		$data['tab_option'] = $this->language->get('tab_option');
-		$data['tab_image'] = $this->language->get('tab_image');
+		$data['tab_option']  = $this->language->get('tab_option');
+		$data['tab_image']   = $this->language->get('tab_image');
 
 		if (isset($this->error['warning'])) {
 			$data['error_warning'] = $this->error['warning'];
@@ -185,41 +185,41 @@ class ControllerBlogSetting extends Controller {
 			$data['configblog_review_mail'] = $this->config->get('configblog_review_mail');
 		}
 
-		if (isset($this->request->post['blog_category_image_width'])) {
-			$data['blog_category_image_width'] = $this->request->post['blog_category_image_width'];
+		if (isset($this->request->post['configblog_article_miniature_image_width'])) {
+			$data['configblog_article_miniature_image_width'] = $this->request->post['configblog_article_miniature_image_width'];
 		} else {
-			$data['blog_category_image_width'] = $this->config->get('blog_category_image_width');
+			$data['configblog_article_miniature_image_width'] = $this->config->get('configblog_article_miniature_image_width');
 		}
 
-		if (isset($this->request->post['blog_category_image_height'])) {
-			$data['blog_category_image_height'] = $this->request->post['blog_category_image_height'];
+		if (isset($this->request->post['configblog_article_miniature_image_height'])) {
+			$data['configblog_article_miniature_image_height'] = $this->request->post['configblog_article_miniature_image_height'];
 		} else {
-			$data['blog_category_image_height'] = $this->config->get('blog_category_image_height');
+			$data['configblog_article_miniature_image_height'] = $this->config->get('configblog_article_miniature_image_height');
 		}
 
-		if (isset($this->request->post['article_miniature_image_width'])) {
-			$data['article_miniature_image_width'] = $this->request->post['article_miniature_image_width'];
+		if (isset($this->request->post['configblog_article_miniature_image_width'])) {
+			$data['configblog_article_miniature_image_width'] = $this->request->post['configblog_article_miniature_image_width'];
 		} else {
-			$data['article_miniature_image_width'] = $this->config->get('article_miniature_image_width');
+			$data['configblog_article_miniature_image_width'] = $this->config->get('configblog_article_miniature_image_width');
 		}
 
-		if (isset($this->request->post['article_miniature_image_height'])) {
-			$data['article_miniature_image_height'] = $this->request->post['article_miniature_image_height'];
+		if (isset($this->request->post['configblog_article_miniature_image_height'])) {
+			$data['configblog_article_miniature_image_height'] = $this->request->post['configblog_article_miniature_image_height'];
 		} else {
-			$data['article_miniature_image_height'] = $this->config->get('article_miniature_image_height');
+			$data['configblog_article_miniature_image_height'] = $this->config->get('configblog_article_miniature_image_height');
 		}
 
-		// if (isset($this->request->post['related_articles_image_width'])) {
-		// 	$data['related_articles_image_width'] = $this->request->post['related_articles_image_width'];
-		// } else {
-		// 	$data['related_articles_image_width'] = $this->config->get('related_articles_image_width');
-		// }
+		if (isset($this->request->post['related_articles_image_width'])) {
+			$data['related_articles_image_width'] = $this->request->post['related_articles_image_width'];
+		} else {
+			$data['related_articles_image_width'] = $this->config->get('related_articles_image_width');
+		}
 
-		// if (isset($this->request->post['related_articles_image_height'])) {
-		// 	$data['related_articles_image_height'] = $this->request->post['related_articles_image_height'];
-		// } else {
-		// 	$data['related_articles_image_height'] = $this->config->get('related_articles_image_height');
-		// }
+		if (isset($this->request->post['related_articles_image_height'])) {
+			$data['related_articles_image_height'] = $this->request->post['related_articles_image_height'];
+		} else {
+			$data['related_articles_image_height'] = $this->config->get('related_articles_image_height');
+		}
 		
 		if (isset($this->request->post['configblog_name'])) {
 			$data['configblog_name'] = $this->request->post['configblog_name'];
@@ -263,11 +263,11 @@ class ControllerBlogSetting extends Controller {
 			$this->error['warning'] = $this->language->get('error_permission');
 		}
 
-		if (!$this->request->post['blog_category_image_width'] || !$this->request->post['blog_category_image_height']) {
+		if (!$this->request->post['configblog_article_miniature_image_width'] || !$this->request->post['configblog_article_miniature_image_height']) {
 			$this->error['image_category'] = $this->language->get('error_image_category');
 		}
 
-		if (!$this->request->post['article_miniature_image_width'] || !$this->request->post['article_miniature_image_height']) {
+		if (!$this->request->post['configblog_article_miniature_image_width'] || !$this->request->post['configblog_article_miniature_image_height']) {
 			$this->error['image_article'] = $this->language->get('error_image_article');
 		}
 
