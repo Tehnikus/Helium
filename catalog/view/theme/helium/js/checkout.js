@@ -12,7 +12,7 @@ document.addEventListener('click', async (e) => {
     let button_payment_method = document.getElementById('button-payment-method');
     let button_payment_address = document.getElementById('button-payment-address');
     let button_shipping_address = document.getElementById('button-shipping-address');
-    let button_confirm = document.getElementById('button-confirm');
+    let button_confirm = document.getElementById('js_button_confirm');
 
     if (!!button_confirm) {
         if (button_confirm.contains(e.target)) {
