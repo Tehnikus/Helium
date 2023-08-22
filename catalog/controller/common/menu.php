@@ -1,7 +1,7 @@
 <?php
 class ControllerCommonMenu extends Controller {
 	public function index() {
-		$this->load->language('common/menu');
+		$this->load->language('common/header');
 
 		// Get cached data
 		$cache_name = 'top_menu.'.(int)$this->config->get('config_language_id').'.'.(int)$this->config->get('config_store_id');
