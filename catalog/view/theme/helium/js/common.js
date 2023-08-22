@@ -100,6 +100,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	scrollslider(); 		// Sliders everywhere
 	anchorNav(); 			// Focus on hastag navigation element
 	hoverImage();			// Change product image
+	imageGallery();			// modal image gallery
 
 	// Country zones fetch
 	// Toggle postcode input
@@ -1424,19 +1425,19 @@ function removeElementsByClass(className) {
 	  elements[0].parentNode.removeChild(elements[0]);
 	}
 }
+const fetchShippingPayment  = () => {ajax('common/cart/fetchDisplayShippingHtml');ajax('common/cart/fetchDisplayPaymentHtml');}
 const validateQuickCheckout = (el, ev) => {ajax('common/cart/getConfirmOrder', {el, ev})}
-const fetchShippingPayment = () => {ajax('common/cart/fetchDisplayShippingHtml');ajax('common/cart/fetchDisplayPaymentHtml');}
-const reviewModal 		= (el, ev) => {ajax(el.dataset.type+'/showReviewModal&entity_id=' + el.dataset.id, {ev})}
-const sendReview 		= (el, ev) => {ajax(el.dataset.type+'/sendReview&entity_id=' + el.dataset.id, {el, ev})}
-const wishlistModal 	= (el, ev) => {ajax('account/wishlist/showWishlistModal', {el,ev})}
-const wishlistAdd 		= (el, ev) => {ajax('account/wishlist/add', {el,ev})}
-const wishlistRemove 	= (el, ev) => {ajax('account/wishlist/remove', {el,ev})}
-const compareModal 		= (el, ev) => {ajax('product/compare/showCompareModal', {el,ev})}
-const compareAdd 		= (el, ev) => {ajax('product/compare/add', {el,ev})}
-const compareRemove 	= (el, ev) => {ajax('product/compare/remove', {el,ev}).then(r=>{compareModal()})}
-const contactsModal 	= (el, ev) => {ajax('information/contact/showContactsModal', {el,ev})}
-const cartRemove 	    = (el, ev) => {ajax('checkout/cart/remove', {el,ev}).then(r=>{cartShowModal();setIcon(r.cart_count)})}
-const cartShowModal     = (el, ev) => {ajax('common/cart/showCartModal', {el, ev}).then(r=>{quickCheckout()})
+const reviewModal 			= (el, ev) => {ajax(el.dataset.type+'/showReviewModal&entity_id=' + el.dataset.id, {ev})}
+const sendReview 			= (el, ev) => {ajax(el.dataset.type+'/sendReview&entity_id=' + el.dataset.id, {el, ev})}
+const wishlistModal 		= (el, ev) => {ajax('account/wishlist/showWishlistModal', {el,ev})}
+const wishlistAdd 			= (el, ev) => {ajax('account/wishlist/add', {el,ev})}
+const wishlistRemove 		= (el, ev) => {ajax('account/wishlist/remove', {el,ev})}
+const compareModal 			= (el, ev) => {ajax('product/compare/showCompareModal', {el,ev})}
+const compareAdd 			= (el, ev) => {ajax('product/compare/add', {el,ev})}
+const compareRemove 		= (el, ev) => {ajax('product/compare/remove', {el,ev}).then(r=>{compareModal()})}
+const contactsModal 		= (el, ev) => {ajax('information/contact/showContactsModal', {el,ev})}
+const cartRemove 	    	= (el, ev) => {ajax('checkout/cart/remove', {el,ev}).then(r=>{cartShowModal();setIcon(r.cart_count)})}
+const cartShowModal     	= (el, ev) => {ajax('common/cart/showCartModal', {el, ev}).then(r=>{quickCheckout()})
 	// try {
 	// 	let response = await fetch('index.php?route=common/cart/displayCartModal', { method: "POST" });
 	// 	let modalContent = await response.text();
@@ -1596,27 +1597,27 @@ const imageGallery = () => {
 	const images = {};
 	const primary_img = document.querySelector('.js_image_primary');
 	const additional_img = document.querySelectorAll('.js_img_additional');
-	
-	src.push(primary_img.src);
-	[].forEach.call(additional_img, img => {
-		src.push(img.dataset.largeImg);
-	});
-	primary_img.addEventListener('click', (e)=> {
-		e.preventDefault();
-		src.forEach((s, k) =>{
-			images[k] = {
-				type: 'img',
-				props: {'src': s}
-			}
+	if (!!primary_img) {
+		src.push(primary_img.src);
+		[].forEach.call(additional_img, img => {
+			src.push(img.dataset.largeImg);
+		});
+		primary_img.addEventListener('click', (e)=> {
+			e.preventDefault();
+			src.forEach((s, k) =>{
+				images[k] = {
+					type: 'img',
+					props: {'src': s}
+				}
+			})
+			const gallery = createElm({
+				type: 'div',
+				attrs: {'class': 'scroll-x js_scroll'},
+				nest: images
+			})
+			dialog.create(gallery, e);
+			// TODO: Add scrollSlider()
 		})
-		const gallery = createElm({
-			type: 'div',
-			attrs: {'class': 'scroll-x js_scroll'},
-			nest: images
-		})
-		dialog.create(gallery, e);
-		// TODO: Add scrollSlider()
-	})
+	}
 }
 
-imageGallery()
