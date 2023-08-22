@@ -1,7 +1,7 @@
 
 <h1>{{ heading_title }}</h1>
 <h2>{{ text_location }}</h2>
-<div class="address">
+{# <div class="address">
   <div>
     <h3>{{ store }}</h3>
     {% if image %}
@@ -11,7 +11,6 @@
     {% endif %}
     <div>
       <div>
-        
         <address>{{ address|nl2br }}</address>
         {% if geocode %}
           <a class="button" href="https://maps.google.com/maps?q={{ geocode|url_encode }}&hl={{ geocode_hl }}&t=m&z=15" target="_blank"><i class="icon-location"></i> {{ button_map }}</a>
@@ -39,56 +38,51 @@
       </div>
     </div>
   </div>
-</div>
+</div> #}
 
 {% if locations %}
   <h3>{{ text_store }}</h3>
-  
   {% for location in locations %}
-    <div class="">
-      <h2>{{ location.name }}</h2>
+    <div class="location_grid">
+      <h1>{{ location.name }}</h2>
       
-        <div>
-          {% if location.image %}
-            <div class="col-sm-3"><img loading="lazy" src="{{ location.image }}" alt="{{ location.name }}" title="{{ location.name }}" class="img-thumbnail" /></div>
+        <div class="location_item">
+          {% if location.map %}
+            <div class="map">
+              {{ location.map|raw }}
+            </div>
           {% endif %}
-          <div class="col-sm-3">
-            <p>{{ location.name }}</p>
+          {% if location.image %}
+            <div class="image"><img loading="lazy" src="{{ location.image }}" alt="{{ location.name }}" title="{{ location.name }}" class="img-thumbnail" /></div>
+          {% endif %}
+          <div class="caption">
             <address>
-              {{ location.address|nl2br }}
+              {{ location.address}}
             </address>
             {% if location.geocode %}
-              <a href="https://maps.google.com/maps?q={{ location.geocode|url_encode }}&hl={{ geocode_hl }}&t=m&z=15" target="_blank" ><i class="icon-location"></i> {{ button_map }}</a>
+              <a class="button" href="https://maps.google.com/maps?q={{ location.geocode|url_encode }}&hl={{ geocode_hl }}&t=m&z=15" target="_blank" ><i class="icon-location"></i> {{ button_map }}</a>
             {% endif %}
+            <div class="phones">
+              <p>{{ text_telephone }}</p>
+              <a href="tel:{{ location.telephone }}">{{ location.telephone }}</a>
+              {% if location.fax %}
+                <p>{{ text_fax }}</p>
+                <a href="tel:{{ location.fax }}">{{ location.fax }}</a>
+              {% endif %}
+            </div>
           </div>
-          <div>
-            {% if location.map %}
-              {{ location.map|raw }}
-            {% endif %}
-          </div>
-          <div> 
-            <p>{{ text_telephone }}</p>
-            {{ location.telephone }}
-            
-            {% if location.fax %}
-              <p>{{ text_fax }}</p>
-              {{ location.fax }}
-            {% endif %}
-          </div>
-          <div>
+          <div class="working_hours">
             {% if location.open %}
-            <p>{{ text_open }}</p>
-            {{ location.open|nl2br }}
-            
+              <p>{{ text_open }}</p>
+              {{ location.open }}
             {% endif %}
             {% if location.comment %}
-            <p>{{ text_comment }}</p>
-            {{ location.comment }}
+              <p>{{ text_comment }}</p>
+              {{ location.comment }}
             {% endif %}
           </div>
       </div>
     </div>
   {% endfor %}
-  
 {% endif %}
 
