@@ -1,6 +1,5 @@
 <?php
 $_['text_items']                    = '<span class="product-count">%s</span>  <span class="cart-total-summ hidden-md">%s</span>';
-$_['text_empty']                    = 'Ваша корзина пуста! Самое время делать покупки! :)';
 $_['text_cart']                     = 'Перейти в корзину';
 $_['text_checkout']                 = 'Оформить заказ';
 $_['text_recurring']                = 'Платежный профиль';
