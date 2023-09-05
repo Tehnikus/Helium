@@ -3,7 +3,12 @@
 <main role="main" id="account-forgotten">
 
   {% if error_warning %}
-  <div role="alert" class="alert-danger"><i class="icon-alert"></i> {{ error_warning }}</div>
+    <div class="has-error">
+      <span role="alert" class="text-danger">
+        <i class="icon-alert"></i> 
+        {{ error_warning }}
+      </span>
+    </div>
   {% endif %}
   
   <h1>{{ heading_title }}</h1>
@@ -12,7 +17,7 @@
   <form action="{{ action }}" method="post" enctype="multipart/form-data" >
     <fieldset>
       <legend>{{ text_your_email }}</legend>
-      <div class="form-group required">
+      <div class="form-group required {% if error_email %} has-error {% endif %}">
         <label for="input-email">{{ entry_email }}</label>
         <input
           type="email"
@@ -24,15 +29,13 @@
           enterkeyhint="next"
         />
         {% if error_email %}
-          <span class="text-danger">{{ error_email }}</div>
+          <span role="alert" class="text-danger">{{ error_email }}</span>
         {% endif %} 
       </div>
     </fieldset>
-    <div class="buttons clearfix">
-      <div class="pull-left"><a href="{{ back }}" class="button">{{ button_back }}</a></div>
-      <div class="pull-right">
-        <button type="submit" class="primary">{{ button_continue }}</button>
-      </div>
+    <div class="btn-group spaced">
+      <a href="{{ back }}" class="button">{{ button_back }}</a>
+      <button type="submit" class="primary">{{ button_continue }}</button>
     </div>
   </form>
   {{ content_bottom }}

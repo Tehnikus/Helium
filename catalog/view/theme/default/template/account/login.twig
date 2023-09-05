@@ -39,8 +39,11 @@
               </div>
               <div class="form-group">
                 <label class="control-label" for="input-password">{{ entry_password }}</label>
-                <input type="password" name="password" value="{{ password }}" placeholder="{{ entry_password }}" id="input-password" class="form-control" />
-                <a href="{{ forgotten }}">{{ text_forgotten }}</a></div>
+                <div class="input-group">
+                  <input type="password" name="password" value="{{ password }}" placeholder="{{ entry_password }}" id="input-password" class="form-control" />
+                  <a class="button" href="{{ forgotten }}">{{ text_forgotten }}</a>
+                </div>
+              </div>
               <input type="submit" value="{{ button_login }}" class="btn btn-primary" />
               {% if redirect %}
               <input type="hidden" name="redirect" value="{{ redirect }}" />
