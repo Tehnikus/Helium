@@ -31,6 +31,7 @@
           enterkeyhint="next"
           autocapitalize="words"
           minlength="3" maxlength="32"
+          autocomplete="given-name"
         />
       </div>
       <div class="form-group required">
@@ -45,6 +46,7 @@
           enterkeyhint="next"
           autocapitalize="words"
           minlength="3" maxlength="32"
+          autocomplete="family-name"
         />
       </div>
       <div class="form-group required">
@@ -57,6 +59,7 @@
           id="input-payment-email"
           inputmode="email"
           enterkeyhint="next"
+          autocomplete="email"
         />
       </div>
       <div class="form-group required">
@@ -70,6 +73,7 @@
           inputmode="tel"
           enterkeyhint="send"
           minlength="3" maxlength="32"
+          autocomplete="tel"
         />
       </div>
       {% include 'helium/template/common/custom_fields.twig' with {type: 'payment', location: 'account'} %}
@@ -89,7 +93,7 @@
           enterkeyhint="next"
           autocapitalize="words"
           minlength="3" maxlength="64"
-          autocomplete="on"
+          autocomplete="organization"
         />
       </div>
       <div class="form-group required">
@@ -104,7 +108,7 @@
           enterkeyhint="next"
           autocapitalize="words"
           minlength="3" maxlength="32"
-          autocomplete="on"
+          autocomplete="address-line1"
         />
       </div>
       <div class="form-group">
@@ -119,7 +123,7 @@
           enterkeyhint="next"
           autocapitalize="words"
           minlength="3" maxlength="32"
-          autocomplete="on"
+          autocomplete="address-line2"
         />
       </div>
       <div class="form-group required">
@@ -134,7 +138,7 @@
           enterkeyhint="next"
           autocapitalize="words"
           minlength="3" maxlength="32"
-          autocomplete="on"
+          autocomplete="address-level2"
         />
       </div>
       <div class="form-group">
@@ -148,7 +152,7 @@
           inputmode="numeric"
           enterkeyhint="next"
           minlength="3" maxlength="32"
-          autocomplete="on"
+          autocomplete="postal-code"
         />
       </div>
       <div class="form-group required">
@@ -185,6 +189,6 @@
           <label for="shipping_address_guest"> {{ entry_shipping }}</label>
         {% endif %}
       </div>
-      <button type="submit" id="button-guest" form="guest_checkout" class="primary">{{ button_continue }}</button>
+      <button type="button" id="button-guest" data-action="saveForm" data-form="guest_checkout" data-url="checkout/guest/save" class="primary">{{ button_continue }}</button>
     </div>
   </form>
