@@ -26,7 +26,7 @@
             <td class="text-left">{{ order.status }}</td>
             <td class="text-right">{{ order.total }}</td>
             <td class="text-left">{{ order.date_added }}</td>
-            <td class="text-right"><a href="{{ order.view }}" title="{{ button_view }}" ><i class="icon-eye"></i></a></td>
+            <td class="text-right"><a class="button" href="{{ order.view }}" title="{{ button_view }}" ><i class="icon-eye"></i>{{ button_view }}</a></td>
           </tr>
         {% endfor %}
         </tbody>
@@ -39,9 +39,7 @@
   {% else %}
     <p>{{ text_empty }}</p>
   {% endif %}
-  <div class="buttons clearfix">
-    <div class="pull-right"><a href="{{ continue }}" class="button primary">{{ button_continue }}</a></div>
-  </div>
+  <a class="button" href="{{ back }}" class="button"><i class="icon-chevron-left"></i>{{ button_back }}</a>
   {{ content_bottom }}
 </main>
 {{ column_left }}

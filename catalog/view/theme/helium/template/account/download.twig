@@ -1,7 +1,7 @@
 {{ header }}
 {% include 'helium/template/common/breadcrumbs.twig' %}
     
-<main role="main" id="downloads">
+<main role="main" id="account-download">
   {{ content_top }}
   <h2>{{ heading_title }}</h2>
 
@@ -39,7 +39,7 @@
   {% endif %}
 
   {{ content_bottom }}
-  <div class="pull-right"><a href="{{ continue }}" class="primary">{{ button_continue }}</a></div>
+  <a class="button" href="{{ continue }}" class="button"><i class="icon-chevron-left"></i>{{ button_back }}</a>
 </main>
 {{ column_left }}
 {{ column_right }}
