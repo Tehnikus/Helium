@@ -19,163 +19,24 @@
           {% endif %}
         {% endfor %}
       </div>
-      <div class="form-group required">
-        <label for="input-payment-firstname">{{ entry_firstname }}</label>
-        <input
-          type="text"
-          name="firstname"
-          value="{{ firstname }}"
-          placeholder="{{ entry_firstname }}"
-          id="input-payment-firstname"
-          inputmode="text"
-          enterkeyhint="next"
-          autocapitalize="words"
-          minlength="3" maxlength="32"
-          autocomplete="given-name"
-        />
-      </div>
-      <div class="form-group required">
-        <label for="input-payment-lastname">{{ entry_lastname }}</label>
-        <input
-          type="text"
-          name="lastname"
-          value="{{ lastname }}"
-          placeholder="{{ entry_lastname }}"
-          id="input-payment-lastname"
-          inputmode="text"
-          enterkeyhint="next"
-          autocapitalize="words"
-          minlength="3" maxlength="32"
-          autocomplete="family-name"
-        />
-      </div>
-      <div class="form-group required">
-        <label for="input-payment-email">{{ entry_email }}</label>
-        <input
-          type="email"
-          name="email"
-          value="{{ email }}"
-          placeholder="{{ entry_email }}"
-          id="input-payment-email"
-          inputmode="email"
-          enterkeyhint="next"
-          autocomplete="email"
-        />
-      </div>
-      <div class="form-group required">
-        <label for="input-payment-telephone">{{ entry_telephone }}</label>
-        <input
-          type="tel"
-          name="telephone"
-          value="{{ telephone }}"
-          placeholder="{{ entry_telephone }}"
-          id="input-payment-telephone"
-          inputmode="tel"
-          enterkeyhint="send"
-          minlength="3" maxlength="32"
-          autocomplete="tel"
-        />
-      </div>
-      {% include 'helium/template/common/custom_fields.twig' with {type: 'payment', location: 'account'} %}
+
+      {% include 'helium/template/common/fields/firstname.twig' with {required: true, type: 'payment'} %}
+      {% include 'helium/template/common/fields/lastname.twig'  with {required: true, type: 'payment'} %}
+      {% include 'helium/template/common/fields/email.twig'     with {required: true, type: 'payment'} %}
+      {% include 'helium/template/common/fields/telephone.twig' with {required: true, type: 'payment'} %}
+      {% include 'helium/template/common/custom_fields.twig'    with {type: 'payment', location: 'account'} %}
+      
     </fieldset>
 
     <fieldset id="address">
       <legend>{{ text_your_address }}</legend>
-      <div class="form-group">
-        <label for="input-payment-company">{{ entry_company }}</label>
-        <input
-          type="text"
-          name="company"
-          value="{{ company }}"
-          placeholder="{{ entry_company }}"
-          id="input-payment-company"
-          inputmode="text"
-          enterkeyhint="next"
-          autocapitalize="words"
-          minlength="3" maxlength="64"
-          autocomplete="organization"
-        />
-      </div>
-      <div class="form-group required">
-        <label for="input-payment-address-1">{{ entry_address_1 }}</label>
-        <input
-          type="text"
-          name="address_1"
-          value="{{ address_1 }}"
-          placeholder="{{ entry_address_1 }}"
-          id="input-payment-address-1"
-          inputmode="text"
-          enterkeyhint="next"
-          autocapitalize="words"
-          minlength="3" maxlength="32"
-          autocomplete="address-line1"
-        />
-      </div>
-      <div class="form-group">
-        <label for="input-payment-address-2">{{ entry_address_2 }}</label>
-        <input
-          type="text"
-          name="address_2"
-          value="{{ address_2 }}"
-          placeholder="{{ entry_address_2 }}"
-          id="input-payment-address-2"
-          inputmode="text"
-          enterkeyhint="next"
-          autocapitalize="words"
-          minlength="3" maxlength="32"
-          autocomplete="address-line2"
-        />
-      </div>
-      <div class="form-group required">
-        <label for="input-payment-city">{{ entry_city }}</label>
-        <input 
-          type="text" 
-          name="city" 
-          value="{{ city }}"
-          placeholder="{{ entry_city }}" 
-          id="input-payment-city"
-          inputmode="text"
-          enterkeyhint="next"
-          autocapitalize="words"
-          minlength="3" maxlength="32"
-          autocomplete="address-level2"
-        />
-      </div>
-      <div class="form-group">
-        <label for="input-payment-postcode">{{ entry_postcode }}</label>
-        <input
-          type="text"
-          name="postcode"
-          value="{{ postcode }}"
-          placeholder="{{ entry_postcode }}"
-          id="input-payment-postcode"
-          inputmode="numeric"
-          enterkeyhint="next"
-          minlength="3" maxlength="32"
-          autocomplete="postal-code"
-        />
-      </div>
-      <div class="form-group required">
-        <label for="input-payment-country">{{ entry_country }}</label>
-        <select name="country_id" id="input-payment-country">
-          <option value="">{{ text_select }}</option>
-          {% for country in countries %}
-            {% if country.country_id == country_id %}
-              <option value="{{ country.country_id }}" selected="selected">{{ country.name }}</option>
-            {% else %}
-              <option value="{{ country.country_id }}">{{ country.name }}</option>
-            {% endif %}
-          {% endfor %}
-        </select>
-      </div>
-
-      <div class="form-group required">
-        <label for="input-payment-zone">{{ entry_zone }}</label>
-        <select name="zone_id" id="input-payment-zone"></select>
-      </div>
-      
-      {% include 'helium/template/common/custom_fields.twig' with {type: 'payment', location: 'address'} %}
-      
+      {% include 'helium/template/common/fields/company.twig'   with {type: 'payment'} %}
+      {% include 'helium/template/common/fields/address1.twig'  with {requred: true, type: 'payment'} %}
+      {% include 'helium/template/common/fields/address2.twig'  with {type: 'payment'} %}
+      {% include 'helium/template/common/fields/city.twig'      with {required: true, type: 'payment'} %}
+      {# {% include 'helium/template/common/fields/postcode.twig'  with {type: 'payment'} %} #}
+      {% include 'helium/template/common/fields/country.twig'   with {required: true, type: 'payment'} %}
+      {% include 'helium/template/common/custom_fields.twig'    with {type: 'payment', location: 'address'} %}
     </fieldset>
     {{ captcha }}
     <div class="grid-footer">

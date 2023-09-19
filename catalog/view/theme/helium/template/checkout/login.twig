@@ -1,31 +1,33 @@
-    <fieldset>
-      <legend>{{ text_new_customer }}</legend>
-      <p>{{ text_checkout }}</p>
-      <div class="form-control">
-        {% if account == 'register' %}
-          <input type="radio" name="account" id="register-checkout" value="register" checked="checked" />
-          <label for="register-checkout">{{ text_register }}</label>
-        {% else %}
-          <input type="radio" name="account" id="register-checkout" value="register" />
-          <label for="register-checkout">{{ text_register }}</label>
+    <div class="form">
+      <fieldset>
+        <legend>{{ text_new_customer }}</legend>
+        <p>{{ text_checkout }}</p>
+        <div class="form-control">
+          {% if account == 'register' %}
+            <input type="radio" name="account" id="register-checkout" value="register" checked="checked" />
+            <label for="register-checkout">{{ text_register }}</label>
+          {% else %}
+            <input type="radio" name="account" id="register-checkout" value="register" />
+            <label for="register-checkout">{{ text_register }}</label>
+          {% endif %}
+        </div>
+        {% if checkout_guest %}
+        <div class="form-control">
+          {% if account == 'guest' %}
+            <input type="radio" name="account" id="guest-checkout" value="guest" checked="checked" />
+            <label for="guest-checkout">{{ text_guest }}</label>
+          {% else %}
+            <input type="radio" name="account" id="guest-checkout" value="guest" />
+            <label for="guest-checkout">{{ text_guest }}</label>
+          {% endif %}
+        </div>
         {% endif %}
-      </div>
-      {% if checkout_guest %}
-      <div class="form-control">
-        {% if account == 'guest' %}
-          <input type="radio" name="account" id="guest-checkout" value="guest" checked="checked" />
-          <label for="guest-checkout">{{ text_guest }}</label>
-        {% else %}
-          <input type="radio" name="account" id="guest-checkout" value="guest" />
-          <label for="guest-checkout">{{ text_guest }}</label>
-        {% endif %}
-      </div>
-      {% endif %}
-      <p>{{ text_register_account }}</p>
-      <button type="submit" type="button" id="button-account" data-action="guestOrRegister" class="primary">
-        {{ button_continue }}
-      </button>
-    </fieldset>
+        <p>{{ text_register_account }}</p>
+        <button type="submit" type="button" id="button-account" data-action="guestOrRegister" class="primary">
+          {{ button_continue }}
+        </button>
+      </fieldset>
+    </div>
     <form id="login-form" action="{{ action }}" enctype="multipart/form-data">
       <fieldset>
         <legend>{{ text_returning_customer }}</legend>

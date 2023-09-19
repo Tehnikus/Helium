@@ -35,7 +35,7 @@
             <label for="agree">{{ text_agree }}</label>
           {% endif %}
       {% endif %}
-      <button type="button" value="{{ button_continue }}" id="button-payment-method" class="primary">{{ button_continue }}</button>
+        <button type="button" id="button-payment_method" data-action="saveForm" data-form="payment_method" data-url="checkout/payment_method/save" class="primary">{{ button_continue }}</button>
     </fieldset>
   </form>
 {% endif %}

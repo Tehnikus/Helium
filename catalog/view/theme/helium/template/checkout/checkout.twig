@@ -20,21 +20,21 @@
     </div>
   </details>
     
-    {% if not logged and account != 'guest' %}
-      <details aria-labelledby="title_guest_checkout">
-        <summary><h4 id="title_guest_checkout">{{ text_checkout_account }}</h4></summary>
-        <div class="collapse-payment_address collapse-guest collapse-register" id="collapse-payment_address">
-          {# payment address #}
-        </div>
-      </details>
-    {% else %}
-      <details aria-labelledby="title_payment_address">
-        <summary><h4 id="title_payment_address">{{ text_checkout_payment_address }}</h4></summary>
-        <div class="collapse-payment_address collapse-guest collapse-register" id="collapse-payment_address">
-          {# payment address #}
-        </div>
-      </details>
-    {% endif %}
+  {% if not logged and account != 'guest' %}
+    <details aria-labelledby="title_guest_checkout">
+      <summary><h4 id="title_guest_checkout">{{ text_checkout_account }}</h4></summary>
+      <div class="collapse-payment_address collapse-guest collapse-register" id="collapse-payment_address">
+        {# payment address #}
+      </div>
+    </details>
+  {% else %}
+    <details aria-labelledby="title_payment_address">
+      <summary><h4 id="title_payment_address">{{ text_checkout_payment_address }}</h4></summary>
+      <div class="collapse-payment_address collapse-guest collapse-register" id="collapse-payment_address">
+        {# payment address #}
+      </div>
+    </details>
+  {% endif %}
 
     {% if shipping_required %}
       <details aria-labelledby="title_shipping_address">

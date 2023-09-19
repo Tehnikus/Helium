@@ -254,10 +254,8 @@
     {% endif %}
     {% endfor %}
   </div>
-  <div class="buttons clearfix">
-    <div class="pull-right">
-      <button type="button" id="button-payment-address" class="primary">{{ button_continue }}</button>
-    </div>
+  <div class="grid-footer">
+    <button type="button" id="button-payment-address" class="primary" data-action="saveForm" data-form="payment_address" data-url="checkout/payment_address/save">{{ button_continue }}</button>
   </div>
 </form>
 <script type="text/javascript"><!--

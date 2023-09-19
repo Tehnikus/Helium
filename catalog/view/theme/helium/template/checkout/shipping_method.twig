@@ -25,7 +25,10 @@
       {% endfor %}
       <p><strong>{{ text_comments }}</strong></p>
       <textarea name="comment" rows="8" class="form-control">{{ comment }}</textarea>
-      <button type="submit" value="" id="button-shipping-method" class="primary">{{ button_continue }}</button>
+      <div class="grid-footer">
+        <button type="button" id="button-shipping_method" data-action="saveForm" data-form="shipping_method" data-url="checkout/shipping_method/save" class="primary">{{ button_continue }}</button>
+        {# <button type="submit" value="" id="button-shipping-method" class="primary">{{ button_continue }}</button> #}
+      </div>
     </fieldset>
   </form>
 {% endif %}
