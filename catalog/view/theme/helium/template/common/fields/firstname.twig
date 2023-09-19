@@ -1,0 +1,15 @@
+<div class="form-group {% if required %} required {% endif %}">
+    <label for="input-{{ type }}-firstname">{{ entry_firstname }}</label>
+    <input
+      type="text"
+      name="firstname"
+      value="{{ firstname }}"
+      placeholder="{{ entry_firstname }}"
+      id="input-{{ type }}-firstname"
+      inputmode="text"
+      enterkeyhint="next"
+      autocapitalize="words"
+      minlength="3" maxlength="32"
+      autocomplete="given-name"
+    />
+</div>

@@ -1,0 +1,15 @@
+<div class="form-group {% if required %} required {% endif %}">
+  <label for="input-{{ type }}-company">{{ entry_company }}</label>
+  <input
+    type="text"
+    name="company"
+    value="{{ company }}"
+    placeholder="{{ entry_company }}"
+    id="input-{{ type }}-company"
+    inputmode="text"
+    enterkeyhint="next"
+    autocapitalize="words"
+    minlength="3" maxlength="64"
+    autocomplete="organization"
+  />
+</div>

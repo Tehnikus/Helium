@@ -1,0 +1,15 @@
+<div class="form-group {% if required %} required {% endif %}">
+  <label for="input-{{ type }}-address-2">{{ entry_address_2 }}</label>
+  <input
+    type="text"
+    name="address_2"
+    value="{{ address_2 }}"
+    placeholder="{{ entry_address_2 }}"
+    id="input-{{ type }}-address-2"
+    inputmode="text"
+    enterkeyhint="next"
+    autocapitalize="words"
+    minlength="3" maxlength="32"
+    autocomplete="address-line2"
+  />
+</div>

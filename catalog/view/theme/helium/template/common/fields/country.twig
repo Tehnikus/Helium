@@ -1,0 +1,32 @@
+<div class="form-group {% if required %} required {% endif %}">
+  <label for="input-{{ type }}-country">{{ entry_country }}</label>
+  <select name="country_id" id="input-{{ type }}-country" autocomplete="country-name">
+    <option value="">{{ text_select }}</option>
+    {% for country in countries %}
+      {% if country.country_id == country_id %}
+        <option value="{{ country.country_id }}" selected="selected">{{ country.name }}</option>
+      {% else %}
+        <option value="{{ country.country_id }}">{{ country.name }}</option>
+      {% endif %}
+    {% endfor %}
+  </select>
+</div>
+<div class="form-group required">
+  <label for="input-{{ type }}-zone">{{ entry_zone }}</label>
+  <select name="zone_id" id="input-{{ type }}-zone"></select>
+</div>
+
+<div class="form-group {% if country.postcode_required %} required {% else %} hidden {% endif %}">
+  <label for="input-{{ type }}-postcode">{{ entry_postcode }}</label>
+  <input
+    type="text"
+    name="postcode"
+    value="{{ postcode }}"
+    placeholder="{{ entry_postcode }}"
+    id="input-{{ type }}-postcode"
+    inputmode="numeric"
+    enterkeyhint="next"
+    minlength="3" maxlength="32"
+    autocomplete="postal-code"
+  />
+</div>

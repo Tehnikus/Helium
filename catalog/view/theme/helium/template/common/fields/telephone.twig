@@ -1,0 +1,14 @@
+<div class="form-group {% if required %} required {% endif %}">
+  <label for="input-{{ type }}-telephone">{{ entry_telephone }}</label>
+  <input
+    type="tel"
+    name="telephone"
+    value="{{ telephone }}"
+    placeholder="{{ entry_telephone }}"
+    id="input-{{ type }}-telephone"
+    inputmode="tel"
+    enterkeyhint="send"
+    minlength="3" maxlength="32"
+    autocomplete="tel"
+  />
+</div>

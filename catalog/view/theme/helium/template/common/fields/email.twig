@@ -1,0 +1,13 @@
+<div class="form-group {% if required %} required {% endif %}">
+    <label for="input-payment-email">{{ entry_email }}</label>
+    <input
+      type="email"
+      name="email"
+      value="{{ email }}"
+      placeholder="{{ entry_email }}"
+      id="input-payment-email"
+      inputmode="email"
+      enterkeyhint="next"
+      autocomplete="email"
+    />
+</div>
