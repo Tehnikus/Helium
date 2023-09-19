@@ -103,25 +103,17 @@ class ControllerCheckoutGuest extends Controller {
 
 		// Custom Fields
 		$this->load->model('account/custom_field');
-
 		$data['custom_fields'] = $this->model_account_custom_field->getCustomFields();
-
-		if (isset($this->session->data['guest']['custom_field'])) {
-			if (isset($this->session->data['guest']['custom_field'])) {
-				$guest_custom_field = $this->session->data['guest']['custom_field'];
-			} else {
-				$guest_custom_field = array();
+		foreach ($data['custom_fields'] as &$custom_field) {
+			if (isset($this->session->data['payment_address'])) {
+				if (isset($this->session->data['payment_address']['custom_field'])) {
+					foreach ($this->session->data['payment_address']['custom_field'] as $key => $user_custom_field) {
+						if ($custom_field['custom_field_id'] == $key) {
+							$custom_field['value'] = $user_custom_field;
+						}
+					}
+				}
 			}
-
-			if (isset($this->session->data['payment_address']['custom_field'])) {
-				$address_custom_field = $this->session->data['payment_address']['custom_field'];
-			} else {
-				$address_custom_field = array();
-			}
-
-			$data['guest_custom_field'] = $guest_custom_field + $address_custom_field;
-		} else {
-			$data['guest_custom_field'] = array();
 		}
 
 		$data['shipping_required'] = $this->cart->hasShipping();
@@ -140,11 +132,19 @@ class ControllerCheckoutGuest extends Controller {
 		}
 
 		// Add JS defs so no conditions for javascript used in twig
-		$js_defs = [];
-		$js_defs['shipping_required'] = $this->cart->hasShipping();
-		$data['js_defs'] = json_encode($js_defs);
+		// $js_defs = [];
+		// $js_defs['shipping_required'] = $this->cart->hasShipping();
+		// $data['js_defs'] = json_encode($js_defs);
+
+		$json = [];
+		$json['html']['replace']['.collapse-payment_address'] = $this->load->view('checkout/guest', $data);
+
 		
-		$this->response->setOutput($this->load->view('checkout/guest', $data));
+
+		$this->response->addHeader('Content-Type: application/json');
+		$this->response->setOutput(json_encode($json));
+		
+		// $this->response->setOutput($this->load->view('checkout/guest', $data));
 	}
 
 	public function save() {
@@ -223,9 +223,9 @@ class ControllerCheckoutGuest extends Controller {
 
 			foreach ($custom_fields as $custom_field) {
 				if ($custom_field['required'] && empty($this->request->post['custom_field'][$custom_field['location']][$custom_field['custom_field_id']])) {
-					$json['error']['custom_field' . $custom_field['custom_field_id']] = sprintf($this->language->get('error_custom_field'), $custom_field['name']);
+					$json['error']['custom_field[address][' . $custom_field['custom_field_id'].']'] = sprintf($this->language->get('error_custom_field'), $custom_field['name']);
 				} elseif (($custom_field['type'] == 'text') && !empty($custom_field['validation']) && !filter_var($this->request->post['custom_field'][$custom_field['location']][$custom_field['custom_field_id']], FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => $custom_field['validation'])))) {
-                    $json['error']['custom_field' . $custom_field['custom_field_id']] = sprintf($this->language->get('error_custom_field'), $custom_field['name']);
+                    $json['error']['custom_field[address][' . $custom_field['custom_field_id'].']'] = sprintf($this->language->get('error_custom_field'), $custom_field['name']);
                 }
 			}
 
@@ -301,20 +301,24 @@ class ControllerCheckoutGuest extends Controller {
 
 			if (!empty($this->request->post['shipping_address'])) {
 				$this->session->data['guest']['shipping_address'] = $this->request->post['shipping_address'];
+				// call delivery methods form
+				$json['function'][] = 'fetchShippingMethods()';
 			} else {
 				$this->session->data['guest']['shipping_address'] = false;
+				// call shipping address form
+				$json['function'][] = 'fetchShippingAddress()';
 			}
 
 			if ($this->session->data['guest']['shipping_address']) {
-				$this->session->data['shipping_address']['firstname'] = $this->request->post['firstname'];
-				$this->session->data['shipping_address']['lastname'] = $this->request->post['lastname'];
-				$this->session->data['shipping_address']['company'] = $this->request->post['company'];
-				$this->session->data['shipping_address']['address_1'] = $this->request->post['address_1'];
-				$this->session->data['shipping_address']['address_2'] = $this->request->post['address_2'];
-				$this->session->data['shipping_address']['postcode'] = $this->request->post['postcode'];
-				$this->session->data['shipping_address']['city'] = $this->request->post['city'];
-				$this->session->data['shipping_address']['country_id'] = $this->request->post['country_id'];
-				$this->session->data['shipping_address']['zone_id'] = $this->request->post['zone_id'];
+				$this->session->data['shipping_address']['firstname'] 	= $this->request->post['firstname'];
+				$this->session->data['shipping_address']['lastname'] 	= $this->request->post['lastname'];
+				$this->session->data['shipping_address']['company'] 	= $this->request->post['company'];
+				$this->session->data['shipping_address']['address_1'] 	= $this->request->post['address_1'];
+				$this->session->data['shipping_address']['address_2'] 	= $this->request->post['address_2'];
+				$this->session->data['shipping_address']['postcode'] 	= $this->request->post['postcode'];
+				$this->session->data['shipping_address']['city'] 		= $this->request->post['city'];
+				$this->session->data['shipping_address']['country_id'] 	= $this->request->post['country_id'];
+				$this->session->data['shipping_address']['zone_id'] 	= $this->request->post['zone_id'];
 
 				if ($country_info) {
 					$this->session->data['shipping_address']['country'] = $country_info['name'];
@@ -347,12 +351,15 @@ class ControllerCheckoutGuest extends Controller {
 			unset($this->session->data['shipping_methods']);
 			unset($this->session->data['payment_method']);
 			unset($this->session->data['payment_methods']);
+			
 		}
 
 		// Add JS defs so no conditions for javascript used in twig
-		$js_defs = [];
-		$js_defs['shipping_required'] = $this->cart->hasShipping();
-		$json['js_defs'] = $js_defs;
+		// $js_defs = [];
+		// $js_defs['shipping_required'] = $this->cart->hasShipping();
+		// $json['js_defs'] = $js_defs;
+
+		// $json['session'] = $this->session->data;
 
 		$this->response->addHeader('Content-Type: application/json');
 		$this->response->setOutput(json_encode($json));

@@ -3,58 +3,8 @@
 
 class ControllerCheckoutShippingAddress extends Controller {
 	public function index() {
-		$this->load->language('checkout/checkout');
-
-		if (isset($this->session->data['shipping_address']['address_id'])) {
-			$data['address_id'] = $this->session->data['shipping_address']['address_id'];
-		} else {
-			$data['address_id'] = $this->customer->getAddressId();
-		}
-
-		$this->load->model('account/address');
-
-		$data['addresses'] = $this->model_account_address->getAddresses();
-
-		if (isset($this->session->data['shipping_address']['postcode'])) {
-			$data['postcode'] = $this->session->data['shipping_address']['postcode'];
-		} else {
-			$data['postcode'] = '';
-		}
-
-		if (isset($this->session->data['shipping_address']['country_id'])) {
-			$data['country_id'] = $this->session->data['shipping_address']['country_id'];
-		} else {
-			$data['country_id'] = $this->config->get('config_country_id');
-		}
-
-		if (isset($this->session->data['shipping_address']['zone_id'])) {
-			$data['zone_id'] = $this->session->data['shipping_address']['zone_id'];
-		} else {
-			$data['zone_id'] = '';
-		}
-
-		$this->load->model('localisation/country');
-
-		$data['countries'] = $this->model_localisation_country->getCountries();
-
-		// Custom Fields
-		$data['custom_fields'] = array();
-		
-		$this->load->model('account/custom_field');
-
-		$custom_fields = $this->model_account_custom_field->getCustomFields($this->config->get('config_customer_group_id'));
-
-		foreach ($custom_fields as $custom_field) {
-			if ($custom_field['location'] == 'address') {
-				$data['custom_fields'][] = $custom_field;
-			}
-		}
-
-		if (isset($this->session->data['shipping_address']['custom_field'])) {
-			$data['shipping_address_custom_field'] = $this->session->data['shipping_address']['custom_field'];
-		} else {
-			$data['shipping_address_custom_field'] = array();
-		}
+		$data = [];
+		$data = $this->getShippingAddressData();
 		
 		$this->response->setOutput($this->load->view('checkout/shipping_address', $data));
 	}
@@ -109,7 +59,11 @@ class ControllerCheckoutShippingAddress extends Controller {
 				}
 
 				if (!$json) {
+					// If no errors occured, save shipping address 
 					$this->session->data['shipping_address'] = $this->model_account_address->getAddress($this->request->post['address_id']);
+					// call next method
+
+					// Call ajax('')
 
 					unset($this->session->data['shipping_method']);
 					unset($this->session->data['shipping_methods']);
@@ -182,5 +136,73 @@ class ControllerCheckoutShippingAddress extends Controller {
 
 		$this->response->addHeader('Content-Type: application/json');
 		$this->response->setOutput(json_encode($json));
+	}
+
+	public function fetchShippingAddress() {
+		$json = [];
+		$data = $this->getShippingAddressData();
+
+		$json['html']['replace']['.collapse-shipping_address'] = $this->load->view('checkout/shipping_address', $data);
+		$this->response->addHeader('Content-Type: application/json');
+		$this->response->setOutput(json_encode($json));
+	}
+
+	public function getShippingAddressData()
+	{
+		$data = [];
+		$this->load->language('checkout/checkout');
+
+		if (isset($this->session->data['shipping_address']['address_id'])) {
+			$data['address_id'] = $this->session->data['shipping_address']['address_id'];
+		} else {
+			$data['address_id'] = $this->customer->getAddressId();
+		}
+
+		$this->load->model('account/address');
+
+		$data['addresses'] = $this->model_account_address->getAddresses();
+
+		if (isset($this->session->data['shipping_address']['postcode'])) {
+			$data['postcode'] = $this->session->data['shipping_address']['postcode'];
+		} else {
+			$data['postcode'] = '';
+		}
+
+		if (isset($this->session->data['shipping_address']['country_id'])) {
+			$data['country_id'] = $this->session->data['shipping_address']['country_id'];
+		} else {
+			$data['country_id'] = $this->config->get('config_country_id');
+		}
+
+		if (isset($this->session->data['shipping_address']['zone_id'])) {
+			$data['zone_id'] = $this->session->data['shipping_address']['zone_id'];
+		} else {
+			$data['zone_id'] = '';
+		}
+
+		$this->load->model('localisation/country');
+
+		$data['countries'] = $this->model_localisation_country->getCountries();
+
+		// Custom Fields
+		$data['custom_fields'] = array();
+		
+		$this->load->model('account/custom_field');
+
+		$custom_fields = $this->model_account_custom_field->getCustomFields($this->config->get('config_customer_group_id'));
+
+		foreach ($custom_fields as $custom_field) {
+			if ($custom_field['location'] == 'address') {
+				$data['custom_fields'][] = $custom_field;
+			}
+		}
+
+		if (isset($this->session->data['shipping_address']['custom_field'])) {
+			$data['shipping_address_custom_field'] = $this->session->data['shipping_address']['custom_field'];
+		} else {
+			$data['shipping_address_custom_field'] = array();
+		}
+
+		return $data;
 	}
 }

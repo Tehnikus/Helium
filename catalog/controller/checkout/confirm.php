@@ -420,4 +420,12 @@ class ControllerCheckoutConfirm extends Controller {
 		}
 		return $data;
 	}
+	public function fetchConfirmOrder() {
+		$json = [];
+		$data = $this->getConfirmData();
+		$json['html']['replace']['.collapse-confirm'] = $this->load->view('checkout/confirm', $data);
+
+		$this->response->addHeader('Content-type: application/json');
+		$this->response->setOutput(json_encode($json));
+	}
 }

@@ -72,8 +72,15 @@ class ControllerCheckoutRegister extends Controller {
 		}
 
 		$data['shipping_required'] = $this->cart->hasShipping();
+
+
+		$json = [];
+		$json['html']['replace']['.collapse-payment_address'] = $this->load->view('checkout/register', $data);
+
+		$this->response->addHeader('Content-Type: application/json');
+		$this->response->setOutput(json_encode($json));
 		
-		$this->response->setOutput($this->load->view('checkout/register', $data));
+		// $this->response->setOutput($this->load->view('checkout/register', $data));
 	}
 
 	public function save() {

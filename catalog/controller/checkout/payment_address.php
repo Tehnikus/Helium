@@ -144,9 +144,9 @@ class ControllerCheckoutPaymentAddress extends Controller {
 				foreach ($custom_fields as $custom_field) {
 					if ($custom_field['location'] == 'address') {
 						if ($custom_field['required'] && empty($this->request->post['custom_field'][$custom_field['location']][$custom_field['custom_field_id']])) {
-							$json['error']['custom_field' . $custom_field['custom_field_id']] = sprintf($this->language->get('error_custom_field'), $custom_field['name']);
+							$json['error']['custom_field[address][' . $custom_field['custom_field_id'].']'] = sprintf($this->language->get('error_custom_field'), $custom_field['name']);
 						} elseif (($custom_field['type'] == 'text') && !empty($custom_field['validation']) && !filter_var($this->request->post['custom_field'][$custom_field['location']][$custom_field['custom_field_id']], FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => $custom_field['validation'])))) {
-							$json['error']['custom_field' . $custom_field['custom_field_id']] = sprintf($this->language->get('error_custom_field'), $custom_field['name']);
+							$json['error']['custom_field[address][' . $custom_field['custom_field_id'].']'] = sprintf($this->language->get('error_custom_field'), $custom_field['name']);
 						}
 					}
 				}
@@ -168,9 +168,62 @@ class ControllerCheckoutPaymentAddress extends Controller {
 				}
 			}
 		}
-		$js_defs = [];
-		$js_defs['shipping_required'] = $this->cart->hasShipping();
-		$json['js_defs'] = $js_defs;
+		// $js_defs = [];
+		// $js_defs['shipping_required'] = $this->cart->hasShipping();
+		// $json['js_defs'] = $js_defs;
+
+		$this->response->addHeader('Content-Type: application/json');
+		$this->response->setOutput(json_encode($json));
+	}
+
+	public function fetchPaymentAddress() {
+		$data = [];
+		$json = [];
+		$this->load->language('checkout/checkout');
+		$this->load->model('account/address');
+		$this->load->model('localisation/country');
+		$this->load->model('account/custom_field');
+
+		if (isset($this->session->data['payment_address']['address_id'])) {
+			$data['address_id'] = $this->session->data['payment_address']['address_id'];
+		} else {
+			$data['address_id'] = $this->customer->getAddressId();
+		}
+
+		$data['addresses'] = $this->model_account_address->getAddresses();
+
+		if (isset($this->session->data['payment_address']['country_id'])) {
+			$data['country_id'] = $this->session->data['payment_address']['country_id'];
+		} else {
+			$data['country_id'] = $this->config->get('config_country_id');
+		}
+
+		if (isset($this->session->data['payment_address']['zone_id'])) {
+			$data['zone_id'] = $this->session->data['payment_address']['zone_id'];
+		} else {
+			$data['zone_id'] = '';
+		}
+
+		$data['countries'] = $this->model_localisation_country->getCountries();
+
+		// Custom Fields
+		$data['custom_fields'] = array();
+
+		$custom_fields = $this->model_account_custom_field->getCustomFields($this->config->get('config_customer_group_id'));
+
+		foreach ($custom_fields as $custom_field) {
+			if ($custom_field['location'] == 'address') {
+				$data['custom_fields'][] = $custom_field;
+			}
+		}
+
+		if (isset($this->session->data['payment_address']['custom_field'])) {
+			$data['payment_address_custom_field'] = $this->session->data['payment_address']['custom_field'];
+		} else {
+			$data['payment_address_custom_field'] = array();
+		}
+
+		$json['html']['replace']['.collapse-payment_address'] = $this->load->view('checkout/payment_address', $data);
 
 		$this->response->addHeader('Content-Type: application/json');
 		$this->response->setOutput(json_encode($json));

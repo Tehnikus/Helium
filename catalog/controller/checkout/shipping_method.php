@@ -73,9 +73,11 @@ class ControllerCheckoutShippingMethod extends Controller {
 		return $data;
 	}
 
-	public function fetchShippingMethodsData() {
+	public function fetchShippingMethods() {
+		$json = [];
 		$data = $this->getShippingMethodsData();
-		echo(json_encode($data));
+		$json['html']['replace']['.collapse-shipping_method'] = $this->load->view('checkout/shipping_method', $data);
+		echo(json_encode($json));
 		die;
 	}
 
@@ -135,6 +137,9 @@ class ControllerCheckoutShippingMethod extends Controller {
 			} else {
 				$this->session->data['comment'] = '';
 			}
+
+			// If no errors occured, call next method
+			$json['function'][] = 'fetchPaymentMethods()';
 		}
 
 		$this->response->addHeader('Content-Type: application/json');

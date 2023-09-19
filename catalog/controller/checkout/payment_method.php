@@ -65,6 +65,8 @@ class ControllerCheckoutPaymentMethod extends Controller {
 			} else {
 				$this->session->data['comment'] = '';
 			}
+			// If no error occured
+			$json['function'][] = 'fetchConfirmOrder()';
 		}
 
 		$this->response->addHeader('Content-Type: application/json');
@@ -192,9 +194,13 @@ class ControllerCheckoutPaymentMethod extends Controller {
 		}
 		return $data;
 	}
-	public function fetchPaymentMethodsData() {
+	public function fetchPaymentMethods() {
+		$json = [];
 		$data = $this->getPaymentMethodsData();
-		echo(json_encode($data));
-		die;
+		$json['html']['replace']['.collapse-payment_method'] = $this->load->view('checkout/payment_method', $data);
+
+		$this->response->addHeader('Content-Type: application/json');
+		$this->response->setOutput(json_encode($json));
+
 	}
 }

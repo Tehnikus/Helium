@@ -13,6 +13,7 @@ class ControllerCheckoutLogin extends Controller {
 			$data['account'] = 'register';
 		}
 
+		$data['action'] = $this->url->link('checkout/login', '', true);
 		$data['forgotten'] = $this->url->link('account/forgotten', '', true);
 		$this->response->setOutput($this->load->view('checkout/login', $data));
 	}
@@ -30,26 +31,36 @@ class ControllerCheckoutLogin extends Controller {
 			$json['redirect'] = $this->url->link('checkout/cart');
 		}
 
+		
 		if (!$json) {
 			$this->load->model('account/customer');
-
-			// Check how many login attempts have been made.
-			$login_info = $this->model_account_customer->getLoginAttempts($this->request->post['email']);
-
-			if ($login_info && ($login_info['total'] >= 10) && strtotime('-1 hour') < strtotime($login_info['date_modified'])) {
-				$json['error']['warning'] = $this->language->get('error_attempts');
+			
+			if (!isset($this->request->post['email']) || $this->request->post['email'] === '') {
+				$json['error']['email'] = $this->language->get('error_email');
 			}
-
-			// Check if customer has been approved.
-			$customer_info = $this->model_account_customer->getCustomerByEmail($this->request->post['email']);
-
-			if ($customer_info && !$customer_info['status']) {
-				$json['error']['warning'] = $this->language->get('error_approved');
+			if (!isset($this->request->post['password']) || $this->request->post['password'] === '') {
+				$json['error']['password'] = $this->language->get('error_login');
+			}
+			// Check how many login attempts have been made.
+			if (isset($this->request->post['email'])) {
+				$login_info = $this->model_account_customer->getLoginAttempts($this->request->post['email']);
+	
+				if ($login_info && ($login_info['total'] >= 10) && strtotime('-1 hour') < strtotime($login_info['date_modified'])) {
+					$json['error']['warning'] = $this->language->get('error_attempts');
+				}
+	
+				// Check if customer has been approved.
+				$customer_info = $this->model_account_customer->getCustomerByEmail($this->request->post['email']);
+	
+				if ($customer_info && !$customer_info['status']) {
+					$json['error']['warning'] = $this->language->get('error_approved');
+				}
 			}
 
 			if (!isset($json['error'])) {
 				if (!$this->customer->login($this->request->post['email'], $this->request->post['password'])) {
-					$json['error']['warning'] = $this->language->get('error_login');
+					$json['error']['email'] = $this->language->get('error_login');
+					$json['error']['password'] = $this->language->get('error_login');
 
 					$this->model_account_customer->addLoginAttempt($this->request->post['email']);
 				} else {
@@ -88,6 +99,27 @@ class ControllerCheckoutLogin extends Controller {
 			$json['redirect'] = $this->url->link('checkout/checkout', '', true);
 		}
 
+		$this->response->addHeader('Content-Type: application/json');
+		$this->response->setOutput(json_encode($json));
+	}
+
+	public function fetchLoginForm() {
+		$data = [];
+		$json = [];
+		$this->load->language('checkout/checkout');
+
+		$data['checkout_guest'] = ($this->config->get('config_checkout_guest') && !$this->config->get('config_customer_price') && !$this->cart->hasDownload());
+
+		if (isset($this->session->data['account'])) {
+			$data['account'] = $this->session->data['account'];
+		} else {
+			$data['account'] = 'register';
+		}
+
+		$data['action'] = $this->url->link('checkout/login', '', true);
+		$data['forgotten'] = $this->url->link('account/forgotten', '', true);
+
+		$json['html']['replace']['.collapse-login'] = $this->load->view('checkout/login', $data);
 		$this->response->addHeader('Content-Type: application/json');
 		$this->response->setOutput(json_encode($json));
 	}
