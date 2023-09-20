@@ -1,13 +1,16 @@
-<div class="form-group {% if required %} required {% endif %}">
+<div class="form-group {% if required %} required {% endif %} {% if error_email %} has-error {% endif %}">
     <label for="input-payment-email">{{ entry_email }}</label>
     <input
       type="email"
       name="email"
       value="{{ email }}"
       placeholder="{{ entry_email }}"
-      id="input-payment-email"
+      id="input-{{ type }}-email"
       inputmode="email"
       enterkeyhint="next"
       autocomplete="email"
     />
+    {% if error_email %}
+      <span role="alert" class="text-danger">{{ error_email }}</span>
+    {% endif %} 
 </div>

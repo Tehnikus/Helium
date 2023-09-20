@@ -1,4 +1,4 @@
-<div class="form-group {% if required %} required {% endif %}">
+<div class="form-group {% if required %} required {% endif %} {% if error_telephone %} has-error {% endif %}">
   <label for="input-{{ type }}-telephone">{{ entry_telephone }}</label>
   <input
     type="tel"
@@ -11,4 +11,7 @@
     minlength="3" maxlength="32"
     autocomplete="tel"
   />
+  {% if error_telephone %}
+    <span role="alert" class="text-danger">{{ error_telephone }}</span>
+  {% endif %} 
 </div>

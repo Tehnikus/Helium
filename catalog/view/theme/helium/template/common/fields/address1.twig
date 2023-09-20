@@ -1,4 +1,4 @@
-<div class="form-group {% if required %} required {% endif %}">
+<div class="form-group {% if required %} required {% endif %} {% if error_address_1 %} has-error {% endif %}">
   <label for="input-{{ type }}-address-1">{{ entry_address_1 }}</label>
   <input
     type="text"
@@ -12,4 +12,7 @@
     minlength="3" maxlength="32"
     autocomplete="address-line1"
   />
+  {% if error_address_1 %}
+    <span class="text-danger" role="alert">{{ error_address_1 }}</span>
+  {% endif %}
 </div>
