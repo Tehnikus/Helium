@@ -4,20 +4,20 @@
         <p>{{ text_checkout }}</p>
         <div class="form-control">
           {% if account == 'register' %}
-            <input type="radio" name="account" id="register-checkout" value="register" checked="checked" />
+            <input type="radio" name="account" id="register-checkout" value="register/fetchRegisterCheckout" checked="checked" />
             <label for="register-checkout">{{ text_register }}</label>
           {% else %}
-            <input type="radio" name="account" id="register-checkout" value="register" />
+            <input type="radio" name="account" id="register-checkout" value="register/fetchRegisterCheckout" />
             <label for="register-checkout">{{ text_register }}</label>
           {% endif %}
         </div>
         {% if checkout_guest %}
         <div class="form-control">
           {% if account == 'guest' %}
-            <input type="radio" name="account" id="guest-checkout" value="guest" checked="checked" />
+            <input type="radio" name="account" id="guest-checkout" value="guest/fetchGuestCheckout" checked="checked" />
             <label for="guest-checkout">{{ text_guest }}</label>
           {% else %}
-            <input type="radio" name="account" id="guest-checkout" value="guest" />
+            <input type="radio" name="account" id="guest-checkout" value="guest/fetchGuestCheckout" />
             <label for="guest-checkout">{{ text_guest }}</label>
           {% endif %}
         </div>

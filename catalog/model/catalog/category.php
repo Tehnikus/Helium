@@ -1,14 +1,14 @@
 <?php
 class ModelCatalogCategory extends Model {
 	public function getCategory($category_id) {
-		$query = $this->db->query("
+				$query = $this->db->query("
 			SELECT  
 				*,
 				(SELECT 
 						MIN(p.price) 
 					FROM " . DB_PREFIX . "product p 
 					LEFT JOIN " . DB_PREFIX . "product_to_category p2c
-					ON p2c.category_id = c.category_id
+					ON p2c.category_id = '" . (int)$category_id . "'
 					WHERE p.product_id = p2c.product_id AND p.price > 0
 				) AS min_price,
 				
@@ -16,7 +16,7 @@ class ModelCatalogCategory extends Model {
 						MAX(p.price) 
 					FROM " . DB_PREFIX . "product p 
 					LEFT JOIN " . DB_PREFIX . "product_to_category p2c
-					ON p2c.category_id = c.category_id
+					ON p2c.category_id = '" . (int)$category_id . "'
 					WHERE p.product_id = p2c.product_id
 				) AS max_price,
 				
@@ -24,7 +24,7 @@ class ModelCatalogCategory extends Model {
 						SUM(p.review_count) 
 					FROM " . DB_PREFIX . "product p 
 					LEFT JOIN " . DB_PREFIX . "product_to_category p2c
-					ON p2c.category_id = c.category_id
+					ON p2c.category_id = '" . (int)$category_id . "'
 					WHERE p.product_id = p2c.product_id
 				) AS review_count,
 				
@@ -32,7 +32,7 @@ class ModelCatalogCategory extends Model {
 						TRUNCATE(SUM(p.rating) / SUM(p.review_count), 2)
 					FROM " . DB_PREFIX . "product p 
 					LEFT JOIN " . DB_PREFIX . "product_to_category p2c
-					ON p2c.category_id = c.category_id
+					ON p2c.category_id = '" . (int)$category_id . "'
 					WHERE p.product_id = p2c.product_id
 					AND p.rating > 0
 				) AS rating,
@@ -57,6 +57,7 @@ class ModelCatalogCategory extends Model {
 					FROM " . DB_PREFIX . "product_related_wb pr
 					WHERE pr.category_id = c.category_id
 				) AS featured
+				
 
 			FROM " . DB_PREFIX . "category c 
 			LEFT JOIN " . DB_PREFIX . "category_description cd 
