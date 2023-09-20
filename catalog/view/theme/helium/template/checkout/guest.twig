@@ -1,6 +1,6 @@
 
   <!-- Guest checkout -->
-  <form action="index.php?route=checkout/guest/save" method="post" id="guest_checkout">
+  <form action="index.php?route=checkout/guest/save" method="post" id="guest_checkout" enctype="multipart/form-data">
     <fieldset id="account">
       <legend>{{ text_your_details }}</legend>
       <div class="form-group" {% if customer_groups|length <= 1 %} style="display: none" tabindex="-1"{% endif %}>
@@ -31,10 +31,9 @@
     <fieldset id="address">
       <legend>{{ text_your_address }}</legend>
       {% include 'helium/template/common/fields/company.twig'   with {type: 'payment'} %}
-      {% include 'helium/template/common/fields/address1.twig'  with {requred: true, type: 'payment'} %}
+      {% include 'helium/template/common/fields/address1.twig'  with {required: true, type: 'payment'} %}
       {% include 'helium/template/common/fields/address2.twig'  with {type: 'payment'} %}
       {% include 'helium/template/common/fields/city.twig'      with {required: true, type: 'payment'} %}
-      {# {% include 'helium/template/common/fields/postcode.twig'  with {type: 'payment'} %} #}
       {% include 'helium/template/common/fields/country.twig'   with {required: true, type: 'payment'} %}
       {% include 'helium/template/common/custom_fields.twig'    with {type: 'payment', location: 'address'} %}
     </fieldset>
