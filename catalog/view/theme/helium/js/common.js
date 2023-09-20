@@ -93,36 +93,30 @@ document.addEventListener('DOMContentLoaded', function() {
 	fetch('index.php?route=common/cart/fetchProductCount').then(r => {return r.text()}).then(r => {
 		if (r !=='0') {setIcon(r)}
 	})
-	mobileMenu(); 			// Mobile menu buttons at the bottom of page
-	mainMenu(); 			// Main menu - render buttons, aria attributes and titles
-	countdown(document); 	// Countdown to the end date of discounts
-	stickyHeader(); 		// Sticky header
-	scrollslider(); 		// Sliders everywhere
-	anchorNav(); 			// Focus on hastag navigation element
-	hoverImage();			// Change product image
-	imageGallery();			// modal image gallery
+	mobileMenu(); 				// Mobile menu buttons at the bottom of page
+	mainMenu(); 				// Main menu - render buttons, aria attributes and titles
+	countdown(document); 		// Countdown to the end date of discounts
+	stickyHeader(); 			// Sticky header
+	scrollslider(); 			// Sliders everywhere
+	anchorNav(); 				// Focus on hastag navigation element
+	hoverImage();				// Change product image
+	imageGallery();				// modal image gallery
+	toggleZonesAndPostcode();	// Fetch country zones and toggle postcodes, if applicable
 
-	// Country zones fetch
-	// Toggle postcode input
-	const counrty_select 	= document.getElementsByName('country_id'),
-		  zone_select 		= document.getElementsByName('zone_id'),
-		  postcode_input 	= document.getElementsByName('postcode');
-	Array.from(counrty_select, c => {
-		Array.from(zone_select, z => {
-			// Get zones on initial page load
-			getZones(c,z);
-			// Change zones on country select change
-			c.addEventListener('change', ()=>{
-				getZones(c,z);
-				Array.from(postcode_input, p =>{
-					togglePostcode(c, p)
-				})
-			})
+	// Regular checkout
+	if (!!document.getElementById('checkout')) {
+		fetch('index.php?route=checkout/checkout/fetchCustomerIsLogged').then(r=>{return r.text()}).then(r=>{
+			if (!!r) {
+				// If user is logged in
+				fetchPaymentAddress();
+			} else {
+				// If user is not logged in
+				fetchLoginForm()
+			}
 		})
-		Array.from(postcode_input, p =>{
-			togglePostcode(c, p)
-		})
-	});
+	}
+
+
 
 	// Set product count on favicon on page load 
 	
@@ -210,7 +204,6 @@ var voucher = {
 }
 
 
-
 // Clicks handling
 document.addEventListener('click', function(e) {
 	/* Agree to Terms */
@@ -238,9 +231,9 @@ document.addEventListener('click', function(e) {
 		fetch(e.target.href).then(r => {return r.text()}).then(r => {document.getElementById('js_reviews').innerHTML = r});
 	}
 
-	if (e.target.id == 'button-login') {
-		login();
-	}
+	// if (e.target.id == 'button-login') {
+	// 	login();
+	// }
 
 });
 
@@ -280,55 +273,7 @@ function phoneMask (phone, format) {
 }
 
 
-// function login() {
-// 	email = document.querySelector('[name="email"]');
-// 	password = document.querySelector('[name="password"]');
-// 	ajax(
-// 		'index.php?route=checkout/login/save',
-// 		'password='+password+'&email='+email,
-// 		// Если запрос отправлен успешно и получен какой-то ответ...
-// 		(success) => {
-// 			// Закрываем предыдущие сообщения об ошибках
-// 			let error_windows = document.querySelectorAll('.modal_window');
-// 			if (!!error_windows) {
-// 				error_windows.forEach(e => {
-// 					document.body.removeChild(e);
-// 				});
-// 				email.classList.remove('has-error');
-// 				email.parentElement.classList.remove('has-error');
-// 				password.classList.remove('has-error');
-// 				password.parentElement.classList.remove('has-error');
-// 			}
-// 			// Выводим окошки с ошибками и предупреждениями
-// 			if (success.error) {
-// 				for (const error_type in success.error) {
-// 					if (success.error.hasOwnProperty(error_type)) {
-// 						toast.create(success.error[error_type], error_type);
-// 					}
-// 				}
-// 				email.classList.add('has-error');
-// 				email.parentElement.classList.add('has-error');
-// 				password.classList.add('has-error');
-// 				password.parentElement.classList.add('has-error');
-// 			}
-// 			// Переадресация, если вход успешный
-// 			if (success.redirect) {
-// 				window.location = success.redirect;
-// 			}
 
-// 		},
-// 		null,
-// 		(comlpete) => {
-// 			console.log(comlpete);
-// 		},
-// 		(error) => {
-// 			console.log(error);
-// 		},
-// 		'POST',
-// 		'JSON',
-// 		true
-// 	);
-// }
 
 
 
@@ -423,19 +368,28 @@ function mobileMenu() {
 // Create multilevel DOM elements from Javascript Object
 // Proudly present :)
 function createElm({type, styles, attrs, props, events, nest}) {
+	// Safely create function arguments
 	let [eType, eStyle,eAttr, eProps, eHandlers] = [type || 'div', styles || {}, attrs || {}, props || {}, events || {}];
+	// create initial element of type
 	let el = document.createElement(eType);
+	// Styles
 	for (let k in eStyle) {el.style[k] = eStyle[k]}
+	// Attributes
 	for (let k in eAttr) {el.setAttribute(k, eAttr[k])}
+	// Properties
 	for (let k in eProps) {
+		// Dataset
 		if(k == 'dataset') {
 			for (let d in eProps[k]) {
 				el.dataset[d] = eProps[k][d];
 			}
 		}
+		// Other properties
 		el[k] = eProps[k]
 	}
+	// Events
 	for (let k in eHandlers) {el.addEventListener(k,eHandlers[k])}
+	// Nested elements
 	if(!!nest && Object.keys(nest).length !== 0) {
 		for (const k in nest) {
 			if (nest.hasOwnProperty(k)) {
@@ -464,7 +418,7 @@ let dialog = {
 			type: 'dialog',
 			attrs: {'class': '', 'role':'dialog'},
 			events: {
-				// 'close': (e) => {console.log('closed', e)},
+				// 'close': (e) => {}, // Ability to add animation here
 				'click': (e) => {
 					// Click outside the dialog
 					if (e.target.contains(a)) {
@@ -656,7 +610,30 @@ const searchFunction = () => {
 }
 
 
-
+// Country zones fetch
+// Toggle postcode input
+// DONE move to separate function
+function toggleZonesAndPostcode() {
+	const counrty_select 	= document.getElementsByName('country_id'),
+		  zone_select 		= document.getElementsByName('zone_id'),
+		  postcode_input 	= document.getElementsByName('postcode');
+	Array.from(counrty_select, c => {
+		Array.from(zone_select, z => {
+			// Get zones on initial page load
+			getZones(c,z);
+			// Change zones on country select change
+			c.addEventListener('change', ()=>{
+				getZones(c,z);
+				Array.from(postcode_input, p =>{
+					togglePostcode(c, p)
+				})
+			})
+		})
+		Array.from(postcode_input, p =>{
+			togglePostcode(c, p)
+		})
+	});
+}
 
 // Show postode input if country requires postcode
 function togglePostcode(country_select, postcode_input) {
@@ -772,39 +749,43 @@ const uncollapseElement = (e) => {e.style.cssText = `height: ${e.scrollHeight}px
 
 
 const getZones = (country_select, zone_select) => {
-	let zone_block = country_select.parentElement.nextElementSibling;
-	fetch('index.php?route=checkout/checkout/country&country_id='+country_select.value,{method: "POST"})
-	.then((r) => {return r.text();})
-	.then((r) => {
-		// Remove old zones
-		while (zone_select.firstElementChild) {
-			zone_select.removeChild(zone_select.lastElementChild)
-		}
-		country_data = JSON.parse(r);
-		// If country needs zones
-		if ('zone' in country_data) {
-			zone_block.classList.remove('hidden');
-			// Create new zones
-			createZoneSelect(zone_select, country_data.zone);
-			zone_block.style.cssText = '';
-		} else {
-			// Else hide corresponding block
-			zone_block.style.cssText = 'display:none';
-		}
-	});
-	function createZoneSelect(zone_select, zones) {
-		for (z in zones) {
-			// Set selected zone
-			if ('selected' in zones[z]) {
-				zone_select.value = zones[z].zone_id;
+	if (!!country_select && !! zone_select) {
+		let zone_block = country_select.parentElement.nextElementSibling;
+		fetch('index.php?route=checkout/checkout/country&country_id='+country_select.value,{method: "POST"})
+		.then((r) => {return r.text();})
+		.then((r) => {
+			// Remove old zones
+			while (zone_select.firstElementChild) {
+				zone_select.removeChild(zone_select.lastElementChild)
 			}
-			let o = createElm({
-				type: 'option',
-				attrs: {'value':zones[z].zone_id},
-				props: {'innerText':zones[z].name}
-			})
-			zone_select.insertAdjacentElement('afterbegin', o);
+			country_data = JSON.parse(r);
+			// If country needs zones
+			if ('zone' in country_data) {
+				zone_block.classList.remove('hidden');
+				// Create new zones
+				createZoneSelect(zone_select, country_data.zone);
+				zone_block.style.cssText = '';
+			} else {
+				// Else hide corresponding block
+				zone_block.style.cssText = 'display:none';
+			}
+		});
+		function createZoneSelect(zone_select, zones) {
+			for (z in zones) {
+				// Set selected zone
+				if ('selected' in zones[z]) {
+					zone_select.value = zones[z].zone_id;
+				}
+				let o = createElm({
+					type: 'option',
+					attrs: {'value':zones[z].zone_id},
+					props: {'innerText':zones[z].name}
+				})
+				zone_select.insertAdjacentElement('afterbegin', o);
+			}
 		}
+	} else {
+		// console.log('Country select or zone select not present');
 	}
 }
 
@@ -1384,29 +1365,30 @@ function handleErrors(result, form_with_errors) {
 	if ('error' in result) {
 		let errors_object = result.error;
 		for (i in errors_object) {
-			// console.log(i, errors_object[i]);
-			// TODO Test this with multiple warnings
+			// DONE Test this with multiple warnings
 			if (i == 'warning') {
 				toast.create(errors_object['warning'], 'warning');
 			} else {
-				let error_input = form_with_errors.querySelector('[name="' + i + '"]');
-				// console.log(error_input, document.querySelector('[name="' + i + '"]'));
-				if (error_input) {
-					// Set ARIA ittributes to invalid fields
-					error_input.setAttribute('aria-invalid', true);
-					error_input.setAttribute('aria-errormessage', 'error_label_' + i);
-					let error_input_group = error_input.closest('.form-group, .form-control');
-					if (error_input_group.classList.contains('form-control')) {
-						error_input_group = error_input_group.parentElement;
-					}
-					if (error_input_group) {
-						error_input_group.classList.add('has-error');
-						error_input_group.insertAdjacentHTML('beforeend','<span role="alert" id="error_label_' + i + '" class="text-danger">' + errors_object[i] + '</span>')
-					} else {
-						// If no input found, but error occured
-						// Create toast notification with error
-						toast.create(errors_object[i], 'success');
-					}
+				let error_inputs = form_with_errors.querySelectorAll('[name="' + i + '"]');
+				if (error_inputs.length > 0) {
+					error_inputs.forEach(error_input => {
+
+						// Set ARIA ittributes to invalid fields
+						error_input.setAttribute('aria-invalid', true);
+						error_input.setAttribute('aria-errormessage', 'error_label_' + i);
+						let error_input_group = error_input.closest('.form-group, .form-control');
+						if (error_input_group.classList.contains('form-control')) {
+							error_input_group = error_input_group.parentElement;
+						}
+						if (error_input_group) {
+							error_input_group.classList.add('has-error');
+							error_input_group.insertAdjacentHTML('beforeend','<span role="alert" id="error_label_' + i + '" class="text-danger">' + errors_object[i] + '</span>')
+						} else {
+							// If no input found, but error occured
+							// Create toast notification with error
+							toast.create(errors_object[i], 'success');
+						}
+					})
 				} else {
 					console.log('input not found:', 'input name=' + i);
 				}
@@ -1425,30 +1407,56 @@ function removeElementsByClass(className) {
 	  elements[0].parentNode.removeChild(elements[0]);
 	}
 }
-const fetchShippingPayment  = () => {ajax('common/cart/fetchDisplayShippingHtml');ajax('common/cart/fetchDisplayPaymentHtml');}
+const fetchShippingPayment  = () 	   => {ajax('common/cart/fetchDisplayShippingHtml');ajax('common/cart/fetchDisplayPaymentHtml')}
 const validateQuickCheckout = (el, ev) => {ajax('common/cart/getConfirmOrder', {el, ev})}
-const reviewModal 			= (el, ev) => {ajax(el.dataset.type+'/showReviewModal&entity_id=' + el.dataset.id, {ev})}
-const sendReview 			= (el, ev) => {ajax(el.dataset.type+'/sendReview&entity_id=' + el.dataset.id, {el, ev})}
-const wishlistModal 		= (el, ev) => {ajax('account/wishlist/showWishlistModal', {el,ev})}
-const wishlistAdd 			= (el, ev) => {ajax('account/wishlist/add', {el,ev})}
-const wishlistRemove 		= (el, ev) => {ajax('account/wishlist/remove', {el,ev})}
-const compareModal 			= (el, ev) => {ajax('product/compare/showCompareModal', {el,ev})}
-const compareAdd 			= (el, ev) => {ajax('product/compare/add', {el,ev})}
-const compareRemove 		= (el, ev) => {ajax('product/compare/remove', {el,ev}).then(r=>{compareModal()})}
-const contactsModal 		= (el, ev) => {ajax('information/contact/showContactsModal', {el,ev})}
-const cartRemove 	    	= (el, ev) => {ajax('checkout/cart/remove', {el,ev}).then(r=>{cartShowModal();setIcon(r.cart_count)})}
-const cartShowModal     	= (el, ev) => {ajax('common/cart/showCartModal', {el, ev}).then(r=>{quickCheckout()})
-	// try {
-	// 	let response = await fetch('index.php?route=common/cart/displayCartModal', { method: "POST" });
-	// 	let modalContent = await response.text();
-	// 	let modalDiv = document.createElement('div');
-	// 	modalDiv.innerHTML = modalContent;
-	// 	let cart_dialog = dialog.create(modalDiv, ev);
-	// 	quickCheckout(cart_dialog);
-	// } catch (error) {
-	// 	console.error(error);
+const reviewModal 					= (el, ev) => {ajax(el.dataset.type+'/showReviewModal&entity_id=' + el.dataset.id, {ev})}
+const sendReview 						= (el, ev) => {ajax(el.dataset.type+'/sendReview&entity_id=' + el.dataset.id, {el, ev})}
+const wishlistModal 				= (el, ev) => {ajax('account/wishlist/showWishlistModal', {el,ev})}
+const wishlistAdd 					= (el, ev) => {ajax('account/wishlist/add', {el,ev})}
+const wishlistRemove 				= (el, ev) => {ajax('account/wishlist/remove', {el,ev})}
+const compareModal 					= (el, ev) => {ajax('product/compare/showCompareModal', {el,ev})}
+const compareAdd 						= (el, ev) => {ajax('product/compare/add', {el,ev})}
+const compareRemove 				= (el, ev) => {ajax('product/compare/remove', {el,ev}).then(r=>{compareModal()})}
+const contactsModal 				= (el, ev) => {ajax('information/contact/showContactsModal', {el,ev})}
+const cartRemove 	    			= (el, ev) => {ajax('checkout/cart/remove', {el,ev}).then(r=>{cartShowModal();setIcon(r.cart_count)})}
+const cartShowModal     		= (el, ev) => {ajax('common/cart/showCartModal', {el, ev}).then(r=>{quickCheckout()})}
+const login 								= (el, ev) => {ajax('checkout/login/save', {el, ev})}
+const guestOrRegister 			= (el, ev) => {ajax('checkout/'+ document.querySelector('input[name="account"]:checked').value, {el, ev}).then(r=>{toggleZonesAndPostcode()})}
+// Save any form
+const saveForm 				= (el, ev) => {
+	ajax(el.dataset.url, {el, ev}).then(errors_present => {
+		toggleZonesAndPostcode(); 
+		if (!!errors_present && !!el.dataset.next) {
+			ajax(el.dataset.next);
+			toggleZonesAndPostcode();
+		}
+	})
+}
+// const getForm = (el, ev) => {
+
 	// }
-};
+// Checkout
+function fetchLoginForm()				{ajax('checkout/login/fetchLoginForm')}
+function fetchGuestForm() 			{ajax('checkout/guest').then(r => {toggleZonesAndPostcode()})}
+function fetchRegisterForm() 		{ajax('checkout/register').then(r => {toggleZonesAndPostcode()})}
+function fetchPaymentAddress() 	{ajax('checkout/payment_address/fetchPaymentAddress').then(r => {toggleZonesAndPostcode()})}
+function fetchShippingAddress() {ajax('checkout/shipping_address/fetchShippingAddress').then(r=>{toggleZonesAndPostcode()})}
+function fetchShippingMethods() {ajax('checkout/shipping_method/fetchShippingMethods')}
+function fetchPaymentMethods()	{ajax('checkout/payment_method/fetchPaymentMethods')}
+function fetchConfirmOrder() 		{ajax('checkout/confirm/fetchConfirmOrder')}
+function completeOrder(el) 			{ajax(el.dataset.confirm)}
+
+
+// try {
+// 	let response = await fetch('index.php?route=common/cart/displayCartModal', { method: "POST" });
+// 	let modalContent = await response.text();
+// 	let modalDiv = document.createElement('div');
+// 	modalDiv.innerHTML = modalContent;
+// 	let cart_dialog = dialog.create(modalDiv, ev);
+// 	quickCheckout(cart_dialog);
+// } catch (error) {
+// 	console.error(error);
+// }
 const cartAdd =  async (el, ev) => {
 	let body = new FormData;
 	body.append('product_id', el.dataset.product_id);
@@ -1488,7 +1496,8 @@ const saveCheckoutfields = async (form) => {
 }
 
 
-
+// TODO Add try-catch
+// TODO replace const with function
 const ajax = async (url, s) => {
 	let method = "POST", body, headers, settings = s || {}, el, ev;
 
@@ -1510,11 +1519,24 @@ const ajax = async (url, s) => {
 	if ('body' in settings) {body = settings.body}
 	if ('ev' in settings) {ev = settings.ev}
 
-	return await fetch('index.php?route='+url, {method, body}).then(r=>{return r.json()}).then(r=>{
-		// console.log(r);
+	return await fetch('index.php?route='+url, {method, body}).then(r=> {return r.json()}).then(r=> {
+		/////////////////////////////
+		// TODO Remove on production
+		console.log({
+			'url': 'index.php?route='+url,
+			'body': !!body ? Object.fromEntries(body) : body,
+			'response': r
+		});
+		/////////////////////////////
+		/////////////////////////////
+
+
 		if ('dialog' in r) {dialog.create(r.dialog, ev)}
 		if ('toasts' in r) {for (c in r.toasts) {for (t in r.toasts[c]) {toast.create(r.toasts[c][t], c)}}}
-		if ('error' in r) {return handleErrors(r, document)}
+		// if ('error' in r) {return handleErrors(r, document)}
+		if (handleErrors(r, document)) {
+			return false;
+		}
 		if ('redirect' in r) {window.location = r.redirect}
 		if ('function' in r) {
 			for (f in r.function) {
@@ -1523,12 +1545,54 @@ const ajax = async (url, s) => {
 			}
 		}
 		if ('html' in r) {
-			for (a in r.html) {
-				for (s in r.html[a]) {
-					if (a == 'replace') {document.querySelectorAll(s).forEach(e =>{e.innerHTML = r.html[a][s]}); }
-					if (a == 'append') 	{e.insertAdjacentHTML('beforeend', e.innerHTML = r.html[a][s])}
-					if (a == 'prepend') {e.insertAdjacentHTML('afterbegin', el.innerHTML = r.html[a][s])}
-					if (a == 'remove') 	{for (const e of document.querySelectorAll(s)) {e.remove()}}
+			// Foreach action
+			for (action in r.html) {
+				// foreach selector in action
+				for (selector in r.html[action]) {
+					// Replace
+					if (action === 'replace') {
+						document.querySelectorAll(selector).forEach(
+							element => {
+								element.innerHTML = r.html[action][selector]
+							}
+						)
+					}
+					// Append
+					if (action === 'append') {
+						document.querySelectorAll(selector).forEach(
+							element => {
+								element.insertAdjacentHTML('afterend', r.html[action][selector])
+							}
+						)
+					}
+					// Prepend
+					if (action === 'prepend') {
+						document.querySelectorAll(selector).forEach(
+							element => {
+								element.insertAdjacentHTML('beforebegin', r.html[action][selector])
+							}
+						)
+					}
+					// Remove
+					if (action == 'remove') {
+						for (const element of document.querySelectorAll(selector)) {
+							element.remove()
+						}
+					}
+					// Check if parent of replaced contains '.collapse' class and fire Accordion.open()
+					if (selector.indexOf('.collapse') !== -1) {
+						let details = document.querySelector(selector).closest('details');
+						if (details.Accordion) {
+							Accordion.closeAllAccordions()
+							// Open Accordion by class method
+							details.Accordion.open()
+						} else {
+							Accordion.closeAllAccordions()
+							// Open details by native browser api
+							details.open;
+						}
+					}
+
 				}
 			}
 		}
@@ -1541,21 +1605,21 @@ const actions = {
 	click: {
 		sendReview,
 		reviewModal,
-
 		cartAdd,
 		cartRemove,
 		cartShowModal,
-
 		compareModal,
 		compareAdd,
 		compareRemove,
-
 		wishlistModal,
 		wishlistAdd,
 		wishlistRemove,
-
 		contactsModal,
 		validateQuickCheckout,
+		login,
+		saveForm,
+		guestOrRegister,
+		completeOrder
 	},
 	input: {
 		searchFunction,
