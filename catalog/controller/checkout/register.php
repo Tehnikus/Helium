@@ -3,88 +3,13 @@
 
 class ControllerCheckoutRegister extends Controller {
 	public function index() {
-		$this->load->language('checkout/checkout');
-		
-		$data['entry_newsletter'] = sprintf($this->language->get('entry_newsletter'), $this->config->get('config_name'));
-
-		$data['customer_groups'] = array();
-
-		if (is_array($this->config->get('config_customer_group_display'))) {
-			$this->load->model('account/customer_group');
-
-			$customer_groups = $this->model_account_customer_group->getCustomerGroups();
-
-			foreach ($customer_groups  as $customer_group) {
-				if (in_array($customer_group['customer_group_id'], $this->config->get('config_customer_group_display'))) {
-					$data['customer_groups'][] = $customer_group;
-				}
-			}
-		}
-
-		$data['customer_group_id'] = $this->config->get('config_customer_group_id');
-
-		if (isset($this->session->data['shipping_address']['postcode'])) {
-			$data['postcode'] = $this->session->data['shipping_address']['postcode'];
-		} else {
-			$data['postcode'] = '';
-		}
-
-		if (isset($this->session->data['shipping_address']['country_id'])) {
-			$data['country_id'] = $this->session->data['shipping_address']['country_id'];
-		} else {
-			$data['country_id'] = $this->config->get('config_country_id');
-		}
-
-		if (isset($this->session->data['shipping_address']['zone_id'])) {
-			$data['zone_id'] = $this->session->data['shipping_address']['zone_id'];
-		} else {
-			$data['zone_id'] = '';
-		}
-
-		$this->load->model('localisation/country');
-
-		$data['countries'] = $this->model_localisation_country->getCountries();
-
-		// Custom Fields
-		$this->load->model('account/custom_field');
-
-		$data['custom_fields'] = $this->model_account_custom_field->getCustomFields();
-
-		// Captcha
-		if ($this->config->get('captcha_' . $this->config->get('config_captcha') . '_status') && in_array('register', (array)$this->config->get('config_captcha_page'))) {
-			$data['captcha'] = $this->load->controller('extension/captcha/' . $this->config->get('config_captcha'));
-		} else {
-			$data['captcha'] = '';
-		}
-
-		if ($this->config->get('config_account_id')) {
-			$this->load->model('catalog/information');
-
-			$information_info = $this->model_catalog_information->getInformation($this->config->get('config_account_id'));
-
-			if ($information_info) {
-				$data['text_agree'] = sprintf($this->language->get('text_agree'), $this->url->link('information/information/agree', 'information_id=' . $this->config->get('config_account_id'), true), $information_info['title']);
-			} else {
-				$data['text_agree'] = '';
-			}
-		} else {
-			$data['text_agree'] = '';
-		}
-
-		$data['shipping_required'] = $this->cart->hasShipping();
-
-
-		$json = [];
-		$json['html']['replace']['.collapse-payment_address'] = $this->load->view('checkout/register', $data);
-
-		$this->response->addHeader('Content-Type: application/json');
-		$this->response->setOutput(json_encode($json));
-		
-		// $this->response->setOutput($this->load->view('checkout/register', $data));
+		$data = $this->getRegisterData();	
+		$this->response->setOutput($this->load->view('checkout/register', $data));
 	}
 
 	public function save() {
 		$this->load->language('checkout/checkout');
+		$this->load->language('checkout/checkout_errors');
 
 		$json = array();
 
@@ -260,6 +185,88 @@ class ControllerCheckoutRegister extends Controller {
 			unset($this->session->data['payment_method']);
 			unset($this->session->data['payment_methods']);
 		}
+
+		$this->response->addHeader('Content-Type: application/json');
+		$this->response->setOutput(json_encode($json));
+	}
+
+	public function getRegisterData() {
+		$this->load->language('checkout/checkout');
+		
+		$data['entry_newsletter'] = sprintf($this->language->get('entry_newsletter'), $this->config->get('config_name'));
+
+		$data['customer_groups'] = array();
+
+		if (is_array($this->config->get('config_customer_group_display'))) {
+			$this->load->model('account/customer_group');
+
+			$customer_groups = $this->model_account_customer_group->getCustomerGroups();
+
+			foreach ($customer_groups  as $customer_group) {
+				if (in_array($customer_group['customer_group_id'], $this->config->get('config_customer_group_display'))) {
+					$data['customer_groups'][] = $customer_group;
+				}
+			}
+		}
+
+		$data['customer_group_id'] = $this->config->get('config_customer_group_id');
+
+		if (isset($this->session->data['shipping_address']['postcode'])) {
+			$data['postcode'] = $this->session->data['shipping_address']['postcode'];
+		} else {
+			$data['postcode'] = '';
+		}
+
+		if (isset($this->session->data['shipping_address']['country_id'])) {
+			$data['country_id'] = $this->session->data['shipping_address']['country_id'];
+		} else {
+			$data['country_id'] = $this->config->get('config_country_id');
+		}
+
+		if (isset($this->session->data['shipping_address']['zone_id'])) {
+			$data['zone_id'] = $this->session->data['shipping_address']['zone_id'];
+		} else {
+			$data['zone_id'] = '';
+		}
+
+		$this->load->model('localisation/country');
+
+		$data['countries'] = $this->model_localisation_country->getCountries();
+
+		// Custom Fields
+		$this->load->model('account/custom_field');
+
+		$data['custom_fields'] = $this->model_account_custom_field->getCustomFields();
+
+		// Captcha
+		if ($this->config->get('captcha_' . $this->config->get('config_captcha') . '_status') && in_array('register', (array)$this->config->get('config_captcha_page'))) {
+			$data['captcha'] = $this->load->controller('extension/captcha/' . $this->config->get('config_captcha'));
+		} else {
+			$data['captcha'] = '';
+		}
+
+		if ($this->config->get('config_account_id')) {
+			$this->load->model('catalog/information');
+
+			$information_info = $this->model_catalog_information->getInformation($this->config->get('config_account_id'));
+
+			if ($information_info) {
+				$data['text_agree'] = sprintf($this->language->get('text_agree'), $this->url->link('information/information/agree', 'information_id=' . $this->config->get('config_account_id'), true), $information_info['title']);
+			} else {
+				$data['text_agree'] = '';
+			}
+		} else {
+			$data['text_agree'] = '';
+		}
+
+		$data['shipping_required'] = $this->cart->hasShipping();
+
+		return $data;
+	}
+	public function fetchRegisterCheckout() {
+		$json = [];
+		$data = $this->getRegisterData();
+		$json['html']['replace']['.collapse-payment_address'] = $this->load->view('checkout/register', $data);
 
 		$this->response->addHeader('Content-Type: application/json');
 		$this->response->setOutput(json_encode($json));

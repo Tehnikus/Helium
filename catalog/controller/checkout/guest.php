@@ -3,152 +3,13 @@
 
 class ControllerCheckoutGuest extends Controller {
 	public function index() {
-		$this->load->language('checkout/checkout');
-
-		$data['customer_groups'] = array();
-
-		if (is_array($this->config->get('config_customer_group_display'))) {
-			$this->load->model('account/customer_group');
-
-			$customer_groups = $this->model_account_customer_group->getCustomerGroups();
-
-			foreach ($customer_groups as $customer_group) {
-				if (in_array($customer_group['customer_group_id'], $this->config->get('config_customer_group_display'))) {
-					$data['customer_groups'][] = $customer_group;
-				}
-			}
-		}
-
-		if (isset($this->session->data['guest']['customer_group_id'])) {
-			$data['customer_group_id'] = $this->session->data['guest']['customer_group_id'];
-		} else {
-			$data['customer_group_id'] = $this->config->get('config_customer_group_id');
-		}
-
-		if (isset($this->session->data['guest']['firstname'])) {
-			$data['firstname'] = $this->session->data['guest']['firstname'];
-		} else {
-			$data['firstname'] = '';
-		}
-
-		if (isset($this->session->data['guest']['lastname'])) {
-			$data['lastname'] = $this->session->data['guest']['lastname'];
-		} else {
-			$data['lastname'] = '';
-		}
-
-		if (isset($this->session->data['guest']['email'])) {
-			$data['email'] = $this->session->data['guest']['email'];
-		} else {
-			$data['email'] = '';
-		}
-
-		if (isset($this->session->data['guest']['telephone'])) {
-			$data['telephone'] = $this->session->data['guest']['telephone'];
-		} else {
-			$data['telephone'] = '';
-		}
-
-		if (isset($this->session->data['payment_address']['company'])) {
-			$data['company'] = $this->session->data['payment_address']['company'];
-		} else {
-			$data['company'] = '';
-		}
-
-		if (isset($this->session->data['payment_address']['address_1'])) {
-			$data['address_1'] = $this->session->data['payment_address']['address_1'];
-		} else {
-			$data['address_1'] = '';
-		}
-
-		if (isset($this->session->data['payment_address']['address_2'])) {
-			$data['address_2'] = $this->session->data['payment_address']['address_2'];
-		} else {
-			$data['address_2'] = '';
-		}
-
-		if (isset($this->session->data['payment_address']['postcode'])) {
-			$data['postcode'] = $this->session->data['payment_address']['postcode'];
-		} elseif (isset($this->session->data['shipping_address']['postcode'])) {
-			$data['postcode'] = $this->session->data['shipping_address']['postcode'];
-		} else {
-			$data['postcode'] = '';
-		}
-
-		if (isset($this->session->data['payment_address']['city'])) {
-			$data['city'] = $this->session->data['payment_address']['city'];
-		} else {
-			$data['city'] = '';
-		}
-
-		if (isset($this->session->data['payment_address']['country_id'])) {
-			$data['country_id'] = $this->session->data['payment_address']['country_id'];
-		} elseif (isset($this->session->data['shipping_address']['country_id'])) {
-			$data['country_id'] = $this->session->data['shipping_address']['country_id'];
-		} else {
-			$data['country_id'] = $this->config->get('config_country_id');
-		}
-
-		if (isset($this->session->data['payment_address']['zone_id'])) {
-			$data['zone_id'] = $this->session->data['payment_address']['zone_id'];
-		} elseif (isset($this->session->data['shipping_address']['zone_id'])) {
-			$data['zone_id'] = $this->session->data['shipping_address']['zone_id'];
-		} else {
-			$data['zone_id'] = '';
-		}
-
-		$this->load->model('localisation/country');
-
-		$data['countries'] = $this->model_localisation_country->getCountries();
-
-		// Custom Fields
-		$this->load->model('account/custom_field');
-		$data['custom_fields'] = $this->model_account_custom_field->getCustomFields();
-		foreach ($data['custom_fields'] as &$custom_field) {
-			if (isset($this->session->data['payment_address'])) {
-				if (isset($this->session->data['payment_address']['custom_field'])) {
-					foreach ($this->session->data['payment_address']['custom_field'] as $key => $user_custom_field) {
-						if ($custom_field['custom_field_id'] == $key) {
-							$custom_field['value'] = $user_custom_field;
-						}
-					}
-				}
-			}
-		}
-
-		$data['shipping_required'] = $this->cart->hasShipping();
-
-		if (isset($this->session->data['guest']['shipping_address'])) {
-			$data['shipping_address'] = $this->session->data['guest']['shipping_address'];
-		} else {
-			$data['shipping_address'] = true;
-		}
-
-		// Captcha
-		if ($this->config->get('captcha_' . $this->config->get('config_captcha') . '_status') && in_array('guest', (array)$this->config->get('config_captcha_page'))) {
-			$data['captcha'] = $this->load->controller('extension/captcha/' . $this->config->get('config_captcha'));
-		} else {
-			$data['captcha'] = '';
-		}
-
-		// Add JS defs so no conditions for javascript used in twig
-		// $js_defs = [];
-		// $js_defs['shipping_required'] = $this->cart->hasShipping();
-		// $data['js_defs'] = json_encode($js_defs);
-
-		$json = [];
-		$json['html']['replace']['.collapse-payment_address'] = $this->load->view('checkout/guest', $data);
-
-		
-
-		$this->response->addHeader('Content-Type: application/json');
-		$this->response->setOutput(json_encode($json));
-		
-		// $this->response->setOutput($this->load->view('checkout/guest', $data));
+		$data = $this->getGuestCheckoutData();
+		$this->response->setOutput($this->load->view('checkout/guest', $data));
 	}
 
 	public function save() {
 		$this->load->language('checkout/checkout');
+		$this->load->language('checkout/checkout_errors');
 
 		$json = array();
 
@@ -363,5 +224,150 @@ class ControllerCheckoutGuest extends Controller {
 
 		$this->response->addHeader('Content-Type: application/json');
 		$this->response->setOutput(json_encode($json));
+	}
+
+	public function fetchGuestCheckout() {
+		$json = [];
+		$data = $this->getGuestCheckoutData();
+		$json['html']['replace']['.collapse-guest'] = $this->load->view('checkout/guest', $data);
+
+		$this->response->addHeader('Content-Type: application/json');
+		$this->response->setOutput(json_encode($json));
+	}
+
+	public function getGuestCheckoutData() {
+		$data = [];
+		$this->load->language('checkout/checkout');
+		$this->load->model('localisation/country');
+
+		$data['customer_groups'] = array();
+
+		if (is_array($this->config->get('config_customer_group_display'))) {
+			$this->load->model('account/customer_group');
+
+			$customer_groups = $this->model_account_customer_group->getCustomerGroups();
+
+			foreach ($customer_groups as $customer_group) {
+				if (in_array($customer_group['customer_group_id'], $this->config->get('config_customer_group_display'))) {
+					$data['customer_groups'][] = $customer_group;
+				}
+			}
+		}
+
+		if (isset($this->session->data['guest']['customer_group_id'])) {
+			$data['customer_group_id'] = $this->session->data['guest']['customer_group_id'];
+		} else {
+			$data['customer_group_id'] = $this->config->get('config_customer_group_id');
+		}
+
+		if (isset($this->session->data['guest']['firstname'])) {
+			$data['firstname'] = $this->session->data['guest']['firstname'];
+		} else {
+			$data['firstname'] = '';
+		}
+
+		if (isset($this->session->data['guest']['lastname'])) {
+			$data['lastname'] = $this->session->data['guest']['lastname'];
+		} else {
+			$data['lastname'] = '';
+		}
+
+		if (isset($this->session->data['guest']['email'])) {
+			$data['email'] = $this->session->data['guest']['email'];
+		} else {
+			$data['email'] = '';
+		}
+
+		if (isset($this->session->data['guest']['telephone'])) {
+			$data['telephone'] = $this->session->data['guest']['telephone'];
+		} else {
+			$data['telephone'] = '';
+		}
+
+		if (isset($this->session->data['payment_address']['company'])) {
+			$data['company'] = $this->session->data['payment_address']['company'];
+		} else {
+			$data['company'] = '';
+		}
+
+		if (isset($this->session->data['payment_address']['address_1'])) {
+			$data['address_1'] = $this->session->data['payment_address']['address_1'];
+		} else {
+			$data['address_1'] = '';
+		}
+
+		if (isset($this->session->data['payment_address']['address_2'])) {
+			$data['address_2'] = $this->session->data['payment_address']['address_2'];
+		} else {
+			$data['address_2'] = '';
+		}
+
+		if (isset($this->session->data['payment_address']['postcode'])) {
+			$data['postcode'] = $this->session->data['payment_address']['postcode'];
+		} elseif (isset($this->session->data['shipping_address']['postcode'])) {
+			$data['postcode'] = $this->session->data['shipping_address']['postcode'];
+		} else {
+			$data['postcode'] = '';
+		}
+
+		if (isset($this->session->data['payment_address']['city'])) {
+			$data['city'] = $this->session->data['payment_address']['city'];
+		} else {
+			$data['city'] = '';
+		}
+
+		if (isset($this->session->data['payment_address']['country_id'])) {
+			$data['country_id'] = $this->session->data['payment_address']['country_id'];
+		} elseif (isset($this->session->data['shipping_address']['country_id'])) {
+			$data['country_id'] = $this->session->data['shipping_address']['country_id'];
+		} else {
+			$data['country_id'] = $this->config->get('config_country_id');
+		}
+
+		if (isset($this->session->data['payment_address']['zone_id'])) {
+			$data['zone_id'] = $this->session->data['payment_address']['zone_id'];
+		} elseif (isset($this->session->data['shipping_address']['zone_id'])) {
+			$data['zone_id'] = $this->session->data['shipping_address']['zone_id'];
+		} else {
+			$data['zone_id'] = '';
+		}
+
+		$data['countries'] = $this->model_localisation_country->getCountries();
+
+		// Custom Fields
+		$this->load->model('account/custom_field');
+		$data['custom_fields'] = $this->model_account_custom_field->getCustomFields();
+		foreach ($data['custom_fields'] as &$custom_field) {
+			if (isset($this->session->data['payment_address'])) {
+				if (isset($this->session->data['payment_address']['custom_field'])) {
+					foreach ($this->session->data['payment_address']['custom_field'] as $key => $user_custom_field) {
+						if ($custom_field['custom_field_id'] == $key) {
+							$custom_field['value'] = $user_custom_field;
+						}
+					}
+				}
+			}
+		}
+
+		$data['shipping_required'] = $this->cart->hasShipping();
+
+		if (isset($this->session->data['guest']['shipping_address'])) {
+			$data['shipping_address'] = $this->session->data['guest']['shipping_address'];
+		} else {
+			$data['shipping_address'] = true;
+		}
+
+		// Captcha
+		if ($this->config->get('captcha_' . $this->config->get('config_captcha') . '_status') && in_array('guest', (array)$this->config->get('config_captcha_page'))) {
+			$data['captcha'] = $this->load->controller('extension/captcha/' . $this->config->get('config_captcha'));
+		} else {
+			$data['captcha'] = '';
+		}
+
+		// Add JS defs so no conditions for javascript used in twig
+		// $js_defs = [];
+		// $js_defs['shipping_required'] = $this->cart->hasShipping();
+		// $data['js_defs'] = json_encode($js_defs);
+		return $data;
 	}
 }
