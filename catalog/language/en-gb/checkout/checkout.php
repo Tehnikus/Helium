@@ -41,6 +41,10 @@ $_['text_week']                      = 'week';
 $_['text_semi_month']                = 'half-month';
 $_['text_month']                     = 'month';
 $_['text_year']                      = 'year';
+$_['text_your_addresses']           = 'Your addresses';
+$_['text_choose_existing_address']  = 'Choose one of your addresses:';
+$_['text_or_create_new_address']    = 'Or create new address, filling the form below:';
+$_['text_i_want_new_address']       = '<i class="icon-edit"></i> I want to add new address';
 
 // Column
 $_['column_name']                    = 'Product Name';

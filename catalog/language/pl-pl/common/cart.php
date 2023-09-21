@@ -9,7 +9,7 @@ $_['entry_qty']                     = 'Ilość';
 
 $_['text_shipping_methods']         = 'Dostawa';
 $_['text_payment_methods']          = 'Płatność';
-$_['text_quick_checkout']           = 'Szybka kasa';
+$_['text_quick_checkout']           = 'Szybkie zamówienie';
 $_['text_your_addresses']           = 'Twoje adresy';
 $_['text_choose_existing_address']  = 'Wybierz jeden ze swoich adresów:';
 $_['text_or_create_new_address']    = 'Lub wprowadź nowy adres za pomocą poniższego formularza:';

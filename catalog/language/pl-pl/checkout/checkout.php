@@ -35,6 +35,10 @@ $_['text_payment_recurring']         = 'Profil płatności';
 $_['text_trial_description']         = '%s każdego %d %s przez %d płatności a potem';
 $_['text_payment_description']       = '%s każdego %d %s przez %d płatności';
 $_['text_payment_cancel']            = '%s każdego %d %s do odwołania';
+$_['text_your_addresses']            = 'Twoje adresy';
+$_['text_choose_existing_address']   = 'Wybierz jeden ze swoich adresów:';
+$_['text_or_create_new_address']     = 'Lub wprowadź nowy adres za pomocą poniższego formularza:';
+$_['text_i_want_new_address']        = '<i class="icon-edit"></i> Chcę dodać nowy adres';
 
 $_['text_day']                       = 'dzień';
 $_['text_week']                      = 'tydzień';
