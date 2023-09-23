@@ -1,7 +1,8 @@
+
 {% for custom_field in custom_fields|sort((a, b) => a.sort_order <=> b.sort_order) %}
   {% if custom_field.location == location %}
+    <div class="form-group{% if custom_field.required %} required {% endif %} custom-field {% if error_custom_field[custom_field.custom_field_id] %} has-error {% endif %}" data-sort="{{ custom_field.sort_order }}">
     {% if custom_field.type == 'select' %}
-      <div class="form-group{% if custom_field.required %} required {% endif %} custom-field" data-sort="{{ custom_field.sort_order }}">
         <label for="input-{{ type }}-custom-field{{ custom_field.custom_field_id }}">
           {{ custom_field.name }}
         </label>
@@ -16,7 +17,7 @@
       </div>
       {% endif %}
       {% if custom_field.type == 'radio' %}
-      <div class="form-group{% if custom_field.required %} required {% endif %} custom-field" data-sort="{{ custom_field.sort_order }}">
+      
         <span class="h3">{{ custom_field.name }}</span>
         {% for custom_field_value in custom_field.custom_field_value %}
           <div class="form-control">
@@ -29,10 +30,9 @@
             <label for="input-{{ type }}-custom-field{{ custom_field.custom_field_id }}">{{ custom_field_value.name }}</label>
           </div>
         {% endfor %}
-      </div>
+      
       {% endif %}
       {% if custom_field.type == 'checkbox' %}
-      <div class="form-group{% if custom_field.required %} required {% endif %} custom-field" data-sort="{{ custom_field.sort_order }}">
         <span class="h3">{{ custom_field.name }}</span>
         {% for custom_field_value in custom_field.custom_field_value %}
           <div class="form-control">
@@ -45,10 +45,8 @@
             <label for="input-{{ type }}-custom-field{{ custom_field.custom_field_id }}">{{ custom_field_value.name }}</label>
           </div>
         {% endfor %}
-      </div>
       {% endif %}
       {% if custom_field.type == 'text' %}
-        <div class="form-group{% if custom_field.required %} required {% endif %} custom-field" data-sort="{{ custom_field.sort_order }}">
           <label for="input-{{ type }}-custom-field{{ custom_field.custom_field_id }}">{{ custom_field.name }}</label>
           <input 
             type="text" 
@@ -57,10 +55,8 @@
             placeholder="{{ custom_field.name }}" 
             id="input-{{ type }}-custom-field{{ custom_field.custom_field_id }}" 
           />
-        </div>
       {% endif %}
       {% if custom_field.type == 'textarea' %}
-        <div class="form-group{% if custom_field.required %} required {% endif %} custom-field" data-sort="{{ custom_field.sort_order }}">
           <label for="input-{{ type }}-custom-field{{ custom_field.custom_field_id }}">{{ custom_field.name }}</label>
           <textarea 
             name="custom_field[{{ custom_field.location }}][{{ custom_field.custom_field_id }}]" 
@@ -68,17 +64,12 @@
             placeholder="{{ custom_field.name }}" 
             id="input-{{ type }}-custom-field{{ custom_field.custom_field_id }}" 
             class="form-control">{{ custom_field.value }}</textarea>
-        </div>
       {% endif %}
-      {% if custom_field.type == 'file' %}
-        <div class="form-group{% if custom_field.required %} required {% endif %} custom-field" data-sort="{{ custom_field.sort_order }}">
-          <label>{{ custom_field.name }}</label>
+      {% if custom_field.type == 'file' %}  
           <button type="button" id="button-{{ type }}-custom-field{{ custom_field.custom_field_id }}" class="button"> {{ button_upload }}</button>
           <input type="hidden" name="custom_field[{{ custom_field.location }}][{{ custom_field.custom_field_id }}]" value="" id="input-{{ type }}-custom-field{{ custom_field.custom_field_id }}" />
-        </div>
       {% endif %}
       {% if custom_field.type == 'date' %}
-      <div class="form-group{% if custom_field.required %} required {% endif %} custom-field" data-sort="{{ custom_field.sort_order }}">
         <label for="input-{{ type }}-custom-field{{ custom_field.custom_field_id }}">{{ custom_field.name }}</label>
         <input
           type="date"
@@ -88,10 +79,8 @@
           id="input-{{ type }}-custom-field{{ custom_field.custom_field_id }}"
           min="{{ now|date('Y-m-d') }}"
         />
-      </div>
       {% endif %}
       {% if custom_field.type == 'time' %}
-      <div class="form-group{% if custom_field.required %} required {% endif %} custom-field" data-sort="{{ custom_field.sort_order }}">
         <label for="input-{{ type }}-custom-field{{ custom_field.custom_field_id }}">{{ custom_field.name }}</label>
         <input 
           type="time" 
@@ -100,13 +89,11 @@
           placeholder="{{ custom_field.name }}" 
           data-date-format="HH:mm" 
           id="input-{{ type }}-custom-field{{ custom_field.custom_field_id }}" 
-          min="08:00" max="20:00"
+          min="08:00" max="21:00"
           data-action="correctTime" 
         />
-      </div>
       {% endif %}
       {% if custom_field.type == 'datetime' %}
-      <div class="form-group{% if custom_field.required %} required {% endif %} custom-field" data-sort="{{ custom_field.sort_order }}">
         <label for="input-{{ type }}-custom-field{{ custom_field.custom_field_id }}">{{ custom_field.name }}</label>
         <input 
           type="datetime-local"
@@ -117,7 +104,14 @@
           id="input-{{ type }}-custom-field{{ custom_field.custom_field_id }}" 
           data-action="correctTime" 
         />
-      </div>
-    {% endif %}
+      {% endif %}
+      {% for error_key in error_custom_field|keys %}
+        {% if error_key == custom_field.custom_field_id %}
+          <span role="alert" class="text-danger">
+            {{ error_custom_field[error_key] }}
+          </span>
+        {% endif %}
+      {% endfor %}
+    </div>
   {% endif %}
 {% endfor %}
