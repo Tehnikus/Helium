@@ -165,7 +165,7 @@ class ControllerAccountAddress extends Controller {
 			if ($result['address_format']) {
 				$format = $result['address_format'];
 			} else {
-				$format = '{firstname} {lastname}' . "\n" . '{company}' . "\n" . '{address_1}' . "\n" . '{address_2}' . "\n" . '{city} {postcode}' . "\n" . '{zone}' . "\n" . '{country}';
+				$format = '<b>{firstname} {lastname}</b>' . "\n" . '{company}' . "\n" . '<b>{address_1}, {address_2}</b>' . "\n" . '{city}, {postcode} {zone}' . "\n" . '{country}';
 			}
 
 			$find = array(
@@ -216,6 +216,12 @@ class ControllerAccountAddress extends Controller {
 	}
 
 	protected function getForm() {
+
+		$this->load->model('tool/upload');
+		$this->load->model('account/custom_field');
+		$this->load->model('localisation/country');
+		$this->load->model('localisation/zone');
+
 		$data['breadcrumbs'] = array();
 
 		$data['breadcrumbs'][] = array(
@@ -361,12 +367,28 @@ class ControllerAccountAddress extends Controller {
 			$data['city'] = '';
 		}
 
+
+
+		if (isset($this->request->post['custom_field']['address'])) {
+			$data['custom_field'] = $this->request->post['custom_field']['address'];
+		} elseif (isset($address_info['custom_field'])) {
+			$data['custom_field'] = $address_info['custom_field'];
+		} else {
+			$data['custom_field'] = array();
+		}
+
+		$data['countries'] = $this->model_localisation_country->getCountries();
+		
+		
 		if (isset($this->request->post['country_id'])) {
 			$data['country_id'] = (int)$this->request->post['country_id'];
 		}  elseif (!empty($address_info)) {
 			$data['country_id'] = $address_info['country_id'];
 		} else {
 			$data['country_id'] = $this->config->get('config_country_id');
+		}
+		if (!empty($data['country_id']) && isset($data['country_id'])) {
+			$data['zones'] = $this->model_localisation_zone->getZonesByCountryId($data['country_id']);
 		}
 
 		if (isset($this->request->post['zone_id'])) {
@@ -377,47 +399,44 @@ class ControllerAccountAddress extends Controller {
 			$data['zone_id'] = '';
 		}
 
-		if (isset($this->request->post['custom_field']['address'])) {
-			$data['address_custom_field'] = $this->request->post['custom_field']['address'];
-		} elseif (isset($address_info['custom_field'])) {
-			$data['address_custom_field'] = $address_info['custom_field'];
-		} else {
-			$data['address_custom_field'] = array();
-		}
-
-		$this->load->model('localisation/country');
-
-		$data['countries'] = $this->model_localisation_country->getCountries();
-
 		// Custom fields
 		$data['custom_fields'] = array();
-
-		$this->load->model('tool/upload');
-		$this->load->model('account/custom_field');
-
 		$custom_fields = $this->model_account_custom_field->getCustomFields($this->config->get('config_customer_group_id'));
 
 		foreach ($custom_fields as $custom_field) {
 			if ($custom_field['location'] == 'address') {
-				if($custom_field['type'] == 'file' && isset($data['address_custom_field'][$custom_field['custom_field_id']])) {
-					$code = $data['address_custom_field'][$custom_field['custom_field_id']];
+				if($custom_field['type'] == 'file' && isset($data['custom_field'][$custom_field['custom_field_id']])) {
+					$code = $data['custom_field'][$custom_field['custom_field_id']];
 
 					$upload_result = $this->model_tool_upload->getUploadByCode($code);
 
-					$data['address_custom_field'][$custom_field['custom_field_id']] = array();
+					$data['custom_field'][$custom_field['custom_field_id']] = array();
 					if($upload_result) {
-						$data['address_custom_field'][$custom_field['custom_field_id']]['name'] = $upload_result['name'];
-						$data['address_custom_field'][$custom_field['custom_field_id']]['code'] = $upload_result['code'];
+						$data['custom_field'][$custom_field['custom_field_id']]['name'] = $upload_result['name'];
+						$data['custom_field'][$custom_field['custom_field_id']]['code'] = $upload_result['code'];
 					} else {
-						$data['address_custom_field'][$custom_field['custom_field_id']]['name'] = "";
-						$data['address_custom_field'][$custom_field['custom_field_id']]['code'] = $code;
+						$data['custom_field'][$custom_field['custom_field_id']]['name'] = "";
+						$data['custom_field'][$custom_field['custom_field_id']]['code'] = $code;
 					}
 					$data['custom_fields'][] = $custom_field;
 				} else {
-				    $data['custom_fields'][] = $custom_field;
-			    }
-		    }
+					$data['custom_fields'][$custom_field['custom_field_id']] = $custom_field;
+					// check if custom field value is posted and display if present
+					if (isset($this->request->post) && isset($this->request->post['custom_field'])) {
+						if (isset($this->request->post['custom_field'][$custom_field['location']]) && $custom_field['location'] === 'address' && isset($this->request->post['custom_field'][$custom_field['location']][$custom_field['custom_field_id']])) {
+							$data['custom_fields'][$custom_field['custom_field_id']]['value'] = $this->request->post['custom_field'][$custom_field['location']][$custom_field['custom_field_id']];
+						}
+					} elseif (isset($address_info['custom_field']) && isset($address_info['custom_field'][$custom_field['custom_field_id']])) {
+						$data['custom_fields'][$custom_field['custom_field_id']]['value'] = $address_info['custom_field'][$custom_field['custom_field_id']];
+					} else {
+						$data['custom_fields'][$custom_field['custom_field_id']]['value'] = '';
+					}
+				}
+			}
 		}
+		// print_r($this->request->post);
+		// print_r($data['custom_fields']);
+		
 
 		if (isset($this->request->post['default'])) {
 			$data['default'] = $this->request->post['default'];
@@ -435,7 +454,6 @@ class ControllerAccountAddress extends Controller {
 		$data['content_bottom'] = $this->load->controller('common/content_bottom');
 		$data['footer'] = $this->load->controller('common/footer');
 		$data['header'] = $this->load->controller('common/header');
-
 		$this->response->setOutput($this->load->view('account/address_form', $data));
 	}
 
@@ -485,7 +503,6 @@ class ControllerAccountAddress extends Controller {
 				}
 			}
 		}
-
 		return !$this->error;
 	}
 
