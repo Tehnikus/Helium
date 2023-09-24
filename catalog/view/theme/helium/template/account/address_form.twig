@@ -3,6 +3,10 @@
 <main role="main" id="account-address">
   {{ content_top }}
   <h2>{{ text_address }}</h2>
+
+  {% if warning %}
+    <span role="alert" class="text-danger">{{ warning }}</span>
+  {% endif %}
   
   <form action="{{ action }}" method="post" enctype="multipart/form-data" >
     <fieldset>
@@ -16,8 +20,8 @@
       {% include 'helium/template/common/fields/country.twig'   with {required: true,  type: 'new_address'} %}
       {% include 'helium/template/common/custom_fields.twig'    with {type: 'new_address', location: 'address'} %}
       <div class="form-control">
-        <input id="shipping_address_guest" type="checkbox" name="default" value="1" {% if default %}checked="checked"{% endif %} />
-        <label for="shipping_address_guest">{{ entry_default }}</label>
+        <input id="is_default_address" type="checkbox" name="default" value="1" {% if default %}checked="checked"{% endif %} />
+        <label for="is_default_address">{{ entry_default }}</label>
       </div>
     </fieldset>
     <div class="btn-group spaced">
