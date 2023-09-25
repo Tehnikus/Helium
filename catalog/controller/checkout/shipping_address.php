@@ -10,7 +10,9 @@ class ControllerCheckoutShippingAddress extends Controller {
 	}
 
 	public function save() {
-		$this->load->language('checkout/checkout');
+		// $this->load->language('checkout/checkout');
+		$this->load->model('account/custom_field');
+		$this->load->language('checkout/checkout_errors');
 		
 		$json = array();
 
@@ -61,9 +63,6 @@ class ControllerCheckoutShippingAddress extends Controller {
 				if (!$json) {
 					// If no errors occured, save shipping address 
 					$this->session->data['shipping_address'] = $this->model_account_address->getAddress($this->request->post['address_id']);
-					// call next method
-
-					// Call ajax('')
 
 					unset($this->session->data['shipping_method']);
 					unset($this->session->data['shipping_methods']);
@@ -102,7 +101,7 @@ class ControllerCheckoutShippingAddress extends Controller {
 				}
 
 				// Custom field validation
-				$this->load->model('account/custom_field');
+				
 
 				$custom_fields = $this->model_account_custom_field->getCustomFields($this->config->get('config_customer_group_id'));
 

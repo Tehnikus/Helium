@@ -9,7 +9,8 @@ class ControllerCheckoutPaymentMethod extends Controller {
 	}
 
 	public function save() {
-		$this->load->language('checkout/checkout');
+		// $this->load->language('checkout/checkout');
+		$this->load->language('checkout/checkout_errors');
 
 		$json = array();
 
