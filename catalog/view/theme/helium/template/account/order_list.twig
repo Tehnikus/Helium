@@ -8,33 +8,33 @@
       <table class="table table-bordered table-hover">
         <thead>
           <tr>
-            <td class="text-right">{{ column_order_id }}</td>
-            <td class="text-left">{{ column_customer }}</td>
+            <td class="text-center">{{ column_order_id }}</td>
+            <td class="text-center">{{ column_customer }}</td>
             <td class="text-right">{{ column_product }}</td>
-            <td class="text-left">{{ column_status }}</td>
-            <td class="text-right">{{ column_total }}</td>
-            <td class="text-left">{{ column_date_added }}</td>
+            <td class="text-center">{{ column_status }}</td>
+            <td class="text-center">{{ column_total }}</td>
+            <td class="text-center">{{ column_date_added }}</td>
             <td></td>
           </tr>
         </thead>
         <tbody>
         {% for order in orders %}
           <tr>
-            <td class="text-right">#{{ order.order_id }}</td>
-            <td class="text-left">{{ order.name }}</td>
+            <td class="text-center">#{{ order.order_id }}</td>
+            <td class="text-center">{{ order.name }}</td>
             <td class="text-right">{{ order.products }}</td>
-            <td class="text-left">{{ order.status }}</td>
-            <td class="text-right">{{ order.total }}</td>
-            <td class="text-left">{{ order.date_added }}</td>
-            <td class="text-right"><a class="button" href="{{ order.view }}" title="{{ button_view }}" ><i class="icon-eye"></i>{{ button_view }}</a></td>
+            <td class="text-center">{{ order.status }}</td>
+            <td class="text-center">{{ order.total }}</td>
+            <td class="text-center">{{ order.date_added }}</td>
+            <td><a class="button" href="{{ order.view }}" title="{{ button_view }}" ><i class="icon-eye"></i>{{ button_view }}</a></td>
           </tr>
         {% endfor %}
         </tbody>
       </table>
     </div>
     <div class="row">
-      <div class="col-sm-6 text-left">{{ pagination }}</div>
-      <div class="col-sm-6 text-right">{{ results }}</div>
+      <div class="text-left">{{ pagination }}</div>
+      <div class="text-right">{{ results }}</div>
     </div>
   {% else %}
     <p>{{ text_empty }}</p>
