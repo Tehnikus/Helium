@@ -54,7 +54,9 @@ class ControllerCheckoutPaymentAddress extends Controller {
 	}
 
 	public function save() {
-		$this->load->language('checkout/checkout');
+		// $this->load->language('checkout/checkout');
+		$this->load->language('checkout/checkout_errors');
+		$this->load->model('account/custom_field');
 
 		$json = array();
 
@@ -89,11 +91,10 @@ class ControllerCheckoutPaymentAddress extends Controller {
 
 		if (!$json) {
 			$this->load->model('account/address');
-							
-			if (isset($this->request->post['payment_address']) && $this->request->post['payment_address'] == 'existing') {
-				if (empty($this->request->post['address_id'])) {
-					$json['error']['warning'] = $this->language->get('error_address');
-				} elseif (!in_array($this->request->post['address_id'], array_keys($this->model_account_address->getAddresses()))) {
+			// If one of existing addresses is selected
+			if (isset($this->request->post['address_id']) && !empty($this->request->post['address_id'])) {
+				// Show error if selected address does not belong to current user
+				if (!in_array($this->request->post['address_id'], array_keys($this->model_account_address->getAddresses()))) {
 					$json['error']['warning'] = $this->language->get('error_address');
 				}
 
@@ -136,11 +137,12 @@ class ControllerCheckoutPaymentAddress extends Controller {
 					$json['error']['zone_id'] = $this->language->get('error_zone');
 				}
 
+				
+				
+			}
 				// Custom field validation
-				$this->load->model('account/custom_field');
-
+				// custom fields are checked separately despite existing address is selected 
 				$custom_fields = $this->model_account_custom_field->getCustomFields($this->config->get('config_customer_group_id'));
-
 				foreach ($custom_fields as $custom_field) {
 					if ($custom_field['location'] == 'address') {
 						if ($custom_field['required'] && empty($this->request->post['custom_field'][$custom_field['location']][$custom_field['custom_field_id']])) {
@@ -166,7 +168,7 @@ class ControllerCheckoutPaymentAddress extends Controller {
 					unset($this->session->data['payment_method']);
 					unset($this->session->data['payment_methods']);
 				}
-			}
+			
 		}
 		// $js_defs = [];
 		// $js_defs['shipping_required'] = $this->cart->hasShipping();
