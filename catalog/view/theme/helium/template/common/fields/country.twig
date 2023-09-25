@@ -4,17 +4,24 @@
     <option value="">{{ text_select }}</option>
     {% for country in countries %}
       {% if country.country_id == country_id %}
-        <option value="{{ country.country_id }}" selected="selected">{{ country.name }}</option>
+        <option value="{{ country.country_id }}" selected="selected" data-postcode-required="{{ country.postcode_required }}">{{ country.name }}</option>
       {% else %}
-        <option value="{{ country.country_id }}">{{ country.name }}</option>
+        <option value="{{ country.country_id }}" data-postcode-required="{{ country.postcode_required }}">{{ country.name }}</option>
       {% endif %}
     {% endfor %}
   </select>
 </div>
+
+{% if zones %}
 <div class="form-group required">
   <label for="input-{{ type }}-zone">{{ entry_zone }}</label>
-  <select name="zone_id" id="input-{{ type }}-zone"></select>
-</div>
+  <select name="zone_id" id="input-{{ type }}-zone">
+    {% for zone in zones %}
+      <option value="{{zone.zone_id}}" {% if zone_id == zone.zone_id %} selected="selected" {% endif %}>{{zone.name}}</option>
+    {% endfor %}
+  </select>
+  </div>
+{% endif %}
 
 <div class="form-group {% if country.postcode_required %} required {% else %} hidden {% endif %}">
   <label for="input-{{ type }}-postcode">{{ entry_postcode }}</label>
