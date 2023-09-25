@@ -1,35 +1,18 @@
 <form action="index.php?route=checkout/payment_address/save" method="post" id="payment_address" enctype="multipart/form-data">
   {% if addresses %}
-    <div class="form-control">
-      <input id="payment_address_existing" type="radio" name="payment_address" value="existing" checked="checked" />
-      <label for="payment_address_existing">{{ text_address_existing }}</label>
-    </div>
-    <div id="payment-existing">
-      <select name="address_id" class="form-control">
-        {% for address in addresses %}
-          {% if address['address_id'] == address_id %}
-            <option value="{{ address.address_id }}" selected="selected">{{ address.firstname }} {{ address.lastname }}, {{ address.address_1 }}, {{ address.city }}, {{ address.zone }}, {{ address.country }}</option>
-          {% else %}
-            <option value="{{ address.address_id }}">{{ address.firstname }} {{ address.lastname }}, {{ address.address_1 }}, {{ address.city }}, {{ address.zone }}, {{ address.country }}</option>
-          {% endif %}
-        {% endfor %}
-      </select>
-    </div>
-    <div class="form-control">
-      <input id="payment_address_new" type="radio" name="payment_address" value="new" />
-      <label for="payment_address_new">{{ text_address_new }}</label>
-    </div>
+    {# Existing user addresses #}
+    {% include 'helium/template/account/user_addresses.twig' with {form_name: 'js_new_payment_address'} %}
   {% endif %}
-  <div id="payment-new" style="display: {% if addresses %}none{% else %}block{% endif %};">
-    {% include 'helium/template/common/fields/firstname.twig' with {required: true,  type: 'payment'} %}
-    {% include 'helium/template/common/fields/lastname.twig'  with {required: true,  type: 'payment'} %}
-    {% include 'helium/template/common/fields/company.twig'   with {required: false, type: 'payment'} %}
-    {% include 'helium/template/common/fields/address1.twig'  with {required: true,  type: 'payment'} %}
-    {% include 'helium/template/common/fields/address2.twig'  with {required: false, type: 'payment'} %}
-    {% include 'helium/template/common/fields/city.twig'      with {required: true,  type: 'payment'} %}
-    {% include 'helium/template/common/fields/country.twig'   with {required: true,  type: 'payment'} %}
-    {% include 'helium/template/common/custom_fields.twig'    with {type: 'payment', location: 'address'} %}
-  </div>
+      <div id="js_new_payment_address_form">
+        {% include 'helium/template/common/fields/firstname.twig' with {required: true,  type: 'payment'} %}
+        {% include 'helium/template/common/fields/lastname.twig'  with {required: true,  type: 'payment'} %}
+        {% include 'helium/template/common/fields/company.twig'   with {required: false, type: 'payment'} %}
+        {% include 'helium/template/common/fields/address1.twig'  with {required: true,  type: 'payment'} %}
+        {% include 'helium/template/common/fields/address2.twig'  with {required: false, type: 'payment'} %}
+        {% include 'helium/template/common/fields/city.twig'      with {required: true,  type: 'payment'} %}
+        {% include 'helium/template/common/fields/country.twig'   with {required: true,  type: 'payment'} %}
+      </div>
+        {% include 'helium/template/common/custom_fields.twig'    with {type: 'payment', location: 'address'} %}
   <div class="grid-footer">
     <button type="button" id="button-payment-address" class="primary" data-action="saveForm" data-form="payment_address" data-url="checkout/payment_address/save">{{ button_continue }}</button>
   </div>
