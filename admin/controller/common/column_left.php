@@ -16,6 +16,70 @@ class ControllerCommonColumnLeft extends Controller {
 				'children' => array()
 			);
 
+			// Sales
+			$sale = array();
+
+			if ($this->user->hasPermission('access', 'sale/order')) {
+				$sale[] = array(
+					'name'	   => $this->language->get('text_order'),
+					'href'     => $this->url->link('sale/order', 'user_token=' . $this->session->data['user_token'], true),
+					'children' => array()
+				);
+			}
+
+			if ($this->user->hasPermission('access', 'sale/recurring')) {
+				$sale[] = array(
+					'name'	   => $this->language->get('text_order_recurring'),
+					'href'     => $this->url->link('sale/recurring', 'user_token=' . $this->session->data['user_token'], true),
+					'children' => array()
+				);
+			}
+
+			if ($this->user->hasPermission('access', 'sale/return')) {
+				$sale[] = array(
+					'name'	   => $this->language->get('text_return'),
+					'href'     => $this->url->link('sale/return', 'user_token=' . $this->session->data['user_token'], true),
+					'children' => array()
+				);
+			}
+
+			// Voucher
+			$voucher = array();
+
+			if ($this->user->hasPermission('access', 'sale/voucher')) {
+				$voucher[] = array(
+					'name'	   => $this->language->get('text_voucher'),
+					'href'     => $this->url->link('sale/voucher', 'user_token=' . $this->session->data['user_token'], true),
+					'children' => array()
+				);
+			}
+
+			if ($this->user->hasPermission('access', 'sale/voucher_theme')) {
+				$voucher[] = array(
+					'name'	   => $this->language->get('text_voucher_theme'),
+					'href'     => $this->url->link('sale/voucher_theme', 'user_token=' . $this->session->data['user_token'], true),
+					'children' => array()
+				);
+			}
+
+			if ($voucher) {
+				$sale[] = array(
+					'name'	   => $this->language->get('text_voucher'),
+					'href'     => '',
+					'children' => $voucher
+				);
+			}
+
+			if ($sale) {
+				$data['menus'][] = array(
+					'id'       => 'menu-sale',
+					'icon'	   => 'fa-shopping-cart',
+					'name'	   => $this->language->get('text_sale'),
+					'href'     => '',
+					'children' => $sale
+				);
+			}
+
 			// Catalog
 			$catalog = array();
 
@@ -270,13 +334,7 @@ class ControllerCommonColumnLeft extends Controller {
 				);
 			}
 
-			if ($this->user->hasPermission('access', 'design/seo_url')) {
-				$design[] = array(
-					'name'	   => $this->language->get('text_seo_url'),
-					'href'     => $this->url->link('design/seo_url', 'user_token=' . $this->session->data['user_token'], true),
-					'children' => array()
-				);
-			}
+
 
 			if ($design) {
 				$data['menus'][] = array(
@@ -288,69 +346,7 @@ class ControllerCommonColumnLeft extends Controller {
 				);
 			}
 
-			// Sales
-			$sale = array();
-
-			if ($this->user->hasPermission('access', 'sale/order')) {
-				$sale[] = array(
-					'name'	   => $this->language->get('text_order'),
-					'href'     => $this->url->link('sale/order', 'user_token=' . $this->session->data['user_token'], true),
-					'children' => array()
-				);
-			}
-
-			if ($this->user->hasPermission('access', 'sale/recurring')) {
-				$sale[] = array(
-					'name'	   => $this->language->get('text_order_recurring'),
-					'href'     => $this->url->link('sale/recurring', 'user_token=' . $this->session->data['user_token'], true),
-					'children' => array()
-				);
-			}
-
-			if ($this->user->hasPermission('access', 'sale/return')) {
-				$sale[] = array(
-					'name'	   => $this->language->get('text_return'),
-					'href'     => $this->url->link('sale/return', 'user_token=' . $this->session->data['user_token'], true),
-					'children' => array()
-				);
-			}
-
-			// Voucher
-			$voucher = array();
-
-			if ($this->user->hasPermission('access', 'sale/voucher')) {
-				$voucher[] = array(
-					'name'	   => $this->language->get('text_voucher'),
-					'href'     => $this->url->link('sale/voucher', 'user_token=' . $this->session->data['user_token'], true),
-					'children' => array()
-				);
-			}
-
-			if ($this->user->hasPermission('access', 'sale/voucher_theme')) {
-				$voucher[] = array(
-					'name'	   => $this->language->get('text_voucher_theme'),
-					'href'     => $this->url->link('sale/voucher_theme', 'user_token=' . $this->session->data['user_token'], true),
-					'children' => array()
-				);
-			}
-
-			if ($voucher) {
-				$sale[] = array(
-					'name'	   => $this->language->get('text_voucher'),
-					'href'     => '',
-					'children' => $voucher
-				);
-			}
-
-			if ($sale) {
-				$data['menus'][] = array(
-					'id'       => 'menu-sale',
-					'icon'	   => 'fa-shopping-cart',
-					'name'	   => $this->language->get('text_sale'),
-					'href'     => '',
-					'children' => $sale
-				);
-			}
+			
 
 			// Customer
 			$customer = array();
@@ -684,15 +680,15 @@ class ControllerCommonColumnLeft extends Controller {
 				);
 			}
 
-			if ($maintenance) {
+			if ($this->user->hasPermission('access', 'design/seo_url')) {
 				$system[] = array(
-					'id'       => 'menu-maintenance',
-					'icon'	   => 'fa-cog',
-					'name'	   => $this->language->get('text_maintenance'),
-					'href'     => '',
-					'children' => $maintenance
+					'name'	   => $this->language->get('text_seo_url'),
+					'href'     => $this->url->link('design/seo_url', 'user_token=' . $this->session->data['user_token'], true),
+					'children' => array()
 				);
 			}
+
+
 
 			if ($system) {
 				$data['menus'][] = array(
@@ -701,6 +697,16 @@ class ControllerCommonColumnLeft extends Controller {
 					'name'	   => $this->language->get('text_system'),
 					'href'     => '',
 					'children' => $system
+				);
+			}
+
+			if ($maintenance) {
+				$system[] = array(
+					'id'       => 'menu-maintenance',
+					'icon'	   => 'fa-cog',
+					'name'	   => $this->language->get('text_maintenance'),
+					'href'     => '',
+					'children' => $maintenance
 				);
 			}
 
