@@ -38,7 +38,7 @@ $_['text_payment_cancel']            = '%s każdego %d %s do odwołania';
 $_['text_your_addresses']            = 'Twoje adresy';
 $_['text_choose_existing_address']   = 'Wybierz jeden ze swoich adresów:';
 $_['text_or_create_new_address']     = 'Lub wprowadź nowy adres za pomocą poniższego formularza:';
-$_['text_i_want_new_address']        = '<i class="icon-edit"></i> Chcę dodać nowy adres';
+$_['text_i_want_new_address']        = '<i class="icon-location"></i> Chcę dodać nowy adres';
 
 $_['text_day']                       = 'dzień';
 $_['text_week']                      = 'tydzień';
@@ -72,5 +72,5 @@ $_['entry_city']                     = 'Miejscowość';
 $_['entry_country']                  = 'Kraj';
 $_['entry_zone']                     = 'Województwo';
 $_['entry_newsletter']               = 'Chcę zapisać się do newslettera %s.';
-$_['entry_shipping'] 	             = 'Mój adres dostawy i adres rozliczeniowy są takie same.';
+$_['entry_shipping'] 	               = 'Mój adres dostawy i adres rozliczeniowy są takie same';
 

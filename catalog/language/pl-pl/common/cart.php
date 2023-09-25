@@ -13,7 +13,7 @@ $_['text_quick_checkout']           = 'Szybkie zamówienie';
 $_['text_your_addresses']           = 'Twoje adresy';
 $_['text_choose_existing_address']  = 'Wybierz jeden ze swoich adresów:';
 $_['text_or_create_new_address']    = 'Lub wprowadź nowy adres za pomocą poniższego formularza:';
-$_['text_i_want_new_address']       = '<i class="icon-edit"></i> Chcę dodać nowy adres';
+$_['text_i_want_new_address']       = '<i class="icon-location"></i> Chcę dodać nowy adres';
 
 // Entry
 $_['entry_email']                   = 'E-mail';

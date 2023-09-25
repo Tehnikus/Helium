@@ -1,4 +1,5 @@
 <?php
+
 $_['heading_title']         = 'Historia zamówień';
 $_['text_account']          = 'Konto';
 $_['text_order']            = 'Informacje o zamówieniu';
@@ -12,7 +13,7 @@ $_['text_payment_address']  = 'Adres płatnika';
 $_['text_payment_method']   = 'Sposób płatności:';
 $_['text_comment']          = 'Uwagi dotyczące zamówienia';
 $_['text_history']          = 'Historia zamówienia';
-$_['text_success']          = 'Sukces: Dodałeś <a href="%s">%s</a> do Twojego <a href="%s">koszyka</a>!';
+$_['text_success']          = 'Dodałeś <a href="%s">%s</a> do Twojego <a href="%s">koszyka</a>. Teraz możesz otworzyć koszyk, aby ponownie zamówić żądane produkty';
 $_['text_empty']            = 'Nie masz żadnych poprzednich zamówień!';
 $_['text_error']            = 'Nie można znaleźć żądanego zamówienia!';
 $_['column_order_id']       = 'Nr zamówienia';

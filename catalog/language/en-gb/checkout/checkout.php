@@ -2,7 +2,7 @@
 
 
 
-$_['heading_title'] 		         = 'Checkout';
+$_['heading_title'] 		             = 'Checkout';
 $_['heading_title_customer']         = 'Your Order #%s Has Been Placed';
 
 $_['text_cart']                      = 'Shopping Cart';
@@ -44,7 +44,7 @@ $_['text_year']                      = 'year';
 $_['text_your_addresses']           = 'Your addresses';
 $_['text_choose_existing_address']  = 'Choose one of your addresses:';
 $_['text_or_create_new_address']    = 'Or create new address, filling the form below:';
-$_['text_i_want_new_address']       = '<i class="icon-edit"></i> I want to add new address';
+$_['text_i_want_new_address']       = '<i class="icon-location"></i> I want to add new address';
 
 // Column
 $_['column_name']                    = 'Product Name';

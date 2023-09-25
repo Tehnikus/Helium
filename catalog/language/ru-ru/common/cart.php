@@ -12,7 +12,7 @@ $_['text_quick_checkout']           = 'Быстрый заказ';
 $_['text_your_addresses']           = 'Ваши адреса';
 $_['text_choose_existing_address']  = 'Выберите один из ваших адресов:';
 $_['text_or_create_new_address']    = 'Или введите новый адрес, заполнив форму ниже:';
-$_['text_i_want_new_address']       = '<i class="icon-edit"></i> Хочу добавить новый адрес';
+$_['text_i_want_new_address']       = '<i class="icon-location"></i> Хочу добавить новый адрес';
 
 // Entry
 $_['entry_email']                   = 'E-Mail';
@@ -29,7 +29,7 @@ $_['entry_city']                    = 'Город';
 $_['entry_country']                 = 'Страна';
 $_['entry_zone']                    = 'Область';
 $_['entry_newsletter']              = 'Я хочу подписаться на рассылку новостей %s.';
-$_['entry_shipping'] 	            = 'Мой адрес доставки совпадает с платёжным.';
+$_['entry_shipping'] 	              = 'Мой адрес доставки совпадает с платёжным.';
 
 $_['error_firstname']               = 'Имя должно быть от 1 до 32 символов';
 $_['error_lastname']                = 'Фамилия должна быть от 1 до 32 символов';

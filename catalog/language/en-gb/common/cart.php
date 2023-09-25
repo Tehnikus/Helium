@@ -13,7 +13,7 @@ $_['text_quick_checkout']           = 'Quick checkout';
 $_['text_your_addresses']           = 'Your addresses';
 $_['text_choose_existing_address']  = 'Choose one of your addresses:';
 $_['text_or_create_new_address']    = 'Or create new address, filling the form below:';
-$_['text_i_want_new_address']       = '<i class="icon-edit"></i> I want to add new address';
+$_['text_i_want_new_address']       = '<i class="icon-location"></i> I want to add new address';
 
 // Entry
 $_['entry_email']                   = 'E-Mail';
@@ -30,7 +30,7 @@ $_['entry_city']                    = 'City';
 $_['entry_country']                 = 'Country';
 $_['entry_zone']                    = 'Region';
 $_['entry_newsletter']              = 'Subscribe to our news %s.';
-$_['entry_shipping'] 	            = 'Delivery and payment addresses are the same';
+$_['entry_shipping'] 	              = 'Delivery and payment addresses are the same';
 
 $_['error_firstname']               = 'Firstname should be from 1 to 32 characters';
 $_['error_lastname']                = 'lastname should be from 1 to 32 characters';
