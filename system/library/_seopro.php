@@ -1,5 +1,4 @@
 <?php
-
 class SeoPro {
 
     private $config;
@@ -10,30 +9,21 @@ class SeoPro {
     private $url;
     private $session;
     private $db;
-    private $cat_tree = [];
+    // private $cat_tree = [];
     private $keywords = [];
     private $queries = [];
     private $product_categories = [];
     private $valide_get_param;
-
-    private $config_store_id;
-    private $config_language_id;
-
-
-    public $lang_data;
-    public $current_lang = array();
+    // public $lang_data;
+    // public $current_lang = array();
 
     public function __construct($registry) {
         $this->detectAjax();
         $this->registry = $registry;
         $this->config = $registry->get('config');
 
-        if(!$this->config->get('config_seo_pro')) {
+        if(!$this->config->get('config_seo_pro'))
             return;
-        }
-
-        $this->config_store_id = $this->config->get('config_store_id');
-        $this->config_language_id = $this->config->get('config_language_id');
 
         $this->request = $registry->get('request');
         $this->session = $registry->get('session');
@@ -41,88 +31,48 @@ class SeoPro {
         $this->url = $registry->get('url');
         $this->db = $registry->get('db');
         $this->cache = $registry->get('cache');
+        // $this->lang_data = $this->getLanguages();
         $this->detectPostfix();
-        $this->detectLanguage();
-        $this->initHelpers();
+
+        // $this->detectLanguage();
+        // $this->initHelpers();
+
         if ($this->config->get('config_valide_param_flag')) {
             $params = explode ("\r\n", $this->config->get('config_valide_params'));
             if(!empty($params)) {
                 $this->valide_get_param = $params;
             }
         }
-        $this->lang_data = $this->getLanguages();
-        // print_r($this->lang_data);
     }
 
+    // Расшифровка УРЛа в GET-запросы серверу
     public function prepareRoute($parts) {
         // print_r($parts);
-        // print_r($this->request->request);
+        // foreach($this->lang_data as $language_id => $language) {
+
+        //     if ($parts[0] == $language['prefix']) {
+        //         $this->current_lang = $language;
+        //         if (isset($parts[1])) {
+        //             unset($parts[0]);
+        //             $parts = array_values($parts);
+        //             // TODO здесь задать язык из префикса языка
+        //         }
+        //     } elseif (isset($this->lang_data[(int)$this->config->get('config_language_id')])) {
+        //         $this->current_lang = $this->lang_data[(int)$this->config->get('config_language_id')];
+        //     } else {
+        //         if ($language['default'] == 'true') {
+        //             $this->current_lang = $language;
+        //         }
+        //     }
+        // }
+
+        // $language = new Language($this->current_lang['code']);
+        // $language->load($this->current_lang['code']);
+        // $this->registry->set('language', $language);
+        // $this->config->set('config_language_id', $this->current_lang['language_id']);
+
+
         if (!empty($parts) && is_array($parts)) {
-            
-            $lang_route = $this->request->get['_route_'];
-            if (isset($lang_route) && $lang_route !== '') {
-                $lang_route = explode('/', $lang_route);
-            }
-
-            foreach($this->lang_data as $language_id => $language) {
-                // if ($lang_route[0] == $language['prefix']) {
-                //     unset($lang_route[0]);
-                //     $lang_route = implode('/', $lang_route);
-                //     $this->request->get['_route_'] = $lang_route;
-                //     print_r($this->request->get);
-                // }
-                if ($parts[0] == $language['prefix']) {
-                    $this->current_lang = $language;
-                    if (isset($parts[1])) {
-                        unset($parts[0]);
-                        $parts = array_values($parts);
-                        // TODO здесь задать язык из префикса языка
-                    }
-                } elseif (isset($this->lang_data[(int)$this->config->get('config_language_id')])) {
-                    $this->current_lang = $this->lang_data[(int)$this->config->get('config_language_id')];
-                } else {
-                    if ($language['default'] == 'true') {
-                        $this->current_lang = $language;
-                    }
-                }
-            }
-            // print_r($parts);
-            // Раскомментировать, когда в урл будет добавляться индекс языка
-            $language = new Language($this->current_lang['code']);
-            $language->load($this->current_lang['code']);
-            $this->registry->set('language', $language);
-            $this->config->set('config_language_id', $this->current_lang['language_id']);
-                
-                
-
-            // }
-            // Язык магазина по умолчанию
-            // $this->config->get('config_language');
-            // print_r($parts);
-
-            // Языковой префикс
-            // Если в урле есть соответствующий код языка
-            // передаем код языка в $current_lang
-            // $current_lang[$language_id] = $language_prefix 
-            // И удаляем код языка из роута, чтобы все остальное работало как раньше
-
-            // if (in_array($parts[0], $this->lang_prefix)) {
-            //     foreach ($this->lang_prefix as $lang_id => $language_prefix) {
-            //         if ($language_prefix == $parts[0]) {
-            //             $current_lang[$lang_id] = $language_prefix;
-            //         }
-            //     }
-            //     array_shift($parts);
-			// } else {
-			// 	$current_lang = false;
-            // }
-            // echo($current_lang);
-
-            // Здесь хранится язык в виде ru-ru или uk-ua, как в БД
-            // print_r($this->session->data['language']);
-            // Так язык задается:
-            // $this->registry->set('language', 'ru-ru');
-
 
             foreach($parts as $id => $part) {
 
@@ -131,12 +81,15 @@ class SeoPro {
                 }
 
                 if ($parts[$id]) {
-                    // Получаем из БД запрос, что открывать по этой части сео френдли урла
-                    $query = $this->getQueryByKeyword($parts[$id], $this->lang_data[(int)$this->config->get('config_language_id')]['language_id']);
-                    $url = explode('=', $query);
-
-                    if (!empty($url[0])) {
-                        if (!in_array($url[0], 
+                    // Запрос в БД 
+                    // Запрашивается часть УРЛа: kategoriya-bloga-1/sredstva-immobilizacii
+                    // Возвращается GET-запрос: 
+                    //  blog_category_id=1
+                    //  article_id=23
+                    $query = $this->getQueryByKeyword($parts[$id]);
+                    $url_queries = explode('=', $query ?? '');
+                    if (!empty($url_queries[0])) {
+                        if (!in_array($url_queries[0], 
                             ['category_id', 
                             'product_id', 
                             'manufacturer_id', 
@@ -144,24 +97,24 @@ class SeoPro {
                             'article_id', 
                             'blog_category_id', 
                             'filter'])
-                            ) {
+                        ) {
                             return $parts;
                         }
 
-                        if ($url[0] == 'category_id') {
+                        if ($url_queries[0] == 'category_id') {
                             if (!isset($this->request->get['path'])) {
-                                $this->request->get['path'] = $url[1];
+                                $this->request->get['path'] = $url_queries[1];
                             } else {
-                                $this->request->get['path'] .= '_' . $url[1];
+                                $this->request->get['path'] .= '_' . $url_queries[1];
                             }
-                        } elseif ($url[0] == 'blog_category_id') {
+                        } elseif ($url_queries[0] == 'blog_category_id') {
                             if (!isset($this->request->get['blog_category_id'])) {
-                                $this->request->get['blog_category_id'] = $url[1];
+                                $this->request->get['blog_category_id'] = $url_queries[1];
                             } else {
-                                $this->request->get['blog_category_id'] .= '_' . $url[1];
+                                $this->request->get['blog_category_id'] .= '_' . $url_queries[1];
                             }
-                        } elseif (count($url) > 1) {
-                            $this->request->get[$url[0]] = $url[1];
+                        } elseif (count($url_queries) > 1) {
+                            $this->request->get[$url_queries[0]] = $url_queries[1];
                         }
                     }
                 }
@@ -169,7 +122,7 @@ class SeoPro {
                 unset($parts[$id]);
             }
 
-            if(!isset($query)) {
+            if(!$query) {
                 $this->request->get['route'] = 'error/not_found';
                 return [];
             }
@@ -180,9 +133,8 @@ class SeoPro {
                 unset($this->request->get['path']);
             };
             $path = $this->getCategoryByProduct($this->request->get['product_id']);
-            if ($path) $this->request->get['path'] = $path; {
-                $this->request->get['route'] = 'product/product';
-            }
+            if ($path) $this->request->get['path'] = $path;
+            $this->request->get['route'] = 'product/product';
         } elseif (isset($this->request->get['path'])) {
             $this->request->get['route'] = 'product/category';
         } elseif (isset($this->request->get['manufacturer_id'])) {
@@ -197,10 +149,7 @@ class SeoPro {
                 unset($this->request->get['blog_category_id']);
             };
             $blog_category_path = $this->getBlogPathByArticle($this->request->get['article_id']);
-            // Добавляем главную категорию в URL статьи
-            if ($blog_category_path) {
-                $this->request->get['_route_'] = $blog_category_path;
-            }
+            if ($blog_category_path) $this->request->get['blog_category_id'] = $blog_category_path;
             $this->request->get['route'] = 'blog/article';
         } elseif (isset($this->request->get['blog_category_id'])) {
             $this->request->get['route'] = 'blog/category';
@@ -209,20 +158,19 @@ class SeoPro {
         return $parts;
     }
 
-    // Превращаем параметры запроса в ЧПУ
     public function baseRewrite($data, $language_id) {
-        // print_r($data);
-        // TODO Тут еще язык?
-        if ($this->config_store_id != $this->config->get('config_store_id') || $this->config_language_id != $this->config->get('config_language_id')) {
-            $this->__construct($this->registry);
-        }
-        // print_r($data);
         $url = null;
         $postfix = null;
-        // TODO Вот здесь заменить на detectLanguage
-        $language_id = (int)$this->config->get('config_language_id');
+        if (!$language_id) {
+            $language_id = (int)$this->config->get('config_language_id');
+        }
 
         switch ($data['route']) {
+            // Добавляем код языка на
+            case 'common/home':
+                // print_r($this->current_lang);
+            break; 
+
             case 'product/product':
                 if (isset($data['product_id'])) {
                     $route = 'product/product';
@@ -259,17 +207,17 @@ class SeoPro {
                     //end add valide get-param
                 }
                 break;
-            
             //blog
+
             case 'blog/article':
                 if (isset($data['article_id'])) {
-                    $route = 'blog/article';
-                    $blog_path = '';
+                    // $route = 'blog/article';
+                    // $blog_path = '';
                     $article_id = $data['article_id'];
 
-                    if (!isset($data['blog_category_id'])) {
-                        $blog_path = $this->getBlogPathByArticle($article_id);
-                    }
+                    // if (!isset($data['blog_category_id'])) {
+                    //     $blog_path = $this->getBlogPathByArticle($article_id);
+                    // }
 
                     //start add valide get-param
                     if ($this->valide_get_param) {
@@ -287,12 +235,14 @@ class SeoPro {
                     }
                     //end add valide get-param
                     unset($data);
-                    $data['route'] = $route;
+                    // $data['route'] = $route;
 
-                    if ($blog_path) {
-                        $data['blog_category_id'] = $blog_path;
-                    }
-
+                    // if ($blog_path && $this->config->get('config_seo_url_include_path')) {
+                    //     $data['blog_category_id'] = $blog_path;
+                    // }
+                    
+                    // Всегда включаем главную категорию статьи в УРЛ
+                    $data['blog_category_id'] = $this->getBlogPathByArticle($article_id);
                     $data['article_id'] = $article_id;
 
                     if ($this->valide_get_param) {
@@ -301,10 +251,9 @@ class SeoPro {
                 }
                 break;
 
-            // Категории
+            //blog
             case 'product/category':
                 if (isset($data['path'])) {
-
                     $category = explode('_', $data['path']);
                     $category = end($category);
                     unset($data['information_id']);
@@ -339,9 +288,7 @@ class SeoPro {
             unset($data['route']);
         }
 
-        // DONE Здесь можно попробовать дописать в $queries
-        // $queries[] = 'common/home'
-        // По идее должно подгружать префиксы языков из БД
+        // print_r($data);
 
         foreach ($data as $key => $value) {
 
@@ -359,25 +306,32 @@ class SeoPro {
                     unset($data[$key]);
                     break;
                 case 'category_id':
+                    $category_id = (int)$value;
+                    $queries[] = 'category_id=' . $category_id;
+                    $postfix = true;
+                    unset($data[$key]);
+                    break;
+
                 case 'information_id':
                     $information_id = (int)$value;
                     $queries[] = 'information_id=' . $information_id;
                     $postfix = true;
                     unset($data[$key]);
                     break;
-                // blog
+                //blog
                 case 'blog_category_id':
                     $blog_categories = explode('_', $value);
-                    foreach ($blog_categories as $blog_category_id) {
-                        $queries[] = 'blog_category_id=' . (int)$blog_category_id;
-                    }
+                    // foreach ($blog_categories as $blog_category_id) {
+                    //     $queries[] = 'blog_category_id=' . (int)$blog_category_id;
+                    // }
+                    // Учитывать только последний ID категории блога
+                    $queries[] = 'blog_category_id=' . (int)end($blog_categories);
                     $postfix = true;
                     unset($data[$key]);
                     break;
-                // Статья
                 case 'article_id':
                     $article_id = (int)$value;
-                    $queries[] = 'article_id=' . (int)$article_id;
+                    $queries[] = 'article_id=' . $article_id;
                     $postfix = true;
                     unset($data[$key]);
                     break;
@@ -388,62 +342,39 @@ class SeoPro {
                     foreach ($categories as $category_id) {
                         $queries[] = 'category_id=' . (int)$category_id;
                     }
-                    // Создаем урл страниц фильтров для категорий
-                    if (isset($data['filter'])) {
-                        $queries[] = 'filter=' . $data['filter'];
-                        unset($data['filter']);
-                    }
-                    $postfix = true; 
+                    $postfix = true;
                     unset($data[$key]);
                     break;
-                // Фильтр
+                    // Фильтры
                 case 'filter':
-                    if(isset($this->request->get['filter']) && isset($data['filter'])) {
-                        // $language_id = array_search($this->lang_prefix_detect, $this->lang_prefix);
-                        $filter_query = 'filter='.$this->request->get['filter'];
-                        $q = $this->db->query("
-                            SELECT 
-                                su.seo_url_id,
-                                fpd.default_category
-                            FROM " . DB_PREFIX . "seo_url su
-                            LEFT JOIN " . DB_PREFIX . "filter_page_description fpd ON fpd.seo_url_id = su.seo_url_id
-                            WHERE query = '" . $filter_query . "' 
-                            AND su.store_id = '" . (int)$this->config->get('config_store_id') . "'
-                            AND su.language_id = '".(int)$this->config->get('config_language_id')."' 
-                            LIMIT 1
-                        ");
-                    if ($q->num_rows) {
-                        // print_r($q->rows);
-                        // Обязательно должно быть $queries[$key] вместо $queries[] 
-                        // так урл фильтра добавляется именно в конец массива, а не куда попало
+                    $filter_default_category = $this->getFilterDefaultCategory($data['filter']);
+                    if ($filter_default_category) {
                         unset($queries);
-                        $queries['1_categories'] = 'category_id=' . (int)$q->row['default_category'];
-                        $queries['2_filter'] = $key . '=' . $value;
-                        // Убираем GET параметр filter=7,8,9
-                        // unset($data[$key]);
-                        // Окончание урла, например .html
-                        $postfix = true; 
-                        break;
+                        // Для каждого объекта в массиве делается запрос в БД
+                        // Который возвращает часть УРЛ-а
+                        // category_id=13 возвращает "medicinskaya-tekhnika"
+                        // filter=4,5,6,7 возвращает "stranica-filtra-2"
+                        $queries[1] = 'category_id=' . (int)$filter_default_category;
+                        $queries[2] = 'filter=' . $value;
+                        unset($data[$key]); // Удаление get параметров
+                        
                     } else {
                         break;
                     }
-
-                } else {
-                    break;
-                }
+                break;
                 default:
                     break;
             }
         }
 
         if (empty($queries) && $route) {
-            // Для простых страниц типа extension/sitemap и тп
-            $keyword = $this->getKeywordByQuery($route);
+            $keyword = $this->getKeywordByQuery($route, $language_id);
             //check url for route
             if($keyword !== null) {
                 //common/home
                 $url = '';
                 if($keyword  !== '') {
+
                     $url = '/' . rawurlencode($keyword);
                 }
             }
@@ -451,19 +382,16 @@ class SeoPro {
             $data['route']  = $route;
 
         } else {
-            // DONE
-            // Здесь добавить в $url индекс языка
-            // $url .= '/uk';
-            // print_r($this->current_lang);
-            // if (isset($this->current_lang) && isset($this->current_lang['prefix']) && $this->current_lang['prefix'] != '') {
-            //     $url .= '/'.$this->current_lang['prefix'];
-            // }
+
             $rows = [];
+
             foreach ($queries as $query) {
-                    $keyword = $this->getKeywordByQuery($query);
-                if ($keyword)
-                        $rows[] = $keyword;
-                    }
+                $keyword = $this->getKeywordByQuery($query, $language_id);
+                if ($keyword) {
+
+                    $rows[] = $keyword;
+                }
+            }
 
             if (!empty($rows) && (count($rows) == count($queries))) {
                 foreach($rows as $row) {
@@ -475,85 +403,7 @@ class SeoPro {
         return [$url, $data, $postfix];
     }
 
-    private function getPath($categories, $category_id, $current_path = []) {
-
-        if(!$current_path)
-            $current_path = [(int)$category_id];
-
-        $path = $current_path;
-
-        $parent_id = 0;
-
-        if(isset($categories[$category_id]['parent_id']))
-            $parent_id = (int)$categories[$category_id]['parent_id'];
-
-        if($parent_id > 0) {
-            $new_path =  array_merge ([$parent_id] , $current_path);
-            $path =  $this->getPath($categories, $parent_id, $new_path);
-        }
-
-        return $path;
-    }
-
-
-    private function initHelpers() {
-        // start category_tree
-        if($this->config->get('config_seo_url_cache')){
-            $this->cat_tree = $this->cache->get('seopro.cat_tree');
-        }
-
-        if(!$this->cat_tree || empty($this->cat_tree)) {
-
-            $this->cat_tree = [];
-
-            $all_cat_query = $this->db->query("SELECT category_id, parent_id FROM " . DB_PREFIX . "category ORDER BY parent_id");
-
-            $allcats = [];
-            $categories = [];
-
-            if($all_cat_query->num_rows) {
-                $allcats = $all_cat_query->rows;
-            };
-
-            foreach ($allcats as $category) {
-                $categories[$category['category_id']]['parent_id'] = $category['parent_id'];
-            };
-            unset ($allcats);
-
-            foreach ($categories as $category_id => $category) {
-                $path = $this->getPath($categories, $category_id);
-                $this->cat_tree[$category_id]['path'] = $path;
-
-            };
-
-        }
-        //end_category_tree
-
-        //keyword_data
-        if ($this->config->get('config_seo_url_cache')) {
-
-            $this->keywords = $this->cache->get('seopro.keywords');
-            $this->queries = $this->cache->get('seopro.queries');
-
-            if ((!$this->keywords || empty($this->keywords) || !$this->queries || empty($this->queries))) {
-
-                $sql_keyword = 'keyword';
-                if ($this->config->get('config_seopro_lowercase'))
-                    $sql_keyword = 'LCASE(keyword) as '. $sql_keyword;
-
-                $sql = "SELECT " . $sql_keyword . ", query, store_id, language_id FROM " . DB_PREFIX . "seo_url WHERE 1";
-
-                $query = $this->db->query($sql);
-                if($query->num_rows) {
-                    foreach($query->rows as $row) {
-                        $this->keywords[$row['query']][$row['store_id']][$row['language_id']] = $row['keyword'];
-                        $this->queries[$row['keyword']][$row['store_id']][$row['language_id']] = $row['query'];
-                    }
-                }
-            }
-        }
-        //end_keyword_data
-    }
+    
 
     private function detectPostfix() {
         if($this->config->get('config_page_postfix') && isset($this->request->get['_route_'])) {
@@ -569,25 +419,17 @@ class SeoPro {
     }
 
     private function getQueryByKeyword($keyword, $language_id = null) {
-        // echo($keyword.', '. $language_id);
         $query = null;
         $store_id = (int)$this->config->get('config_store_id');
 
-        // TODO Здесь поставить определение языка
-        if (!$language_id) {
+        if (!$language_id)
             $language_id = (int)$this->config->get('config_language_id');
-        }
 
         if ($this->config->get('config_seo_url_cache')){
-            if (isset($this->queries[$keyword][$store_id][$language_id])) {
+            if (isset($this->queries[$keyword][$store_id][$language_id]))
                 $query = $this->queries[$keyword][$store_id][$language_id];
-            }
         } else {
-            $_query = $this->db->query("
-            SELECT query FROM " . DB_PREFIX . "seo_url 
-            WHERE keyword = '" . $this->db->escape(trim($keyword)) . "' 
-            AND store_id = '" . $store_id . "' 
-            AND language_id = '" . $language_id . "' LIMIT 1");
+            $_query = $this->db->query("SELECT query FROM " . DB_PREFIX . "seo_url WHERE keyword = '" . $this->db->escape(trim($keyword)) . "' AND store_id = '" . $store_id . "' AND language_id = '" . $language_id . "' LIMIT 1");
             $query = !empty($_query->row) ? (string)$_query->row['query'] : null;
         }
 
@@ -599,31 +441,21 @@ class SeoPro {
         $keyword = null;
         $store_id = (int)$this->config->get('config_store_id');
 
-        // TODO здесь поставить определение языка
-        if (!$language_id) {
+        if (!$language_id)
             $language_id = $this->config->get('config_language_id');
-        }
 
 
         if ($this->config->get('config_seo_url_cache')) {
-            if (isset($this->keywords[$query][$store_id][$language_id])) {
+            if (isset($this->keywords[$query][$store_id][$language_id]))
                 $keyword = $this->keywords[$query][$store_id][$language_id];
-            }
         } else {
 
             $sql_keyword = 'keyword';
-            if ($this->config->get('config_seopro_lowercase')) {
+            if ($this->config->get('config_seopro_lowercase'))
                 $sql_keyword = 'LCASE(keyword) as '. $sql_keyword;
-            }
 
-            $query = $this->db->query("
-                SELECT " . $sql_keyword . " 
-                FROM " . DB_PREFIX . "seo_url 
-                WHERE query = '" . $this->db->escape($query) . "' 
-                AND store_id = '" . $store_id . "' 
-                AND language_id = '" . (int)$language_id . "' 
-                LIMIT 1
-            ");
+
+            $query = $this->db->query("SELECT " . $sql_keyword . " FROM " . DB_PREFIX . "seo_url WHERE query = '" . $this->db->escape($query) . "' AND store_id = '" . $store_id . "' AND language_id = '" . (int)$language_id . "' LIMIT 1");
             $keyword =  !empty($query->row) ? (string)$query->row['keyword'] : null;
 
         }
@@ -648,23 +480,19 @@ class SeoPro {
             ];
 
             if (in_array($this->request->get['route'], $break_routes))
-            {
                 return;
-            }
         }
 
-        if (!empty($this->request->post)) {
+        if (!empty($this->request->post))
             return;
-        }
 
         if ($this->ajax) {
             $this->response->addHeader('X-Robots-Tag: noindex');
             return;
         }
 
-        if (empty($this->request->get['route'])) {
+        if (empty($this->request->get['route']))
             $this->request->get['route'] = 'common/home';
-        }
 
 
         $uri = $this->request->server['REQUEST_URI'];
@@ -699,12 +527,13 @@ class SeoPro {
     }
 
     private function detectAjax () {
-        if (isset($this->request->server['HTTP_X_REQUESTED_WITH']) && strtolower($this->request->server['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
+        if (isset($this->request->server['HTTP_X_REQUESTED_WITH']) && strtolower($this->request->server['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest')
             $this->ajax = true;
-        }
     }
 
     private function detectLanguage() {
+
+        // print_r($this->request);
 
         if ($this->ajax)
             return;
@@ -721,11 +550,27 @@ class SeoPro {
         }
 
         if ($keyword || $this->request->server['REQUEST_URI'] == '/') {
-            $query = $this->db->query("SELECT language_id  FROM " . DB_PREFIX . "seo_url WHERE keyword = '" . $this->db->escape(trim($keyword)) . "' AND store_id = '" . (int)$this->config->get('config_store_id') . "' LIMIT 1");
+            // TODO Тут добавить определение языка по коду языка в урле
+            // TODO Убрать переадресацию при совпадении урлов в языках
+            $query = $this->db->query("
+                SELECT 
+                    language_id  
+                FROM " . DB_PREFIX . "seo_url 
+                WHERE keyword = '" . $this->db->escape(trim($keyword)) . "' 
+                AND store_id = '" . (int)$this->config->get('config_store_id') . "' 
+                LIMIT 1
+            ");
             if ($query->row) {
                 $request_language_id = (int)$query->row['language_id'];
 
-                $query = $this->db->query("SELECT code FROM " . DB_PREFIX . "language WHERE language_id = '" . (int)$request_language_id . "' AND status = '1' LIMIT 1");
+                $query = $this->db->query("
+                    SELECT 
+                        code 
+                    FROM " . DB_PREFIX . "language 
+                    WHERE language_id = '" . (int)$request_language_id . "' 
+                    AND status = '1' 
+                    LIMIT 1
+                ");
 
                 if ($query->row) {
                     $request_language_code = $query->row['code'];
@@ -735,7 +580,15 @@ class SeoPro {
         }
 
         if (isset($this->session->data['language'])) {
-            $query = $this->db->query("SELECT language_id FROM " . DB_PREFIX . "language WHERE code = '" . (int)$this->session->data['language'] . "' AND status = '1' LIMIT 1");
+            $query = $this->db->query("
+                SELECT 
+                    language_id 
+                FROM " . DB_PREFIX . "language 
+                WHERE code = '" . (int)$this->session->data['language'] . "' 
+                AND status = '1' 
+                LIMIT 1
+            ");
+
             if ($query->num_rows) {
                 $active_language_id = (int)$query->row['language_id'];
             }
@@ -750,110 +603,7 @@ class SeoPro {
         }
     }
 
-    private function getCategoryByProduct($product_id) {
-
-        if ((int)$product_id < 1)
-            return false;
-
-        if ($this->config->get('config_seo_url_cache')) {
-            $this->product_categories = $this->cache->get('seopro.product_categories');
-            if(isset($this->product_categories[$product_id]))
-                return $this->product_categories[$product_id];
-        }
-
-        $query = $this->db->query("
-            SELECT main_category AS category_id
-            FROM " . DB_PREFIX . "product 
-            WHERE product_id = '" . (int)$product_id . "'
-        ");
-        // Здесь задается путь урла товара - вложенность товара в категории
-        // Так будут все категории из вложенности
-        // То есть https://home.com/category-1/category-2/product-1
-        // $category_id = $this->getPathByCategory($query->num_rows ? (int)$query->row['category_id'] : 0);
-        
-        // Так только основная категория - в БД oc_product_to_category.main_category
-        // Если не задана основная - будет https://home.com/product-1, то есть без категории
-        // TODO сделать это отдельным конфигом в админке
-        $category_id = $query->num_rows ? (int)$query->row['category_id'] : 0;
-
-        if ($this->config->get('config_seo_url_cache')) {
-            $this->product_categories[$product_id] = $category_id;
-        }
-
-        return $category_id;
-    }
-
-    private function getPathByCategory($category_id) {
-
-        $path = '';
-        // DONE Не выводить полный путь к категории
-        // Только саму категорию
-        // TODO Сделать это отдельной настройкой
-        return $category_id;
-
-        if ((int)$category_id < 1 && !isset($this->cat_tree[$category_id]))
-            return false;
-
-        if (!empty($this->cat_tree[$category_id]['path']) && is_array($this->cat_tree[$category_id]['path'])) {
-            $path = implode('_', $this->cat_tree[$category_id]['path']);
-        }
-        // echo($path);
-        return $path;
-
-    }
-
-    private function getBlogPathByArticle($article_id) {
-
-        if ($article_id < 1) {
-            return false;
-        }
-
-        $query = $this->db->query("
-            SELECT blog_category_id 
-            FROM " . DB_PREFIX . "article_to_blog_category 
-            WHERE article_id = '" . (int)$article_id . "' 
-            AND main_blog_category = 1
-            LIMIT 1");
-        $blog_category_path = $this->getBlogPathByCategory($query->num_rows ? (int)$query->row['blog_category_id'] : 0);
-
-        return $blog_category_path;
-    }
-
-    private function getBlogPathByCategory($blog_category_id) {
-        $blog_category_id = (int)$blog_category_id;
-        if ($blog_category_id < 1)
-            return false;
-
-        static $blog_path = [];
-        $cache = 'seopro.blog_category.seopath';
-
-        if (!is_array($blog_path)) {
-            if ($this->config->get('config_seo_url_cache'))
-                $blog_path = $this->cache->get($cache);
-            if (!is_array($blog_path))
-                $blog_path = [];
-        }
-
-        if (!isset($blog_path[$blog_category_id])) {
-            $max_level = 10;
-            $sql = "SELECT CONCAT_WS('_'";
-            for ($i = $max_level-1; $i >= 0; --$i) {
-                $sql .= ",t$i.blog_category_id";
-            }
-            $sql .= ") AS path FROM " . DB_PREFIX . "blog_category t0";
-            for ($i = 1; $i < $max_level; ++$i) {
-                $sql .= " LEFT JOIN " . DB_PREFIX . "blog_category t$i ON (t$i.blog_category_id = t" . ($i-1) . ".parent_id)";
-            }
-            $sql .= " WHERE t0.blog_category_id = '" . $blog_category_id . "'";
-            $query = $this->db->query($sql);
-            $blog_path[$blog_category_id] = $query->num_rows ? $query->row['path'] : false;
-
-            if ($this->config->get('config_seo_url_cache'))
-                $this->cache->set($cache, $blog_path);
-        }
-
-        return $blog_path[$blog_category_id];
-    }
+    
 
     private function strpos_offset($needle, $haystack, $occurrence) {
         // explode the haystack
@@ -884,46 +634,60 @@ class SeoPro {
         if ($this->config->get('config_seo_url_cache')){
             $this->cache->set('seopro.keywords', $this->keywords);
             $this->cache->set('seopro.queries', $this->queries);
-            $this->cache->set('seopro.cat_tree', $this->cat_tree);
+            // $this->cache->set('seopro.cat_tree', $this->cat_tree);
             $this->cache->set('seopro.product_categories', $this->product_categories);
         }
     }
 
+    private function getCategoryByProduct($product_id) {
+        if ((int)$product_id < 1) {
+            return false;
+        }
+        $product_id = preg_replace('/[^\\d]+/', '', $product_id);
+        $query = $this->db->query("
+            SELECT main_category 
+            FROM " . DB_PREFIX . "product 
+            WHERE product_id = '" . (int)$product_id . "' 
+            LIMIT 1
+        ");
+        return $query->row['main_category'];
+    }
 
-    public function getLanguages() {
-		// $language_data = $this->cache->get('seo.language');
+    private function getPathByCategory($category_id) {
+        $category_id = preg_replace('/[^\\d]+/', '', $category_id);
+        return $category_id;
+    }
 
-		// if (!$language_data) {
-			$language_data = array();
-            // Все данные одним запросом
-			$query = $this->db->query("
-                SELECT 
-                    l.language_id,
-                    l.code,
-                    su.keyword AS prefix,
+    private function getFilterDefaultCategory($filters)
+    {
+        $filters = preg_replace('/[^\\d,]+/', '', $filters);
+        $query = $this->db->query("
+            SELECT 
+                default_category
+            FROM " . DB_PREFIX . "filter_page_description 
+            WHERE filters = '" . $filters . "' 
+            LIMIT 1
+        ");
+        return $query->row['default_category'] ?? false;
+    }
 
-                    (SELECT 
-                        'true' 
-                        FROM " . DB_PREFIX . "setting s 
-                        WHERE s.key = 'config_language' 
-                        AND s.value = l.code 
-                        AND s.store_id = '".(int)$this->config->get('config_store_id')."'
-                    ) as 'default'
+    private function getBlogPathByArticle($article_id) {
 
-                FROM " . DB_PREFIX . "language l
-                LEFT JOIN " . DB_PREFIX . "seo_url su ON su.query = 'common/home' AND su.language_id = l.language_id 
-                WHERE l.status = '1'
-            ");
+        if ($article_id < 1) {
+            return false;
+        }
+        $article_id = preg_replace('/[^\\d]+/', '', $article_id);
 
-			foreach ($query->rows as $result) {
-				$language_data[$result['language_id']] = array(
-					'language_id' => $result['language_id'],
-					'code'        => $result['code'],
-                    'prefix'      => $result['prefix'],
-                    'default'     => ($result['default'] == 'true') ? 'true' : 'false',
-				);
-			}
+        $query = $this->db->query("
+            SELECT blog_category_id 
+            FROM " . DB_PREFIX . "article_to_blog_category 
+            WHERE article_id = '" . (int)$article_id . "' 
+            AND main_blog_category = 1
+            LIMIT 1
+        ");
+        $article_path = $query->num_rows ? (int)$query->row['blog_category_id'] : 0;
+        return $article_path;
+    }
 
-		return $language_data;
-	}
+    
 }
