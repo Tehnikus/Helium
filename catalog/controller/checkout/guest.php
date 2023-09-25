@@ -8,7 +8,7 @@ class ControllerCheckoutGuest extends Controller {
 	}
 
 	public function save() {
-		$this->load->language('checkout/checkout');
+		// $this->load->language('checkout/checkout');
 		$this->load->language('checkout/checkout_errors');
 
 		$json = array();
@@ -83,11 +83,18 @@ class ControllerCheckoutGuest extends Controller {
 			$custom_fields = $this->model_account_custom_field->getCustomFields($customer_group_id);
 
 			foreach ($custom_fields as $custom_field) {
-				if ($custom_field['required'] && empty($this->request->post['custom_field'][$custom_field['location']][$custom_field['custom_field_id']])) {
-					$json['error']['custom_field[address][' . $custom_field['custom_field_id'].']'] = sprintf($this->language->get('error_custom_field'), $custom_field['name']);
-				} elseif (($custom_field['type'] == 'text') && !empty($custom_field['validation']) && !filter_var($this->request->post['custom_field'][$custom_field['location']][$custom_field['custom_field_id']], FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => $custom_field['validation'])))) {
-                    $json['error']['custom_field[address][' . $custom_field['custom_field_id'].']'] = sprintf($this->language->get('error_custom_field'), $custom_field['name']);
-                }
+				if (
+					$custom_field['required']
+					&& empty($this->request->post['custom_field'][$custom_field['location']][$custom_field['custom_field_id']])
+				) {
+					$json['error']['custom_field[address][' . $custom_field['custom_field_id'] . ']'] = sprintf($this->language->get('error_custom_field'), $custom_field['name']);
+				} elseif (
+					($custom_field['type'] == 'text')
+					&& !empty($custom_field['validation'])
+					&& !filter_var($this->request->post['custom_field'][$custom_field['location']][$custom_field['custom_field_id']], FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => $custom_field['validation'])))
+				) {
+					$json['error']['custom_field[address][' . $custom_field['custom_field_id'] . ']'] = sprintf($this->language->get('error_custom_field'), $custom_field['name']);
+				}
 			}
 
 			// Captcha
