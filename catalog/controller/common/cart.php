@@ -177,6 +177,7 @@ class ControllerCommonCart extends Controller {
 			$this->response->setOutput(json_encode($json));
 		}
 	}
+
 	public function renderAdditionalModal() {
 		if (isset($this->request->post['product_id'])) {
 			$this->load->model('catalog/product');
@@ -332,29 +333,15 @@ class ControllerCommonCart extends Controller {
 		$this->load->model('localisation/country');
 		$this->load->model('account/custom_field');
 		$this->load->model('setting/extension');
-		if(!$data) {
+		$this->load->model('account/address');
+		
+		if (!$data) {
 			$data = [];
 		}
 
 		// Get customer addreses
 		// If customer is registered address selector will appear instead of checkut form
-		$this->load->model('account/address');
 		$data['addresses'] = $this->model_account_address->getAddresses();
-
-		// $customer_data = [];
-		// foreach ($this->session->data as $account_type => $field) {
-		// 	if ($account_type == 'payment_address' || $account_type == 'guest' || $account_type == 'shipping_address') {
-		// 		if (is_array($this->session->data[$account_type])) {
-		// 			foreach ($this->session->data[$account_type] as $field_name => $field_value) {
-		// 				if ($field_value !== '') {
-		// 					$customer_data[$field_name] = $field_value;
-		// 				}
-		// 			}
-		// 		}
-		// 	}
-		// }
-		// print_r($customer_data);
-
 		$data['shipping_required'] = $this->cart->hasShipping();
 
 
@@ -397,7 +384,6 @@ class ControllerCommonCart extends Controller {
 			$data['phone'] = '';
 		}
 		
-		
 		if (isset($this->session->data['payment_address']['address_1'])) {
 			$data['address_1'] = $this->session->data['payment_address']['address_1'];
 		} else {
@@ -409,16 +395,18 @@ class ControllerCommonCart extends Controller {
 		} else {
 			$data['email'] = '';
 		}
-		// if (isset($this->session->data['payment_address']['company'])) {
-		// 	$data['company'] = $this->session->data['payment_address']['company'];
-		// } else {
-		// 	$data['company'] = '';
-		// }
-		// if (isset($this->session->data['payment_address']['address_2'])) {
-		// 	$data['address_2'] = $this->session->data['payment_address']['address_2'];
-		// } else {
-		// 	$data['address_2'] = '';
-		// }
+
+		if (isset($this->session->data['payment_address']['company'])) {
+			$data['company'] = $this->session->data['payment_address']['company'];
+		} else {
+			$data['company'] = '';
+		}
+
+		if (isset($this->session->data['payment_address']['address_2'])) {
+			$data['address_2'] = $this->session->data['payment_address']['address_2'];
+		} else {
+			$data['address_2'] = '';
+		}
 
 		if (isset($this->session->data['payment_address']['postcode'])) {
 			$data['postcode'] = $this->session->data['payment_address']['postcode'];
@@ -455,6 +443,7 @@ class ControllerCommonCart extends Controller {
 		} else {
 			$data['selected_shipping_method'] = '';
 		}
+
 		if (isset($this->session->data['payment_method']) && isset($this->session->data['payment_method']['code'])) {
 			$data['selected_payment_method'] = $this->session->data['payment_method']['code'];
 		} else {
@@ -465,9 +454,9 @@ class ControllerCommonCart extends Controller {
 
 		// Custom Fields
 		// Set input values if present
-		// TODO in twig template make condition for select and radio inputs
+		// TODO in twig template make condition for select and radio inputs selected values
 		// Something like this: if isset $custom_field['value'] then $custom_field['custom_field_value'] = selected
-		// TODO Fix custom fields
+		// DONE Fix custom fields values display
 		$data['custom_fields'] = $this->model_account_custom_field->getCustomFields();
 		foreach ($data['custom_fields'] as &$custom_field) {
 			if (isset($this->session->data['shipping_address'])) {
@@ -554,11 +543,11 @@ class ControllerCommonCart extends Controller {
 				$this->session->data['customer'] = [];
 			}
 			// Set customer name according to address 
-			$this->session->data['customer']['firstname'] = $data['firstname'];
-			$this->session->data['customer']['lastname']  = $data['lastname'];
+			$this->session->data['customer']['firstname'] 					= $data['firstname'];
+			$this->session->data['customer']['lastname']  					= $data['lastname'];
 			// Set phone and email
-			$this->session->data['customer']['telephone'] 			= $customer_info['telephone'];
-			$this->session->data['customer']['email']     			= $customer_info['email'];
+			$this->session->data['customer']['telephone'] 					= $customer_info['telephone'];
+			$this->session->data['customer']['email']     					= $customer_info['email'];
 			$this->session->data['customer']['customer_group_id']   = $customer_info['customer_group_id'];
 
 			// Unset guest data
@@ -588,7 +577,7 @@ class ControllerCommonCart extends Controller {
 				// echo($this->load->controller('extension/payment/' . $this->session->data['payment_method']['code'] . '/confirm'));
 				
 				
-				// TODO Add config for Quick checkout payment mathods - which one creates order, which one displays payment form
+				// TODO Add config for Quick checkout payment methods - which one creates order, which one displays payment form
 				// Allowed payment methods that just redirect to successful order page
 				
 				$allowed_payment_methods = ['bank_transfer', 'cheque', 'cod', 'free_checkout'];
