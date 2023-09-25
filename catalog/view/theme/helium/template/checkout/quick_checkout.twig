@@ -7,10 +7,10 @@
     </div>
     <div id="payment-existing"> #}
 
-      {% include 'helium/template/account/user_addresses.twig' %}
+      {% include 'helium/template/account/user_addresses.twig' with {form_name: 'js_qc_address'} %}
 
 
-  <h3>{{ text_or_create_new_address }}</h3>
+  {# <h3>{{ text_or_create_new_address }}</h3> #}
 {% endif %}
 <form id="js_quick_ckeckout">  
   {% if not addresses %}<h2>{{ text_quick_checkout }}</h2>{% endif %}
@@ -99,7 +99,7 @@
           {% if country.country_id == country_id %}
             <option data-postcode-required="{{ country.postcode_required }}" value="{{ country.country_id }}" selected="selected">{{ country.name }}</option>
           {% else %}
-            <option value="{{ country.country_id }}">{{ country.name }}</option>
+            <option value="{{ country.country_id }}" data-postcode-required="{{ country.postcode_required }}">{{ country.name }}</option>
           {% endif %}
         {% endfor %}
       </select>
@@ -122,9 +122,9 @@
         autocomplete="on"
       />
     </div>
+  </div>  
     {# Custom fields #}
     {% include 'helium/template/common/custom_fields.twig' with {type: 'shipping', location: 'address'} %}
-  </div>  
 
   <div id="js_qc_delivery" class="js_check_errors">
     {# Shipping methods #}
