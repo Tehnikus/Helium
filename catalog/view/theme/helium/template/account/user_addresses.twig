@@ -2,8 +2,17 @@
   <legend>{{ text_your_addresses }}</legend>
   {% for address in addresses %}
     <div class="form-control">
-      <input data-collapse-target="js_qc_address_form" role="radio" type="radio" name="address_id" id="address_{{ address.address_id }}" value="{{ address.address_id }}" {% if address.address_id == address_id %} checked="checked" {% endif %}/>
-      <label for="address_{{ address.address_id }}">
+      <input 
+        data-collapse-target="{{ form_name }}_form" 
+        role="radio" type="radio" 
+        name="address_id" 
+        id="{{ form_name }}_{{ address.address_id }}" 
+        value="{{ address.address_id }}" 
+        {% if address.address_id == address_id %} 
+          checked="checked" 
+        {% endif %}
+      />
+      <label for="{{ form_name }}_{{ address.address_id }}">
         {% if address.address_id == address_id %}
           <i class="icon-home"></i> 
         {% endif %}
@@ -14,7 +23,8 @@
   {% endfor %}
   <div class="form-control">
     {# Empty value to toggle address form #}
-    <input data-collapse-target="js_qc_address_form" role="radio" type="radio" name="address_id" id="address_0" value="" {% if not address_id %} checked="checked" {% endif %}/>
-    <label for="address_0"><b>{{ text_i_want_new_address }}</b></label>
+    <input data-collapse-target="{{ form_name }}_form" role="radio" type="radio" name="address_id" id="{{ form_name }}_0" value="" {% if not address_id %} checked="checked" {% endif %}/>
+    <label for="{{ form_name }}_0"><b>{{ text_i_want_new_address }}</b></label>
   </div>
+  
 </fieldset>
