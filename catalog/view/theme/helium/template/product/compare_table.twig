@@ -1,12 +1,12 @@
 {% if table %}
-  <table>
+  {# {{ table | json_encode(constant('JSON_UNESCAPED_UNICODE'), constant('JSON_PRETTY_PRINT')) }} #}
+  <table class="t_header t_first_column">
   {% for column_name, column in table %}
     {% for attribute_id, name in column.line_name %}
       <tr>
-        <th>{{name}}</th>
+        <th class="title_{{ column_name }}">{{name}}</th>
         {% for product_id, values in column.value %}
-          {# <td>{{ values | json_encode(constant('JSON_UNESCAPED_UNICODE'), constant('JSON_PRETTY_PRINT')) }}</td> #}
-          <td>
+          <td class="cell_{{ column_name }}">
             {% if column_name == 'name' %}
               <h3><a href="{{ table.name.value[product_id].href }}" title="{{ table.name.value[product_id].name }}">{{ values.name }}</a></h3>
             {% elseif column_name == 'thumb' %}
@@ -16,7 +16,7 @@
                 </a>
               </figure>
             {% elseif column_name == 'price' %}
-              
+              <b>{{ table.price.value[product_id].price }}</b>
             {% elseif column_name == 'rating' %}
               {% if values.rating and values.reviews %}
                 {% include 'helium/template/common/rating_stars.twig' with {rating: values.rating, count: values.reviews} %}
@@ -26,15 +26,13 @@
             {% elseif column_name == 'attributes' %}
               {% if values[attribute_id] %}
                 {{ values[attribute_id] | join(',<br/>') }}
-              {% else %}
-                --
-              {% endif %}
+              {% else %}{% endif %}
             {% elseif column_name == 'actions' %}
               <div class="btn-group">
-                <button type="button" {% if table.price_value[cell_key] != 0 %} data-action="cartAdd" data-product_id="{{ product_id }}" data-minimum_qty="{{ product.minimum }}" aria-haspopup="dialog"{% else %} disabled {% endif %} title="{{ button_cart }} {{ table.name.value[product_id] }}" class="add-to-cart primary">
+                <button type="button" {% if table.price.value[product_id].price_value != 0 %} data-action="cartAdd" data-product_id="{{ product_id }}" data-minimum_qty="{{ product.minimum }}" aria-haspopup="dialog"{% else %} disabled {% endif %} title="{{ button_cart }} {{ table.name.value[product_id].name }}" class="add-to-cart primary">
                   <i class="icon-cart"></i>
                 </button>
-                <button type="button" data-action="compareRemove" data-product_id="{{ product_id }}" title="{{ text_remove }} {{ table.name.value[product_id] }}">
+                <button type="button" data-action="compareRemove" data-product_id="{{ product_id }}" title="{{ text_remove }} {{ table.name.value[product_id].name }}">
                   <i class="icon-trash"></i>
                 </button>
               </div>
@@ -49,7 +47,5 @@
   </table>
 {% else %}
   <p>{{ text_empty }}</p>
-  <div class="buttons">
-    <div class="pull-right"><a href="{{ continue }}" class="default">{{ button_continue }}</a></div>
-  </div>
+  <button class="primary" onclick="dialog.close()" >{{ button_continue }}</button>
 {% endif %}
