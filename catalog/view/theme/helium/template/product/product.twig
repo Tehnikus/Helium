@@ -73,7 +73,6 @@
         <div class="stock-info"><span>{{ text_stock }} {{ stock }}</span></div>
       {% endif %}
     
-
       {# Prices #}
       {% if price %}
         <div class="prices-block" >
@@ -85,15 +84,12 @@
               <span id="js_product_id_{{ product_id }}" class="price-new" >{{ special }}</span>
             {% endif %}
           </p>
-
           {% if tax %}
-          <span class="tax">{{ text_tax }} {{ tax }}</span>
+            <span class="tax">{{ text_tax }} {{ tax }}</span>
           {% endif %}
-
           {% if points %}
             <span class="bonus-points">{{ text_points }} {{ points }}</span>
           {% endif %}
-
           {% if discounts %}
             {% for discount in discounts %}
             <div class="quantity_discounts">
@@ -140,10 +136,8 @@
             class="form-control"
             oninput="animatePrice()"
           />
-          {# <input type="hidden" name="product_id" value="{{ product_id }}" /> #}
         </div>
         <div class="btn-group">
-
           <button type="button" 
             {% if price %}
               data-action="cartAdd" 
@@ -165,7 +159,6 @@
           {% else %}
             {{ text_login }}
           {% endif %}
-          
         </div>
         {% if minimum > 1 %}
           <div role="alert" class="alert-info"><i class="icon-info"></i> 
@@ -187,22 +180,22 @@
 
     {# Feature table #}
     {% if attribute_groups %}
-      <span class="h1">{{ tab_attribute }}</span>
       <div id="specification">
+        <span class="h1">{{ tab_attribute }}</span>
         <table class="table table-bordered">
           <caption>{{ tab_product_attribute }} {{ product.name }}</caption>
           <thead>
             <tr>
-              <td><span class="bold">{{tab_attribute}}</span></td>
+              <td colspan="3"><span class="bold">{{tab_attribute}}</span></td>
             </tr>
           </thead>
           <tbody>
           {% for attribute_group in attribute_groups %}
           <tr>
-            <td colspan="2" class="group-name">
+            <td colspan="1" class="group-name">
               {{ attribute_group.name }}
             </td>
-            <td colspan="4" class="group-value">
+            <td colspan="2" class="group-value">
               {% for attribute in attribute_group.attribute %}{{ attribute.name }}{% if attribute.text %} - {{ attribute.text }}{% endif %}{% if not loop.last %}, {% endif %}{% endfor %}
             </td>
           </tr> 
@@ -214,9 +207,7 @@
 
     {# Reviews #}
     {% if review_status %}
-
       {% include 'helium/template/common/review_grid.twig' %}
-      {# {% include 'helium/template/product/review.twig' %} #}
     {% endif %}
   </article>
   {# Сопутствующие товары #}
