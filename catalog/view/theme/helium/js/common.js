@@ -222,34 +222,247 @@ document.addEventListener('click', function(e) {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const validateQuickCheckout = (el, ev) => {ajax('common/cart/getConfirmOrder', {el, ev})}
+const reviewModal 					= (el, ev) => {ajax(el.dataset.type+'/showReviewModal&entity_id=' + el.dataset.id, {ev})}
+const sendReview 						= (el, ev) => {ajax(el.dataset.type+'/sendReview&entity_id=' + el.dataset.id, {el, ev})}
+const wishlistModal 				= (el, ev) => {ajax('account/wishlist/showWishlistModal', {el,ev})}
+const wishlistAdd 					= (el, ev) => {ajax('account/wishlist/add', {el,ev})}
+const wishlistRemove 				= (el, ev) => {ajax('account/wishlist/remove', {el,ev})}
+const compareModal 					= (el, ev) => {ajax('product/compare/showCompareModal', {el,ev})}
+const compareAdd 						= (el, ev) => {ajax('product/compare/add', {el,ev})}
+const compareRemove 				= (el, ev) => {ajax('product/compare/remove', {el,ev}).then(r=>{compareModal()})}
+const contactsModal 				= (el, ev) => {ajax('information/contact/showContactsModal', {el,ev})}
+const cartRemove 	    			= (el, ev) => {ajax('checkout/cart/remove', {el,ev}).then(r=>{cartShowModal();setIcon(r.cart_count)})}
+const cartShowModal     		= (el, ev) => {ajax('common/cart/showCartModal', {el, ev}).then(r=>{quickCheckout(r)})}
+const login 								= (el, ev) => {ajax('checkout/login/save', {el, ev})}
+
+const cartAdd =  async (el, ev) => {
+	let options = document.querySelectorAll('input[name^="option"]:checked, select[name^="option"]');
+	let body = {
+		'product_id': el.dataset.product_id,
+		'quantity': parseInt(document.getElementById('input-quantity')?.value || el.dataset.minimum_qty || 1)
+	};
+	if (!!options && options.length > 0) {
+		[].forEach.call(options, o => {
+			body[o.name] = o.value;
+		})
+	}
+	ajax('checkout/cart/add', {body, el, ev}).then(r=>{
+		if ('success' in r) {
+			cartShowModal(el, ev);
+			setIcon(r.cart_count);
+		}
+	})
+}
+
+// // Checkout
+// function guestOrRegister(el, ev) {ajax('checkout/'+ document.querySelector('input[name="account"]:checked').value, {el, ev}).then(r=>{toggleZonesAndPostcode()})}
+// function fetchLoginForm()				{ajax('checkout/login/fetchLoginForm')}
+// function fetchGuestForm() 				{ajax('checkout/guest').then(r => {toggleZonesAndPostcode(); toggleAddressForm()})}
+// function fetchRegisterForm() 		{ajax('checkout/register').then(r => {toggleZonesAndPostcode(); toggleAddressForm()})}
+// function fetchPaymentAddress() 	{ajax('checkout/payment_address/fetchPaymentAddress').then(r => {toggleZonesAndPostcode(); toggleAddressForm()})}
+// function fetchShippingAddress() 	{ajax('checkout/shipping_address/fetchShippingAddress').then(r=>{toggleZonesAndPostcode(); toggleAddressForm()})}
+// function fetchShippingMethods() 	{ajax('checkout/shipping_method/fetchShippingMethods')}
+// function fetchPaymentMethods()		{ajax('checkout/payment_method/fetchPaymentMethods')}
+// function fetchConfirmOrder() 		{ajax('checkout/confirm/fetchConfirmOrder')}
+// function completeOrder(el) 			{ajax(el.dataset.confirm)}
+
+
+
+// try {
+// 	let response = await fetch('index.php?route=common/cart/displayCartModal', { method: "POST" });
+// 	let modalContent = await response.text();
+// 	let modalDiv = document.createElement('div');
+// 	modalDiv.innerHTML = modalContent;
+// 	let cart_dialog = dialog.create(modalDiv, ev);
+// 	quickCheckout(cart_dialog);
+// } catch (error) {
+// 	console.error(error);
+// }
+
+
+
+
+////////////////////
+// Quick Checkout //
+////////////////////
+
+const quickCheckout = (r) => {
+	// check if form present (i.e. on empty cart)
+	let form = r.querySelector('#js_quick_ckeckout');
+	if (!!form) {
+		toggleZonesAndPostcode();
+		form.addEventListener('change', (e) => {
+			if (e.target.name == 'shipping_method' || e.target.name == 'payment_method') {
+				// Save shipping and payment methods. They have separate logic in PHP
+				saveShippingPaymentMethod(e.target);
+			} else if(e.target.name === 'address_id') {
+				// Save existing address and collapse [new address form] if existing address is selected
+				if (e.target.value == "0") {
+					uncollapseElement(document.getElementById(e.target.dataset.collapseTarget))
+				} else {
+					collapseElement(document.getElementById(e.target.dataset.collapseTarget))
+				}
+				let body = {}
+				body[e.target.name] = e.target.value;
+				ajax('common/cart/fetchSaveExistingAddress', {body});
+				// console.log(body);
+			} else {
+				// Save new address or gues checkout
+				ajax('common/cart/fetchSaveQuickCheckoutfields', {form}).then(r => {
+					// Avoid self reloading of shipping and payment methods when they are updated
+					ajax('common/cart/fetchDisplayShippingHtml'); // Update shipping
+					ajax('common/cart/fetchDisplayPaymentHtml'); // Update payment
+				})
+			}
+		})
+	}
+}
+
+// TODO fix ajax(), so it can handle object instead of form data
+function saveShippingPaymentMethod(input) {
+	let body = {}
+	body[input.name] = input.value;
+	ajax('checkout/'+input.name+'/save', {body})
+	// const [m, v] = [input.name, input.value];
+	// let url = 'index.php?route=checkout/'+m+'/save';
+	// let data = new FormData;
+	// data.append(m, v);
+	// fetch(url, {method:"post", body: data});
+}
+
+// Hide address form if customer has registered addresses and selected one of them
+// Show address form otherwise
+// Uses collapseElement()
+// Uses uncollapseElement()
+function toggleAddressForm() {
+	// Registered customer fields, who has saved address
+	const existing_address = document.querySelectorAll('[name="address_id"]');
+	// Show or hide address form if there are existing addresses checked 
+	if (existing_address.length > 0) {
+		existing_address.forEach(ea => {
+			const new_address_form = document.getElementById(ea.dataset.collapseTarget);
+			// Collapse address form if checked "I want to add new address" option - when customer has no registered address
+			if (ea.value && ea.checked) {
+				collapseElement(new_address_form)
+			}
+			ea.addEventListener('change', () => {
+				if (ea.value) {
+					collapseElement(new_address_form);
+				} else {
+					uncollapseElement(new_address_form);
+				}
+			})
+		})
+	}
+	// return inputs elements to add event listeners in other functions
+	return existing_address;
+}
+	
+	// if (!!form) {
+	// 	// Save fields initially so payment and shipping can be displayed
+	// 	saveCheckoutfields(form).then(r =>{return r.ok}).then(r=>{
+	// 		if (r) {
+	// 			fetchShippingPayment();
+	// 		}
+	// 	});
+	// 	const formElements = Array.from(form.elements);
+	// 	formElements.forEach((input) => {
+	// 		if (input.name.includes('country') || input.name.includes('zone')) {
+	// 			// Observe country and zone select element immediate changes
+	// 			// So delivery and payment are updated instantly
+	// 			input.addEventListener('change', () => {
+	// 				saveCheckoutfields(form);
+	// 				fetchShippingPayment();
+	// 				// TODO use global function here
+	// 				getZones(country_select, zone_select);
+	// 				togglePostcode(country_select, postcode_input);
+	// 			});
+	// 		} else if (input.name.includes('shipping_method') || input.name.includes('payment_method')) {
+	// 			input.addEventListener('change', () => {
+	// 				saveShippingMethod(input);
+	// 			})
+	// 		} 
+	// 		// Text fields and other not involved in delivery and payment are updatetd on focusout
+	// 		// This fires anyway after user interaction
+	// 		input.addEventListener('focusout', ()=>{
+	// 			// Only save, do not fetchShippingPayment() here
+	// 			// because otherways if user clicks on delivery or payment after any field filled
+	// 			// this will cause reload delivery and payment inputs and will look like a glitch
+	// 			// forsing user to click one more time
+	// 			saveCheckoutfields(form);
+	// 		});
+	// 	});
+	// }
+// }
+
+
+
+
 // Country zones fetch
 // Toggle postcode input
 // DONE move to separate function
 function toggleZonesAndPostcode() {
-	const counrty_select 	= document.getElementsByName('country_id'),
-		  zone_select 		= document.getElementsByName('zone_id'),
-		  postcode_input 	= document.getElementsByName('postcode');
+	const counrty_select 	= document.querySelectorAll("[name*='country_id']"),
+		zone_select 				= document.querySelectorAll('[name*="zone_id"]'),
+		postcode_input 			= document.querySelectorAll('[name*="postcode"]');
+		// console.log(counrty_select, zone_select, postcode_input);
 	Array.from(counrty_select, c => {
 		Array.from(zone_select, z => {
-			// Get zones on initial page load
-			// getZones(c,z);
 			// Change zones on country select change
-			c.addEventListener('change', ()=>{
-				getZones(c,z);
-				Array.from(postcode_input, p =>{
+			c.addEventListener('change', () => {
+				getZones(c, z);
+				Array.from(postcode_input, p => {
+					console.log(p);
 					togglePostcode(c, p)
 				})
 			})
 		})
-		Array.from(postcode_input, p =>{
+		Array.from(postcode_input, p => {
 			togglePostcode(c, p)
 		})
 	});
 }
 
+// Show postode input if country requires postcode
+function togglePostcode(country_select, postcode_input) {
+	if (!!country_select && !!postcode_input) {
+		if (country_select.options[country_select.selectedIndex].dataset.postcodeRequired === '1') {
+			postcode_input.parentElement.classList.remove('hidden');
+			postcode_input.inert = false;
+		} else {
+			postcode_input.parentElement.classList.add('hidden');
+			postcode_input.inert = true;
+		}
+	}
+}
+
 const getZones = (country_select, zone_select) => {
 	if (!!country_select && !! zone_select) {
-		let zone_block = country_select.parentElement.nextElementSibling;
+		let zone_block = zone_select.parentElement;
 		fetch('index.php?route=checkout/checkout/country&country_id='+country_select.value,{method: "POST"})
 		.then((r) => {return r.text();})
 		.then((r) => {
@@ -263,10 +476,12 @@ const getZones = (country_select, zone_select) => {
 				zone_block.classList.remove('hidden');
 				// Create new zones
 				createZoneSelect(zone_select, country_data.zone);
-				zone_block.style.cssText = '';
+				zone_select.inert = false;
+				
 			} else {
 				// Else hide corresponding block
-				zone_block.style.cssText = 'display:none';
+				zone_block.classList.add('hidden');
+				zone_select.inert = true;
 			}
 		});
 		function createZoneSelect(zone_select, zones) {
@@ -275,280 +490,20 @@ const getZones = (country_select, zone_select) => {
 				if ('selected' in zones[z]) {
 					zone_select.value = zones[z].zone_id;
 				}
-				let o = createElm({
+				let option = createElm({
 					type: 'option',
 					attrs: {'value':zones[z].zone_id},
 					props: {'innerText':zones[z].name}
 				})
-				zone_select.insertAdjacentElement('afterbegin', o);
+				zone_select.insertAdjacentElement('afterbegin', option);
 			}
 		}
 	} else {
-		// console.log('Country select or zone select not present');
+		console.error('Country select or zone select not present');
 	}
 }
 
-// Show postode input if country requires postcode
-function togglePostcode(country_select, postcode_input) {
-	if (!!country_select && !!postcode_input) {
-		if (country_select.options[country_select.selectedIndex].dataset.postcodeRequired == '1') {
-			postcode_input.parentElement.style.cssText = '';
-			postcode_input.inert = false;
-		} else {
-			postcode_input.parentElement.style.cssText = 'display:none';
-			postcode_input.inert = true;
-		}
-	}
-}
 
-const quickCheckout = () =>{
-	// Quick checkout form elements
-	const form 			 		 = document.querySelector('#js_quick_ckeckout'),
-		  	country_select = document.querySelector('[name="shipping_address[country_id]"]'),
-		  	zone_select 	 = document.querySelector('[name="shipping_address[zone_id]"]'),
-		  	postcode_input = document.querySelector('[name="postcode"]');
-
-
-	if (!!country_select) {
-		// Show postcode if required
-		// TODO remove this, use global function
-		togglePostcode(country_select, postcode_input);
-		// Get zones of selected country and add them to zones select
-		getZones(country_select, zone_select);
-	}
-
-	// TODO Move saving existing address here instead of toggleAddressForm()
-	// TODO move fetchShippingPayment() here instead of toggleAddressForm()
-	let addresses_radio_select = toggleAddressForm();
-	[].forEach.call(addresses_radio_select, e =>{
-		e.addEventListener('change', () => {
-			// Save existing address
-			const b = new FormData;
-			b.append('address_id', e.value);
-			fetch('index.php?route=common/cart/fetchSaveExistingAddress', {method: "POST", body:b})
-			// Fetch shipping and payment as customer address may be in different zones, coutries with different shipping and payment methods
-			fetchShippingPayment(); 
-		})
-	})
-
-	
-	if (!!form) {
-		// Save fields initially so payment and shipping can be displayed
-		saveCheckoutfields(form).then(r =>{return r.ok}).then(r=>{
-			if (r) {
-				fetchShippingPayment();
-			}
-		});
-		const formElements = Array.from(form.elements);
-		formElements.forEach((input) => {
-			if (input.name.includes('country') || input.name.includes('zone')) {
-				// Observe country and zone select element immediate changes
-				// So delivery and payment are updated instantly
-				input.addEventListener('change', () => {
-					saveCheckoutfields(form);
-					fetchShippingPayment();
-					// TODO use global function here
-					getZones(country_select, zone_select);
-					togglePostcode(country_select, postcode_input);
-				});
-			} else if (input.name.includes('shipping_method') || input.name.includes('payment_method')) {
-				input.addEventListener('change', () => {
-					saveShippingMethod(input);
-				})
-			} 
-			// Text fields and other not involved in delivery and payment are updatetd on focusout
-			// This fires anyway after user interaction
-			input.addEventListener('focusout', ()=>{
-				// Only save, do not fetchShippingPayment() here
-				// because otherways if user clicks on delivery or payment after any field filled
-				// this will cause reload delivery and payment inputs and will look like a glitch
-				// forsing user to click one more time
-				saveCheckoutfields(form);
-			});
-		});
-	}
-}
-
-// Hide address form if customer has registered addresses and selected one of them
-// Show address form otherwise
-function toggleAddressForm() {
-	// Registered customer fields, who has saved address
-	const existing_address = document.querySelectorAll('[name="address_id"]');
-	// Show or hide address form if there are existing addresses checked 
-	if (existing_address.length > 0) {
-		existing_address.forEach(ea => {
-			const new_address_form = document.getElementById(ea.dataset.collapseTarget);
-			// Collapse address form if checked "I want to add new address" option - when customer has no registered address
-			if (ea.value && ea.checked) {
-				collapseElement(new_address_form)
-			}
-			ea.addEventListener('change', ()=> {
-				if (ea.value) {
-					collapseElement(new_address_form);
-				} else {
-					uncollapseElement(new_address_form)
-				}
-			})
-		})
-	}
-	// return inputs elements to add event listeners in other functions
-	return existing_address;
-}
-
-// Collapse element, add inert
-function collapseElement(e) {
-	// check if element was previously uncollapsed
-	// Needed to hide initialy collapsed element instantly on page load
-	if (e.unCollapsed) {
-		e.style.cssText = `height: ${e.scrollHeight}px; transition: height .5s;`;
-		e.unCollapsed = false;
-	}
-	e.style.cssText = 'height:0px; overflow:hidden; transition: height .5s;';
-	e.inert = true;
-}
-// Uncollapse element, remove inert
-function uncollapseElement(e) {
-	e.style.cssText = `height: ${e.scrollHeight}px; transition: height .5s; overflow:hidden;`;
-	e.inert = false;
-	// Remove inline styles after transition complete
-	// Needed when element changes it's dimensions for some reason - e.g. screen size change, content added bt XHR request etc.
-	setTimeout(() => {e.style.cssText = ""}, 500);
-	// Set e.unCollapsed property so element animates on user interaction but collapses instantly on inintial page load
-	e.unCollapsed = true;
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-function removeElementsByClass(className) {
-	const elements = document.getElementsByClassName(className);
-	while(elements.length > 0) {
-	  elements[0].parentNode.removeChild(elements[0]);
-	}
-}
-const fetchShippingPayment  = () 	     => {ajax('common/cart/fetchDisplayShippingHtml');ajax('common/cart/fetchDisplayPaymentHtml')}
-const validateQuickCheckout = (el, ev) => {ajax('common/cart/getConfirmOrder', {el, ev})}
-const reviewModal 					= (el, ev) => {ajax(el.dataset.type+'/showReviewModal&entity_id=' + el.dataset.id, {ev})}
-const sendReview 						= (el, ev) => {ajax(el.dataset.type+'/sendReview&entity_id=' + el.dataset.id, {el, ev})}
-const wishlistModal 				= (el, ev) => {ajax('account/wishlist/showWishlistModal', {el,ev})}
-const wishlistAdd 					= (el, ev) => {ajax('account/wishlist/add', {el,ev})}
-const wishlistRemove 				= (el, ev) => {ajax('account/wishlist/remove', {el,ev})}
-const compareModal 					= (el, ev) => {ajax('product/compare/showCompareModal', {el,ev})}
-const compareAdd 						= (el, ev) => {ajax('product/compare/add', {el,ev})}
-const compareRemove 				= (el, ev) => {ajax('product/compare/remove', {el,ev}).then(r=>{compareModal()})}
-const contactsModal 				= (el, ev) => {ajax('information/contact/showContactsModal', {el,ev})}
-const cartRemove 	    			= (el, ev) => {ajax('checkout/cart/remove', {el,ev}).then(r=>{cartShowModal();setIcon(r.cart_count)})}
-const cartShowModal     		= (el, ev) => {ajax('common/cart/showCartModal', {el, ev}).then(r=>{quickCheckout()})}
-const login 								= (el, ev) => {ajax('checkout/login/save', {el, ev})}
-const guestOrRegister 			= (el, ev) => {ajax('checkout/'+ document.querySelector('input[name="account"]:checked').value, {el, ev}).then(r=>{toggleZonesAndPostcode()})}
-// Save any form
-const saveForm 				= (el, ev) => {
-	ajax(el.dataset.url, {el, ev}).then(errors_present => {
-		toggleZonesAndPostcode(); 
-		if (!!errors_present && !!el.dataset.next) {
-			ajax(el.dataset.next);
-			toggleZonesAndPostcode();
-		}
-	})
-}
-// const getForm = (el, ev) => {
-
-	// }
-// Checkout
-function fetchLoginForm()				{ajax('checkout/login/fetchLoginForm')}
-function fetchGuestForm() 			{ajax('checkout/guest').then(r => {toggleZonesAndPostcode(); toggleAddressForm()})}
-function fetchRegisterForm() 		{ajax('checkout/register').then(r => {toggleZonesAndPostcode(); toggleAddressForm()})}
-function fetchPaymentAddress() 	{ajax('checkout/payment_address/fetchPaymentAddress').then(r => {toggleZonesAndPostcode(); toggleAddressForm()})}
-function fetchShippingAddress() {ajax('checkout/shipping_address/fetchShippingAddress').then(r=>{toggleZonesAndPostcode(); toggleAddressForm()})}
-function fetchShippingMethods() {ajax('checkout/shipping_method/fetchShippingMethods')}
-function fetchPaymentMethods()	{ajax('checkout/payment_method/fetchPaymentMethods')}
-function fetchConfirmOrder() 		{ajax('checkout/confirm/fetchConfirmOrder')}
-function completeOrder(el) 			{ajax(el.dataset.confirm)}
-// function toggleNewPaymentAddressForm() {
-// 	const new_address_form = document.getElementById('js-payment-new');
-// 	const form_controls = document.querySelectorAll('input[name="payment_address"]');
-// 	if (!!new_address_form && !!form_controls) {
-// 		[].forEach.call(form_controls, input => {
-// 			if (input.checked && input.value === "existing") {
-// 				new_address_form.inert = true;
-// 				console.log(new_address_form.scrollHeight);
-// 			}
-// 			input.addEventListener('change', () => {
-// 				console.log(input.value);
-// 				if (input.value == 'new' && !!new_address_form) {
-// 					new_address_form.classList.remove('hidden');
-// 					new_address_form.inert = false;
-// 				} else {
-// 					new_address_form.classList.add('hidden');
-// 					new_address_form.inert = true;
-// 				}
-// 			})
-// 		})
-// 	}
-// }
-
-
-// try {
-// 	let response = await fetch('index.php?route=common/cart/displayCartModal', { method: "POST" });
-// 	let modalContent = await response.text();
-// 	let modalDiv = document.createElement('div');
-// 	modalDiv.innerHTML = modalContent;
-// 	let cart_dialog = dialog.create(modalDiv, ev);
-// 	quickCheckout(cart_dialog);
-// } catch (error) {
-// 	console.error(error);
-// }
-const cartAdd =  async (el, ev) => {
-	let body = new FormData;
-	body.append('product_id', el.dataset.product_id);
-	body.append('quantity', (!!document.getElementById('input-quantity')) ? document.getElementById('input-quantity').value : el.dataset.minimum_qty || 1);
-	// Product options
-	const options_inputs = Array.from(document.querySelectorAll('input[name^="option"]:checked, select[name^="option"]'));
-	options_inputs.map(element => {
-		if (element.tagName === 'SELECT') {
-			body.append(element.name, element.options[element.selectedIndex].value);
-		} else {
-			body.append(element.name, element.value);
-		}
-	})
-	ajax('checkout/cart/add', {body, el, ev}).then(r=>{
-		if ('success' in r) {
-			cartShowModal(el, ev);
-			setIcon(r.cart_count);
-		}
-	})
-}
-function saveShippingMethod(input) {
-	const [m, v] = [input.name, input.value];
-	let url = 'index.php?route=checkout/'+m+'/save';
-	let data = new FormData;
-	data.append(m, v);
-	fetch(url, {method:"post", body: data});
-}
-
-const saveCheckoutfields = async (form) => {
-	try {
-		let data = new FormData(form);
-		let response = await fetch('index.php?route=common/cart/fetchSaveQuickCheckoutfields', { method: "POST", body: data });
-		return response;
-	} catch (error) {
-		console.error(error);
-	}
-}
 
 
 
@@ -564,6 +519,8 @@ const saveCheckoutfields = async (form) => {
 ///////////////////////////
 
 // Micro gallery
+// Uses createElm()
+// Uses dialog.create()
 function imageGallery () {
 	const src = [];
 	const images = {};
@@ -674,39 +631,54 @@ function animatePrice() {
 	}
 }
 
+
 // Set product count notification on favicon
-// Use CSS var in :root{} for backrgound
+// Uses CSS var in :root{} for backrgound
 function setIcon(productCount) {
+	// Theme primary color 
 	const bg = getComputedStyle(document.body).getPropertyValue('--color-1') || '#ff0000';
+	// Favicon link
 	const favicon = document.querySelector("link[rel~='icon']");
+	// End function, if favicon is not set
 	if (typeof(favicon) === 'undefined' || favicon == null || typeof(productCount) === 'undefined') {return}
-	faviconSize = 16;
+
+	// Create canvas element
 	let canvas = document.createElement('canvas');
+	const faviconSize = 16;
 	canvas.width = faviconSize;
 	canvas.height = faviconSize;
 	let context = canvas.getContext('2d');
+
+	// create bacground of canvas, that contains current favicon 
 	let img = document.createElement('img');
 	img.src = favicon.href;
+
 	img.onload = () => {
 		// Draw Original Favicon as Background
 		context.drawImage(img, 0, 0, faviconSize, faviconSize);
+
 		// Draw Notification Circle
 		context.beginPath();
 		context.arc(canvas.width - faviconSize / 3 , faviconSize / 3, faviconSize / 3, 0, 2*Math.PI);
+		// Set background - theme primary or simply red
 		context.fillStyle = bg;
 		context.fill();
+
 		// Draw Notification Number
 		context.font = '10px "helvetica", sans-serif';
 		context.textAlign = "center";
 		context.textBaseline = "middle";
 		context.fillStyle = '#FFFFFF';
+		// Set text content and aligment
 		context.fillText(productCount, canvas.width - faviconSize / 3, faviconSize / 3);
+
 		// Replace favicon
 		favicon.href = canvas.toDataURL('image/png');
 	}
 };
 
 // Micro slider with smooth animations and native touch
+// Uses createElm()
 function scrollslider() {
 	const containers_class = 'js_scroll';
 	[].forEach.call(document.getElementsByClassName(containers_class), c => {
@@ -727,11 +699,12 @@ function scrollslider() {
 				entry.target.classList.toggle('visible', entry.isIntersecting)
 			})
 		}
+
 		// Observe slides
 		[].forEach.call(c.children, s => {
 			observer.observe(s);
-			
 		});
+
 		// Scroll left
 		function scrollLeft() {
 			// clearInterval(timer);
@@ -750,6 +723,7 @@ function scrollslider() {
 				}
 			}
 		}
+
 		// Scroll right
 		function scrollRight() {
 			// clearInterval(timer);
@@ -774,48 +748,47 @@ function scrollslider() {
 			const button = createElm({
 				type: 'button',
 				attrs: {'class': 'scroll_' + b, 'aria-label':js_lang[b], 'title':js_lang[b]},
-				props: { innerHTML: '<i class="icon-chevron-' + b + '"></i>' },
-				// Add some events
+				props: {innerHTML: '<i class="icon-chevron-' + b + '"></i>'},
+				// Control buttons events
 				events: {
-					// Clicks
-					'click': () => { b === 'left' ? scrollLeft() : scrollRight() },
-					// Stop slider if controls are focused or hovered
-					'mouseenter': () => { clearInterval(timer) },
-					'focus': () => { clearInterval(timer) },
-					// Else start slider again
-					'mouseleave': () => { timer = setInterval(() => {scrollRight(); }, time); },
-					// 'blur': () => { timer = setInterval(() => {scrollRight(); }, time); },
+					'click': 			() => { b === 'left' ? scrollLeft() : scrollRight() }, 					// Clicks
+					'mouseenter': () => { clearInterval(timer) }, 																// Stop slider if controls are hovered
+					'focus': 			() => { clearInterval(timer) }, 																// Stop slider if controls are focused
+					'mouseleave': () => { timer = setInterval(() => {scrollRight(); }, time); }, 	// When mouse leaves, start slider again
 				}
 			});
 			c.insertAdjacentElement('beforebegin', button);
 		});
 
+		// Container events
 		// If container hovered, touched or focused - stop animation
 		['mouseenter', 'focus', 'touchstart'].forEach(e => {
 			c.addEventListener(e, () => {
 				clearInterval(timer);
 			}, {passive: true});
 		});
+		// Container children events
 		[].forEach.call(c.children, (s) =>{
 			s.addEventListener('focusin', () => {
 				// Scroll into view
 				clearInterval(timer);
-				// s.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+				// s.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); // Not needed because it glitches defualt browser behaviour
 			})
 		});
+
 		// If container is not hovered or focused - start animation
 		// No 'touchend' listener, because if user interacts with block, it's expected that block stays in same condition that it was left
 		['mouseleave', 'focusout'].forEach(f => {
 			c.addEventListener(f, () => {
-				// TODO: fix event listeners
+				// DONE: fix event listeners
 				// Check if container does not have focus inside - like click on button or screen reader focus
 				if (!c.matches(':focus-within')) {
-					clearInterval(timer);
+					clearInterval(timer); // If slider does not have focus - reset interval and slide normally
 					timer = setInterval(() => {
 						scrollRight();
 					}, time);
 				} else {
-					clearInterval(timer);
+					clearInterval(timer); // If slider is focused - stop sliding
 				}
 			});
 		})
@@ -823,6 +796,7 @@ function scrollslider() {
 }
 
 // countdown to discout date end
+// Uses createElm
 function countdown(element) {
 	// DONE add data-discount-date-end here
 	let products = element.querySelectorAll('[data-special-date-end], [data-discount-date-end]');
@@ -934,6 +908,7 @@ const correctTime = (el) => {
 // Next button shows child categories list
 // Prev button closes child and shows parent list  
 // DONE Add aria attributes to menu items
+// Uses createElm()
 function mainMenu() {
 	// DONE Set inert (unfocusable) for all elements except active
 	let main_menu = document.getElementById('main-menu');
@@ -986,7 +961,8 @@ function mainMenu() {
 
 // Creates accessible toast notifications
 // Notifications stack one under another
-// Announced by screen readers correctly
+// ARIA support - Announced by screen readers correctly
+// Uses createElm()
 let toast = {
 	'create': function(content, reason) {
 		// Create new modal window
@@ -1214,6 +1190,9 @@ class Accordion {
 // Live search
 // Shows product drid with pictures, highlights search query in product description
 // Adds countdown() if such products present
+// ARIA support
+// Uses createElm()
+// Uses countdown()
 let timeout = null;
 function searchFunction() {
 	clearTimeout(timeout);
@@ -1257,6 +1236,8 @@ function searchFunction() {
 // dialog.create(content, event)
 // @content - html string or JSON encoded html string
 // @event - optional, event to animate from click position 
+// Uses createElm()
+// Uses countdown()
 let dialog = {
 	create: (content, event) => {
 		dialog.close();
@@ -1330,6 +1311,9 @@ let dialog = {
 // Renders "Load more" button that requests next page on every pagination
 // DONE Fix so it works on every pagination, not only product list
 // TODO Ommit links usage, move all logic to PHP
+// Uses createElm()
+// Uses coutndown()
+// TODO: Focus on first product after load
 function loadMore() {
 	let pagination = document.querySelector('main ul.pagination');
 	if (!!pagination) {
@@ -1371,6 +1355,7 @@ function loadMore() {
 // add icon from data-icon,
 // button name copied from elements [data-block-name]
 // Maybe change .mobile-menu to [data-block-name] here and in CSS to keep code cleaner?
+// Uses createElm()
 function mobileMenu() {
 	// Blocks to be shown or hidden
 	let mb = document.getElementsByClassName('mobile_menu');
@@ -1467,14 +1452,41 @@ let masked_inputs = ['tel'];
 // 3. Count digits after brackets: XXX-XXXX. First group is XXX = {3}
 // 4. Count digits after brackets: XXX-XXXX. Second group is XXXX = {4}
 
-function phoneMask (phone, format) {
+function phoneMask(phone, format) {
+	return phone.replace(/\D/g, '')
+		.replace(/^(38)/, '')                   // 1. Pass country code here as variable
+		.replace(/^(\d)/, '($1')
+		.replace(/^(\(\d{3})(\d)/, '$1) $2') 	  // 2. Pass number of digits in brackets here. Like this {number_of_digits_in_brackets} instead of {3}
+		.replace(/(\d{3})(\d{1,5})/, '$1-$2') 	// 3. Pass first group here XXX = {3}
+		.replace(/(-\d{4})\d+?$/, '$1'); 				// 4. Pass first group here XXX = {4}
+}
 
-  	return phone.replace(/\D/g, '')
-	.replace(/^(38)/, '') // 1. Pass country code here as variable
-	.replace(/^(\d)/, '($1') 
-	.replace(/^(\(\d{3})(\d)/, '$1) $2') 	// 2. Pass number of digits in brackets here. Like this {number_of_digits_in_brackets} instead of {3}
-	.replace(/(\d{3})(\d{1,5})/, '$1-$2') 	// 3. Pass first group here XXX = {3}
-	.replace(/(-\d{4})\d+?$/, '$1'); 		// 4. Pass first group here XXX = {4}
+// Collapse element, add inert
+function collapseElement(e) {
+	// check if element was previously uncollapsed
+	// Needed to hide initialy collapsed element instantly on page load
+	if (e.unCollapsed) {
+		e.style.cssText = `height: ${e.scrollHeight}px; transition: height .5s;`;
+	}
+	e.unCollapsed = false;
+	// CSS animated collapse
+
+	setTimeout(() => {
+		e.style.cssText = 'height:0px; overflow:hidden; transition: height .5s;';
+	}, 10);
+	e.inert = true;
+}
+
+// Uncollapse element, remove inert
+function uncollapseElement(e) {
+	// CSS animated uncollapse
+	e.style.cssText = `height: ${e.scrollHeight}px; transition: height .5s; overflow:hidden;`;
+	e.inert = false;
+	// Remove inline styles after transition complete
+	// Needed when element changes it's dimensions for some reason - e.g. screen size change, content added bt XHR request etc.
+	setTimeout(() => {e.style.cssText = ""}, 500);
+	// Set e.unCollapsed property so element animates on user interaction but collapses instantly on inintial page load
+	e.unCollapsed = true;
 }
 
 // // Scroll horizontal scrolling containers by mouse wheel
@@ -1581,23 +1593,36 @@ function createElm({type, styles, attrs, props, events, nest}) {
 // TODO replace const with function
 const ajax = async (url, s) => {
 	let method = "POST", body, headers, settings = s || {}, el, ev;
+	
 
+	// If submitted data in element's dataset
 	if (!!settings.el && !!settings.el.dataset) {
 		el = settings.el;
 		url = el.dataset.url || el.action || url;
+		// If element dataset entry not equals 'action', 'form' or 'url' - append them to POSTed data
 		if (Object.values(el.dataset).some(k => k !== 'action' || k !== 'form' || k !== 'url')) {
 			body = new FormData;
+			// Append all submitable data to body
 			for (key in el.dataset) {
 				if (key !=='form' || key !== 'action' || key !== 'url') {
 					body.append(key, el.dataset[key])
 				}
 			}
 		}
+		// If element relates to some form in dataset
 		if ('form' in el.dataset) {
 			body = new FormData(document.getElementById(el.dataset.form))
 		}
 	}
-	if ('body' in settings) {body = settings.body}
+
+	if ('body' in settings) {
+		body = new FormData();
+		for (key in settings.body) {
+			body.append(key, settings.body[key])
+		}
+		console.log(body);
+	}
+	if ('form' in settings) {body = new FormData(settings.form)}
 	if ('ev' in settings) {ev = settings.ev}
 
 	return await fetch('index.php?route='+url, {method, body}).then(r=> {return r.json()}).then(r=> {
@@ -1612,7 +1637,7 @@ const ajax = async (url, s) => {
 		/////////////////////////////
 
 
-		if ('dialog' in r) {dialog.create(r.dialog, ev)}
+		
 		if ('toasts' in r) {for (c in r.toasts) {for (t in r.toasts[c]) {toast.create(r.toasts[c][t], c)}}}
 		// if ('error' in r) {return handleErrors(r, document)}
 		if (handleErrors(r, document)) {
@@ -1677,11 +1702,12 @@ const ajax = async (url, s) => {
 				}
 			}
 		}
+		if ('dialog' in r) {return dialog.create(r.dialog, ev)}
 		return r
 	})
 }
 // List of functions
-// event: function
+// {event: function}
 const actions = {
 	click: {
 		sendReview,
@@ -1698,17 +1724,11 @@ const actions = {
 		contactsModal,
 		validateQuickCheckout,
 		login,
-		saveForm,
-		guestOrRegister,
-		completeOrder
 	},
 	input: {
 		searchFunction,
 		correctTime,
 	},
-	change: {
-		saveShippingMethod
-	}
 };
 // Add event listener to document
 Object.keys(actions).forEach(key => document.addEventListener(key, handleEvents, {passive: true}));
@@ -1730,10 +1750,17 @@ function handleEvents(evt) {
 // @form_with_errors - DOM element of form to be highlighted
 function handleErrors(result, form_with_errors) {
 	// Remove previous error messages
-	removeElementsByClass('text-danger');
+	// removeElementsByClass('text-danger');
+	let alerts = document.getElementsByClassName('text-danger');
+	while (alerts.length > 0) {
+		alerts[0].parentNode.removeChild(alerts[0])
+	}
+
+	// Remove error classes from parent elements
 	[].forEach.call(document.querySelectorAll('.has-error'), function (el) {
 		el.classList.remove('has-error');
 	});
+
 	// Remove ARIA attributes for previous errors
 	[].forEach.call(document.querySelectorAll('[aria-invalid="true"]'), function (el) {
 		el.removeAttribute('aria-invalid');
@@ -1753,10 +1780,11 @@ function handleErrors(result, form_with_errors) {
 				if (error_inputs.length > 0) {
 					error_inputs.forEach(error_input => {
 
-						// Set ARIA ittributes to invalid fields
-						error_input.setAttribute('aria-invalid', true);
-						error_input.setAttribute('aria-errormessage', 'error_label_' + i);
+						// Set ARIA attributes to invalid fields
+						error_input.setAttribute('aria-invalid', true); // Announce invalid inputs to screen reader
+						error_input.setAttribute('aria-errormessage', 'error_label_' + i); // Speak error message attached to faulty input
 						let error_input_group = error_input.closest('.form-group, .form-control');
+						
 						if (error_input_group.classList.contains('form-control')) {
 							error_input_group = error_input_group.parentElement;
 						}
@@ -1779,4 +1807,10 @@ function handleErrors(result, form_with_errors) {
 	}
 	// Return false if no errors occured
 	return false;
+}
+function removeElementsByClass(className) {
+	const elements = document.getElementsByClassName(className);
+	while(elements.length > 0) {
+	  elements[0].parentNode.removeChild(elements[0]);
+	}
 }
