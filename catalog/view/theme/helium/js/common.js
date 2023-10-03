@@ -436,7 +436,6 @@ function toggleZonesAndPostcode() {
 			c.addEventListener('change', () => {
 				getZones(c, z);
 				Array.from(postcode_input, p => {
-					console.log(p);
 					togglePostcode(c, p)
 				})
 			})
@@ -460,47 +459,34 @@ function togglePostcode(country_select, postcode_input) {
 	}
 }
 
+// Get country zones and create <option value="1">Zone name</option> under counrty zones select
+// Hide zones block if country has no zones, add ARIA attributes
 const getZones = (country_select, zone_select) => {
-	if (!!country_select && !! zone_select) {
-		let zone_block = zone_select.parentElement;
-		fetch('index.php?route=checkout/checkout/country&country_id='+country_select.value,{method: "POST"})
-		.then((r) => {return r.text();})
-		.then((r) => {
-			// Remove old zones
-			while (zone_select.firstElementChild) {
-				zone_select.removeChild(zone_select.lastElementChild)
-			}
-			country_data = JSON.parse(r);
-			// If country needs zones
-			if ('zone' in country_data) {
-				zone_block.classList.remove('hidden');
-				// Create new zones
-				createZoneSelect(zone_select, country_data.zone);
-				zone_select.inert = false;
-				
-			} else {
-				// Else hide corresponding block
-				zone_block.classList.add('hidden');
-				zone_select.inert = true;
-			}
-		});
-		function createZoneSelect(zone_select, zones) {
-			for (z in zones) {
-				// Set selected zone
-				if ('selected' in zones[z]) {
-					zone_select.value = zones[z].zone_id;
-				}
-				let option = createElm({
-					type: 'option',
-					attrs: {'value':zones[z].zone_id},
-					props: {'innerText':zones[z].name}
-				})
-				zone_select.insertAdjacentElement('afterbegin', option);
-			}
+	ajax('common/cart/fetchCountryZones', {body: {'country_id':country_select.value}}).then(r => {
+		// If no zones in this country hide select
+		if (Object.keys(r).length === 0) {
+			zone_select.inert = true;
+			zone_select.parentElement.classList.add('hidden');
+		} else {
+			zone_select.inert = false;
+			zone_select.parentElement.classList.remove('hidden');
 		}
-	} else {
-		console.error('Country select or zone select not present');
-	}
+
+		// Clear previous zones
+		while (zone_select.firstElementChild) {
+			zone_select.removeChild(zone_select.lastElementChild)
+		}
+
+		// Create new options
+		for (zone in r) {
+			let zone_option = createElm({
+				type: 'option', 
+				attrs: {'value': r[zone].zone_id},
+				props: {'innerText': r[zone].name}
+			});
+			zone_select.insertAdjacentElement('afterbegin', zone_option);
+		}
+	})
 }
 
 
@@ -1620,7 +1606,6 @@ const ajax = async (url, s) => {
 		for (key in settings.body) {
 			body.append(key, settings.body[key])
 		}
-		console.log(body);
 	}
 	if ('form' in settings) {body = new FormData(settings.form)}
 	if ('ev' in settings) {ev = settings.ev}
@@ -1749,25 +1734,25 @@ function handleEvents(evt) {
 // @result - the result of fetch request
 // @form_with_errors - DOM element of form to be highlighted
 function handleErrors(result, form_with_errors) {
+	if (!('error' in result)) {return false;}
+	
 	// Remove previous error messages
-	// removeElementsByClass('text-danger');
 	let alerts = document.getElementsByClassName('text-danger');
 	while (alerts.length > 0) {
 		alerts[0].parentNode.removeChild(alerts[0])
 	}
 
 	// Remove error classes from parent elements
-	[].forEach.call(document.querySelectorAll('.has-error'), function (el) {
+	[].forEach.call(document.querySelectorAll('.has-error'), el => {
 		el.classList.remove('has-error');
 	});
 
-	// Remove ARIA attributes for previous errors
-	[].forEach.call(document.querySelectorAll('[aria-invalid="true"]'), function (el) {
-		el.removeAttribute('aria-invalid');
+	// Remove ARIA invalid attributes from inputs
+	[].forEach.call(document.querySelectorAll('[aria-invalid="true"], [aria-errormessage]'), el => {
+		el.removeAttribute('aria-invalid'); // Says that input is incorrect
+		el.removeAttribute('aria-errormessage'); // Points to <span> with error message
 	});
-	[].forEach.call(document.querySelectorAll('[aria-errormessage]'), function (el) {
-		el.removeAttribute('aria-errormessage');
-	});
+
 
 	if ('error' in result) {
 		let errors_object = result.error;
@@ -1780,22 +1765,22 @@ function handleErrors(result, form_with_errors) {
 				if (error_inputs.length > 0) {
 					error_inputs.forEach(error_input => {
 
-						// Set ARIA attributes to invalid fields
-						error_input.setAttribute('aria-invalid', true); // Announce invalid inputs to screen reader
-						error_input.setAttribute('aria-errormessage', 'error_label_' + i); // Speak error message attached to faulty input
-						let error_input_group = error_input.closest('.form-group, .form-control');
+					// Set ARIA attributes to invalid fields
+					error_input.setAttribute('aria-invalid', true); // Announce invalid inputs to screen reader
+					error_input.setAttribute('aria-errormessage', 'error_label_' + i); // Speak error message attached to faulty input
+					let error_input_group = error_input.closest('.form-group, .form-control');
 						
-						if (error_input_group.classList.contains('form-control')) {
-							error_input_group = error_input_group.parentElement;
-						}
-						if (error_input_group) {
-							error_input_group.classList.add('has-error');
-							error_input_group.insertAdjacentHTML('beforeend','<span role="alert" id="error_label_' + i + '" class="text-danger">' + errors_object[i] + '</span>')
-						} else {
-							// If no input found, but error occured
-							// Create toast notification with error
-							toast.create(errors_object[i], 'success');
-						}
+					if (error_input_group.classList.contains('form-control')) {
+						error_input_group = error_input_group.parentElement;
+					}
+					if (error_input_group) {
+						error_input_group.classList.add('has-error');
+						error_input_group.insertAdjacentHTML('beforeend','<span role="alert" id="error_label_' + i + '" class="text-danger">' + errors_object[i] + '</span>')
+					} else {
+						// If no input found, but error occured
+						// Create toast notification with error
+						toast.create(errors_object[i], 'success');
+					}
 					})
 				} else {
 					console.log('input not found:', 'input name=' + i);
@@ -1807,10 +1792,4 @@ function handleErrors(result, form_with_errors) {
 	}
 	// Return false if no errors occured
 	return false;
-}
-function removeElementsByClass(className) {
-	const elements = document.getElementsByClassName(className);
-	while(elements.length > 0) {
-	  elements[0].parentNode.removeChild(elements[0]);
-	}
 }
