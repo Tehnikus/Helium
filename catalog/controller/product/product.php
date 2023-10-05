@@ -411,22 +411,22 @@ class ControllerProductProduct extends Controller {
 	}
 
 	public function sendReview() {
-		$this->load->language('product/product');
+		$this->load->language('common/errors');
 
 		$json = array();
 
 		if (isset($this->request->get['entity_id']) && $this->request->get['entity_id']) {
 			if ($this->request->server['REQUEST_METHOD'] == 'POST') {
 				if (!isset($this->request->post['name']) || (utf8_strlen($this->request->post['name']) < 3) || (utf8_strlen($this->request->post['name']) > 25)) {
-					$json['error']['name'] = $this->language->get('error_name');
+					$json['error']['name'] = $this->language->get('error_firstname');
 				}
 
 				if (!isset($this->request->post['text']) || (utf8_strlen($this->request->post['text']) < 25) || (utf8_strlen($this->request->post['text']) > 1000)) {
-					$json['error']['text'] = $this->language->get('error_text');
+					$json['error']['text'] = $this->language->get('error_review_text');
 				}
 
 				if (!isset($this->request->post['rating']) || empty($this->request->post['rating']) || $this->request->post['rating'] < 0 || $this->request->post['rating'] > 5) {
-					$json['error']['rating'] = $this->language->get('error_rating');
+					$json['error']['rating'] = $this->language->get('error_review_rating');
 				}
 
 				// Captcha
@@ -443,7 +443,7 @@ class ControllerProductProduct extends Controller {
 
 					$this->model_catalog_review->addReview($this->request->get['entity_id'], $this->request->post);
 
-					$json['dialog'] = $this->language->get('text_success');
+					$json['dialog'] = $this->language->get('text_success_reviews');
 				}
 			}
 		} else {

@@ -388,21 +388,21 @@ class ControllerBlogArticle extends Controller {
 	}
 	
 	public function sendReview() {
-		$this->load->language('blog/article');
+		$this->load->language('common/errors');
 
 		$json = [];
 
 		if ($this->request->server['REQUEST_METHOD'] == 'POST') {
 			if ((utf8_strlen($this->request->post['name']) < 3) || (utf8_strlen($this->request->post['name']) > 25)) {
-				$json['error']['name'] = $this->language->get('error_name');
+				$json['error']['name'] = $this->language->get('error_firstname');
 			}
 
 			if ((utf8_strlen($this->request->post['text']) < 25) || (utf8_strlen($this->request->post['text']) > 1000)) {
-				$json['error']['text'] = $this->language->get('error_text');
+				$json['error']['text'] = $this->language->get('error_review_text');
 			}
 
 			if (empty($this->request->post['rating']) || $this->request->post['rating'] < 0 || $this->request->post['rating'] > 5) {
-				$json['error']['rating'] = $this->language->get('error_rating');
+				$json['error']['rating'] = $this->language->get('error_review_rating');
 			}
 
 			// Captcha
@@ -419,7 +419,7 @@ class ControllerBlogArticle extends Controller {
 
 				$this->model_blog_review->addReview($this->request->get['entity_id'], $this->request->post);
 
-				$json['dialog'] = $this->language->get('text_success');
+				$json['dialog'] = $this->language->get('text_success_reviews');
 			}
 		}
 

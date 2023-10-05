@@ -12,7 +12,7 @@ class ControllerCheckoutShippingAddress extends Controller {
 	public function save() {
 		// $this->load->language('checkout/checkout');
 		$this->load->model('account/custom_field');
-		$this->load->language('checkout/checkout_errors');
+		$this->load->language('common/errors');
 		
 		$json = array();
 

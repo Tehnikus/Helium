@@ -9,7 +9,7 @@ class ControllerCheckoutRegister extends Controller {
 
 	public function save() {
 		// $this->load->language('checkout/checkout');
-		$this->load->language('checkout/checkout_errors');
+		$this->load->language('common/errors');
 
 		$json = array();
 
@@ -171,9 +171,9 @@ class ControllerCheckoutRegister extends Controller {
 
 				if (!empty($this->request->post['shipping_address'])) {
 					$this->session->data['shipping_address'] = $this->model_account_address->getAddress($this->customer->getAddressId());
-					$json['function'][] = 'fetchShippingAddress()';
+					// $json['function'][] = 'fetchShippingAddress()';
 				} else {
-					$json['function'][] = 'fetchShippingMethods()';
+					// $json['function'][] = 'fetchShippingMethods()';
 				}
 			} else {
 				$json['redirect'] = $this->url->link('account/success');

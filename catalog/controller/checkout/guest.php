@@ -9,7 +9,7 @@ class ControllerCheckoutGuest extends Controller {
 
 	public function save() {
 		// $this->load->language('checkout/checkout');
-		$this->load->language('checkout/checkout_errors');
+		$this->load->language('common/errors');
 
 		$json = array();
 
@@ -170,11 +170,11 @@ class ControllerCheckoutGuest extends Controller {
 			if (!empty($this->request->post['shipping_address'])) {
 				$this->session->data['guest']['shipping_address'] = $this->request->post['shipping_address'];
 				// call delivery methods form
-				$json['function'][] = 'fetchShippingMethods()';
+				// $json['function'][] = 'fetchShippingMethods()';
 			} else {
 				$this->session->data['guest']['shipping_address'] = false;
 				// call shipping address form
-				$json['function'][] = 'fetchShippingAddress()';
+				// $json['function'][] = 'fetchShippingAddress()';
 			}
 
 			if ($this->session->data['guest']['shipping_address']) {

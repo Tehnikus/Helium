@@ -55,7 +55,7 @@ class ControllerCheckoutPaymentAddress extends Controller {
 
 	public function save() {
 		// $this->load->language('checkout/checkout');
-		$this->load->language('checkout/checkout_errors');
+		$this->load->language('common/errors');
 		$this->load->model('account/custom_field');
 
 		$json = array();

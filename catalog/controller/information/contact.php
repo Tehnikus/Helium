@@ -3,6 +3,8 @@ class ControllerInformationContact extends Controller {
 	private $error = array();
 
 	public function index() {
+
+		print_r($this->error);
 		$this->load->language('information/contact');
 
 		$this->document->setTitle($this->language->get('heading_title'));
@@ -19,8 +21,8 @@ class ControllerInformationContact extends Controller {
 			$mail->setTo($this->config->get('config_email'));
 			$mail->setFrom($this->request->post['email']);
 			$mail->setReplyTo($this->request->post['email']);
-			$mail->setSender(html_entity_decode($this->request->post['name'], ENT_QUOTES, 'UTF-8'));
-			$mail->setSubject(html_entity_decode(sprintf($this->language->get('email_subject'), $this->request->post['name'] . ' (' . $this->request->post['email'] . ')'), ENT_QUOTES, 'UTF-8'));
+			$mail->setSender(html_entity_decode($this->request->post['firstname'], ENT_QUOTES, 'UTF-8'));
+			$mail->setSubject(html_entity_decode(sprintf($this->language->get('email_subject'), $this->request->post['firstname'] . ' (' . $this->request->post['email'] . ')'), ENT_QUOTES, 'UTF-8'));
 			$mail->setText($this->request->post['enquiry']);
 			$mail->send();
 
@@ -39,10 +41,10 @@ class ControllerInformationContact extends Controller {
 			'href' => $this->url->link('information/contact')
 		);
 
-		if (isset($this->error['name'])) {
-			$data['error_name'] = $this->error['name'];
+		if (isset($this->error['error_firstname']) && !empty($this->error['error_firstname'])) {
+			$data['error_firstname'] = $this->error['error_firstname'];
 		} else {
-			$data['error_name'] = '';
+			$data['error_firstname'] = '';
 		}
 
 		if (isset($this->error['email'])) {
@@ -63,10 +65,10 @@ class ControllerInformationContact extends Controller {
 
 		$this->getContacts($data);
 
-		if (isset($this->request->post['name'])) {
-			$data['name'] = $this->request->post['name'];
+		if (isset($this->request->post['firstname'])) {
+			$data['firstname'] = $this->request->post['firstname'];
 		} else {
-			$data['name'] = $this->customer->getFirstName();
+			$data['firstname'] = $this->customer->getFirstName();
 		}
 
 		if (isset($this->request->post['email'])) {
@@ -99,8 +101,10 @@ class ControllerInformationContact extends Controller {
 	}
 
 	protected function validate() {
-		if ((utf8_strlen($this->request->post['name']) < 3) || (utf8_strlen($this->request->post['name']) > 32)) {
-			$this->error['name'] = $this->language->get('error_name');
+		$this->load->language('common/errors');
+		
+		if ((utf8_strlen($this->request->post['firstname']) < 3) || (utf8_strlen($this->request->post['firstname']) > 32)) {
+			$this->error['error_firstname'] = $this->language->get('error_firstname');
 		}
 
 		if (!filter_var($this->request->post['email'], FILTER_VALIDATE_EMAIL)) {
@@ -140,7 +144,7 @@ class ControllerInformationContact extends Controller {
 			'href' => $this->url->link('information/contact')
 		);
 
- 		$data['text_message'] = $this->language->get('text_message'); 
+ 		$data['text_message'] = $this->language->get('text_success'); 
 
 		$data['continue'] = $this->url->link('common/home');
 
@@ -154,8 +158,7 @@ class ControllerInformationContact extends Controller {
 		$this->response->setOutput($this->load->view('common/success', $data));
 	}
 
-	public function showContactsModal()
-	{
+	public function showContactsModal()	{
 
 		$response = [];
 		$response['dialog'] = $this->load->view('information/contact_grid', $this->getContacts());
@@ -164,8 +167,7 @@ class ControllerInformationContact extends Controller {
 		
 	}
 
-	public function getContacts(&$data = null)
-	{
+	public function getContacts(&$data = null) {
 		if ($data === null) {
 			$data = [];
 		}
