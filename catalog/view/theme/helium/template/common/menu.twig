@@ -1,31 +1,29 @@
 {% if categories %}
-  <div class="relative hidden-md">
+  <div class="relative">
     <button 
       type="button"
       id="main-menu-trigger"
-      class="primary main-menu-trigger"
+      class="primary main-menu-trigger hidden-md"
       role="button"
       aria-haspopup="menu"
       aria-label="{{ text_category }}"
       data-accordion-target="main-menu"
     >
       <div class="icon menu-icon">
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
+        <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
       </div>
       <span class="hidden-md">
         {{ text_category }}
       </span>
     </button>
-
-    <div aria-label="{{ text_category }}" data-accordion="main-menu" id="main-menu" class="menu">
+    <div 
+      id="main-menu" 
+      class="menu mobile_menu" 
+      aria-label="{{ text_category }}" 
+      data-accordion="main-menu"
+      data-block-name="{{ text_menu_settings }}" 
+      data-icon="icon-cart" 
+      data-order="0">
       {% for parent, category in categories %}
         <ul role="menu" data-parent="{{ parent }}">
           {% for child in category %}
@@ -39,6 +37,7 @@
     </div>
   </div>
 {% endif %}
+
 
 {# Build recursive nested list #}
 {# Leave this for now #}
