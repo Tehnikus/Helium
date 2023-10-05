@@ -342,16 +342,11 @@ const quickCheckout = (r) => {
 	}
 }
 
-// TODO fix ajax(), so it can handle object instead of form data
+
 function saveShippingPaymentMethod(input) {
 	let body = {}
 	body[input.name] = input.value;
 	ajax('checkout/'+input.name+'/save', {body})
-	// const [m, v] = [input.name, input.value];
-	// let url = 'index.php?route=checkout/'+m+'/save';
-	// let data = new FormData;
-	// data.append(m, v);
-	// fetch(url, {method:"post", body: data});
 }
 
 // Hide address form if customer has registered addresses and selected one of them
@@ -913,7 +908,7 @@ function mainMenu() {
 				c.parentElement.inert = true;
 				// c.setAttribute('tabindex', '-1');
 				child_ul.setAttribute('aria-expanded', true);
-				
+				// 
 				setTimeout(() => {
 					child_ul.firstChild.focus();
 				}, 250);
@@ -935,10 +930,10 @@ function mainMenu() {
 				p.inert = true;
 				parent_menu.parentElement.inert = false;
 				p.setAttribute('aria-expanded', false);
+				
 				setTimeout(() => {
 					parent_menu.querySelector('a').focus();
 				}, 250);
-
 			}}
 		});
 		p.insertAdjacentElement('afterbegin', button_back);
@@ -1344,13 +1339,13 @@ function loadMore() {
 // Uses createElm()
 function mobileMenu() {
 	// Blocks to be shown or hidden
-	let mb = document.getElementsByClassName('mobile_menu');
+	let mobile_blocks = document.getElementsByClassName('mobile_menu');
 	// Corresponding buttons
 	let btns = {};
-	if (!!mb && mb.length > 0) {
-		for (var k = 0; k < mb.length; k++) {
+	if (!!mobile_blocks && mobile_blocks.length > 0) {
+		for (var k = 0; k < mobile_blocks.length; k++) {
 			// Create button for each block found
-			let b = mb[k]; // Block itself
+			let b = mobile_blocks[k]; // Block itself
 			// New button for mobile menu
 			let btn = {
 				type: 'button',
@@ -1359,7 +1354,7 @@ function mobileMenu() {
 				events:{
 					'click': function(e) {
 						// close other blocks when current is opened
-						for (a of mb) {
+						for (a of mobile_blocks) {
 							if (a !== b) {
 								a.classList.remove('open');
 							}
@@ -1374,22 +1369,23 @@ function mobileMenu() {
 						}
 						// Open current block
 						b.classList.toggle('open');
+						b.inert = false
 					}
 				},
 			};
 			// Put button in array according to dataset.order
-			btns[mb[k].dataset.order] = btn;
+			btns[mobile_blocks[k].dataset.order] = btn;
 		}
-		// Catalog button
-		// Shows main menu with categories etc.
-		let catalog_btn  = {
-			type: 'button',
-			attrs: {'class':'mobile_button button', 'aria-label':js_lang.text_menu_button, 'data-action':'toggleMainMenu'},
-			props: {
-				'innerHTML':'<i class="icon-cart"></i><span>'+js_lang.text_menu_button+'</span>',
-				'dataset' : {'accordionTarget':'main-menu'}
-			},
-		};
+		// // Catalog button
+		// // Shows main menu with categories etc.
+		// let catalog_btn  = {
+		// 	type: 'button',
+		// 	attrs: {'class':'mobile_button button', 'aria-label':js_lang.text_menu_button, 'data-action':'toggleMainMenu'},
+		// 	props: {
+		// 		'innerHTML':'<i class="icon-cart"></i><span>'+js_lang.text_menu_button+'</span>',
+		// 		'dataset' : {'accordionTarget':'main-menu'}
+		// 	},
+		// };
 		// Cart button
 		// Shows cart dialog window
 		let cart_btn  = {
@@ -1405,7 +1401,7 @@ function mobileMenu() {
 			}
 		};
 		// Insert most important buttons the last, so they are always at the right side of mobile menu 
-		btns[9] = catalog_btn;
+		// btns[9] = catalog_btn;
 		btns[10] = cart_btn;
 		let menu = {
 			attrs: {'class': 'mobile_buttons scroll-x'},
@@ -1577,6 +1573,7 @@ function createElm({type, styles, attrs, props, events, nest}) {
 
 // TODO Add try-catch
 // TODO replace const with function
+// DONE fix ajax(), so it can handle object instead of form data
 const ajax = async (url, s) => {
 	let method = "POST", body, headers, settings = s || {}, el, ev;
 	
