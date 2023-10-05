@@ -121,7 +121,7 @@ body {
     mix-blend-mode: plus-lighter;
 }
 
-.hidden-md, .hidden {display: none!important}
+.hidden {display: none!important}
 ::selection {background-color: var(--color-1); color: #fff;}
 /* Responsive images and videos */
 img,video,iframe[src*="youtube"] {max-width: 100%;height: auto}
@@ -317,7 +317,7 @@ label {cursor:pointer;user-select: none;-webkit-user-select: none;-moz-user-sele
 }
 .form-group input, .form-group select {flex: 1}
 
-.has-error {background: rgb(192 77 1 / 4%);border-radius: var(--radius);padding: .5rem; box-shadow: inset 0 0 0 2px var(--danger); transition: all var(--time);}
+.has-error {background: rgb(192 77 1 / 4%);border-radius: var(--radius);padding: .5rem;box-shadow: inset 0 0 0 2px var(--danger);transition: all var(--time);margin: 0 0 .5rem 0;}
 
 /* Focusable elements */
 a:focus, button:focus, .button:focus, summary:focus, dialog:focus, input:focus, select:focus, textarea:focus, div:focus, article:focus {
@@ -520,6 +520,7 @@ nav, hgroup {
     position: relative;
     align-items: center;
 }
+.pull-right {justify-content: end;}
 /* Title of product page */
 hgroup {flex-wrap: wrap}
 hgroup > * {
@@ -576,7 +577,7 @@ fieldset>input, fieldset>select {
 
 /* Headers */
 .uppercase, hgroup, .module .h3 {text-transform: uppercase}
-.relative, .module {position:relative}
+.relative, .module {position:relative;}
 
 
 h1,h2,h3,h4,h5,h6,
@@ -610,7 +611,7 @@ h1,h2,h3,h4,h5,h6,th {color:var(--color-text-bright);font-weight:600}
     position: absolute;
     top: 100%;
     overflow: hidden;
-    z-index: 1;
+    z-index: 3;
     height: 0;
     padding: 0;
 }
@@ -678,37 +679,28 @@ tr[id^='product_id_'] {position: relative;}
 tr[id^='product_id_'] button.close {background: transparent;box-shadow: none;}
 
 
-/* Main menu */
-#main-menu .menu {position: relative;overflow: hidden;height: 50vh;scrollbar-gutter: auto;background: #fff;box-shadow: var(--blocks-shadow);border-radius: var(--radius)}
-#main-menu ul {transition: var(--style) var(--time);background: #fff;margin: 0;/* padding: .2rem; */overflow-y: auto;height: 50vh}
-#main-menu li {list-style-type: none;margin: .1rem 0;padding: 0;display: grid;grid-template-columns: 300px 40px 40px;align-items: center;grid-template-rows: 50px}
-#main-menu a {padding: .5rem}
-#main-menu ul:not([data-parent="0"]) {position: absolute;top: 0;left: 0;transform: translateX(110%)}
-#main-menu ul:not([data-parent="0"]).open {transform: translateX(0)}
-/* Main menu - Forward button */
-#main-menu button.menu-forward:after {content: "\2BC8"}/* main menu - back button */
-#main-menu button.menu-back:before {content: "\2BC7"}
+
 /* Menu - product count */
 span.product_count {min-width: 24px;  height: 24px;  text-align: center;  border-radius: 5px;  color: var(--bg-main-blocks);  background: var(--gardient);  margin: 0 5px;  padding: 0 3px; line-height: 25px}
 /* Animated main menu icon */
 .menu-icon {width:21px;height:21px;position:relative;transition:.5s;display:inline-block;margin:0 10px}
-.menu-icon span {width:5px;height:5px;background-color:#fff;display:block;border-radius:50%;position:absolute}
-.dropdown-toggle:hover .menu-icon span {transform:scale(0.9);box-shadow:0 0 0 1px #333}
+.menu-icon i {width:5px;height:5px;background-color:#fff;display:block;border-radius:50%;position:absolute}
+.dropdown-toggle:hover .menu-icon i {transform:scale(0.9);box-shadow:0 0 0 1px #333}
 .menu-icon.open {transform:rotate(180deg);transition:.5s cubic-bezier(.8, .5, .2, 1.4)}
-.menu-icon.open span {border-radius:50%;transition:.5s cubic-bezier(.8, .5, .2, 1.4)}
-.menu-icon span:nth-child(1) {left:0;top:0}
-.menu-icon span:nth-child(2) {left:8px;top:0}
-.menu-icon span:nth-child(3) {right:0;top:0}
-.menu-icon span:nth-child(4) {left:0;top:8px}
-.menu-icon span:nth-child(5) {position:absolute;left:8px;top:8px}
-.menu-icon span:nth-child(6) {right:0px;top:8px}
-.menu-icon span:nth-child(7) {left:0px;bottom:0px}
-.menu-icon span:nth-child(8) {position:absolute;left:8px;bottom:0px}
-.menu-icon span:nth-child(9) {right:0px;bottom:0px}
-.menu-icon.open span:nth-child(2) {left:4px;top:4px}
-.menu-icon.open span:nth-child(4) {left:4px;top:12px}
-.menu-icon.open span:nth-child(6) {right:4px;top:4px}
-.menu-icon.open span:nth-child(8) {left:12px;bottom:4px}
+.menu-icon.open i {border-radius:50%;transition:.5s cubic-bezier(.8, .5, .2, 1.4)}
+.menu-icon i:nth-child(1) {left:0;top:0}
+.menu-icon i:nth-child(2) {left:8px;top:0}
+.menu-icon i:nth-child(3) {right:0;top:0}
+.menu-icon i:nth-child(4) {left:0;top:8px}
+.menu-icon i:nth-child(5) {position:absolute;left:8px;top:8px}
+.menu-icon i:nth-child(6) {right:0px;top:8px}
+.menu-icon i:nth-child(7) {left:0px;bottom:0px}
+.menu-icon i:nth-child(8) {position:absolute;left:8px;bottom:0px}
+.menu-icon i:nth-child(9) {right:0px;bottom:0px}
+.menu-icon.open i:nth-child(2) {left:4px;top:4px}
+.menu-icon.open i:nth-child(4) {left:4px;top:12px}
+.menu-icon.open i:nth-child(6) {right:4px;top:4px}
+.menu-icon.open i:nth-child(8) {left:12px;bottom:4px}
 
 
 
@@ -739,6 +731,7 @@ button, .button {
     justify-content: center;
     align-items: center;
     position: relative;
+    max-height: 3rem;
 }
 a.button.primary,
 a.primary,
@@ -793,8 +786,9 @@ button:active, .button:active, .primary:active, button.active {
 .btn-group.spaced .primary {flex: 0;}
 .btn-group.stacked {flex-wrap: wrap;}
 /* Round corners on input groups */
-.input-group :first-child {border-radius: var(--radius) 0 0 var(--radius)}
-.input-group :last-child {border-radius: 0 var(--radius) var(--radius) 0}
+.input-group >:first-child {border-radius: var(--radius) 0 0 var(--radius)}
+.input-group >:last-child {border-radius: 0 var(--radius) var(--radius) 0}
+.input-group button+button {border-left: 2px solid #ccc;}
 
 /* Product counter in header buttons */
 button:has(span.product-count) {position: relative}
@@ -850,13 +844,13 @@ Each item needs a flex-grow and flex-shrink value of 0. The flex-basis property 
 /* Remove unnecesary scrollbar-gutter on horizontal scrolling blocks */
 .scroll-x {scrollbar-gutter: initial;}
 /* Aside modules */
-aside>div.module{display: flex; flex-direction: column;}
+aside>div.module{display: flex;flex-direction: column;}
 /* Filter */
 #filter>.sort {display: flex;flex-direction: column;}
 #filter>div[id^='filter_group_'], #filter>.sort {padding: 0 0 1rem 0;}
 /* Slider scroll buttons */
-.module button.scroll_left {position: absolute; right: 45px; top: 5px; width: 35px ;height: 35px}
-.module button.scroll_right {position: absolute; right: 5px; top: 5px; width: 35px; height: 35px}
+.module button.scroll_left {position: absolute;right: 45px;top: 5px;width: 35px;height: 35px;}
+.module button.scroll_right {position: absolute; right: 5px; top: 5px; width: 35px; height: 35px; }
 
 /* Max width for products and blog articles in scroll container - accounting flags, that are offset a little to the left */
 /* .scroll-x article {max-width: max(20%, calc(100% - 0.7rem)); margin: 1rem} */
@@ -1080,6 +1074,18 @@ input#input-quantity {text-align: center}
 }
 /* #product #description p {text-align: justify;} */
 
+
+/* Main menu */
+/* #main-menu .menu {position: relative;overflow: hidden;height: 50vh;scrollbar-gutter: auto;background: #fff;box-shadow: var(--blocks-shadow);border-radius: var(--radius)} */
+#main-menu ul {transition: var(--style) var(--time);background: #fff;margin: 0; padding:.2rem; overflow-y: auto; height: 50vh}
+#main-menu li {list-style-type: none;margin: .1rem 0;padding: 0.2rem;display: grid;grid-template-columns: 300px 40px 40px;align-items: center;grid-template-rows: 50px}
+#main-menu a {padding: .5rem}
+#main-menu ul:not([data-parent="0"]) {position: absolute;top: 0;left: 0;transform: translateX(110%)}
+#main-menu ul:not([data-parent="0"]).open {transform: translateX(0)}
+/* Main menu - Forward button */
+#main-menu button.menu-forward:after {content: "\2BC8"}/* main menu - back button */
+#main-menu button.menu-back:before {content: "\2BC7"}
+
 /* Media query for desktops */
 /* 63.938rem = 1023px */
 /* 64rem = 1024px */
@@ -1096,9 +1102,11 @@ input#input-quantity {text-align: center}
         background: var(--bg-main-blocks);
         transform: translateX(calc(1rem + 110%));
         transition: var(--time) var(--style);
-        z-index: 2;
+        z-index: 3;
         /* Firefox bug with position fixed and backdrop filter */
         /* backdrop-filter: blur(5px); */
+        /* height: 400px; */
+        /* display: inline-block!important; */
     }
     .mobile_menu.open {
         transform: translateX(0%);
@@ -1112,6 +1120,11 @@ input#input-quantity {text-align: center}
     dialog {
         width: 100%;
     }
+    .hidden-md {display: none!important;}
+    #main-menu[data-accordion], #main-menu ul {height: calc(100vh - 10rem);}
+    #main-menu ul {width: 100%}
+    #main-menu li {grid-template-columns: calc(100% - 80px) 40px 40px;}
+    #main-menu.mobile_menu {top: 5rem}
 }
 /* Hide product short descriptions in mobile blocks on small screens so block fits vertically without overflow */
 @media (max-height: 896px) {
@@ -1163,7 +1176,7 @@ input#input-quantity {text-align: center}
         flex: 0 0 max(21rem, 20%);
         max-width: max(21rem, 20%);
     }
-    .hidden-md {display: initial!important}
+    /* .hidden-md {display: initial!important;} */
 
     hgroup > * {
         /*! width: 50%; */
