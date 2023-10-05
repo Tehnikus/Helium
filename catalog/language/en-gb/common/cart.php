@@ -31,16 +31,3 @@ $_['entry_country']                 = 'Country';
 $_['entry_zone']                    = 'Region';
 $_['entry_newsletter']              = 'Subscribe to our news %s.';
 $_['entry_shipping'] 	              = 'Delivery and payment addresses are the same';
-
-$_['error_firstname']               = 'Firstname should be from 1 to 32 characters';
-$_['error_lastname']                = 'lastname should be from 1 to 32 characters';
-$_['error_address_1']               = 'Address should be from 3 to 128 characters';
-$_['error_telephone']               = 'Phone number should be from 3 to 32 characters';
-$_['error_postcode']                = 'Postal code should be from 3 to 32 characters';
-$_['error_country']                 = 'Choose delivery country';
-$_['error_zone']                    = 'Choose region';
-$_['error_city']                    = 'City should be from 3 to 32 characters';
-$_['error_custom_field']            = 'Please fill %s';
-$_['error_shipping']                = 'Choose delivery option';
-$_['error_no_shipping']             = 'Unforunatelly we cannot deliver to specified address. <a href="%s">Contact us</a> and we will arrange something :)';
-$_['error_payment']                 = 'Choose payment option';

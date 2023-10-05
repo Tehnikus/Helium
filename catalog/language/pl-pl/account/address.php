@@ -23,16 +23,3 @@ $_['entry_country']        = 'Kraj';
 $_['entry_zone']           = 'Województwo';
 $_['entry_default']        = 'Adres domyślny';
 
-// Error
-$_['error_delete']         = 'Ostrzeżenie: Musisz mieć co najmniej jeden adres!';
-$_['error_default']        = 'Ostrzeżenie: Nie można usunąć domyślnego adresu!';
-$_['error_firstname']      = 'Imię musi mieć od 1 do 32 znaków!';
-$_['error_lastname']       = 'Nazwisko musi mieć od 1 do 32 znaków!';
-$_['error_vat']            = 'NIP jest nieprawidłowy!';
-$_['error_address_1']      = 'Adres musi mieć od 3 do 128 znaków!';
-$_['error_postcode']       = 'Kod pocztowy musi mieć od 2 do 10 znaków!';
-$_['error_city']           = 'Miejscowość musi mieć od 2 do 128 znaków!';
-$_['error_country']        = 'Wybierz kraj!';
-$_['error_zone']           = 'Wybierz województwo!';
-$_['error_custom_field']   = '%s wymagane!';
-$_['error_custom_field_validate'] = 'Proszę wypełnić pole %s';

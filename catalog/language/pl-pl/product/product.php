@@ -18,7 +18,6 @@ $_['text_no_reviews']           = 'Brak recenzji dla tego produktu.';
 $_['text_no_review_text']       = 'Użytkownik ocenił ten produkt, ale nie napisał recenzji';
 $_['text_no_review_author']     = 'Klient';
 $_['text_note']                 = '<span style="color: #FF0000;">Uwaga:</span> znaczniki HTML nie są obsługiwane! Użyj zwykłego tekstu.';
-$_['text_success']              = '<h1>Dziękujemy za Twoją opinię! Wkrótce go opublikujemy!</h1>';
 $_['text_related']              = 'Produkty polecane';
 $_['text_tags']                 = 'Tagi:';
 $_['text_error']                = 'Produkt nie został znaleziony!';
@@ -49,12 +48,7 @@ $_['tab_review']                = 'Recenzje';
 $_['tab_photos']                = 'Zdjęcia';
 $_['button_send_review']        = 'Wyślij recenzję';
 
-// Error
-$_['error_name']                = 'Nazwa musi mieć od 3 do 25 znaków!';
-$_['error_text']                = 'Tekst recenzji musi mieć od 25 do 1000 znaków!';
-$_['error_rating']              = 'Proszę wybrać ocenę';
-$_['error_product']             = "Ostrzeżenie: Musisz wybrać produkt, aby dodać recenzję!";
-$_['error_captcha']             = 'Kod pokazany na obrazku został wprowadzony niepoprawnie';
+
 // flags
 // Don't change names, as they correspont flag types in catalog/model/catalog/product.php, in prepareProductList($filter = array())
 $_['flag_viewed']               = '<i class="icon-eye"></i> Wyświetlono';

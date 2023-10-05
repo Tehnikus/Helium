@@ -18,7 +18,6 @@ $_['text_no_reviews']          = 'Нет отзывов об этом товар
 $_['text_no_review_text']      = 'Пользователь оценил данный товар, но не написал отзыв';
 $_['text_no_review_author']    = 'Клиент';
 $_['text_note']                = '<span style="color: #FF0000;">Примечание:</span> HTML разметка не поддерживается! Используйте обычный текст.';
-$_['text_success']             = '<h1>Спасибо за ваш отзыв! Мы скоро его опубликуем!</h1>';
 $_['text_related']             = 'Рекомендуемые товары';
 $_['text_tags']                = 'Теги:';
 $_['text_error']               = 'Товар не найден!';
@@ -49,12 +48,6 @@ $_['tab_review']               = 'Отзывы';
 $_['tab_photos']               = 'Фото';
 $_['button_send_review']       = 'Отправить отзыв';
 
-// Error
-$_['error_name']               = 'Имя должно содержать от 3 до 25 символов!';
-$_['error_text']               = 'Текст отзыва должен содержать от 25 до 1000 символов!';
-$_['error_rating']             = 'Пожалуйста, выберите оценку';
-$_['error_product']            = "Внимание: Необходимо выбрать товар, для добавления отзыва!";
-$_['error_captcha']            = 'Код, указанный на картинке введен неверно';
 // flags
 // Don't change names, as they correspont flag types in catalog/model/catalog/product.php, in prepareProductList($filter = array())
 $_['flag_viewed']            = '<i class="icon-eye"></i> Просмотрен';
