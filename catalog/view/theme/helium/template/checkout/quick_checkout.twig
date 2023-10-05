@@ -1,18 +1,10 @@
 
-{% if addresses %}
-  <h2>{{ text_choose_existing_address }}</h2>
-    {# <div class="form-control">
-      <input id="payment_address_existing" type="radio" name="payment_address" value="existing" checked="checked" />
-      <label for="payment_address_existing">{{ text_choose_existing_address }}</label>
-    </div>
-    <div id="payment-existing"> #}
-
-      {% include 'helium/template/account/user_addresses.twig' with {form_name: 'js_qc_address'} %}
-
-
-  {# <h3>{{ text_or_create_new_address }}</h3> #}
-{% endif %}
-<form id="js_quick_ckeckout">  
+<form id="js_quick_ckeckout">
+  {% if addresses %}
+    <h2>{{ text_choose_existing_address }}</h2>
+    {% include 'helium/template/account/user_addresses.twig' with {form_name: 'js_qc_address'} %}
+  {% endif %}
+  <fieldset class="unstyled">
   {% if not addresses %}<h2>{{ text_quick_checkout }}</h2>{% endif %}
   <div id="js_qc_address_form">
     <div class="form-group required">
@@ -126,15 +118,16 @@
     {# Custom fields #}
     {% include 'helium/template/common/custom_fields.twig' with {type: 'shipping', location: 'address'} %}
 
-  <div id="js_qc_delivery" class="js_check_errors">
+  <div id="js_qc_delivery">
     {# Shipping methods #}
     {# Using with because $data['shipping_methods'] is subarray #}
     {% include 'helium/template/checkout/quick_checkout_shipping.twig' with {shipping_methods: shipping_methods.shipping_methods} %}
   </div>
-  <div id="js_qc_payment" class="js_check_errors">
+  <div id="js_qc_payment">
     {# Payment methods #}
     {% include 'helium/template/checkout/quick_checkout_payment.twig' with {payment_methods: payment_methods.payment_methods} %}
   </div>
+  </fieldset>
   {# Check for errors and validate #}
   <button type="button" data-action="validateQuickCheckout" id="js_qc_validate" class="primary">{{ button_continue }}</button>
 </form>

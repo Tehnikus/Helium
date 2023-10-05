@@ -1,8 +1,8 @@
-<span class="h2">{{ text_payment_methods }}</span>
 {% if payment_methods.error_warning %}
   <div role="alert" class="alert-warning"><i class="icon-alert"></i> {{ error_warning }}</div>
 {% endif %}
 {% if payment_methods %}
+  <span class="h2">{{ text_payment_methods }}</span>
   {% for payment_method in payment_methods %}
     <div class="form-control">
       {% if selected_payment_method == payment_method.code %}

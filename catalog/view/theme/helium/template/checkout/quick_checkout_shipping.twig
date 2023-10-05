@@ -1,5 +1,4 @@
 {% if shipping_methods %}
-  {# {{ shipping_methods | json_encode(constant('JSON_PRETTY_PRINT')) }} #}
   <span class="h2">{{ text_shipping_methods }}</span>
   {% for shipping_method in shipping_methods %}
     {% if not shipping_method.error %}
