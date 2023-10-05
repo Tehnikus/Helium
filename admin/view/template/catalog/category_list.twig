@@ -110,7 +110,7 @@
                       <input type="checkbox" name="selected[]" value="{{ category.category_id }}" />
                     {% endif %}
                   </td>
-                  <td class="text-center" style="max-width:60px"><img src="{{ category.image }}"/></td>
+                  <td class="text-center" style="max-width:60px"><img class="img-thumbnail" src="{{ category.image }}"/></td>
 
 				          {% if category.href %}
                     <td class="left">{{ category.indent }}<a href="{{ category.href }}">{{ category.name }}</a>&nbsp;<i class="fa fa-sort-desc"></i></td>
