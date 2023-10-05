@@ -63,7 +63,9 @@
       </div>
     </div>
     {# Quick checkout #}
-    {% include 'helium/template/checkout/quick_checkout.twig' %}
+    <div class="js_quick_checkout">
+      {% include 'helium/template/checkout/quick_checkout.twig' %}
+    </div>
 
   {% else %}
     <h1 class="text-center">{{ text_empty }}</h1>
