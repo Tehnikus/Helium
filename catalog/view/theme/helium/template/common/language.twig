@@ -1,19 +1,27 @@
 {% if languages|length > 1 %}
   <form action="{{ action }}" method="post" enctype="multipart/form-data" id="form-language">
       {# <button class="dropdown-toggle" data-toggle="dropdown" type="button"> #}
-      <button data-accordion-target="languages" type="button">
+      {# <button data-accordion-target="languages" type="button">
         {% for language in languages %}
           {% if language.code == code %} 
             <img width="40" height="27" loading="lazy" src="catalog/language/flags/{{ language.code }}.webp" alt="{{ language.name }}" title="{{ language.name }}">
           {% endif %}
         {% endfor %}
-        <span class="hidden-md"> {{ text_language }} </span></button>
-      <div data-accordion="languages" id="language_select">
-        <div>
+        <span class="hidden-md"> {{ text_language }} </span>
+      </button> #}
+      <div class="input-group" id="language_select">
+        {# <div> #}
           {% for language in languages %}
-            <button title="{{ language.name }}" class="language-select" type="button" name="{{ language.code }}"><img width="40" height="27" loading="lazy" src="catalog/language/flags/{{ language.code }}.webp" alt="{{ language.name }}" /> {{ language.name }}</button>
+            <button title="{{ language.name }}" class="language-select" type="button" name="{{ language.code }}">
+              {% if language.code == 'ru-ru' %}
+                <p style="font-size: 30px">&#x1F4A9;</p>
+              {% else %}
+                <img width="40" height="27" loading="lazy" src="catalog/language/flags/{{ language.code }}.webp" alt="{{ language.name }}"/>
+              {% endif %}
+              <p class="hidden-md">{{ language.name }}</p>
+            </button>
           {% endfor %}
-        </div>
+        {# </div> #}
       </div>
     <input type="hidden" name="code" value="" />
     <input type="hidden" name="redirect" value="{{ redirect }}" />

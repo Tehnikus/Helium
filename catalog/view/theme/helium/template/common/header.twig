@@ -86,12 +86,12 @@
         <span><a href="{{ home }}">{{ name }}</a></span>
       {% endif %}
     </div>
-    <div class="pull-right mobile_menu" data-block-name="{{ text_menu_settings }}" data-icon="icon-cart" data-order="0">
+    <div class="pull-right">
       {{ currency }}
       {{ language }}
       <a class="phone button" href="tel:{{ telephone }}" rel="phone" title="{{ text_phones }}" aria-label="{{ text_phones }}"><i class="icon-phone"></i><span class="hidden-md">{{ telephone }}</span></a>
-      <button data-action="contactsModal" aria-haspopup="dialog" title="{{ text_location }}" aria-label="{{ text_location }}"><i class="icon-location"></i>{{ text_location }}</button>
-      <div class="account-menu dropdown">
+      <button data-action="contactsModal" aria-haspopup="dialog" title="{{ text_location }}" aria-label="{{ text_location }}"><i class="icon-location"></i><span class="hidden-md">{{ text_location }}</span></button>
+      <div class="relative">
         <button data-accordion-target="account" type="button" title="{{ text_account }}" aria-label="{{ text_account }}">
           <i class="icon-user"></i>
           <span class="hidden-md">{{ text_account }}</span>
