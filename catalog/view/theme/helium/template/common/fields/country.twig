@@ -13,13 +13,13 @@
 </div>
 
 {% if zones %}
-<div class="form-group required">
-  <label for="input-{{ type }}-zone">{{ entry_zone }}</label>
-  <select name="zone_id" id="input-{{ type }}-zone">
-    {% for zone in zones %}
-      <option value="{{zone.zone_id}}" {% if zone_id == zone.zone_id %} selected="selected" {% endif %}>{{zone.name}}</option>
-    {% endfor %}
-  </select>
+  <div class="form-group required">
+    <label for="input-{{ type }}-zone">{{ entry_zone }}</label>
+    <select name="zone_id" id="input-{{ type }}-zone">
+      {% for zone in zones %}
+        <option value="{{zone.zone_id}}" {% if zone_id == zone.zone_id %} selected="selected" {% endif %}>{{zone.name}}</option>
+      {% endfor %}
+    </select>
   </div>
 {% endif %}
 
