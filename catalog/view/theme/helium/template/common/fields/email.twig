@@ -1,5 +1,5 @@
 <div class="form-group {% if required %} required {% endif %} {% if error_email %} has-error {% endif %}">
-    <label for="input-payment-email">{{ entry_email }}</label>
+    <label for="input-{{ type }}-email">{{ entry_email }}</label>
     <input
       type="email"
       name="email"
