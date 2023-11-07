@@ -18,7 +18,7 @@
   {% endfor %}
   <div class="form-control">
     {# Empty value to toggle address form #}
-    <input data-collapse-target="{{ form_name }}_form" role="radio" type="radio" name="address_id" id="{{ form_name }}_0" value="0" {% if not address_id %} checked="checked" {% endif %}/>
+    <input data-collapse-target="{{ form_name }}_form" role="radio" type="radio" name="address_id" id="{{ form_name }}_0" value="0" {% if not address_id or address_id == '0' %} checked="checked" {% endif %}/>
     <label for="{{ form_name }}_0"><b>{{ text_i_want_new_address }}</b></label>
   </div>
 </fieldset>
