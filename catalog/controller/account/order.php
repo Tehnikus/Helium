@@ -76,7 +76,7 @@ class ControllerAccountOrder extends Controller {
 
 		$data['results'] = sprintf($this->language->get('text_pagination'), ($order_total) ? (($page - 1) * 10) + 1 : 0, ((($page - 1) * 10) > ($order_total - 10)) ? $order_total : ((($page - 1) * 10) + 10), $order_total, ceil($order_total / 10));
 
-		$data['continue'] = $this->url->link('account/account', '', true);
+		$data['back'] = $this->url->link('account/account', '', true);
 
 		$data['column_left'] = $this->load->controller('common/column_left');
 		$data['column_right'] = $this->load->controller('common/column_right');
@@ -276,14 +276,15 @@ class ControllerAccountOrder extends Controller {
 				}
 
 				$data['products'][] = array(
-					'name'     => $product['name'],
-					'model'    => $product['model'],
-					'option'   => $option_data,
-					'quantity' => $product['quantity'],
-					'price'    => $this->currency->format($product['price'] + ($this->config->get('config_tax') ? $product['tax'] : 0), $order_info['currency_code'], $order_info['currency_value']),
-					'total'    => $this->currency->format($product['total'] + ($this->config->get('config_tax') ? ($product['tax'] * $product['quantity']) : 0), $order_info['currency_code'], $order_info['currency_value']),
-					'reorder'  => $reorder,
-					'return'   => $this->url->link('account/return/add', 'order_id=' . $order_info['order_id'] . '&product_id=' . $product['product_id'], true)
+					'product_id' => $product['product_id'],
+					'name'     	 => $product['name'],
+					'model'    	 => $product['model'],
+					'option'   	 => $option_data,
+					'quantity' 	 => $product['quantity'],
+					'price'    	 => $this->currency->format($product['price'] + ($this->config->get('config_tax') ? $product['tax'] : 0), $order_info['currency_code'], $order_info['currency_value']),
+					'total'    	 => $this->currency->format($product['total'] + ($this->config->get('config_tax') ? ($product['tax'] * $product['quantity']) : 0), $order_info['currency_code'], $order_info['currency_value']),
+					'reorder'  	 => $reorder,
+					'return'   	 => $this->url->link('account/return/add', '&order_id=' . $order_info['order_id'] . '&r_product_id=' . $product['product_id'], true)
 				);
 			}
 
@@ -327,6 +328,8 @@ class ControllerAccountOrder extends Controller {
 			}
 
 			$data['continue'] = $this->url->link('account/order', '', true);
+			$data['back'] = $this->url->link('account/account', '', true);
+
 
 			$data['column_left'] = $this->load->controller('common/column_left');
 			$data['column_right'] = $this->load->controller('common/column_right');
