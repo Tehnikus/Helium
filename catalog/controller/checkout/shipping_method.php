@@ -139,7 +139,7 @@ class ControllerCheckoutShippingMethod extends Controller {
 			}
 
 			// If no errors occured, call next method
-			$json['function'][] = 'fetchPaymentMethods()';
+			// $json['function'][] = 'fetchPaymentMethods()';
 		}
 
 		$this->response->addHeader('Content-Type: application/json');
