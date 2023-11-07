@@ -22,7 +22,7 @@ $_['error_shipping']                = 'Musisz wybrać sposób dostawy';
 $_['error_no_shipping']             = 'Brak dostępnych opcji dostawy. Prosimy o <a href="%s">kontakt z nami</a> w celu uzyskania pomocy';
 $_['error_payment']                 = 'Musisz wybrać sposób zapłaty';
 $_['error_no_payment']              = 'Brak dostępnych opcji zapłaty. Prosimy o <a href="%s">kontakt z nami</a> w celu uzyskania pomocy';
-$_['error_custom_field']            = '%s wymagane';
+$_['error_custom_field']            = '%s jest wymagane';
 $_['error_custom_field_validate']   = 'Pole %s jest nieprawidłowe';
 
 // Error address

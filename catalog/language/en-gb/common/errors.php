@@ -22,7 +22,7 @@ $_['error_shipping']                = 'Shipping method required';
 $_['error_no_shipping']             = 'No Shipping options are available. Please <a href="%s">contact us</a> for assistance';
 $_['error_payment']                 = 'Payment method required';
 $_['error_no_payment']              = 'No Payment options are available. Please <a href="%s">contact us</a> for assistance';
-$_['error_custom_field']            = '%s required';
+$_['error_custom_field']            = '%s is required';
 $_['error_custom_field_validate']   = '%s is incorrect';
 
 // Error address
