@@ -478,7 +478,7 @@ class ControllerProductSearch extends Controller {
 			$products = $this->model_catalog_product->searchProducts($search_string);
 			
 			$results = array(
-				'attrs' => array('class' => 'search_results', 'aria-live' => 'true', 'aria-relevant' => 'additions'),
+				'attrs' => array('class' => 'search_results'),
 				'nest' => array(
 					'products' => array(
 						'attrs' => array('class' => 'product grid')
