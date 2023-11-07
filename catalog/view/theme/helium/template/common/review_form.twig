@@ -1,27 +1,24 @@
 <form id="form-review">
   <span class="h2">{{ text_write }}</span>
-  <div class="form-group required">
-    <input type="text" placeholder="{{ entry_name }}" name="name" value="{{ customer_name }}" id="input-name" />
-  </div>
-  <div class="form-group required">
-    <textarea name="text" placeholder="{{ entry_review }}" rows="5" id="input-review" class="form-control"></textarea>
-  </div>
-
-  <label>{{ entry_rating }}</label>
-  {# Rating stars #}
-  <div class="form-group required rating">
-    {% for i in 5..1 %}
-      <input id="rating_{{ i }}" type="radio" name="rating" value="{{ i }}" {% if i == 5 %} checked {% endif %} />
-      <label for="rating_{{ i }}"><i class="icon-star"></i></label>
-    {% endfor %}
-  </div>
-  {{ captcha }}
-
-  <div class="buttons clearfix">
-    <div class="pull-right">
-      <button data-action="sendReview" type="button" data-type="{{ type }}" data-id="{{ entity_id }}" data-form="form-review" class="primary">
-        {{ button_send_review }}
-      </button>
+  <fieldset class="unstyled">
+    <div class="form-group required">
+      <input type="text" placeholder="{{ entry_name }}" name="name" value="{{ customer_name }}" id="input-name" />
     </div>
-  </div>
+    <div class="form-group required">
+      <textarea name="text" placeholder="{{ entry_review }}" rows="5" id="input-review" class="form-control"></textarea>
+    </div>
+  
+    <label>{{ entry_rating }}</label>
+    {# Rating stars #}
+    <div class="form-group required rating">
+      {% for i in 5..1 %}
+        <input id="rating_{{ i }}" type="radio" name="rating" value="{{ i }}" {% if i == 5 %} checked {% endif %} />
+        <label for="rating_{{ i }}"><i class="icon-star"></i></label>
+      {% endfor %}
+    </div>
+    {{ captcha }}
+    <button data-action="sendReview" type="button" data-type="{{ type }}" data-id="{{ entity_id }}" data-form="form-review" class="primary">
+      {{ button_send_review }}
+    </button>
+  </fieldset>
 </form>
