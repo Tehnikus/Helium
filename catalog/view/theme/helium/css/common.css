@@ -324,6 +324,7 @@ a:focus, button:focus, .button:focus, summary:focus, dialog:focus, input:focus, 
     border-color: transparent;
     border: none;
     outline: 2px solid var(--outline);
+    z-index: 1;
 }
 .input-group>*:not(:last-child):focus {
     margin-right: 2px; /* Prevent overflowing outlines in button groups */
@@ -636,7 +637,7 @@ details[disabled], details[disabled], details[inert] summary {color: var(--color
 
 /* Dialogs */
 /* dialog {border: none; outline: transparent; box-shadow: 0 0 5px #333; position: fixed; transition: transform var(--time) var(--style); transform: scale3d(0,0,0);  scrollbar-gutter: auto!important;} */
-dialog {border:none;outline:transparent;box-shadow: 0 0 5px #333;position: fixed;scrollbar-gutter: auto!important;backdrop-filter: blur(3px);}
+dialog {border:none;outline:transparent;box-shadow: 0 0 5px #333;position: fixed;scrollbar-gutter: auto!important;/* backdrop-filter: blur(3px); */}
 dialog.animate{transition: transform var(--time) var(--style); transform: scale3d(0,0,0); }
 dialog.visible {transform: scale3d(1,1,1);}
 dialog::backdrop {
@@ -749,6 +750,16 @@ button.primary {
     -moz-user-select: none;
     -ms-user-select: none;
 }
+
+button.add-to-cart.primary:hover i {
+    transform: rotate(-15deg);
+    transition: .5s cubic-bezier(0, 0.6, 0.38, 2.22);
+}
+button.add-to-cart.primary:focus i {
+    transform: translate(200px, 0);
+    transition: .7s cubic-bezier(0.46, -0.48, 0.38, 2.22);
+}
+
 button#js_button_confirm {
     background-image: linear-gradient(45deg, #496dc1, #338b17);
 }
@@ -1125,6 +1136,14 @@ input#input-quantity {text-align: center}
     #main-menu ul {width: 100%}
     #main-menu li {grid-template-columns: calc(100% - 80px) 40px 40px;}
     #main-menu.mobile_menu {top: 5rem}
+    #nav_top {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    #nav_top .log, #nav_top .pull-right {
+        flex: 1 0 100%;
+        justify-content: center;
+    }
 }
 /* Hide product short descriptions in mobile blocks on small screens so block fits vertically without overflow */
 @media (max-height: 896px) {
@@ -1191,7 +1210,7 @@ input#input-quantity {text-align: center}
     }
     hgroup .title {flex: 1;}
     hgroup h1 {align-items: flex-start;}
-    hgroup .rating {justify-content: flex-start;}
+    hgroup .rating {/* justify-content: flex-start; */}
 
     .mobile_buttons {display: none!important}
     dialog {width: 980px;min-height: 160px;}
