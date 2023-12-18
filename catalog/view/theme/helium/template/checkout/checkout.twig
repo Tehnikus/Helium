@@ -4,7 +4,7 @@
 <main role="main" id="checkout">
   {% if error_warning %}
   <div class="alert danger"><i class="icon-alert"></i> {{ error_warning }}
-    <button type="button" class="close">&times;</button>
+    <button type="button" class="close"></button>
   </div>
   {% endif %}
   
@@ -264,7 +264,7 @@
 //                 {# $('#button-register').button('reset'); #}
 
 //                 if (json['error']['warning']) {
-//                     $('#collapse-payment-address .panel-body').prepend('<div role="alert" class="alert-danger"><i class="icon-alert"></i> ' + json['error']['warning'] + '<button type="button" class="close">&times;</button></div>');
+//                     $('#collapse-payment-address .panel-body').prepend('<div role="alert" class="alert-danger"><i class="icon-alert"></i> ' + json['error']['warning'] + '<button type="button" class="close"></button></div>');
 //                 }
 
 // 				for (i in json['error']) {
@@ -402,7 +402,7 @@
 //           } else if (json['error']) {
 
 //             if (json['error']['warning']) {
-//                 $('#collapse-payment-address .panel-body').prepend('<div role="alert" class="alert-warning">' + json['error']['warning'] + '<button type="button" class="close">&times;</button></div>');
+//                 $('#collapse-payment-address .panel-body').prepend('<div role="alert" class="alert-warning">' + json['error']['warning'] + '<button type="button" class="close"></button></div>');
 //             }
 //             for (i in json['error']) {
 //               var element = $('#input-payment-' + i.replace('_', '-'));
@@ -501,7 +501,7 @@
 //                 {# $('#button-shipping-address').button('reset'); #}
 
 //                 if (json['error']['warning']) {
-//                     $('#collapse-shipping-address .panel-body').prepend('<div role="alert" class="alert-warning">' + json['error']['warning'] + '<button type="button" class="close">&times;</button></div>');
+//                     $('#collapse-shipping-address .panel-body').prepend('<div role="alert" class="alert-warning">' + json['error']['warning'] + '<button type="button" class="close"></button></div>');
 //                 }
 
 // 				for (i in json['error']) {
@@ -589,7 +589,7 @@
 //             {# $('#button-guest-shipping').button('reset'); #}
 
 //             if (json['error']['warning']) {
-//                 $('#collapse-shipping-address .panel-body').prepend('<div role="alert" class="alert-danger">' + json['error']['warning'] + '<button type="button" class="close">&times;</button></div>');
+//                 $('#collapse-shipping-address .panel-body').prepend('<div role="alert" class="alert-danger">' + json['error']['warning'] + '<button type="button" class="close"></button></div>');
 //             }
 
 //             for (i in json['error']) {
@@ -651,7 +651,7 @@
 //                 {# $('#button-shipping-method').button('reset'); #}
 
 //                 if (json['error']['warning']) {
-//                     $('#collapse-shipping-method .panel-body').prepend('<div role="alert" class="alert-danger">' + json['error']['warning'] + '<button type="button" class="close">&times;</button></div>');
+//                     $('#collapse-shipping-method .panel-body').prepend('<div role="alert" class="alert-danger">' + json['error']['warning'] + '<button type="button" class="close"></button></div>');
 //                 }
 //             } else {
 //                 $.ajax({
@@ -699,7 +699,7 @@
 //                 {# $('#button-payment-method').button('reset'); #}
                 
 //                 if (json['error']['warning']) {
-//                     $('#collapse-payment-method .panel-body').prepend('<div role="alert" class="alert-danger">' + json['error']['warning'] + '<button type="button" class="close">&times;</button></div>');
+//                     $('#collapse-payment-method .panel-body').prepend('<div role="alert" class="alert-danger">' + json['error']['warning'] + '<button type="button" class="close"></button></div>');
 //                 }
 //             } else {
 //                 $.ajax({

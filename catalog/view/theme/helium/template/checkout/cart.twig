@@ -3,17 +3,17 @@
 <main role="main" id="checkout-cart">
   {% if attention %}
   <div role="alert" class="alert-info"><i class="icon-info"></i> {{ attention }}
-    <button type="button" class="close">&times;</button>
+    <button type="button" class="close"></button>
   </div>
   {% endif %}
   {% if success %}
   <div role="alert" class="alert-success"><i class="icon-info"></i> {{ success }}
-    <button type="button" class="close">&times;</button>
+    <button type="button" class="close"></button>
   </div>
   {% endif %}
   {% if error_warning %}
   <div role="alert" class="alert-danger"><i class="icon-alert"></i> {{ error_warning }}
-    <button type="button" class="close">&times;</button>
+    <button type="button" class="close"></button>
   </div>
   {% endif %}
   <h1>{{ heading_title }}{% if weight %}&nbsp;({{ weight }}){% endif %}</h1>
